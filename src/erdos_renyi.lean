@@ -44,4 +44,14 @@ lemma ident_distrib [ne_zero (ℙ : measure Ω)] (h : erdos_renyi G p) (d e : sy
   ident_distrib (λ ω, (d ∈ (G ω).edge_set : bool)) (λ ω, (e ∈ (G ω).edge_set : bool)) :=
 h.ident_distrib _ _
 
+lemma meas_edge_mem_eq [ne_zero (ℙ : measure Ω)] (h : erdos_renyi G p) (e : sym2 α) :
+  ℙ {ω | e ∈ (G ω).edge_set} = min p 1 :=
+begin
+  rw [(_ : {ω | e ∈ (G ω).edge_set} = (λ ω, (e ∈ (G ω).edge_set : bool)) ⁻¹' {tt}),
+    ← measure.map_apply_of_ae_measurable (h.ae_measurable e) measurable_space.measurable_set_top],
+  { simp [h.map] },
+  { ext ω,
+    simp }
+end
+
 end erdos_renyi
