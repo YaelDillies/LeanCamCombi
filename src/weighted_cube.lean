@@ -43,29 +43,32 @@ def bool.to_real (b : bool) : ℝ :=
 cond b 0 1
 
 /-- A sequence iid. real valued Bernoulli random variables with parameter `p ≤ 1`. -/
-def real_bernoulli_seq (X : Ω → ι → ℝ) (p : ℝ≥0) : Prop := 
+def bernoulli_seq (X : Ω → ι → bool) (p : ℝ≥0) : Prop := 
 Indep_fun (λ _, infer_instance) (λ i ω, X ω i) ℙ ∧ 
-∀ i, measure.map (λ ω, X ω i) ℙ = 
-  ((pmf.bernoulli (min p 1) $ min_le_right _ _).map bool.to_real).to_measure
+∀ i, measure.map (λ ω, X ω i) ℙ = (pmf.bernoulli (min p 1) $ min_le_right _ _).to_measure
 
-variables {X : Ω → ι → ℝ} {p : ℝ≥0}
+variables {X : Ω → ι → bool} {p : ℝ≥0}
 
-namespace real_bernoulli_seq
+namespace bernoulli_seq
+
+def bool.measurable_space : measurable_space bool := ⊤
+
+local attribute [instance] bool.measurable_space
 
 @[protected]
-lemma Indep_fun (h : real_bernoulli_seq X p) : 
+lemma Indep_fun (h : bernoulli_seq X p) : 
   Indep_fun (λ _, infer_instance) (λ i ω, X ω i) ℙ := 
 h.1
 
 @[protected]
-lemma map (h : real_bernoulli_seq X p) (i : ι) : measure.map (λ ω, X ω i) ℙ = 
-  ((pmf.bernoulli (min p 1) $ min_le_right _ _).map bool.to_real).to_measure := h.2 i
+lemma map (h : bernoulli_seq X p) (i : ι) : measure.map (λ ω, X ω i) ℙ = 
+  (pmf.bernoulli (min p 1) $ min_le_right _ _).to_measure := h.2 i
 
 @[protected]
-lemma ae_measurable (h : real_bernoulli_seq X p) (i : ι) : ae_measurable (λ ω, X ω i) :=
+lemma ae_measurable (h : bernoulli_seq X p) (i : ι) : ae_measurable (λ ω, X ω i) :=
 begin
   classical,
-  suffices : (pmf.map bool.to_real (pmf.bernoulli (min p 1) $ min_le_right _ _)).to_measure ≠ 0,
+  suffices : (pmf.bernoulli (min p 1) $ min_le_right _ _).to_measure ≠ 0,
   { rw [← h.map i, measure.map] at this,
     refine (ne.dite_ne_right_iff $ λ hX hzero, _).1 this,
     rw measure.mapₗ_eq_zero_iff hX.measurable_mk at hzero,
@@ -74,10 +77,10 @@ begin
 end
 
 @[protected]
-lemma ident_distrib (h : real_bernoulli_seq X p) (i j : ι) : 
+lemma ident_distrib (h : bernoulli_seq X p) (i j : ι) : 
   ident_distrib (λ ω, X ω i) (λ ω, X ω j) :=
 { ae_measurable_fst := h.ae_measurable i,
   ae_measurable_snd := h.ae_measurable j,
   map_eq := (h.map i).trans (h.map j).symm }
 
-end real_bernoulli_seq
+end bernoulli_seq
