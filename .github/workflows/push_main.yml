@@ -1,0 +1,48 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update_con_nf_branch_and_build:
+    runs-on: ubuntu-latest
+    name: Update con-nf branch and build project
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: update branch
+        if: github.ref == 'refs/heads/main'
+        uses: leanprover-contrib/update-versions-action@master
+
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+
+      - name: build docker container
+        run: docker build -t con-nf .
+
+      - name: build project
+        run: docker run --rm -v ${{ github.workspace }}:/src con-nf
+
+      - name: remove .gitignore for gh-pages
+        run: rm docs/.gitignore
+
+      - name: bundler deps
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: docs
+          ruby-version: "3.0" # Not needed with a .ruby-version file
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
+      - name: bundle website
+        working-directory: docs
+        run: JEKYLL_ENV=production bundle exec jekyll build
+
+      - name: deploy
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          SINGLE_COMMIT: true
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: docs/_site
