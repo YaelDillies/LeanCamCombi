@@ -1,14 +1,14 @@
 /-
-Copyright (c) 2022 Kexing Ying. All rights reserved.
+Copyright (c) 2022 Yaël Dillies, Kexing Ying. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Kexing Ying
+Authors: Yaël Dillies, Kexing Ying
 -/
 import probability.ident_distrib
 import mathlib.measure
 import probability.probability_mass_function.constructions
 
-/-
-We want to formlate a sequence of iid Bernoulli random variables
+/-!
+We want to formulate a sequence of iid Bernoulli random variables
 -/
 
 open measure_theory probability_theory
