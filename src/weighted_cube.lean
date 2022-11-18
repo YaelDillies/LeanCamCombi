@@ -39,9 +39,6 @@ end
 
 end mathlib
 
-def bool.to_real (b : bool) : ℝ := 
-cond b 0 1
-
 /-- A sequence iid. real valued Bernoulli random variables with parameter `p ≤ 1`. -/
 def bernoulli_seq (X : Ω → ι → bool) (p : ℝ≥0) : Prop := 
 Indep_fun (λ _, infer_instance) (λ i ω, X ω i) ℙ ∧ 
