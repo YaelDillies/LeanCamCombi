@@ -25,30 +25,23 @@ variables {X : Ω → ι → bool} {p : ℝ≥0}
 
 namespace bernoulli_seq
 
-def bool.measurable_space : measurable_space bool := ⊤
-
-local attribute [instance] bool.measurable_space
+@[protected]
+lemma Indep_fun (h : bernoulli_seq X p) : Indep_fun (λ _, infer_instance) (λ i ω, X ω i) ℙ := h.1
 
 @[protected]
-lemma Indep_fun (h : bernoulli_seq X p) :
-  Indep_fun (λ _, infer_instance) (λ i ω, X ω i) ℙ :=
-h.1
-
-@[protected]
-lemma map (h : bernoulli_seq X p) (i : ι) : measure.map (λ ω, X ω i) ℙ =
-  (pmf.bernoulli (min p 1) $ min_le_right _ _).to_measure := h.2 i
+lemma map (h : bernoulli_seq X p) (i : ι) :
+  measure.map (λ ω, X ω i) ℙ = (pmf.bernoulli (min p 1) $ min_le_right _ _).to_measure := h.2 i
 
 @[protected]
 lemma ae_measurable [ne_zero (ℙ : measure Ω)] (h : bernoulli_seq X p) (i : ι) :
   ae_measurable (λ ω, X ω i) :=
 begin
   classical,
-  suffices : (pmf.bernoulli (min p 1) $ min_le_right _ _).to_measure ≠ 0,
-  { rw [← h.map i, measure.map] at this,
-    refine (ne.dite_ne_right_iff $ λ hX hzero, _).1 this,
-    rw measure.mapₗ_eq_zero_iff hX.measurable_mk at hzero,
-    exact ne_zero.ne _ hzero },
-  exact ne_zero.ne _
+  have : (pmf.bernoulli (min p 1) $ min_le_right _ _).to_measure ≠ 0 := ne_zero.ne _,
+  rw [←h.map i, measure.map] at this,
+  refine (ne.dite_ne_right_iff $ λ hX hzero, _).1 this,
+  rw measure.mapₗ_eq_zero_iff hX.measurable_mk at hzero,
+  exact ne_zero.ne _ hzero,
 end
 
 @[protected]
