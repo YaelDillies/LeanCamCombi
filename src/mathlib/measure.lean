@@ -6,6 +6,7 @@ open measure_theory
 variables {α β : Type*} [measurable_space α] [measurable_space β] {μ : measure α} {f : α → β}
 
 namespace measure_theory
+
 namespace measure
 
 @[simp] lemma map_eq_zero_iff (hf : ae_measurable f μ) : μ.map f = 0 ↔ μ = 0 :=
@@ -26,5 +27,10 @@ begin
   exact hf.ae_measurable.ae_eq_mk,
 end
 
+instance is_probability_measure.ne_zero {α : Type*} [measurable_space α] {μ : measure α}
+  [is_probability_measure μ] : ne_zero μ :=
+⟨is_probability_measure.ne_zero μ⟩
+
 end measure
+
 end measure_theory
