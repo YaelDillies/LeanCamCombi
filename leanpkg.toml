@@ -1,0 +1,8 @@
+[package]
+name = "lean-cam-combi"
+version = "0.1"
+lean_version = "leanprover-community/lean:3.49.0"
+path = "src"
+
+[dependencies]
+mathlib = {git = "https://github.com/leanprover-community/mathlib", rev = "8350c34a64b9bc3fc64335df8006bffcadc7baa6"}
