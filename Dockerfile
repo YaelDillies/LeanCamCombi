@@ -4,11 +4,17 @@ FROM texlive/texlive:latest
 RUN apt update
 RUN apt install software-properties-common -y
 RUN apt install --reinstall ca-certificates
-RUN apt install dirmngr --install-recommends -y
-RUN add-apt-repository ppa:deadsnakes/ppa
-RUN apt install python3.9 python3.9-dev python3-pip -y
+RUN apt install build-essential libssl-dev openssl wget zlib1g-dev --install-recommends -y
+RUN wget https://www.python.org/ftp/python/3.9.15/Python-3.9.15.tgz
+RUN tar zxf Python-3.9.15.tgz
+WORKDIR Python-3.9.15
+RUN ./configure --prefix=/usr/local
+RUN make
+RUN make install
+WORKDIR ..
 
 # Install blueprint dependencies
+RUN python3.9 -m pip install --upgrade setuptools
 RUN python3.9 -m pip install mathlibtools invoke
 RUN apt install graphviz libgraphviz-dev pandoc -y
 RUN git clone https://github.com/plastex/plastex.git
