@@ -8,13 +8,14 @@ open_locale classical nnreal
 namespace pmf
 variables {α : Type*} [measurable_space α]
 
-lemma to_measure_ne_zero (p : pmf α) : p.to_measure ≠ 0 := is_probability_measure.ne_zero p.to_measure
+lemma to_measure_ne_zero (p : pmf α) : p.to_measure ≠ 0 :=
+is_probability_measure.ne_zero p.to_measure
 
 section bernoulli
 
 /-- A `pmf` which assigns probability `p` to true propositions and `1 - p` to false ones. -/
 noncomputable def bernoulli' (p : ℝ≥0) (h : p ≤ 1) : pmf Prop :=
-of_fintype (λ b, if b then p else 1 - p) (nnreal.eq $ by simp [h])
+of_fintype (λ b, if b then p else 1 - p) $ by { norm_cast, exact nnreal.eq (by simp [h]) }
 
 variables {p : ℝ≥0} (hp : p ≤ 1) (b : Prop)
 
