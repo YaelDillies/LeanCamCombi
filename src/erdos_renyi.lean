@@ -19,10 +19,10 @@ open_locale measure_theory probability_theory ennreal nnreal
 variables {α Ω : Type*} [measure_space Ω] [is_probability_measure (ℙ : measure Ω)]
 
 /-- A sequence iid. real valued Bernoulli random variables with parameter `p ≤ 1`. -/
-abbreviation erdos_renyi (G : Ω → simple_graph α) [Π ω, decidable_rel ((G ω).adj)] : ℝ≥0 → Prop :=
-bernoulli_seq $ λ ω e, e ∈ (G ω).edge_set
+abbreviation erdos_renyi (G : Ω → simple_graph α) [Π ω, decidable_rel (G ω).adj] : ℝ≥0 → Prop :=
+bernoulli_seq $ λ ω, (∈ (G ω).edge_set)
 
-variables (G : Ω → simple_graph α) (H : simple_graph α) [Π ω, decidable_rel ((G ω).adj)] {p : ℝ≥0}
+variables (G : Ω → simple_graph α) (H : simple_graph α) [Π ω, decidable_rel (G ω).adj] {p : ℝ≥0}
   [erdos_renyi G p]
 include G p
 
@@ -34,15 +34,17 @@ protected lemma Indep_fun : Indep_fun (λ _, infer_instance) (λ e ω, e ∈ (G 
 bernoulli_seq.Indep_fun _
 
 protected lemma map (e : sym2 α) :
-  measure.map (λ ω, (e ∈ (G ω).edge_set : Prop)) ℙ
-    = (pmf.bernoulli' p $ erdos_renyi.le_one G).to_measure :=
+  measure.map (λ ω, e ∈ (G ω).edge_set) ℙ = (pmf.bernoulli' p $ erdos_renyi.le_one G).to_measure :=
 bernoulli_seq.map _ e
 
 protected lemma ae_measurable (e : sym2 α) : ae_measurable (λ ω, e ∈ (G ω).edge_set) :=
 bernoulli_seq.ae_measurable _ e
 
+protected lemma null_measurable_set (e : sym2 α) : null_measurable_set {ω | e ∈ (G ω).edge_set} :=
+bernoulli_seq.null_measurable_set _ e
+
 protected lemma ident_distrib (d e : sym2 α) :
-  ident_distrib (λ ω, (d ∈ (G ω).edge_set : Prop)) (λ ω, e ∈ (G ω).edge_set) :=
+  ident_distrib (λ ω, d ∈ (G ω).edge_set) (λ ω, e ∈ (G ω).edge_set) :=
 bernoulli_seq.ident_distrib _ d e
 
 lemma meas_edge (e : sym2 α) : ℙ {ω | e ∈ (G ω).edge_set} = p :=

@@ -3,6 +3,8 @@ Copyright (c) 2022 Yaël Dillies, Kexing Ying. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Kexing Ying
 -/
+import mathlib.big_ops
+import mathlib.independence
 import mathlib.measure
 import mathlib.pmf
 import probability.ident_distrib
@@ -43,6 +45,11 @@ begin
   exact bernoulli_seq.ne_zero X,
 end
 
+protected lemma null_measurable_set (i : ι) : null_measurable_set {ω | X ω i} :=
+begin
+  sorry
+end
+
 protected lemma ident_distrib (i j : ι) : ident_distrib (λ ω, X ω i) (λ ω, X ω j) :=
 { ae_measurable_fst := bernoulli_seq.ae_measurable _ _,
   ae_measurable_snd := bernoulli_seq.ae_measurable _ _,
@@ -58,10 +65,26 @@ begin
     simp }
 end
 
-protected lemma meas [fintype ι] (s : finset ι) :
+protected lemma meas [fintype ι] [is_probability_measure (ℙ : measure Ω)] (s : finset ι) :
   ℙ {ω | {i | X ω i} = s} = p ^ s.card * (1 - p) ^ (fintype.card ι - s.card) :=
 begin
-  sorry
+  classical,
+  simp_rw [set.ext_iff, set.set_of_forall],
+  rw [(bernoulli_seq.Indep_fun X).meas_Inter, ←s.prod_mul_prod_compl],
+  rw [finset.prod_eq_pow_card _ _ (p : ℝ≥0∞), finset.prod_eq_pow_card _ _ (1 - p : ℝ≥0∞),
+    finset.card_compl],
+  { rintro i hi,
+    rw finset.mem_compl at hi,
+    simp [hi, ←set.compl_set_of, prob_compl_eq_one_sub],
+    sorry },
+  { rintro i hi,
+    simp [hi] },
+  rintro i,
+  by_cases i ∈ s,
+  { simp [*],
+    exact ⟨{true}, trivial, by { ext, simp }⟩ },
+  { simp [*],
+    exact ⟨{false}, trivial, by { ext, simp }⟩  }
 end
 
 end bernoulli_seq

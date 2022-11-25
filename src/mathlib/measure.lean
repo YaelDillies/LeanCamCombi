@@ -2,7 +2,8 @@ import measure_theory.measure.measure_space
 
 open measure_theory
 
-variables {α β : Type*} [measurable_space α] [measurable_space β] {μ : measure α} {f : α → β}
+variables {α β : Type*} [measurable_space α] [measurable_space β] {μ : measure α} {f g : α → β}
+  {s : set β}
 
 namespace measure_theory
 namespace measure
@@ -40,3 +41,16 @@ instance is_probability_measure_ne_zero {α : Type*} [measurable_space α] {μ :
 ⟨is_probability_measure.ne_zero μ⟩
 
 end measure_theory
+
+lemma ae_eq.preimage (hf : ae_measurable f μ) (h : f =ᵐ[μ] g) : f ⁻¹' s =ᵐ[μ] g ⁻¹' s :=
+begin
+  sorry
+  -- rw [←measure_symm_diff_eq_zero_iff, ←set.preimage_symm_diff],
+end
+
+lemma ae_measurable.null_measurable_set_preimage (hf : ae_measurable f μ) (hs : measurable_set s) :
+  null_measurable_set (f ⁻¹' s) μ :=
+begin
+  refine ⟨hf.mk _ ⁻¹' s, hf.measurable_mk hs, _⟩,
+  sorry
+end
