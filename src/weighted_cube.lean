@@ -86,7 +86,7 @@ begin
   { simp only [*, set.mem_set_of_eq, finset.mem_coe, iff_true],
     exact ⟨{true}, trivial, by { ext, simp }⟩ },
   { simp only [*, set.mem_set_of_eq, finset.mem_coe, iff_false],
-    exact ⟨{false}, trivial, by { ext, simp }⟩  }
+    exact ⟨{false}, trivial, by { ext, simp }⟩ }
 end
 
 end bernoulli_seq
