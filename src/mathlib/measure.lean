@@ -35,8 +35,9 @@ lemma mapₗ_ne_zero_iff (hf : measurable f) : measure.mapₗ f μ ≠ 0 ↔ μ 
 end measure
 
 instance : measurable_space Prop := ⊤
-
 instance : measurable_singleton_class Prop := ⟨λ _, trivial⟩
+instance {α} : measurable_space (set α) := ⊤
+instance {α} : measurable_singleton_class (set α) := ⟨λ _, trivial⟩
 
 instance is_probability_measure_ne_zero {α : Type*} [measurable_space α] {μ : measure α}
   [is_probability_measure μ] : ne_zero μ :=

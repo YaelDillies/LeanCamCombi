@@ -25,7 +25,7 @@ class bernoulli_seq (X : Ω → set α) (p : out_param ℝ≥0) : Prop :=
 (Indep_fun [] : Indep_fun infer_instance (λ a ω, a ∈ X ω) ℙ)
 (map [] : ∀ a, measure.map (λ ω, a ∈ X ω) ℙ = (pmf.bernoulli' p le_one).to_measure)
 
-variables (X : Ω → set α) {p : ℝ≥0} [bernoulli_seq X p]
+variables (X Y : Ω → set α) {p q : ℝ≥0} [bernoulli_seq X p] [bernoulli_seq Y q]
 include X p
 
 namespace bernoulli_seq
@@ -88,5 +88,15 @@ begin
   { simp only [*, set.mem_set_of_eq, finset.mem_coe, iff_false],
     exact ⟨{false}, trivial, by { ext, simp }⟩ }
 end
+
+-- lemma indep_fun.bernoulli_seq_inter (h : indep_fun X Y) :
+--   bernoulli_seq (λ ω, X ω ∩ Y ω) (p * q) :=
+-- { le_one := mul_le_one' (bernoulli_seq.le_one X) (bernoulli_seq.le_one Y),
+--   Indep_fun :=
+--   begin
+--     intros s f hf,
+--     dsimp at hf,
+--   end,
+--   map := sorry }
 
 end bernoulli_seq
