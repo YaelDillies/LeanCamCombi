@@ -13,8 +13,8 @@ cd $(git rev-parse --show-toplevel)
 leanproject get-mathlib-cache
 
 echo "Trying to download project cache"
-if wget https://oleanstorage.azureedge.net/mathlib/con-nf/"$(git rev-parse HEAD)".tar.xz 2> /dev/null; then
-  echo "Found oleans at https://oleanstorage.azureedge.net/mathlib/con-nf/"
+if wget https://oleanstorage.azureedge.net/mathlib/LeanCamCombi/"$(git rev-parse HEAD)".tar.xz 2> /dev/null; then
+  echo "Found oleans at https://oleanstorage.azureedge.net/mathlib/LeanCamCombi/"
   tar -xf "$(git rev-parse HEAD)".tar.xz
   rm "$(git rev-parse HEAD)".tar.xz
   echo "Extracted oleans into src and deleted archive"

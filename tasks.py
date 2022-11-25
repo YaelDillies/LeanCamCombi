@@ -59,12 +59,12 @@ def doc(ctx):
 
     print("Printing documentation to HTML")
     import sys
-    sys.argv = [sys.argv[0], "-w", "https://leanprover-community.github.io/con-nf/docs/"]
+    sys.argv = [sys.argv[0], "-w", "https://yaeldillies.github.io/leancamcombi/docs/"]
     sys.path.insert(0, "doc-gen")
     import print_docs
     del print_docs.extra_doc_files[:]
     print_docs.copy_yaml_bib_files = lambda p: None
-    print_docs.library_link_roots['con-nf'] = 'https://github.com/leanprover-community/con-nf/blob/main/src/'
+    print_docs.library_link_roots['lean-cam-combi'] = 'https://github.com/YaelDillies/LeanCamCombi/blob/main/src/'
     print_docs.main()
 
     print("Cleaning up doc-gen files")

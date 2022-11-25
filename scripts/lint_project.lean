@@ -114,7 +114,7 @@ meta def enabled_linters : list name :=
 /-- Runs when called with `lean --run`.
 Edit the list in `enabled_linters` to run additional linters.
 We currently rely on mathlib to provide the `nolints.txt` file and do not maintain a separate
-`nolints.txt` file for con-nf.
+`nolints.txt` file for LeanCamCombi.
 -/
 meta def main : io unit := do
 env ← tactic.get_env,
@@ -128,6 +128,6 @@ let results := (do
   (linter_name, linter, decls) ← results₀,
   [(linter_name, linter, (nolint_file.find linter_name).foldl rb_map.erase decls)]),
 io.print $ to_string $ format_linter_results env results decls non_auto_decls
-  path_len "in con-nf" tt lint_verbosity.medium linters.length,
+  path_len "in LeanCamCombi" tt lint_verbosity.medium linters.length,
 io.write_file "nolints.txt" $ to_string $ mk_nolint_file env path_len results₀,
 if results.all (λ r, r.2.2.empty) then pure () else io.fail ""

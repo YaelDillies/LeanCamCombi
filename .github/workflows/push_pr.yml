@@ -2,9 +2,9 @@ on:
   pull_request:
 
 jobs:
-  update_con_nf_branch_and_build:
+  update_main_branch_and_build:
     runs-on: ubuntu-latest
-    name: Update con-nf branch and build project
+    name: Update a branch and build project
     steps:
       - name: checkout project
         uses: actions/checkout@v2

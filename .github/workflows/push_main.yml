@@ -4,9 +4,9 @@ on:
       - main
 
 jobs:
-  update_con_nf_branch_and_build:
+  update_main_branch_and_build:
     runs-on: ubuntu-latest
-    name: Update con-nf branch and build project
+    name: Update main branch and build project
     steps:
       - name: checkout project
         uses: actions/checkout@v2
@@ -21,10 +21,10 @@ jobs:
         continue-on-error: true
 
       - name: build docker container
-        run: docker build -t con-nf .
+        run: docker build -t lean-cam-combi .
 
       - name: build project
-        run: docker run --rm -v ${{ github.workspace }}:/src con-nf
+        run: docker run --rm -v ${{ github.workspace }}:/src lean-cam-combi
 
       - name: remove .gitignore for gh-pages
         run: rm docs/.gitignore

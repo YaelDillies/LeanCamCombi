@@ -5,7 +5,7 @@
 # layout: home
 ---
 
-# The consistency of New Foundations
+# Cambridge combinatorics in Lean
 
 The purpose of this community-owned repository is to *digitise* some mathematical definitions, theorem statements and theorem proofs. Digitisation, or formalisation, is a process where the source material, typically a mathematical textbook or a pdf file or website or video, is transformed into definitions in a target system consisting of a computer implementation of a logical theory (such as set theory or type theory).
 
@@ -13,25 +13,28 @@ Much of the project infrastructure has been adapted from the [sphere eversion pr
 
 ## Current progress
 
-The project is not yet finished. The following table details live which files are unfinished, and how many 'sorries' (unproven statements) remain in each file.
+The project is not yet finished. The following table details live which files are unfinished, and how many 'sorry' (unproven statements) remain in each file.
 
 {% include sorries.md %}
 
 ## The source
 
-The definitions, theorems and proofs in this repository are taken from Randall Holmes [untangled.pdf](https://randall-holmes.github.io/Nfproof/untangled.pdf), claiming to prove the consistency of Quine's New Foundations axiom system.
+The definitions, theorems and proofs in this repository are taken from three Cambridge courses:
+* Part II Graph Theory, lectured by Julian Sahasrabudhe
+* Part III Combinatorics, lectured by Béla Bollobás
+* Part III Extremal and Probabilistic Combinatorics, lectured by Julian Sahasrabudhe
 
 ## The target
 
-The formal system which we are using as a target system is Lean's dependent type theory. Lean is a project being developed at Microsoft Research by Leonardo de Moura and his team. Our formalisation could not have even started without a major classical mathematical library backing it up, and so we chose Lean 3 as the engine behind the project. Note that Lean 4's type theory is the same as Lean 3's type theory, however porting 800K lines of mathematical library between languages is a *highly* nontrivial endeavour.
+The formal system which we are using as a target system is Lean's dependent type theory. Lean is a project being developed at Microsoft Research by Leonardo de Moura and his team. Our formalisation could not have even started without a major classical mathematical library backing it up, and so we chose Lean 3 as the engine behind the project. Note that Lean 4's type theory is the same as Lean 3's type theory, however porting a million lines of mathematical library between languages is a *highly* nontrivial endeavour.
 
 ## How to browse this repository
 
 ### Blueprint
 
 Below we explain how to engage with the Lean code directly.
-We also provide a [blueprint](https://leanprover-community.github.io/con-nf/)
-including a [dependency graph](https://leanprover-community.github.io/con-nf/blueprint/dep_graph_document.html)
+We also provide a [blueprint](https://yaeldillies.github.io/leancamcombi/)
+including a [dependency graph](https://yaeldillies.github.io/leancamcombi/blueprint/dep_graph.html)
 of the main ingredients in the repository.
 This blueprint is developed in sync with the Lean formalization,
 and will hence see frequent updates during the length of the project.
@@ -54,12 +57,12 @@ to install Lean and a supporting toolchain.
 After that, download and open a copy of the repository
 by executing the following command in a terminal:
 ```
-leanproject get con-nf
-code con-nf
+leanproject get lean-cam-combi
+code lean-cam-combi
 ```
 For detailed instructions on how to work with Lean projects,
 see [this](https://leanprover-community.github.io/install/project.html). The script `scripts/get-cache.sh`
-in the folder `con-nf` will download the `olean` files created by our continuous integration. This
+in the folder `lean-cam-combi` will download the `olean` files created by our continuous integration. This
 will save you some time by not havig to do `leanproject build`.
 
 ### Reading the project
@@ -96,7 +99,7 @@ git clone https://github.com/PatrickMassot/leanblueprint
 pip3 install ./leanblueprint
 ```
 
-To actually build the blueprint, `cd` to the `con-nf` folder and run
+To actually build the blueprint, `cd` to the `LeanCamCombi` folder and run
 ```
 leanproject get-mathlib-cache
 leanproject build

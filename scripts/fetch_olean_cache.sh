@@ -6,7 +6,7 @@ archive_url=$(grep -E "^olean_url" ./leanpkg.toml | sed "s/.*=\s*['\"]\(.*\)['\"
 if [[ -z $archive_url ]]; then
   # Currently, it doesn't make sense to store the field in leanpkg.toml since leanproject/leanpkg
   # will delete it, so hard code it here instead.
-  archive_url="https://oleanstorage.azureedge.net/mathlib/con-nf/"
+  archive_url="https://oleanstorage.azureedge.net/mathlib/LeanCamCombi/"
 fi
 echo "olean cache location: $archive_url"
 

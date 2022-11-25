@@ -18,14 +18,14 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Consistency of New Foundations
+title: Cambridge combinatorics in Lean
 #email: your-email@example.com
-description: A digitisation of Randall Holmes' proof
+description: Formalisation of the Cambridge combinatorics courses
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://leanprover-community.github.io/con-nf/" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://yaeldillies.github.io/leancamcombi/" # the base hostname & protocol for your site, e.g. http://example.com
 #twitter_username: jekyllrb
 github_username: leanprover-community
-repository: leanprover-community/con-nf
+repository: YaelDillies/LeanCamCombi
 
 # Build settings
 remote_theme: pages-themes/cayman@v0.2.0
