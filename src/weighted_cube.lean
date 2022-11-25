@@ -47,7 +47,9 @@ end
 
 protected lemma null_measurable_set (i : ι) : null_measurable_set {ω | X ω i} :=
 begin
-  sorry
+  rw [(by { ext, simp } : {ω | X ω i} = (λ ω, X ω i) ⁻¹' {true})],
+  exact (bernoulli_seq.ae_measurable X i).null_measurable_set_preimage
+    measurable_space.measurable_set_top
 end
 
 protected lemma ident_distrib (i j : ι) : ident_distrib (λ ω, X ω i) (λ ω, X ω j) :=
