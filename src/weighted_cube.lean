@@ -45,6 +45,7 @@ begin
   exact bernoulli_seq.ne_zero X,
 end
 
+@[simp]
 protected lemma null_measurable_set (i : ι) : null_measurable_set {ω | X ω i} :=
 begin
   rw [(by { ext, simp } : {ω | X ω i} = (λ ω, X ω i) ⁻¹' {true})],
@@ -59,12 +60,11 @@ protected lemma ident_distrib (i j : ι) : ident_distrib (λ ω, X ω i) (λ ω,
 
 @[simp] lemma meas_apply (i : ι) : ℙ {ω | X ω i} = p :=
 begin
-  rw [(_ : {ω | X ω i} = (λ ω, X ω i) ⁻¹' {tt}),
-    ←measure.map_apply_of_ae_measurable (bernoulli_seq.ae_measurable X i)
+  rw [(_ : {ω | X ω i} = (λ ω, X ω i) ⁻¹' {true}),
+    ← measure.map_apply_of_ae_measurable (bernoulli_seq.ae_measurable X i)
       measurable_space.measurable_set_top],
   { simp [bernoulli_seq.map X] },
-  { ext ω,
-    simp }
+  { ext ω, simp }
 end
 
 protected lemma meas [fintype ι] [is_probability_measure (ℙ : measure Ω)] (s : finset ι) :
@@ -72,20 +72,20 @@ protected lemma meas [fintype ι] [is_probability_measure (ℙ : measure Ω)] (s
 begin
   classical,
   simp_rw [set.ext_iff, set.set_of_forall],
-  rw [(bernoulli_seq.Indep_fun X).meas_Inter, ←s.prod_mul_prod_compl],
-  rw [finset.prod_eq_pow_card _ _ (p : ℝ≥0∞), finset.prod_eq_pow_card _ _ (1 - p : ℝ≥0∞),
+  rw [(bernoulli_seq.Indep_fun X).meas_Inter, ←s.prod_mul_prod_compl,
+    finset.prod_eq_pow_card _ _ (p : ℝ≥0∞), finset.prod_eq_pow_card _ _ (1 - p : ℝ≥0∞),
     finset.card_compl],
   { rintro i hi,
     rw finset.mem_compl at hi,
-    simp [hi, ←set.compl_set_of, prob_compl_eq_one_sub],
-    sorry },
+    simp only [hi, ←set.compl_set_of, null_measurable_set.prob_compl_eq_one_sub, set.mem_set_of_eq,
+      finset.mem_coe, iff_false, bernoulli_seq.null_measurable_set, meas_apply]},
   { rintro i hi,
-    simp [hi] },
+    simp only [hi, set.mem_set_of_eq, finset.mem_coe, iff_true, meas_apply]},
   rintro i,
   by_cases i ∈ s,
-  { simp [*],
+  { simp only [*, set.mem_set_of_eq, finset.mem_coe, iff_true],
     exact ⟨{true}, trivial, by { ext, simp }⟩ },
-  { simp [*],
+  { simp only [*, set.mem_set_of_eq, finset.mem_coe, iff_false],
     exact ⟨{false}, trivial, by { ext, simp }⟩  }
 end
 
