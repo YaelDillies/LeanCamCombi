@@ -42,15 +42,11 @@ instance is_probability_measure_ne_zero {α : Type*} [measurable_space α] {μ :
 
 end measure_theory
 
-lemma ae_eq.preimage (hf : ae_measurable f μ) (h : f =ᵐ[μ] g) : f ⁻¹' s =ᵐ[μ] g ⁻¹' s :=
-begin
-  sorry
-  -- rw [←measure_symm_diff_eq_zero_iff, ←set.preimage_symm_diff],
-end
+-- Unused
+@[simp] lemma set.preimage_symm_diff (f : α → β) (s t : set β) :
+  f ⁻¹' (s ∆ t) = (f ⁻¹' s) ∆ (f ⁻¹' t) :=
+by simp [symm_diff]
 
 lemma ae_measurable.null_measurable_set_preimage (hf : ae_measurable f μ) (hs : measurable_set s) :
   null_measurable_set (f ⁻¹' s) μ :=
-begin
-  refine ⟨hf.mk _ ⁻¹' s, hf.measurable_mk hs, _⟩,
-  sorry
-end
+⟨hf.mk _ ⁻¹' s, hf.measurable_mk hs, hf.ae_eq_mk.preimage _⟩
