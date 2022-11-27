@@ -1,4 +1,4 @@
-import combinatorics.simple_graph.basic
+import combinatorics.simple_graph.subgraph
 
 open function
 
@@ -14,5 +14,8 @@ lemma edge_set_injective : injective (edge_set : simple_graph V → set (sym2 V)
 @[simp] lemma edge_finset_inj [fintype G.edge_set] [fintype H.edge_set] :
   G.edge_finset = H.edge_finset ↔ G = H :=
 by simp_rw [←finset.coe_inj, coe_edge_finset, edge_set_inj]
+
+instance (G : simple_graph V) (H : subgraph G) [decidable_rel H.adj] : decidable_rel H.coe.adj :=
+λ a b, ‹decidable_rel H.adj› _ _
 
 end simple_graph
