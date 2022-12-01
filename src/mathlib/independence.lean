@@ -13,6 +13,6 @@ by simp [← h _ (λ i _, hf _)]
 
 lemma Indep_set.Indep_comap {s : ι → set Ω} (h : Indep_set s μ) :
   Indep (λ i, measurable_space.comap (∈ s i) ⊤) μ :=
-by { simp_rw ←generate_from_singleton, exact h }
+by { simp_rw ← generate_from_singleton, exact h }
 
 end probability_theory

@@ -3,12 +3,15 @@ import mathlib.set
 import measure_theory.measure.measure_space
 
 open measure_theory set
-open_locale ennreal
+open_locale ennreal measure_theory
 
-variables {α β : Type*} [measurable_space α] [measurable_space β] {μ : measure α} {f g : α → β}
+variables {α β : Type*} [measurable_space β]  {f g : α → β}
   {s : set β}
 
 namespace measure_theory
+
+variables [measurable_space α] {μ : measure α}
+
 namespace measure
 
 @[simp] lemma map_eq_zero_iff (hf : ae_measurable f μ) : μ.map f = 0 ↔ μ = 0 :=
@@ -51,11 +54,14 @@ end measure_theory
   f ⁻¹' (s ∆ t) = (f ⁻¹' s) ∆ (f ⁻¹' t) :=
 by simp [symm_diff]
 
-lemma ae_measurable.null_measurable_set_preimage (hf : ae_measurable f μ) (hs : measurable_set s) :
+lemma ae_measurable.null_measurable_set_preimage
+  [measurable_space α] {μ : measure α} (hf : ae_measurable f μ) (hs : measurable_set s) :
   null_measurable_set (f ⁻¹' s) μ :=
 ⟨hf.mk _ ⁻¹' s, hf.measurable_mk hs, hf.ae_eq_mk.preimage _⟩
 
 namespace measure_theory
+
+variables [measurable_space α] {μ : measure α}
 
 -- change `measure_compl` to `measurable_set.compl` in the `measure_theory` namespace
 lemma null_measurable_set.measure_compl {s : set α} (h : null_measurable_set s μ) (hs : μ s ≠ ∞) :
@@ -96,6 +102,78 @@ begin
   { rw [(_ : u = ∅), preimage_empty],
     { exact @measurable_set.empty _ (generate_from _) },
     { simp [eq_empty_iff_forall_not_mem, Prop.forall_iff, hu₁, hu₀] } }
+end
+
+-- Awful
+def measurable_space_singleton (s : set α) : measurable_space α :=
+{ measurable_set' := λ u, u = ∅ ∨ u = set.univ ∨ u = s ∨ u = sᶜ,
+  measurable_set_empty := by simp only [eq_self_iff_true, true_or],
+  measurable_set_compl := by rintro u (hu | hu | hu | hu); simp [hu],
+  measurable_set_Union :=
+  begin
+    intros f hf,
+    by_cases hf₀ : ∃ i, f i = set.univ,
+    { obtain ⟨i, hfi⟩ := hf₀,
+      right, left,
+      exact eq_top_iff.2 (hfi ▸ set.subset_Union _ _ : set.univ ≤ ⋃ i, f i) },
+    push_neg at hf₀,
+    replace hf : ∀ i, f i = ∅ ∨ f i = s ∨ f i = sᶜ,
+    { intro i,
+      obtain (hi | hi | hi | hi) := hf i,
+      swap,
+      { exact false.elim (hf₀ i hi) },
+      all_goals { simp [hi] } },
+    by_cases hf₁ : (∃ i, f i = s);
+    by_cases hf₂ : (∃ i, f i = sᶜ),
+    { obtain ⟨⟨i, hfi⟩, ⟨j, hfj⟩⟩ := ⟨hf₁, hf₂⟩,
+      right, left,
+      refine eq_top_iff.2 (_ : set.univ ≤ _),
+      rw [← set.union_compl_self s, ← hfj, ← hfi],
+      exact set.union_subset_iff.2 ⟨set.subset_Union _ _, set.subset_Union _ _⟩ },
+    { obtain ⟨i, hfi⟩ := hf₁,
+      push_neg at hf₂,
+      right, right, left,
+      refine le_antisymm (set.Union_subset $ λ j, _) (hfi ▸ set.subset_Union _ _),
+      obtain (hi | hi | hi) := hf j,
+      { exact hi.symm ▸ set.empty_subset _ },
+      { exact hi.symm ▸ set.subset.refl _ },
+      { exact false.elim (hf₂ j hi) } },
+    { obtain ⟨i, hfi⟩ := hf₂,
+      push_neg at hf₁,
+      right, right, right,
+      refine le_antisymm (set.Union_subset $ λ j, _) (hfi ▸ set.subset_Union _ _),
+      obtain (hi | hi | hi) := hf j,
+      { exact hi.symm ▸ set.empty_subset _ },
+      { exact false.elim (hf₁ j hi) },
+      { exact hi.symm ▸ set.subset.refl _ } },
+    { push_neg at hf₁ hf₂,
+      left,
+      refine set.Union_eq_empty.2 (λ i, _),
+      obtain (hi | hi | hi) := hf i,
+      { assumption },
+      { exact false.elim (hf₁ i hi) },
+      { exact false.elim (hf₂ i hi) } }
+  end }
+
+lemma measurable_space.generate_from_singleton_eq (s : set α) :
+  measurable_space.generate_from {s} = measurable_space_singleton s :=
+begin
+  refine le_antisymm (measurable_space.generate_from_le _) _,
+  { intros t ht,
+    rw set.mem_singleton_iff at ht,
+    refine ht.symm ▸ or.inr (or.inr $ or.inl rfl) },
+  { rintro t (rfl | rfl | rfl | rfl),
+    { simp only [measurable_set.empty] }, -- `exact measurable_set.empty` doesn't infers σ-algebra
+    { simp only [measurable_set.univ] },
+    { exact measurable_space.measurable_set_generate_from t.mem_singleton },
+    { exact (measurable_space.measurable_set_generate_from s.mem_singleton).compl } },
+end
+
+lemma measurable_space.measurable_set_generate_from_singleton (s t : set α) :
+  measurable_set[measurable_space.generate_from {s}] t ↔ t = ∅ ∨ t = set.univ ∨ t = s ∨ t = sᶜ :=
+begin
+  rw measurable_space.generate_from_singleton_eq s,
+  refl,
 end
 
 end measurable_space
