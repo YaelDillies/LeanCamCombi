@@ -67,7 +67,9 @@ begin
   { ext ω, simp }
 end
 
-protected lemma meas [fintype α] [is_probability_measure (ℙ : measure Ω)] (s : finset α) :
+variables [is_probability_measure (ℙ : measure Ω)]
+
+protected lemma meas [fintype α] (s : finset α) :
   ℙ {ω | {a | a ∈ X ω} = s} = p ^ s.card * (1 - p) ^ (fintype.card α - s.card) :=
 begin
   classical,
@@ -89,14 +91,52 @@ begin
     exact ⟨{false}, trivial, by { ext, simp }⟩ }
 end
 
--- lemma indep_fun.bernoulli_seq_inter (h : indep_fun X Y) :
---   bernoulli_seq (λ ω, X ω ∩ Y ω) (p * q) :=
--- { le_one := mul_le_one' (bernoulli_seq.le_one X) (bernoulli_seq.le_one Y),
---   Indep_fun :=
---   begin
---     intros s f hf,
---     dsimp at hf,
---   end,
---   map := sorry }
+instance compl : bernoulli_seq (λ ω, (X ω)ᶜ) (1 - p) :=
+{ le_one := tsub_le_self,
+  Indep_fun :=
+  begin
+    sorry
+  end,
+  map := sorry }
+
+protected lemma inter (h : indep_fun X Y) : bernoulli_seq (λ ω, X ω ∩ Y ω) (p * q) :=
+{ le_one := mul_le_one' (bernoulli_seq.le_one X) (bernoulli_seq.le_one Y),
+  Indep_fun :=
+  begin
+    refine Indep_set.Indep_comap ((Indep_set_iff_measure_Inter_eq_prod $ λ i, _).2 _),
+    refine measurable_set.inter _ _,
+    sorry, -- needs refactor of `probability.independence`
+    sorry, -- needs refactor of `probability.independence`
+    refine λ s, _,
+    -- We abused defeq using `Indep_set.Indep_comap`, so we fix it here
+    change ℙ (⋂ i ∈ s, {ω | X ω i} ∩ {ω | Y ω i}) = s.prod (λ i, ℙ ({ω | X ω i} ∩ {ω | Y ω i})),
+    simp_rw set.Inter_inter_distrib,
+    rw [h, bernoulli_seq.Indep_fun X, bernoulli_seq.Indep_fun Y, ←finset.prod_mul_distrib],
+    refine finset.prod_congr rfl (λ i hi, (h _ _ _ _).symm),
+    sorry, -- needs refactor of `probability.independence`
+    sorry, -- needs refactor of `probability.independence`
+    sorry, -- needs refactor of `probability.independence`
+    sorry, -- needs refactor of `probability.independence`
+    sorry, -- needs refactor of `probability.independence`
+    sorry, -- needs refactor of `probability.independence`
+  end,
+  map := begin
+    rintro a,
+    sorry
+  end }
+
+-- TODO: On a countable space, define one-to-one correspondance between `pmf` and probability
+-- measures
+-- extensionality lemma for `measure Prop`
+
+protected lemma union (h : indep_fun X Y) : bernoulli_seq (λ ω, X ω ∪ Y ω) (p + q - p * q) :=
+begin
+  haveI := bernoulli_seq.inter (λ ω, (X ω)ᶜ) (λ ω, (Y ω)ᶜ) _,
+  convert bernoulli_seq.compl (λ ω, (X ω)ᶜ ∩ (Y ω)ᶜ) using 1,
+  ext : 1,
+  simp only [set.compl_inter, compl_compl],
+  sorry,
+  sorry,
+end
 
 end bernoulli_seq

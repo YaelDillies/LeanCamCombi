@@ -38,8 +38,8 @@ lemma mapₗ_ne_zero_iff (hf : measurable f) : measure.mapₗ f μ ≠ 0 ↔ μ 
 
 end measure
 
-instance : measurable_space Prop := ⊤
-instance : measurable_singleton_class Prop := ⟨λ _, trivial⟩
+instance Prop.measurable_space : measurable_space Prop := ⊤
+instance Prop.measurable_singleton_class : measurable_singleton_class Prop := ⟨λ _, trivial⟩
 instance {α} : measurable_space (set α) := ⊤
 instance {α} : measurable_singleton_class (set α) := ⟨λ _, trivial⟩
 
@@ -48,11 +48,6 @@ instance is_probability_measure_ne_zero {α : Type*} [measurable_space α] {μ :
 ⟨is_probability_measure.ne_zero μ⟩
 
 end measure_theory
-
--- Unused
-@[simp] lemma set.preimage_symm_diff (f : α → β) (s t : set β) :
-  f ⁻¹' (s ∆ t) = (f ⁻¹' s) ∆ (f ⁻¹' t) :=
-by simp [symm_diff]
 
 lemma ae_measurable.null_measurable_set_preimage
   [measurable_space α] {μ : measure α} (hf : ae_measurable f μ) (hs : measurable_set s) :
