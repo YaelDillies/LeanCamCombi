@@ -1,10 +1,10 @@
 /-
-Copyright (c) 2022 Yaël Dillies, Kexing Ying. All rights reserved.
+Copyright (c) 2022 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Yaël Dillies, Kexing Ying
+Authors: Yaël Dillies
 -/
 import analysis.normed_space.hahn_banach.extension
-import mathlib.double_counting
+import combinatorics.double_counting
 import order.partition.finpartition
 
 /-!
@@ -45,10 +45,9 @@ begin
   classical,
   obtain ⟨P, hP, hs, hr⟩ := exists_littlewood_offord_partition hr hf,
   rw ←hP,
-  refine card_le_card_of_forall_nonempty (∈) (λ t ht, _)
+  refine card_le_card_of_forall_subsingleton (∈) (λ t ht, _)
     (λ ℬ hℬ t ht u hu, (hr _ hℬ).eq ht.2 hu.2 (h𝒜r _ ht.1 _ hu.1).not_le),
-  simp_rw ←exists_prop,
-  exact P.exists_mem (mem_powerset.2 $ h𝒜 _ ht),
+  simpa only [exists_prop] using P.exists_mem (mem_powerset.2 $ h𝒜 _ ht),
 end
 
 end finset

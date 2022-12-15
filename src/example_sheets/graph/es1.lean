@@ -15,7 +15,7 @@ import set_theory.cardinal.basic
 Here are the statements (and hopefully soon proofs!) of the questions from the first example sheet
 of the Cambridge Part II course Graph Theory.
 
-If solve a question in Lean, feel free to open a Pull Request on Github!
+If you solve a question in Lean, feel free to open a Pull Request on Github!
 -/
 
 open fintype (card) function simple_graph

@@ -86,17 +86,17 @@ begin
   by_cases hu₁ : true ∈ u; by_cases hu₀ : false ∈ u,
   { rw [(_ : u = univ), preimage_univ],
     { exact measurable_set.univ },
-    { rw [eq_univ_iff_forall, Prop.forall_iff],
+    { rw [eq_univ_iff_forall, Prop.forall],
       exact ⟨hu₁, hu₀⟩ } },
   { rw [(_ : u = {true}), preimage_mem_singleton_true],
     { exact generate_measurable.basic _ (mem_singleton _) },
-    { simp [eq_singleton_iff_unique_mem, Prop.forall_iff, hu₁, hu₀] } },
+    { simp [eq_singleton_iff_unique_mem, Prop.forall, hu₁, hu₀] } },
   { rw [(_ : u = {false}), preimage_mem_singleton_false],
     { exact generate_measurable.compl _ (generate_measurable.basic _ $ mem_singleton _) },
-    { simp [eq_singleton_iff_unique_mem, Prop.forall_iff, hu₁, hu₀] } },
+    { simp [eq_singleton_iff_unique_mem, Prop.forall, hu₁, hu₀] } },
   { rw [(_ : u = ∅), preimage_empty],
     { exact @measurable_set.empty _ (generate_from _) },
-    { simp [eq_empty_iff_forall_not_mem, Prop.forall_iff, hu₁, hu₀] } }
+    { simp [eq_empty_iff_forall_not_mem, Prop.forall, hu₁, hu₀] } }
 end
 
 -- Awful

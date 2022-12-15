@@ -1,4 +1,4 @@
-import data.set.basic
+import data.set.image
 
 variables {α β : Type*}
 
