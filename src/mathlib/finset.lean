@@ -1,14 +1,6 @@
 import data.finset.n_ary
 import mathlib.order
 
-namespace finset
-variables {α β : Type*} [decidable_eq β] {s : finset α} {f : α → β}
-
-lemma forall_image_iff {p : β → Prop} : (∀ b ∈ s.image f, p b) ↔ ∀ a ∈ s, p (f a) :=
-by simp only [mem_image, forall_exists_index, forall_apply_eq_imp_iff₂]
-
-end finset
-
 variables {α : Type*} [decidable_eq α]
 
 open function

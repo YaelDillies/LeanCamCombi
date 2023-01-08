@@ -1,4 +1,3 @@
-import mathlib.fintype
 import mathlib.measure
 import probability.probability_mass_function.constructions
 

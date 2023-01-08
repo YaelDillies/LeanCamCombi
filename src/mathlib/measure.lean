@@ -1,4 +1,4 @@
-import mathlib.logic
+import logic.lemmas
 import mathlib.set
 import measure_theory.measure.measure_space
 
