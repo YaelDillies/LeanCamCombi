@@ -49,6 +49,24 @@ instance is_probability_measure_ne_zero {α : Type*} [measurable_space α] {μ :
 
 end measure_theory
 
+namespace measurable_space
+variables (p : α → Prop)
+
+@[simp] lemma comap_not :
+  measurable_space.comap (λ a, ¬ p a) infer_instance = measurable_space.comap p infer_instance :=
+begin
+  ext,
+  set e : set Prop ≃ set Prop :=
+  { to_fun := preimage compl,
+      inv_fun := preimage compl,
+      left_inv := λ _, by simp [preimage_preimage, compl_compl],
+      right_inv := λ _, by simp [preimage_preimage,compl_compl] },
+  refine e.exists_congr_left.trans (exists_congr $ λ t, _),
+  simp [preimage_preimage],
+end
+
+end measurable_space
+
 lemma ae_measurable.null_measurable_set_preimage
   [measurable_space α] {μ : measure α} (hf : ae_measurable f μ) (hs : measurable_set s) :
   null_measurable_set (f ⁻¹' s) μ :=

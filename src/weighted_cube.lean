@@ -5,7 +5,6 @@ Authors: Yaël Dillies, Kexing Ying
 -/
 import mathlib.big_ops
 import mathlib.independence
-import mathlib.measure
 import mathlib.pmf
 import probability.ident_distrib
 
@@ -95,9 +94,15 @@ instance compl : bernoulli_seq (λ ω, (X ω)ᶜ) (1 - p) :=
 { le_one := tsub_le_self,
   Indep_fun :=
   begin
-    sorry
+    simp only [Indep_fun, set.mem_compl_iff, measurable_space.comap_not],
+    exact bernoulli_seq.Indep_fun X,
   end,
-  map := sorry }
+  map := λ a, begin
+    have : measurable not := λ _ _, trivial,
+    simp only [set.mem_compl_iff],
+    rw [←this.ae_measurable.map_map_of_ae_measurable (bernoulli_seq.ae_measurable X _),
+      bernoulli_seq.map, pmf.map_to_measure _ this, pmf.map_not_bernoulli'],
+  end }
 
 protected lemma inter (h : indep_fun X Y) : bernoulli_seq (λ ω, X ω ∩ Y ω) (p * q) :=
 { le_one := mul_le_one' (bernoulli_seq.le_one X) (bernoulli_seq.le_one Y),
