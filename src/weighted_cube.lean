@@ -138,10 +138,12 @@ protected lemma union (h : indep_fun X Y) : bernoulli_seq (λ ω, X ω ∪ Y ω)
 begin
   haveI := bernoulli_seq.inter (λ ω, (X ω)ᶜ) (λ ω, (Y ω)ᶜ) _,
   convert bernoulli_seq.compl (λ ω, (X ω)ᶜ ∩ (Y ω)ᶜ) using 1,
-  ext : 1,
   simp only [set.compl_inter, compl_compl],
-  sorry,
-  sorry,
+  rw [mul_tsub, mul_one, tsub_tsub, tsub_tsub_cancel_of_le, tsub_mul, one_mul,
+    add_tsub_assoc_of_le (mul_le_of_le_one_left' $ bernoulli_seq.le_one X)],
+  { exact (add_le_add_left (mul_le_of_le_one_right' $ bernoulli_seq.le_one Y) _).trans_eq
+      (add_tsub_cancel_of_le $ bernoulli_seq.le_one X) },
+  rwa [indep_fun, measurable_space.comap_compl, measurable_space.comap_compl]; exact λ _ _, trivial,
 end
 
 end bernoulli_seq
