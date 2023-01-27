@@ -1,4 +1,4 @@
-import mathlib.measure
+import mathlib.measure_theory.measure.measure_space
 import probability.independence
 
 open measure_theory measurable_space set

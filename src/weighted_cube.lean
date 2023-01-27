@@ -3,10 +3,10 @@ Copyright (c) 2022 Yaël Dillies, Kexing Ying. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Kexing Ying
 -/
-import mathlib.big_ops
-import mathlib.independence
+import mathlib.algebra.big_operators.basic
 import mathlib.pmf
 import probability.ident_distrib
+import mathlib.probability.independence
 
 /-!
 We want to formulate a sequence of iid Bernoulli random variables
@@ -79,9 +79,9 @@ begin
   { rintro a hi,
     rw finset.mem_compl at hi,
     simp only [hi, ←set.compl_set_of, null_measurable_set.prob_compl_eq_one_sub, set.mem_set_of_eq,
-      finset.mem_coe, iff_false, bernoulli_seq.null_measurable_set, meas_apply]},
+      finset.mem_coe, iff_false, bernoulli_seq.null_measurable_set, meas_apply] },
   { rintro a hi,
-    simp only [hi, set.mem_set_of_eq, finset.mem_coe, iff_true, meas_apply]},
+    simp only [hi, set.mem_set_of_eq, finset.mem_coe, iff_true, meas_apply] },
   rintro a,
   by_cases a ∈ s,
   { simp only [*, set.mem_set_of_eq, finset.mem_coe, iff_true],
@@ -90,6 +90,8 @@ begin
     exact ⟨{false}, trivial, by { ext, simp }⟩ }
 end
 
+/-- The complement of a sequence of independent `p`-Bernoulli random variables is a sequence of
+independent `1 - p`-Bernoulli random variables. -/
 instance compl : bernoulli_seq (λ ω, (X ω)ᶜ) (1 - p) :=
 { le_one := tsub_le_self,
   Indep_fun :=
@@ -104,6 +106,8 @@ instance compl : bernoulli_seq (λ ω, (X ω)ᶜ) (1 - p) :=
       bernoulli_seq.map, pmf.map_to_measure _ this, pmf.map_not_bernoulli'],
   end }
 
+/-- The intersection of a sequence of independent `p`-Bernoulli and `q`-Bernoulli random variables
+is a sequence of independent `p * q`-Bernoulli random variables. -/
 protected lemma inter (h : indep_fun X Y) : bernoulli_seq (λ ω, X ω ∩ Y ω) (p * q) :=
 { le_one := mul_le_one' (bernoulli_seq.le_one X) (bernoulli_seq.le_one Y),
   Indep_fun :=
@@ -134,6 +138,8 @@ protected lemma inter (h : indep_fun X Y) : bernoulli_seq (λ ω, X ω ∩ Y ω)
 -- measures
 -- extensionality lemma for `measure Prop`
 
+/-- The union of a sequence of independent `p`-Bernoulli random variables is a sequence of
+independent `1 - p`-Bernoulli random variables. -/
 protected lemma union (h : indep_fun X Y) : bernoulli_seq (λ ω, X ω ∪ Y ω) (p + q - p * q) :=
 begin
   haveI := bernoulli_seq.inter (λ ω, (X ω)ᶜ) (λ ω, (Y ω)ᶜ) _,

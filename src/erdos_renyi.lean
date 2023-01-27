@@ -3,8 +3,7 @@ Copyright (c) 2022 Yaël Dillies, Kexing Ying. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Kexing Ying
 -/
-import combinatorics.simple_graph.basic
-import mathlib.simple_graph
+import mathlib.combinatorics.simple_graph.subgraph
 import weighted_cube
 
 /-!

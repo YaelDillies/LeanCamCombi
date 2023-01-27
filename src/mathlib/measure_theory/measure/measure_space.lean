@@ -1,5 +1,5 @@
+import mathlib.data.set.image
 import logic.lemmas
-import mathlib.set
 import measure_theory.measure.measure_space
 
 open function measure_theory set

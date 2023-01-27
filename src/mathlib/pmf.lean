@@ -1,5 +1,4 @@
-import mathlib.measure
-import measure_theory.measure.measure_space
+import mathlib.measure_theory.measure.measure_space
 import probability.probability_mass_function.constructions
 
 open measure_theory
