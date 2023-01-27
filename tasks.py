@@ -64,7 +64,7 @@ def doc(ctx):
     import print_docs
     del print_docs.extra_doc_files[:]
     print_docs.copy_yaml_bib_files = lambda p: None
-    print_docs.library_link_roots['lean-cam-combi'] = 'https://github.com/YaelDillies/LeanCamCombi/blob/main/src/'
+    print_docs.library_link_roots['leancamcombi'] = 'https://github.com/YaelDillies/LeanCamCombi/blob/main/src/'
     print_docs.main()
 
     print("Cleaning up doc-gen files")
@@ -82,7 +82,10 @@ def doc(ctx):
 def ci(ctx):
     env = os.environ.copy()
     env["PATH"] = env["HOME"] + "/.elan/bin:" + env["PATH"]
-    subprocess.run(["leanproject", "up"], env=env, check=True)
+    subprocess.run(["ls", "-lah"], env=env, check=True)
+    subprocess.run(["git", "config", "--global", "--add", "safe.directory", "/src"],
+        env=env, check=True)
+    subprocess.run(["leanproject", "get-mathlib-cache"], env=env, check=True)
     subprocess.run(["leanproject", "build"], env=env, check=True)
     # Call these tasks afterwards.
     subprocess.run(["inv", "all", "html", "doc"], env=env, check=True)
