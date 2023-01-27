@@ -49,7 +49,7 @@ there exists an independent set $$I ⊆ V$$ so that every odd cycle in $$G$$ int
 /-!
 ### Question 5
 
-Determine the chromatic polynomial of the n-cycle Cn.
+Determine the chromatic polynomial of the $$n$$-cycle $$C_n$$.
 -/
 
 /-!
@@ -69,76 +69,66 @@ m
 /-!
 ### Question 7
 
-Determine χ
-0
-(Kn,n). Determine χ
-0
-(Kn).
+Determine $$χ(K_{n,n}$$). Determine $$χ(K_n)$$.
 -/
 
 /-!
 ### Question 8
 
-Let G be a graph that has an orientation where the longest directed path has length t (that is, a
-sequence of oriented edges (v1, v2), \dots,(vt, vt+1)). Then χ(G) 6 t + 1.
+Let $$G$$ be a graph that has an orientation where the longest directed path has length $$t$$ (that
+is, a sequence of oriented edges $$(v_1, v_2), \dots, (v_t, v_{t + 1})$$. Then $$χ(G) ≤ t + 1$$.
 -/
 
 /-!
 ### Question 9
 
-Can K4,4 be drawn on the torus? What about K5,5?
+Can $$K_{4, 4}$$ be drawn on the torus? What about $$K_{5, 5}$$?
 -/
 
 /-!
 ### Question 10
 
-Let G be a bipartite graph with maximum degree ∆. Must we have χ
-0
-(G) = ∆(G)?
+Let $$G$$ be a bipartite graph with maximum degree $$∆$$. Must we have $$χ(G) = ∆(G)$$?
 -/
 
 /-!
 ### Question 11
 
-Let G = (V, E) be a graph where V, E are countably infinite. Show that χ(G) 6 k if and only if
-χ(H) 6 k for every finite subgraph H of G.
+Let $$G = (V, E)$$ be a graph where $$V$$, $$E$$ are countably infinite. Show that $$χ(G) ≤ k$$ if
+and only if $$χ(H) ≤ k$$ for every finite subgraph $$H$$ of $$G$$.
 -/
 
 /-!
 ### Question 12
 
-For k > 2, let G = (V, E) be a k-connected graph and let {x1, \dots, xk} ⊆ V . Show that there exists
-a cycle containing each of the vertices x1, \dots, xk.
+For $$k > 2$$, let $$G = (V, E)$$ be a $$k$$-connected graph and let $${x_1, \dots, x_k} ⊆ V$$. Show
+that there exists a cycle containing each of the vertices $$x_1, \dots, x_k$$.
 -/
 
 /-!
 ### Question 13
 
-For each r > 2, construct a graph G that does not contain a Kr+1 and χ(G) > r.
+For each $$r > 2$$, construct a graph $$G$$ that does not contain a $$K_{r + 1}$$ and $$χ(G) > r$$.
 -/
 
 /-!
 ### Question 14
 
-A graph is outer-planar if it can be drawn in the plane so that all of its vertices are on the infinite
-face. Articulate a conjecture of the form “Let G be a graph with |G| > 5. G is outer-planar if and
-only if ....”. Prove your conjecture.
+A graph is outer-planar if it can be drawn in the plane so that all of its vertices are on the
+infinite face. Articulate a conjecture of the form “Let $$G$$ be a graph with $$|G| > 5$$. $$G$$ is
+outer-planar if and only if ...”. Prove your conjecture.
 -/
 
 /-!
 ### Question 15
 
-(*) Show there is a triangle free graph with chromatic number 2022.
+Show there is a triangle free graph with chromatic number $$2022$$.
 -/
 
 /-!
 ### Question 16
 
-(*) Let G be a triangulation (a plane graph where every face is a triangle) and let G◦ be the planar
-dual of G: the vertices of G◦ are the faces of G and edges in G◦
-join faces that share a boundary
-edge (in G). Prove that χ(G) 6 4 if and only if χ
-0
-(G◦
-) 6 3
+Let $$G$$ be a triangulation (a plane graph where every face is a triangle) and let $$G◦$$ be the
+planar dual of $$G$$: the vertices of $$G◦$$ are the faces of $$G$$ and edges in $$G◦$$ join faces
+that share a boundary edge (in $$G$$). Prove that $$χ(G) ≤ 4$$ if and only if $$χ(G◦) ≤ 3$$.
 -/

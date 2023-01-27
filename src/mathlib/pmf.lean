@@ -1,6 +1,9 @@
 import mathlib.measure_theory.measure.measure_space
 import probability.probability_mass_function.constructions
 
+-- TODO: On a countable space, define one-to-one correspondance between `pmf` and probability
+-- measures
+
 open measure_theory
 open_locale big_operators classical ennreal nnreal
 

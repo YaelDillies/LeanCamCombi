@@ -9,15 +9,27 @@ import probability.ident_distrib
 import mathlib.probability.independence
 
 /-!
-We want to formulate a sequence of iid Bernoulli random variables
+# Sequences of iid Bernoulli random variables
+
+This file defines sequences of independent `p`-Bernoulli random variables and proves that the
+complement of a sequence of independent Bernoulli random variables, union/intersection of two
+independent sequences of independent Bernoulli random variables, are themselves sequences of
+independent Bernoulli random variables.
+
+## Main declarations
+
+* `probability_theory.bernoulli_seq`: Typeclass for a sequence ``
 -/
 
-open measure_theory probability_theory
+open measure_theory
 open_locale measure_theory probability_theory ennreal nnreal
 
+namespace probability_theory
 variables {α Ω : Type*} [measure_space Ω]
 
-/-- A sequence iid. real valued Bernoulli random variables with parameter `p ≤ 1`. -/
+/-- We say a `set α`-valued random is a sequence of iid Bernoulli random variables with parameter
+`p` if `p ≤ 1`, the `a` projections (for `a : α`) are independent and are `p`-Bernoulli distributed.
+-/
 @[protect_proj]
 class bernoulli_seq (X : Ω → set α) (p : out_param ℝ≥0) : Prop :=
 (le_one [] : p ≤ 1)
@@ -44,8 +56,7 @@ begin
   exact bernoulli_seq.ne_zero X,
 end
 
-@[simp]
-protected lemma null_measurable_set (a : α) : null_measurable_set {ω | a ∈ X ω} :=
+@[simp] protected lemma null_measurable_set (a : α) : null_measurable_set {ω | a ∈ X ω} :=
 begin
   rw [(by { ext, simp } : {ω | a ∈ X ω} = (λ ω, a ∈ X ω) ⁻¹' {true})],
   exact (bernoulli_seq.ae_measurable X a).null_measurable_set_preimage
@@ -134,10 +145,6 @@ protected lemma inter (h : indep_fun X Y) : bernoulli_seq (λ ω, X ω ∩ Y ω)
     sorry
   end }
 
--- TODO: On a countable space, define one-to-one correspondance between `pmf` and probability
--- measures
--- extensionality lemma for `measure Prop`
-
 /-- The union of a sequence of independent `p`-Bernoulli random variables is a sequence of
 independent `1 - p`-Bernoulli random variables. -/
 protected lemma union (h : indep_fun X Y) : bernoulli_seq (λ ω, X ω ∪ Y ω) (p + q - p * q) :=
@@ -153,3 +160,4 @@ begin
 end
 
 end bernoulli_seq
+end probability_theory
