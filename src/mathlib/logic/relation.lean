@@ -1,6 +1,8 @@
 import logic.relation
 
-variables {α β γ δ ε ν : Type*}
+open function
+
+variables {α β γ δ ε ν : Type*} {f : α → γ} {g : β → δ}
 
 namespace relation
 
@@ -16,5 +18,10 @@ begin
   rintro ⟨_, _, ⟨hab, rfl, rfl⟩, h⟩,
   exact ⟨hab, h⟩,
 end
+
+@[simp]
+lemma map_apply_apply (hf : injective f) (hg : injective g) (r : α → β → Prop) (a : α) (b : β) :
+  relation.map r f g (f a) (g b) ↔ r a b :=
+by simp [relation.map, hf.eq_iff, hg.eq_iff]
 
 end relation

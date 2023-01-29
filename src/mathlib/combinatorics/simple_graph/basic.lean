@@ -1,7 +1,7 @@
 import combinatorics.simple_graph.basic
 import mathlib.logic.basic
 
-variables {α : Type*} {G H : simple_graph α}
+variables {α : Type*} {G H : simple_graph α} {s : set (sym2 α)}
 
 namespace simple_graph
 
@@ -11,6 +11,19 @@ by rw [set.disjoint_iff, disjoint_iff_inf_le, ←edge_set_inf, ←edge_set_bot, 
 
 @[simp] lemma nonempty_edge_set : G.edge_set.nonempty ↔ G ≠ ⊥ :=
 by rw [set.nonempty_iff_ne_empty, ←edge_set_bot, edge_set_inj.ne]
+
+@[simp] lemma disjoint_from_edge_set : disjoint G (from_edge_set s) ↔ disjoint G.edge_set s :=
+begin
+  conv_rhs { rw ←set.diff_union_inter s {e : sym2 α | e.is_diag} },
+  rw [←disjoint_edge_set, edge_set_from_edge_set, set.disjoint_union_right, and_iff_left],
+  exact set.disjoint_left.2 (λ e he he', not_is_diag_of_mem_edge_set _ he he'.2),
+end
+
+@[simp] lemma from_edge_set_disjoint : disjoint (from_edge_set s) G ↔ disjoint s G.edge_set :=
+by rw [disjoint.comm, disjoint_from_edge_set, disjoint.comm]
+
+@[simp] lemma delete_edges_eq : G.delete_edges s = G ↔ disjoint G.edge_set s :=
+by rw [delete_edges_eq_sdiff_from_edge_set, sdiff_eq_left, disjoint_from_edge_set]
 
 namespace hom
 
