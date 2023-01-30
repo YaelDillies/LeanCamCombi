@@ -85,8 +85,12 @@ def ci(ctx):
     subprocess.run(["ls", "-lah"], env=env, check=True)
     subprocess.run(["git", "config", "--global", "--add", "safe.directory", "/src"],
         env=env, check=True)
+    print("Obtaining mathlib cache")
     subprocess.run(["leanproject", "get-mathlib-cache"], env=env, check=True)
+    print("Invoking build process")
     subprocess.run(["leanproject", "build"], env=env, check=True)
+    print("Lean project successfully built")
     # Call these tasks afterwards.
     subprocess.run(["inv", "all", "html", "doc"], env=env, check=True)
+    print("Counting sorries")
     subprocess.run(["python3", "scripts/count_sorry.py"], env=env, check=True)
