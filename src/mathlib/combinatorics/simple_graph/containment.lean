@@ -12,14 +12,39 @@ import mathlib.data.sym.sym2
 
 This file defines graph containment.
 
-A graph is said to contain another if one of its subgraphs is isomorphic to it.
+For two simple graph `G` and `H`, a *copy* of `G` in `H` is a (not necessarily induced) subgraph of
+`H` isomorphic to `G`.
+
+If there exists a copy of `G` in `H`, we say that `H` *contains* `G`. This is equivalent to saying
+that there is an injective graph homomorphism between them (this is **not** the same as a graph
+embedding, as we do not require the subgraph to be induced).
+
+## Main declarations
+
+* `simple_graph.is_contained G H` : `G` is contained in `H`.
+* `simple_graph.copy_count G H`: Number of copies `G` in `H`.
+* `simple_graph.kill G H`: Subgraph of `H` that does not contain `G`. Obtained by arbitrarily
+  removing an edge from each copy of `G` in `H`.
+
+## Notation
+
+* `G ⊑ H` is notation for `simple_graph.is_contained G H`.
 -/
 
-open function
+open finset function
 open_locale big_operators classical
 
 namespace simple_graph
 variables {α β γ : Type*} {G G₁ G₂ G₃ : simple_graph α} {H : simple_graph β} {I : simple_graph γ}
+
+/-!
+### Containment
+
+A graph `H` *contains* a graph `G` if there is some injective graph homomorphism `G → H`. This
+amounts to `H` having a (not necessarily induced) subgraph isomorphic to `G`.
+
+We denote "`G` is contained in `H`" by `G ⊑ H` (`\squ`).
+-/
 
 /-- A simple graph `G` is contained in a simple graph `H` if there exists a subgraph of `H`
 isomorphic to `G`. This is denoted by `G ⊑ H`. -/
@@ -61,6 +86,57 @@ begin
     exact e.is_contained.trans H'.coe_is_contained }
 end
 
+/-!
+### Counting the copies
+
+If `G` and `H` are finite graphs, we can count the number of copies of `G` in `H`.
+-/
+
+section copy_count
+variables [fintype β]
+
+/-- The number of copies of `G` in `H` up to automorphism. -/
+noncomputable def copy_count (G : simple_graph α) (H : simple_graph β) : ℕ :=
+(univ.filter $ λ H' : H.subgraph, nonempty (G ≃g H'.coe)).card
+
+@[simp] lemma copy_count_bot (H : simple_graph β) : copy_count (⊥ : simple_graph β) H = 1 :=
+begin
+  rw copy_count,
+  convert card_singleton (⊥ : H.subgraph),
+  simp only [eq_singleton_iff_unique_mem, mem_filter, mem_univ, subgraph.coe_bot, true_and,
+    nonempty.forall],
+  sorry
+end
+
+@[simp] lemma copy_count_of_is_empty [is_empty α] (G : simple_graph α) (H : simple_graph β) :
+  G.copy_count H = 1 :=
+begin
+  rw copy_count,
+  convert card_singleton (⊥ : H.subgraph),
+  simp only [eq_singleton_iff_unique_mem, mem_filter, mem_univ, subgraph.coe_bot, true_and,
+    nonempty.forall],
+  sorry
+end
+
+@[simp] lemma copy_count_eq_zero : G.copy_count H = 0 ↔ ¬ G ⊑ H :=
+by simp [copy_count, card_pos, filter_eq_empty_iff, is_contained_iff_exists_subgraph]
+
+@[simp] lemma copy_count_pos : 0 < G.copy_count H ↔ G ⊑ H :=
+by simp [copy_count, card_pos, filter_nonempty_iff, is_contained_iff_exists_subgraph]
+
+end copy_count
+
+/-!
+### Killing a subgraph
+
+An important aspect of graph containment is that we can remove not too many edges from a graph `H`
+to get a graph `H'` that doesn't contain `G`.
+
+`simple_graph.kill G H` is a subgraph of `H` where an edge was removed from each copy of `G` in `H`.
+By construction, it doesn't contain `G` and has at most the number of copies of `G` edges less than
+`H`
+-/
+
 private lemma aux (hG : G ≠ ⊥) {H' : H.subgraph} (f : G ≃g H'.coe) : H'.edge_set.nonempty :=
 begin
   obtain ⟨e, he⟩ := nonempty_edge_set.2 hG,
@@ -69,8 +145,7 @@ begin
 end
 
 /-- `G.kill H` is a subgraph of `H` where an edge from every subgraph isomorphic to `G` was removed.
-As such, it is a big subgraph of `H` that does not contain any subgraph isomorphic to `G`.
--/
+As such, it is a big subgraph of `H` that does not contain any subgraph isomorphic to `G`. -/
 noncomputable def kill (G : simple_graph α) (H : simple_graph β) : simple_graph β :=
 if hG : G = ⊥ then H else H.delete_edges $ ⋃ (H' : H.subgraph) (f : G ≃g H'.coe), {(aux hG f).some}
 

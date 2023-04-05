@@ -45,6 +45,8 @@ begin
   exact ⟨⟦(⟨a, edge_vert _ he⟩, ⟨b, edge_vert _ he.symm⟩)⟧, sym2.map_pair_eq _ _ _⟩,
 end
 
+@[simp] lemma coe_bot : (⊥ : G.subgraph).coe = ⊥ := rfl
+
 lemma spanning_coe_le (G' : G.subgraph) : G'.spanning_coe ≤ G := λ a b, G'.3
 
 /-- The subgraph of `H` corresponding to a smaller graph `H`. -/
