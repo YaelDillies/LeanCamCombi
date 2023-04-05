@@ -1,7 +1,7 @@
 import combinatorics.simple_graph.basic
 import mathlib.logic.basic
 
-variables {α : Type*} {G H : simple_graph α} {s : set (sym2 α)}
+variables {α β : Type*} {G H : simple_graph α} {s : set (sym2 α)}
 
 namespace simple_graph
 
@@ -36,4 +36,11 @@ def hom_of_le (h : G ≤ H) : G →g H := ⟨id, h⟩
 
 @[simp, norm_cast] lemma coe_hom_of_le (h : G ≤ H) : ⇑(hom_of_le h) = id := rfl
 
+namespace embedding
+
+attribute [simp] map_adj_iff
+
+@[simp] lemma coe_to_hom {H : simple_graph β} (f : G ↪g H) : ⇑f.to_hom = f := rfl
+
+end embedding
 end simple_graph

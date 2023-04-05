@@ -84,5 +84,20 @@ fintype.of_equiv
 
 instance [finite V] : finite G.subgraph := by { casesI nonempty_fintype V, apply_instance }
 
+@[simp] lemma is_induced_top : (⊤ : G.subgraph).is_induced := λ a b _ _, id
+
+@[simp] protected lemma is_induced.adj {G' : G.subgraph} (hG' : G'.is_induced) {a b : G'.verts} :
+  G'.adj a b ↔ G.adj a b :=
+⟨coe_adj_sub _ _ _, hG' a.2 b.2⟩
+
+/-- A subgraph is called an *induced subgraph* if vertices of `G'` are adjacent if they are adjacent
+in `G`. -/
+def is_induced' (G' : subgraph G) : Prop :=
+∀ ⦃v w⦄, v ∈ G'.verts → w ∈ G'.verts → G.adj v w → G'.adj v w
+
+@[simp] protected lemma is_induced'.adj {G' : G.subgraph} (hG' : G'.is_induced') {a b : G'.verts} :
+  G'.adj a b ↔ G.adj a b :=
+⟨coe_adj_sub _ _ _, hG' a.2 b.2⟩
+
 end subgraph
 end simple_graph

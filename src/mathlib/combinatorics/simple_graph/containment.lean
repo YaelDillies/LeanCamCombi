@@ -60,8 +60,7 @@ lemma subgraph.coe_is_contained (G' : G.subgraph) : G'.coe ⊑ G := ⟨G'.hom, s
 @[refl] lemma is_contained_refl (G : simple_graph α) : G ⊑ G := is_contained_of_le le_rfl
 lemma is_contained_rfl : G ⊑ G := is_contained_refl _
 
-lemma is_contained.trans : G ⊑ H → H ⊑ I → G ⊑ I :=
-by { rintro ⟨f, hf⟩ ⟨g, hg⟩, exact ⟨g.comp f, hg.comp hf⟩ }
+lemma is_contained.trans : G ⊑ H → H ⊑ I → G ⊑ I := λ ⟨f, hf⟩ ⟨g, hg⟩, ⟨g.comp f, hg.comp hf⟩
 
 lemma is_contained.mono_left (h₁₂ : G₁ ≤ G₂) (h₂₃ : G₂ ⊑ G₃) : G₁ ⊑ G₃ :=
 (is_contained_of_le h₁₂).trans h₂₃
@@ -85,6 +84,55 @@ begin
   { rintro ⟨H', ⟨e⟩⟩,
     exact e.is_contained.trans H'.coe_is_contained }
 end
+
+alias is_contained_iff_exists_subgraph ↔ is_contained.exists_subgraph _
+
+/-!
+### Induced containment
+
+A graph `H` *inducingly contains* a graph `G` if there is some graph embedding `G ↪ H`. This amounts
+to `H` having an induced subgraph isomorphic to `G`.
+
+We denote "`G` is contained in `H`" by `G ⊴ H` (`\triangle_left_eq`).
+-/
+
+/-- A simple graph `G` is contained in a simple graph `H` if there exists an induced subgraph of `H`
+isomorphic to `G`. This is denoted by `G ⊴ H`. -/
+def is_ind_contained (G : simple_graph α) (H : simple_graph β) : Prop := nonempty (G ↪g H)
+
+infix ` ⊴ `:50 := simple_graph.is_ind_contained
+
+protected lemma is_ind_contained.is_contained : G₁ ⊴ G₂ → G₁ ⊑ G₂ := λ ⟨f⟩, ⟨f, f.injective⟩
+protected lemma iso.is_ind_contained (e : G ≃g H) : G ⊴ H := ⟨e⟩
+protected lemma iso.is_ind_contained' (e : G ≃g H) : H ⊴ G := e.symm.is_ind_contained
+protected lemma subgraph.is_induced'.is_ind_contained {G' : G.subgraph} (hG' : G'.is_induced') :
+  G'.coe ⊴ G :=
+⟨{ to_fun := coe,
+  inj' := subtype.coe_injective,
+  map_rel_iff' := λ a b, hG'.adj.symm }⟩
+
+@[refl] lemma is_ind_contained_refl (G : simple_graph α) : G ⊴ G := ⟨embedding.refl⟩
+lemma is_ind_contained_rfl : G ⊴ G := is_ind_contained_refl _
+
+lemma is_ind_contained.trans : G ⊴ H → H ⊴ I → G ⊴ I := λ ⟨f⟩ ⟨g⟩, ⟨g.comp f⟩
+
+lemma is_ind_contained_of_is_empty [is_empty α] : G ⊴ H :=
+⟨{ to_fun := is_empty_elim, inj' := is_empty_elim, map_rel_iff' := is_empty_elim }⟩
+
+lemma is_ind_contained_iff_exists_subgraph :
+  G ⊴ H ↔ ∃ (H' : H.subgraph) (e : G ≃g H'.coe), H'.is_induced' :=
+begin
+  split,
+  { rintro ⟨f⟩,
+    refine ⟨subgraph.map f.to_hom ⊤, (subgraph.iso_map f.to_hom f.injective _).comp
+      subgraph.top_iso.symm, _⟩,
+    rintro _ _ ⟨a, -, rfl⟩ ⟨b, -, rfl⟩,
+    simp [relation.map_apply_apply, f.injective] },
+  { rintro ⟨H', e, hH'⟩,
+    exact e.is_ind_contained.trans hH'.is_ind_contained }
+end
+
+alias is_ind_contained_iff_exists_subgraph ↔ is_ind_contained.exists_subgraph _
 
 /-!
 ### Counting the copies
