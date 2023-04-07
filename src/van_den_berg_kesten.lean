@@ -8,7 +8,7 @@ import data.finset.sort
 import data.finset.sups
 import data.fintype.basic
 import mathlib.order
-import order.upper_lower
+import order.upper_lower.basic
 
 /-!
 # Set family certificates

@@ -3,7 +3,7 @@ Copyright (c) 2022 Yaël Dillies, Kexing Ying. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Kexing Ying
 -/
-import mathlib.algebra.big_operators.basic
+import algebra.big_operators.basic
 import mathlib.pmf
 import probability.ident_distrib
 import mathlib.probability.independence
@@ -85,9 +85,8 @@ protected lemma meas [fintype α] (s : finset α) :
 begin
   classical,
   simp_rw [set.ext_iff, set.set_of_forall],
-  rw [(bernoulli_seq.Indep_fun X μ).meas_Inter, ←s.prod_mul_prod_compl,
-    finset.prod_eq_pow_card _ _ (p : ℝ≥0∞), finset.prod_eq_pow_card _ _ (1 - p : ℝ≥0∞),
-    finset.card_compl],
+  rw [(bernoulli_seq.Indep_fun X μ).meas_Inter, ←s.prod_mul_prod_compl, finset.prod_eq_pow_card,
+    finset.prod_eq_pow_card, finset.card_compl],
   { rintro a hi,
     rw finset.mem_compl at hi,
     simp only [hi, ←set.compl_set_of, null_measurable_set.prob_compl_eq_one_sub, set.mem_set_of_eq,
