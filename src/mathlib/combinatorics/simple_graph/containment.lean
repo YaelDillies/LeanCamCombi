@@ -22,13 +22,16 @@ embedding, as we do not require the subgraph to be induced).
 ## Main declarations
 
 * `simple_graph.is_contained G H` : `G` is contained in `H`.
+* `simple_graph.is_ind_contained G H` : `G` is contained as an induced subgraph in `H`.
 * `simple_graph.copy_count G H`: Number of copies `G` in `H`.
 * `simple_graph.kill G H`: Subgraph of `H` that does not contain `G`. Obtained by arbitrarily
   removing an edge from each copy of `G` in `H`.
 
 ## Notation
 
-* `G ⊑ H` is notation for `simple_graph.is_contained G H`.
+The following notation is declared in locale `simple_graph`:
+* `G ⊑ H` for `simple_graph.is_contained G H`.
+* `G ⊴ H` for `simple_graph.is_ind_contained G H`.
 -/
 
 open finset function
@@ -50,7 +53,7 @@ We denote "`G` is contained in `H`" by `G ⊑ H` (`\squ`).
 isomorphic to `G`. This is denoted by `G ⊑ H`. -/
 def is_contained (G : simple_graph α) (H : simple_graph β) : Prop := ∃ f : G →g H, injective f
 
-infix ` ⊑ `:50 := simple_graph.is_contained
+localized "infix ` ⊑ `:50 := simple_graph.is_contained" in simple_graph
 
 lemma is_contained_of_le (h : G₁ ≤ G₂) : G₁ ⊑ G₂ := ⟨hom_of_le h, injective_id⟩
 protected lemma iso.is_contained (e : G ≃g H) : G ⊑ H := ⟨e, e.injective⟩
@@ -100,7 +103,7 @@ We denote "`G` is contained in `H`" by `G ⊴ H` (`\triangle_left_eq`).
 isomorphic to `G`. This is denoted by `G ⊴ H`. -/
 def is_ind_contained (G : simple_graph α) (H : simple_graph β) : Prop := nonempty (G ↪g H)
 
-infix ` ⊴ `:50 := simple_graph.is_ind_contained
+localized "infix ` ⊴ `:50 := simple_graph.is_ind_contained" in simple_graph
 
 protected lemma is_ind_contained.is_contained : G₁ ⊴ G₂ → G₁ ⊑ G₂ := λ ⟨f⟩, ⟨f, f.injective⟩
 protected lemma iso.is_ind_contained (e : G ≃g H) : G ⊴ H := ⟨e⟩
@@ -150,10 +153,19 @@ noncomputable def copy_count (G : simple_graph α) (H : simple_graph β) : ℕ :
 @[simp] lemma copy_count_bot (H : simple_graph β) : copy_count (⊥ : simple_graph β) H = 1 :=
 begin
   rw copy_count,
-  convert card_singleton (⊥ : H.subgraph),
+  convert card_singleton
+    ({ verts := set.univ,
+       adj := ⊥,
+       adj_sub := λ _ _, false.elim,
+       edge_vert := λ _ _, false.elim } : H.subgraph),
   simp only [eq_singleton_iff_unique_mem, mem_filter, mem_univ, subgraph.coe_bot, true_and,
     nonempty.forall],
-  sorry
+  refine ⟨⟨⟨(equiv.set.univ _).symm, by simp only [Prop.bot_eq_false, subgraph.coe_adj,
+    pi.bot_apply, bot_adj, iff_self, forall_2_true_iff]⟩⟩, λ H' e, subgraph.ext _ _
+    ((set_fintype_card_eq_univ_iff _).1 $ fintype.card_congr e.to_equiv.symm) _⟩,
+  ext a b,
+  simp only [Prop.bot_eq_false, pi.bot_apply, iff_false],
+  exact λ hab, e.symm.map_rel_iff.2 hab.coe,
 end
 
 @[simp] lemma copy_count_of_is_empty [is_empty α] (G : simple_graph α) (H : simple_graph β) :
@@ -162,8 +174,14 @@ begin
   rw copy_count,
   convert card_singleton (⊥ : H.subgraph),
   simp only [eq_singleton_iff_unique_mem, mem_filter, mem_univ, subgraph.coe_bot, true_and,
-    nonempty.forall],
-  sorry
+    nonempty.forall, subsingleton.elim G ⊥],
+  haveI : is_empty (⊥ : H.subgraph).verts := by simp,
+  refine ⟨⟨⟨⟨is_empty_elim, is_empty_elim, is_empty_elim, is_empty_elim⟩, is_empty_elim⟩⟩,
+    λ H' e, subgraph.ext _ _ _ $ funext₂ $ λ a b, _⟩,
+  { simpa [set.eq_empty_iff_forall_not_mem, filter_eq_empty_iff]
+    using fintype.card_congr e.to_equiv.symm },
+  { simp only [subgraph.not_bot_adj, eq_iff_iff, iff_false],
+    exact λ hab, e.symm.map_rel_iff.2 hab.coe }
 end
 
 @[simp] lemma copy_count_eq_zero : G.copy_count H = 0 ↔ ¬ G ⊑ H :=

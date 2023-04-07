@@ -5,6 +5,13 @@ variables {α β : Type*} {G H : simple_graph α} {s : set (sym2 α)}
 
 namespace simple_graph
 
+instance [subsingleton α] : unique (simple_graph α) :=
+{ default := ⊥,
+  uniq := λ G, by { ext a b, simp [subsingleton.elim a b]  } }
+
+instance [nontrivial α] : nontrivial (simple_graph α) :=
+⟨⟨⊥, ⊤, λ h, not_subsingleton α ⟨by simpa [ext_iff,function.funext_iff] using h⟩⟩⟩
+
 @[simp] lemma disjoint_edge_set : disjoint G.edge_set H.edge_set ↔ disjoint G H :=
 by rw [set.disjoint_iff, disjoint_iff_inf_le, ←edge_set_inf, ←edge_set_bot, ←set.le_iff_subset,
   order_embedding.le_iff_le]
