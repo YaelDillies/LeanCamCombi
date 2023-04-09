@@ -5,6 +5,7 @@ Authors: Yaël Dillies
 -/
 import algebra.big_operators.basic
 import mathlib.combinatorics.simple_graph.subgraph
+import mathlib.data.fintype.basic
 import mathlib.data.sym.sym2
 
 /-!
@@ -16,8 +17,11 @@ For two simple graph `G` and `H`, a *copy* of `G` in `H` is a (not necessarily i
 `H` isomorphic to `G`.
 
 If there exists a copy of `G` in `H`, we say that `H` *contains* `G`. This is equivalent to saying
-that there is an injective graph homomorphism between them (this is **not** the same as a graph
+that there is an injective graph homomorphism `G → H` them (this is **not** the same as a graph
 embedding, as we do not require the subgraph to be induced).
+
+If there exists an induced copy of `G` in `H`, we say that `H` *inducingly contains* `G`. This is
+equivalent to saying that there is a graph embedding `G ↪ H`.
 
 ## Main declarations
 
@@ -146,7 +150,7 @@ If `G` and `H` are finite graphs, we can count the number of copies of `G` in `H
 section copy_count
 variables [fintype β]
 
-/-- The number of copies of `G` in `H` up to automorphism. -/
+/-- `G.copy_count H` is the number of copies of `G` in `H` up to automorphism. -/
 noncomputable def copy_count (G : simple_graph α) (H : simple_graph β) : ℕ :=
 (univ.filter $ λ H' : H.subgraph, nonempty (G ≃g H'.coe)).card
 
@@ -203,30 +207,40 @@ By construction, it doesn't contain `G` and has at most the number of copies of 
 `H`
 -/
 
-private lemma aux (hG : G ≠ ⊥) {H' : H.subgraph} (f : G ≃g H'.coe) : H'.edge_set.nonempty :=
+private lemma aux (hG : G ≠ ⊥) {H' : H.subgraph} : nonempty (G ≃g H'.coe) → H'.edge_set.nonempty :=
 begin
   obtain ⟨e, he⟩ := nonempty_edge_set.2 hG,
   rw ←subgraph.image_coe_edge_set_coe,
-  exact set.nonempty.image _ ⟨sym2.map f e, f.map_mem_edge_set_iff.2 he⟩,
+  exact λ ⟨f⟩, set.nonempty.image _ ⟨_, f.map_mem_edge_set_iff.2 he⟩,
 end
 
 /-- `G.kill H` is a subgraph of `H` where an edge from every subgraph isomorphic to `G` was removed.
-As such, it is a big subgraph of `H` that does not contain any subgraph isomorphic to `G`. -/
+As such, it is a big subgraph of `H` that does not contain any subgraph isomorphic to `G`, unless
+`G` had no edges to start with. -/
+@[irreducible]
 noncomputable def kill (G : simple_graph α) (H : simple_graph β) : simple_graph β :=
-if hG : G = ⊥ then H else H.delete_edges $ ⋃ (H' : H.subgraph) (f : G ≃g H'.coe), {(aux hG f).some}
+if hG : G = ⊥ then H else
+  H.delete_edges $ ⋃ (H' : H.subgraph) (hH' : nonempty (G ≃g H'.coe)), {(aux hG hH').some}
 
+local attribute [semireducible] kill
+
+/-- Removing an edge from `H` for each subgraph isomorphic to `G` results in a subgraph of `H`. -/
 lemma kill_le : G.kill H ≤ H := by { rw kill, split_ifs, exacts [le_rfl, delete_edges_le _ _] }
 
 @[simp] lemma bot_kill (H : simple_graph β) : (⊥ : simple_graph α).kill H = H := dif_pos rfl
 
+private lemma kill_of_ne_bot (hG : G ≠ ⊥) (H : simple_graph β) :
+  G.kill H =
+    H.delete_edges (⋃ (H' : H.subgraph) (hH' : nonempty (G ≃g H'.coe)), {(aux hG hH').some}) :=
+dif_neg hG
+
 lemma kill_eq_right (hG : G ≠ ⊥) : G.kill H = H ↔ ¬ G ⊑ H :=
 begin
-  rw [kill, dif_neg hG],
-  simp only [set.disjoint_left, is_contained_iff_exists_subgraph, @forall_swap _ H.subgraph,
-    set.Union_singleton_eq_range, delete_edges_eq, set.mem_Union, set.mem_range, not_exists,
-    not_nonempty_iff],
+  simp only [kill_of_ne_bot hG, set.disjoint_left, is_contained_iff_exists_subgraph,
+    @forall_swap _ H.subgraph, set.Union_singleton_eq_range, delete_edges_eq, set.mem_Union,
+    set.mem_range, not_exists, not_nonempty_iff, nonempty.forall],
   exact forall_congr (λ H', ⟨λ h,
-    ⟨λ f, h _ (subgraph.edge_set_subset _ $ (aux hG f).some_spec) f rfl⟩, λ h _ _, h.elim⟩),
+    ⟨λ f, h _ (subgraph.edge_set_subset _ $ (aux hG ⟨f⟩).some_spec) f rfl⟩, λ h _ _, h.elim⟩),
 end
 
 lemma kill_of_not_is_contained (hGH : ¬ G ⊑ H) : G.kill H = H :=
@@ -236,13 +250,15 @@ begin
   { exact (kill_eq_right hG).2 hGH }
 end
 
+/-- Removing an edge from `H` for each subgraph isomorphic to `G` results in a graph that doesn't
+contain `G`. -/
 lemma not_is_contained_kill (hG : G ≠ ⊥) : ¬ G ⊑ G.kill H :=
 begin
-  rw [kill, dif_neg hG, delete_edges_eq_sdiff_from_edge_set, is_contained_iff_exists_subgraph],
-  rintro ⟨H', ⟨f⟩⟩,
+  rw [kill_of_ne_bot hG, delete_edges_eq_sdiff_from_edge_set, is_contained_iff_exists_subgraph],
+  rintro ⟨H', hGH'⟩,
   have hH' : (H'.map $ hom_of_le (sdiff_le : H \ _ ≤ H)).edge_set.nonempty,
   { rw subgraph.edge_set_map,
-    exact (aux hG f).image _ },
+    exact (aux hG hGH').image _ },
   set e := hH'.some with he,
   have : e ∈ _ := hH'.some_spec,
   clear_value e,
@@ -256,7 +272,7 @@ begin
   simp only [edge_set_sdiff, edge_set_from_edge_set, edge_set_sdiff_sdiff_is_diag, set.mem_diff,
     set.mem_Union, not_exists] at this,
   refine this.2 (H'.map $ hom_of_le sdiff_le)
-    ((subgraph.iso_map (hom_of_le _) injective_id _).comp f) _,
+    ⟨(subgraph.iso_map (hom_of_le _) injective_id _).comp hGH'.some⟩ _,
   rw [sym2.map_map, set.mem_singleton_iff, ←he₁],
   congr' 1 with x,
   refine congr_arg coe (equiv.set.image_symm_apply _ _ injective_id _ _),
@@ -267,5 +283,22 @@ variables [fintype H.edge_set]
 
 noncomputable instance kill.edge_set.fintype : fintype (G.kill H).edge_set :=
 fintype.of_injective (set.inclusion $ edge_set_mono kill_le) $ set.inclusion_injective _
+
+/-- Removing an edge from `H` for each subgraph isomorphic to `G` means that the number of edges
+we've removed is at most the number of copies of `G` in `H`. -/
+lemma le_card_edge_finset_kill [fintype β] :
+  H.edge_finset.card - G.copy_count H ≤ (G.kill H).edge_finset.card :=
+begin
+  obtain rfl | hG := eq_or_ne G ⊥,
+  { simp },
+  simp only [kill_of_ne_bot, hG, ne.def, not_false_iff, set.Union_singleton_eq_range,
+    set.to_finset_card, fintype.card_of_finset, filter_congr_decidable, edge_set_delete_edges],
+  rw [←set.to_finset_card, ←edge_finset, copy_count, ←card_subtype, subtype_univ],
+  refine (tsub_le_tsub_left (card_image_le.trans_eq' $ congr_arg card $ set.to_finset_range $
+    λ H' : {H' : H.subgraph // nonempty (G ≃g H'.coe)}, (aux hG H'.2).some) _).trans
+    ((le_card_sdiff _ _).trans_eq $ congr_arg card $ coe_injective _),
+  simp only [set.diff_eq, ←set.Union_singleton_eq_range, coe_sdiff, set.coe_to_finset, coe_filter,
+    set.sep_mem_eq, set.Union_subtype],
+end
 
 end simple_graph
