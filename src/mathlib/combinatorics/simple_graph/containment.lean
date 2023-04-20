@@ -144,13 +144,15 @@ alias is_ind_contained_iff_exists_subgraph ↔ is_ind_contained.exists_subgraph 
 /-!
 ### Counting the copies
 
-If `G` and `H` are finite graphs, we can count the number of copies of `G` in `H`.
+If `G` and `H` are finite graphs, we can count the number of unlabelled and labelled copies of `G`
+in `H`.
 -/
 
 section copy_count
 variables [fintype β]
 
-/-- `G.copy_count H` is the number of copies of `G` in `H` up to automorphism. -/
+/-- `G.copy_count H` is the number of unlabelled copies of `G` in `H`.
+See `simple_graph.labelled_copy_count` for the number of labelled copies. -/
 noncomputable def copy_count (G : simple_graph α) (H : simple_graph β) : ℕ :=
 (univ.filter $ λ H' : H.subgraph, nonempty (G ≃g H'.coe)).card
 
@@ -189,12 +191,47 @@ begin
 end
 
 @[simp] lemma copy_count_eq_zero : G.copy_count H = 0 ↔ ¬ G ⊑ H :=
-by simp [copy_count, card_pos, filter_eq_empty_iff, is_contained_iff_exists_subgraph]
+by simp [copy_count, is_contained_iff_exists_subgraph, card_pos, filter_eq_empty_iff]
 
 @[simp] lemma copy_count_pos : 0 < G.copy_count H ↔ G ⊑ H :=
-by simp [copy_count, card_pos, filter_nonempty_iff, is_contained_iff_exists_subgraph]
+by simp [copy_count, is_contained_iff_exists_subgraph, card_pos, filter_nonempty_iff]
 
 end copy_count
+
+section labelled_copy_count
+variables [fintype α] [fintype β]
+
+/-- `G.labelled_copy_count H` is the number of labelled copies of `G` in `H`. See `simple_graph.copy_count` for the number of unlabelled copies. -/
+noncomputable def labelled_copy_count (G : simple_graph α) (H : simple_graph β) : ℕ :=
+by classical; exact fintype.card {f : G →g H // injective f}
+
+@[simp] lemma labelled_copy_count_of_is_empty [is_empty α] (G : simple_graph α)
+  (H : simple_graph β) :
+  G.labelled_copy_count H = 1 :=
+begin
+  classical,
+  haveI : unique {f : G →g H // injective f} :=
+  { default := ⟨default, is_empty_elim⟩,
+    uniq := λ _, subsingleton.elim _ _ },
+  rw [labelled_copy_count, fintype.card_unique],
+end
+
+@[simp] lemma labelled_copy_count_eq_zero : G.labelled_copy_count H = 0 ↔ ¬ G ⊑ H :=
+by simp [labelled_copy_count, is_contained, fintype.card_eq_zero_iff]
+
+@[simp] lemma labelled_copy_count_pos : 0 < G.labelled_copy_count H ↔ G ⊑ H :=
+by simp [labelled_copy_count, is_contained, fintype.card_pos_iff]
+
+/-- There's more labelled copies of `H` of-`G` than unlabelled ones. -/
+lemma copy_count_le_labelled_copy_count : G.copy_count H ≤ G.labelled_copy_count H :=
+begin
+  rw [copy_count, ←fintype.card_coe],
+  refine fintype.card_le_of_injective (λ H', ⟨H'.val.hom.comp (mem_filter.1 H'.2).2.some.to_hom,
+    subtype.coe_injective.comp (mem_filter.1 H'.2).2.some.injective⟩) _,
+  sorry,
+end
+
+end labelled_copy_count
 
 /-!
 ### Killing a subgraph

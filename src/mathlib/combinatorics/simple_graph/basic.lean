@@ -1,4 +1,5 @@
 import combinatorics.simple_graph.basic
+import data.fun_like.fintype
 import mathlib.logic.basic
 
 variables {α β : Type*} {G H : simple_graph α} {s : set (sym2 α)}
@@ -35,6 +36,18 @@ by rw [delete_edges_eq_sdiff_from_edge_set, sdiff_eq_left, disjoint_from_edge_se
 namespace hom
 
 @[simp, norm_cast] lemma coe_id : ⇑(id : G →g G) = _root_.id := rfl
+
+instance [subsingleton (α → β)] {H : simple_graph β} : subsingleton (G →g H) :=
+fun_like.coe_injective.subsingleton
+
+instance [is_empty α] {H : simple_graph β} : unique (G →g H) :=
+{ default := ⟨is_empty_elim, is_empty_elim⟩,
+  uniq := λ _, subsingleton.elim _ _ }
+
+noncomputable instance [fintype α] [fintype β] {H : simple_graph β} : fintype (G →g H) :=
+by classical; exact fun_like.fintype _
+
+instance [finite α] [finite β] {H : simple_graph β} : finite (G →g H) := fun_like.finite _
 
 end hom
 
