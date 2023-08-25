@@ -1,5 +1,5 @@
 import mathlib.measure_theory.measure.measure_space
-import probability.independence
+import probability.independence.basic
 
 open measure_theory measurable_space set
 open_locale big_operators

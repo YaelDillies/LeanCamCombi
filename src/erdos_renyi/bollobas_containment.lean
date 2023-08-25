@@ -15,7 +15,7 @@ This file proves Bollobás' lemma on graph containment.
 -/
 
 open asymptotics filter measure_theory probability_theory
-open_locale measure_theory probability_theory ennreal nnreal topological_space
+open_locale measure_theory probability_theory ennreal nnreal simple_graph topology
 
 variables {α β Ω : Type*} [fintype β] (G : ℕ → Ω → simple_graph α) (H : simple_graph β)
   [fintype H.edge_set] [Π n ω, decidable_rel (G n ω).adj] [measurable_space Ω] (μ : measure Ω)
