@@ -1,6 +1,3 @@
-import Mathbin.Data.Finset.Basic
+import Mathlib.Data.Finset.Basic
 
-#align_import mathlib.data.finset.basic
-
-attribute [protected] Finset.sdiff_self
-
+-- attribute [protected] Finset.sdiff_self

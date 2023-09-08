@@ -3,13 +3,11 @@ Copyright (c) 2022 Yaël Dillies, Kexing Ying. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Kexing Ying
 -/
-import Mathbin.Combinatorics.Hall.Basic
-import Mathbin.Combinatorics.SimpleGraph.Acyclic
-import Mathbin.Combinatorics.SimpleGraph.Clique
-import Mathbin.Data.Real.Sqrt
-import Mathbin.SetTheory.Cardinal.Basic
-
-#align_import example_sheets.graph.es2
+import Mathlib.Combinatorics.Hall.Basic
+import Mathlib.Combinatorics.SimpleGraph.Acyclic
+import Mathlib.Combinatorics.SimpleGraph.Clique
+import Mathlib.Data.Real.Sqrt
+import Mathlib.SetTheory.Cardinal.Basic
 
 /-!
 # Graph Theory, example sheet 2
@@ -150,5 +148,3 @@ Let $$G$$ be a triangulation (a plane graph where every face is a triangle) and 
 planar dual of $$G$$: the vertices of $$G◦$$ are the faces of $$G$$ and edges in $$G◦$$ join faces
 that share a boundary edge (in $$G$$). Prove that $$χ(G) ≤ 4$$ if and only if $$χ(G◦) ≤ 3$$.
 -/
-
-

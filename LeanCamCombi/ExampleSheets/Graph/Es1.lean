@@ -3,13 +3,11 @@ Copyright (c) 2022 Yaël Dillies, Kexing Ying. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Kexing Ying
 -/
-import Mathbin.Combinatorics.Hall.Basic
-import Mathbin.Combinatorics.SimpleGraph.Acyclic
-import Mathbin.Combinatorics.SimpleGraph.Clique
-import Mathbin.Data.Real.Sqrt
-import Mathbin.SetTheory.Cardinal.Basic
-
-#align_import example_sheets.graph.es1
+import Mathlib.Combinatorics.Hall.Basic
+import Mathlib.Combinatorics.SimpleGraph.Acyclic
+import Mathlib.Combinatorics.SimpleGraph.Clique
+import Mathlib.Data.Real.Sqrt
+import Mathlib.SetTheory.Cardinal.Basic
 
 /-!
 # Graph Theory, example sheet 1
@@ -40,7 +38,7 @@ Show that a graph $$G$$ which contains an odd circuit, contains an odd cycle.
 -/
 
 
-theorem q1 (G : SimpleGraph α) (a : α) (w : G.Walk a a) (hw : Odd w.length) :
+lemma q1 (G : SimpleGraph α) (a : α) (w : G.Walk a a) (hw : Odd w.length) :
     ∃ (b : _) (p : G.Path b b), Odd (p : G.Walk b b).length :=
   sorry
 
@@ -60,7 +58,7 @@ Show that every graph $$G$$, with $$|G| > 2$$, has two vertices of the same degr
 
 
 -- PLanarity is hard
-theorem q3 [Fintype α] (G : SimpleGraph α) [DecidableRel G.adj] :
+lemma q3 [Fintype α] (G : SimpleGraph α) [DecidableRel G.adj] :
     ∃ a b, a ≠ b ∧ G.degree a = G.degree b :=
   sorry
 
@@ -73,9 +71,8 @@ connected.
 
 
 -- This looks a bit painful as a translation. Probably better stated using connectivity on a set.
-theorem q4 [Finite α] [Nontrivial α] (G : SimpleGraph α) (hG : G.Connected) :
-    ∃ a, ((⊤ : G.Subgraph).deleteVerts {a}).coe.Connected :=
-  by
+lemma q4 [Finite α] [Nontrivial α] (G : SimpleGraph α) (hG : G.Connected) :
+    ∃ a, ((⊤ : G.Subgraph).deleteVerts {a}).coe.Connected := by
   cases nonempty_fintype α
   sorry
 
@@ -87,9 +84,8 @@ Show that if $$G$$ is acyclic and $$|G| ≥ 1$$, then $$e(G) ≤ n − 1$$.
 
 
 -- Note: The statement is true without `nonempty α` due to nat subtraction.
-theorem q5 [Fintype α] [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.adj] (hG : G.IsAcyclic) :
-    G.edgeFinset.card ≤ card α - 1 :=
-  by
+lemma q5 [Fintype α] [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.adj] (hG : G.IsAcyclic) :
+    G.edgeFinset.card ≤ card α - 1 := by
   cases isEmpty_or_nonempty α
   · simp
   sorry
@@ -106,9 +102,9 @@ degree sequence of a tree if and only if $$\sum_{i=1}^n d_i = 2n − 2$$.
 
 /-- The finset of degrees of a finite graph. -/
 def degreeSequence [Fintype α] (G : SimpleGraph α) [DecidableRel G.adj] : Multiset ℕ :=
-  Finset.univ.val.map fun a => G.degree a
+  Finset.univ.val.map fun a ↦ G.degree a
 
-theorem q6 [Fintype α] (s : Multiset ℕ) (hs : s.card = card α) (h₀ : 0 ∉ s) :
+lemma q6 [Fintype α] (s : Multiset ℕ) (hs : s.card = card α) (h₀ : 0 ∉ s) :
     s.Sum = 2 * card α - 2 ↔
       ∃ (G : SimpleGraph α) (_ : DecidableRel G.adj), degree_sequence G = s :=
   sorry
@@ -122,7 +118,7 @@ $$i, j ∈ [k]$$ then $$V(T_1) ∩ \dots ∩ V(T_k) ≠ ∅$$.
 
 
 /- ./././Mathport/Syntax/Translate/Basic.lean:635:2: warning: expanding binder collection (i j «expr ∈ » s) -/
-theorem q7 (G : SimpleGraph α) (hG : G.IsAcyclic) (s : Finset ι) (f : ι → G.Subgraph)
+lemma q7 (G : SimpleGraph α) (hG : G.IsAcyclic) (s : Finset ι) (f : ι → G.Subgraph)
     (hf : ∀ i ∈ s, (f i).coe.IsAcyclic) (h : ∀ (i) (_ : i ∈ s) (j) (_ : j ∈ s), f i ⊓ f j ≠ ⊥) :
     s.inf f ≠ ⊥ :=
   sorry
@@ -139,7 +135,7 @@ average degree of $$G$$ is $$d$$ then $$G$$ contains a subgraph with minimum deg
 def averageDegree [Fintype α] (G : SimpleGraph α) [DecidableRel G.adj] : ℚ :=
   ∑ a, G.degree a / card α
 
-theorem q8 [Fintype α] (G : SimpleGraph α) [DecidableRel G.adj] :
+lemma q8 [Fintype α] (G : SimpleGraph α) [DecidableRel G.adj] :
     ∃ (H : Subgraph G) (_ : DecidableRel H.adj), ∀ a, average_degree G / 2 ≤ H.degree a :=
   sorry
 
@@ -153,7 +149,7 @@ decomposed into cycles if and only if all degrees of $$G$$ are even.
 
 
 -- This looks painful as a translation. It will likely get better once we have Kyle's eulerian paths
-theorem q9 [Fintype α] (G : SimpleGraph α) [DecidableRel G.adj] :
+lemma q9 [Fintype α] (G : SimpleGraph α) [DecidableRel G.adj] :
     (∃ 𝒜 : Finset (Σ a, G.Path a a),
         (∀ p q : Σ a, G.Path a a,
             (p.2 : G.Walk p.1 p.1).edges.Disjoint (q.2 : G.Walk q.1 q.1).edges) ∧
@@ -173,9 +169,9 @@ $$1, 2, \dots, n/2$$ and $$n$$.
 
 /-- The clique number of a graph is the size of its largest clique. -/
 def cliqueNumber [Fintype α] [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.adj] : ℕ :=
-  (Nat.findGreatest fun n => ∃ s, G.IsNClique n s) <| card α
+  (Nat.findGreatest fun n ↦ ∃ s, G.IsNClique n s) $ card α
 
-theorem q10 [Fintype α] [DecidableEq α] (n : ℕ) :
+lemma q10 [Fintype α] [DecidableEq α] (n : ℕ) :
     (∃ (G : SimpleGraph α) (_ : DecidableRel G.adj) (k : _),
         G.is_regular_of_degree k ∧ clique_number G = n) ↔
       n ≤ card α / 2 ∨ n = card α :=
@@ -198,11 +194,11 @@ the graphs $$G[A]$$ and $$G[B]$$ are of even degree.
 
 -- PLanarity is hard
 -- Note: This is a bit general than the statement, because we allow partitioning any set of vertices
-theorem q12 [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.adj] (s : Finset α) :
+lemma q12 [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.adj] (s : Finset α) :
     ∃ u v,
       Disjoint u v ∧
         u ∪ v = s ∧
-          (∀ a ∈ u, Even (u.filterₓ <| G.adj a).card) ∧ ∀ a ∈ v, Even (v.filterₓ <| G.adj a).card :=
+          (∀ a ∈ u, Even (u.filter $ G.adj a).card) ∧ ∀ a ∈ v, Even (v.filter $ G.adj a).card :=
   sorry
 
 /-!
@@ -216,9 +212,9 @@ rectangle may be extended to a $$n × n$$ Latin square.
 
 /-- A Latin rectangle is a binary function whose transversals are all injective. -/
 def IsLatin (f : α → β → γ) : Prop :=
-  (∀ a, Injective (f a)) ∧ ∀ b, Injective fun a => f a b
+  (∀ a, Injective (f a)) ∧ ∀ b, Injective fun a ↦ f a b
 
-theorem q13 [Finite α] (g : β ↪ α) (f : β → α → α) (hf : IsLatin f) :
+lemma q13 [Finite α] (g : β ↪ α) (f : β → α → α) (hf : IsLatin f) :
     ∃ f', f' ∘ g = f ∧ IsLatin f :=
   sorry
 
@@ -234,18 +230,18 @@ all degrees of $$X$$ are finite (while degrees in $$Y$$ have no restriction)?
 
 
 -- This translation looks slightly painful because of the `cardinal`.
-theorem q14_part1 :
+lemma q14_part1 :
     ∃ r : ℕ → ℕ → Prop,
       (∀ A : Finset ℕ, (A.card : Cardinal) ≤ (#Rel.image r A)) ∧
-        ∀ f : ℕ → ℕ, Injective f → ∃ n, ¬r n (f n) :=
+        ∀ f : ℕ → ℕ, Injective f → ∃ n, ¬ r n (f n) :=
   sorry
 
-theorem q14_part2 [DecidableEq β] [Countable α] [Countable β] (r : α → β → Prop)
+lemma q14_part2 [DecidableEq β] [Countable α] [Countable β] (r : α → β → Prop)
     [∀ a, Fintype (Rel.image r {a})] (hr : ∀ A : Finset α, A.card ≤ card ↥(Rel.image r A)) :
     ∃ f : α → β, Injective f ∧ ∀ a, r a (f a) :=
   sorry
 
-theorem q14_part3 [DecidableEq β] (r : α → β → Prop) [∀ a, Fintype (Rel.image r {a})]
+lemma q14_part3 [DecidableEq β] (r : α → β → Prop) [∀ a, Fintype (Rel.image r {a})]
     (hr : ∀ A : Finset α, A.card ≤ card ↥(Rel.image r A)) :
     ∃ f : α → β, Injective f ∧ ∀ a, r a (f a) :=
   sorry
@@ -271,14 +267,14 @@ minimum of `dist (f a) (f b) / dist a b`. -/
 noncomputable def distortion [PseudoMetricSpace α] [PseudoMetricSpace β] (f : α → β) : ℝ :=
   (⨆ (a) (b), dist (f a) (f b) / dist a b) / ⨅ (a) (b), dist (f a) (f b) / dist a b
 
-theorem q15_part1 :
+lemma q15_part1 :
     ∃ ε : ℝ,
       0 < ε ∧
         ∀ (α) [Fintype α],
           ∃ _ : MetricSpace α, ∀ f : α → ℝ × ℝ, ε * Real.sqrt (card α) ≤ distortion f :=
   sorry
 
-theorem q15_part2 :
+lemma q15_part2 :
     ∃ ε : ℝ,
       0 < ε ∧ ∀ (α) [Fintype α], ∃ _ : MetricSpace α, ∀ f : α → ℝ × ℝ, ε * card α ≤ distortion f :=
   sorry
@@ -286,4 +282,3 @@ theorem q15_part2 :
 end Es1
 
 end GraphTheory
-

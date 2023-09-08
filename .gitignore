@@ -2,6 +2,7 @@
 *.olean
 /_target
 /leanpkg.path
+/build
 /doc-gen
 
 decls.pickle
