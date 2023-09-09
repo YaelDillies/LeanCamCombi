@@ -12,11 +12,9 @@ import Mathlib.Order.Partition.Finpartition
 
 -/
 
-
 open scoped BigOperators
 
 namespace Finset
-
 variable {ι E : Type _} [NormedAddCommGroup E] [NormedSpace ℝ E] {𝒜 : Finset (Finset ι)}
   {s : Finset ι} {f : ι → E} {r : ℝ}
 
@@ -37,17 +35,16 @@ lemma exists_littlewood_offord_partition [DecidableEq ι] (hr : 0 < r) (hf : ∀
     Finset.exists_max_image _ (fun t ↦ g (∑ i in t, f i)) (P.nonempty_of_mem_parts h𝒜)
   sorry
 
-/- ./././Mathport/Syntax/Translate/Basic.lean:635:2: warning: expanding binder collection (u v «expr ∈ » 𝒜) -/
 /-- **Kleitman's lemma** -/
 lemma card_le_of_forall_dist_sum_le (hr : 0 < r) (h𝒜 : ∀ t ∈ 𝒜, t ⊆ s) (hf : ∀ i ∈ s, r ≤ ‖f i‖)
-    (h𝒜r : ∀ (u) (_ : u ∈ 𝒜) (v) (_ : v ∈ 𝒜), dist (∑ i in u, f i) (∑ i in v, f i) < r) :
+    (h𝒜r : ∀ u, u ∈ 𝒜 → ∀ v, v ∈ 𝒜 → dist (∑ i in u, f i) (∑ i in v, f i) < r) :
     𝒜.card ≤ s.card.choose (s.card / 2) := by
   classical
-  obtain ⟨P, hP, hs, hr⟩ := exists_littlewood_offord_partition hr hf
+  obtain ⟨P, hP, _hs, hr⟩ := exists_littlewood_offord_partition hr hf
   rw [←hP]
   refine'
     card_le_card_of_forall_subsingleton (· ∈ ·) (fun t ht ↦ _) fun ℬ hℬ t ht u hu ↦
-      (hr _ hℬ).Eq ht.2 hu.2 (h𝒜r _ ht.1 _ hu.1).not_le
+      (hr _ hℬ).eq ht.2 hu.2 (h𝒜r _ ht.1 _ hu.1).not_le
   simpa only [exists_prop] using P.exists_mem (mem_powerset.2 $ h𝒜 _ ht)
 
 end Finset

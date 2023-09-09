@@ -2,7 +2,6 @@ import Mathlib.Probability.Independence.Basic
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
 
 open MeasureTheory MeasurableSpace Set
-
 open scoped BigOperators
 
 namespace ProbabilityTheory
@@ -34,8 +33,8 @@ lemma iIndepSet_iff_iIndepSets_singleton {s : ι → Set Ω} (hs : ∀ i, Measur
     (μ : Measure Ω := by volume_tac) [IsProbabilityMeasure μ] :
     iIndepSet s μ ↔ iIndepSets (fun i ↦ {s i}) μ :=
   ⟨iIndep.iIndepSets fun _ ↦ rfl,
-    IndepSets.indep _ _ _
-      (IsPiSystem.singleton $ s _) _ _⟩
+    iIndepSets.iIndep _ (fun i => generateFrom_le <| by rintro t (rfl : t = s i); exact hs _) _
+      (fun _ => IsPiSystem.singleton <| s _) fun _ => rfl⟩
 
 variable [IsProbabilityMeasure μ]
 

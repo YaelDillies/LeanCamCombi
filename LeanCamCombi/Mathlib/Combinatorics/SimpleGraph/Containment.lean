@@ -347,15 +347,13 @@ lemma le_card_edgeFinset_kill [Fintype β] :
   simp only [kill_of_ne_bot, hG, Ne.def, not_false_iff, Set.iUnion_singleton_eq_range,
     Set.toFinset_card, Fintype.card_ofFinset, edgeSet_deleteEdges]
   rw [←Set.toFinset_card, ←edgeFinset, copyCount, ←card_subtype, subtype_univ]
-  refine'
-    (tsub_le_tsub_left
-          (card_image_le.trans_eq' $
-            congr_arg card $
-              Set.toFinset_range fun H' : {H' : H.Subgraph // Nonempty (G ≃g H'.coe)} ↦
-                (aux hG H'.2).some)
-          _).trans
-      ((le_card_sdiff _ _).trans_eq $ congr_arg card $ coe_injective _)
-  simp only [Set.diff_eq, ←Set.iUnion_singleton_eq_range, coe_sdiff, Set.coe_toFinset, coe_filter,
-    Set.sep_mem_eq, Set.iUnion_subtype]
+  refine' (tsub_le_tsub_left (card_image_le.trans_eq' $ congr_arg card $ Set.toFinset_range
+    fun H' : {H' : H.Subgraph // Nonempty (G ≃g H'.coe)} ↦ (aux hG H'.2).some) _).trans $
+      (le_card_sdiff _ _).trans_eq $ _
+  simp only [Finset.sdiff_eq_inter_compl, Set.diff_eq, ←Set.iUnion_singleton_eq_range, coe_sdiff,
+    Set.coe_toFinset, coe_filter, Set.sep_mem_eq, Set.iUnion_subtype, ←Fintype.card_coe,
+    ←Finset.coe_sort_coe, coe_inter, coe_compl, Set.coe_toFinset]
+  congr
+  exact Subsingleton.elim _ _
 
 end SimpleGraph

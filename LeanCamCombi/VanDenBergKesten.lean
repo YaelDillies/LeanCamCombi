@@ -34,16 +34,14 @@ open scoped Classical FinsetFamily
 variable {α : Type _}
 
 namespace Finset
-
 section BooleanAlgebra
-
 variable [BooleanAlgebra α] (s t u : Finset α) {a : α}
 
 noncomputable def certificator : Finset α :=
   (s ∩ t).filter fun a ↦
     ∃ x y, IsCompl x y ∧ (∀ ⦃b⦄, a ⊓ x = b ⊓ x → b ∈ s) ∧ ∀ ⦃b⦄, a ⊓ y = b ⊓ y → b ∈ t
 
-scoped[FinsetFamily] infixl:70 " □ " ↦ certificator
+scoped[FinsetFamily] infixl:70 " □ " => Finset.certificator
 
 variable {s t u}
 
@@ -52,14 +50,14 @@ lemma mem_certificator :
     a ∈ s □ t ↔
       ∃ x y, IsCompl x y ∧ (∀ ⦃b⦄, a ⊓ x = b ⊓ x → b ∈ s) ∧ ∀ ⦃b⦄, a ⊓ y = b ⊓ y → b ∈ t := by
   rw [certificator, mem_filter, and_iff_right_of_imp]
-  rintro ⟨u, v, huv, hu, hv⟩
+  rintro ⟨u, v, _, hu, hv⟩
   exact mem_inter.2 ⟨hu rfl, hv rfl⟩
 
 lemma certificator_subset_inter : s □ t ⊆ s ∩ t :=
   filter_subset _ _
 
 lemma certificator_subset_disjSups : s □ t ⊆ s ○ t := by
-  simp_rw [subset_iff, mem_certificator, mem_disj_sups]
+  simp_rw [subset_iff, mem_certificator, mem_disjSups]
   rintro x ⟨u, v, huv, hu, hv⟩
   refine'
     ⟨x ⊓ u, hu inf_right_idem.symm, x ⊓ v, hv inf_right_idem.symm,
@@ -68,30 +66,30 @@ lemma certificator_subset_disjSups : s □ t ⊆ s ○ t := by
 
 variable (s t u)
 
-lemma certificator_comm : s □ t = t □ s := by ext s; rw [mem_certificator, exists_comm];
-  simp [isCompl_comm, and_comm']
+lemma certificator_comm : s □ t = t □ s := by
+  ext s; rw [mem_certificator, exists_comm]; simp [isCompl_comm, and_comm]
 
 lemma IsUpperSet.certificator_eq_inter (hs : IsUpperSet (s : Set α))
     (ht : IsLowerSet (t : Set α)) : s □ t = s ∩ t := by
   refine'
     certificator_subset_inter.antisymm fun a ha ↦ mem_certificator.2 ⟨a, aᶜ, isCompl_compl, _⟩
   rw [mem_inter] at ha
-  simp only [@eq_comm _ ⊥, ←sdiff_eq, inf_idem, right_eq_inf, sdiff_self, sdiff_eq_bot_iff]
+  simp only [@eq_comm _ ⊥, ←sdiff_eq, inf_idem, right_eq_inf, _root_.sdiff_self, sdiff_eq_bot_iff]
   exact ⟨fun b hab ↦ hs hab ha.1, fun b hab ↦ ht hab ha.2⟩
 
 lemma IsLowerSet.certificator_eq_inter (hs : IsLowerSet (s : Set α))
     (ht : IsUpperSet (t : Set α)) : s □ t = s ∩ t := by
   refine'
     certificator_subset_inter.antisymm fun a ha ↦
-      mem_certificator.2 ⟨aᶜ, a, is_compl_compl.symm, _⟩
+      mem_certificator.2 ⟨aᶜ, a, isCompl_compl.symm, _⟩
   rw [mem_inter] at ha
-  simp only [@eq_comm _ ⊥, ←sdiff_eq, inf_idem, right_eq_inf, sdiff_self, sdiff_eq_bot_iff]
+  simp only [@eq_comm _ ⊥, ←sdiff_eq, inf_idem, right_eq_inf, _root_.sdiff_self, sdiff_eq_bot_iff]
   exact ⟨fun b hab ↦ hs hab ha.1, fun b hab ↦ ht hab ha.2⟩
 
 lemma IsUpperSet.certificator_eq_disjSups (hs : IsUpperSet (s : Set α))
     (ht : IsUpperSet (t : Set α)) : s □ t = s ○ t := by
-  refine' certificator_subset_disj_sups.antisymm fun a ha ↦ mem_certificator.2 _
-  obtain ⟨x, hx, y, hy, hxy, rfl⟩ := mem_disj_sups.1 ha
+  refine' certificator_subset_disjSups.antisymm fun a ha ↦ mem_certificator.2 _
+  obtain ⟨x, hx, y, hy, hxy, rfl⟩ := mem_disjSups.1 ha
   refine' ⟨x, xᶜ, isCompl_compl, _⟩
   simp only [inf_of_le_right, le_sup_left, right_eq_inf, ←sdiff_eq, hxy.sup_sdiff_cancel_left]
   exact ⟨fun b hab ↦ hs hab hx, fun b hab ↦ ht (hab.trans_le sdiff_le) hy⟩

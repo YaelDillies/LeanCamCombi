@@ -22,7 +22,7 @@ variable {α Ω : Type _} [MeasurableSpace Ω]
 /-- A sequence iid. real valued Bernoulli random variables with parameter `p ≤ 1`. -/
 abbrev ErdosRenyi (G : Ω → SimpleGraph α) [∀ ω, DecidableRel (G ω).Adj] (p : ℝ≥0)
     (μ : Measure Ω := by exact MeasureTheory.MeasureSpace.volume) : Prop :=
-  BernoulliSeq (fun ω ↦ (G ω).edgeSet) p μ
+  IsBernoulliSeq (fun ω ↦ (G ω).edgeSet) p μ
 
 variable (G : Ω → SimpleGraph α) (H : SimpleGraph α) [∀ ω, DecidableRel (G ω).Adj] {p : ℝ≥0}
   (μ : Measure Ω) [IsProbabilityMeasure μ] [ErdosRenyi G p μ]
@@ -30,30 +30,30 @@ variable (G : Ω → SimpleGraph α) (H : SimpleGraph α) [∀ ω, DecidableRel 
 namespace ErdosRenyi
 
 protected lemma le_one : p ≤ 1 :=
-  BernoulliSeq.le_one (fun ω ↦ (G ω).edgeSet) μ
+  IsBernoulliSeq.le_one (fun ω ↦ (G ω).edgeSet) μ
 
 protected lemma iIndepFun : iIndepFun inferInstance (fun e ω ↦ e ∈ (G ω).edgeSet) μ :=
-  BernoulliSeq.iIndepFun _ _
+  IsBernoulliSeq.iIndepFun _ _
 
 protected lemma map (e : Sym2 α) :
     Measure.map (fun ω ↦ e ∈ (G ω).edgeSet) μ =
       (Pmf.bernoulli' p $ ErdosRenyi.le_one G μ).toMeasure :=
-  BernoulliSeq.map _ _ e
+  IsBernoulliSeq.map _ _ e
 
 protected lemma aEMeasurable (e : Sym2 α) :
     AEMeasurable (fun ω ↦ e ∈ (G ω).edgeSet) μ :=
-  BernoulliSeq.aEMeasurable _ _ e
+  IsBernoulliSeq.aEMeasurable _ _ e
 
 protected lemma nullMeasurableSet (e : Sym2 α) :
     NullMeasurableSet {ω | e ∈ (G ω).edgeSet} μ :=
-  BernoulliSeq.nullMeasurableSet _ _ e
+  IsBernoulliSeq.nullMeasurableSet _ _ e
 
 protected lemma identDistrib (d e : Sym2 α) :
     IdentDistrib (fun ω ↦ d ∈ (G ω).edgeSet) (fun ω ↦ e ∈ (G ω).edgeSet) μ μ :=
-  BernoulliSeq.identDistrib _ _ d e
+  IsBernoulliSeq.identDistrib _ _ d e
 
 lemma meas_edge (e : Sym2 α) : μ {ω | e ∈ (G ω).edgeSet} = p :=
-  BernoulliSeq.meas_apply _ _ e
+  IsBernoulliSeq.meas_apply _ _ e
 
 protected lemma meas [Fintype α] [DecidableEq α] [DecidableRel H.Adj] :
     μ {ω | G ω = H} =
