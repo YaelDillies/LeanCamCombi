@@ -4,32 +4,37 @@ on:
       - main
 
 jobs:
-  update_main_branch_and_build:
+  build_project:
     runs-on: ubuntu-latest
-    name: Update main branch and build project
+    name: Build project
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - name: checkout project
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: update branch
-        if: github.ref == 'refs/heads/main'
-        uses: leanprover-contrib/update-versions-action@master
+      - name: install elan
+        run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.0.0
 
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-
-      - name: build docker container
-        run: docker build -t lean-cam-combi .
+      - name: get cache
+        run: ~/.elan/bin/lake -Kenv=dev exe cache get
 
       - name: build project
-        run: docker run --rm -v ${{ github.workspace }}:/src lean-cam-combi
+        run: ~/.elan/bin/lake -Kenv=dev build LeanCamCombi
+
+      - name: build documentation
+        run: ~/.elan/bin/lake -Kenv=dev build LeanCamCombi:docs
+
+      - name: copy documentation
+        run: cp -R build/doc docs/
 
       - name: remove .gitignore for gh-pages
         run: rm docs/.gitignore
 
-      - name: bundler deps
+      - name: Bundle dependencies
         uses: ruby/setup-ruby@v1
         with:
           working-directory: docs
