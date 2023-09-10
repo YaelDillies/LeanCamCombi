@@ -9,7 +9,6 @@ import Mathlib.Order.Partition.Finpartition
 
 /-!
 # The Littlewood-Offord problem
-
 -/
 
 open scoped BigOperators

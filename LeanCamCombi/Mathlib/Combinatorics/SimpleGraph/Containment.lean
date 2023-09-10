@@ -38,13 +38,10 @@ The following notation is declared in locale `SimpleGraph`:
 * `G ⊴ H` for `SimpleGraph.isIndContained G H`.
 -/
 
-
 open Finset Function
-
 open scoped BigOperators Classical
 
 namespace SimpleGraph
-
 variable {α β γ : Type*} {G G₁ G₂ G₃ : SimpleGraph α} {H : SimpleGraph β} {I : SimpleGraph γ}
 
 /-!
@@ -55,7 +52,6 @@ amounts to `H` having a (not necessarily induced) subgraph isomorphic to `G`.
 
 We denote "`G` is contained in `H`" by `G ⊑ H` (`\squ`).
 -/
-
 
 /-- A simple graph `G` is contained in a simple graph `H` if there exists a subgraph of `H`
 isomorphic to `G`. This is denoted by `G ⊑ H`. -/
@@ -117,7 +113,6 @@ def IsIndContained (G : SimpleGraph α) (H : SimpleGraph β) : Prop := Nonempty 
 scoped infixl:50 " ⊴ " => SimpleGraph.IsIndContained
 
 protected lemma IsIndContained.isContained : G₁ ⊴ G₂ → G₁ ⊑ G₂ := fun ⟨f⟩ ↦ ⟨f, f.injective⟩
-
 protected lemma Iso.isIndContained (e : G ≃g H) : G ⊴ H := ⟨e⟩
 protected lemma Iso.isIndContained' (e : G ≃g H) : H ⊴ G := e.symm.isIndContained
 
@@ -140,9 +135,8 @@ lemma isIndContained_iff_exists_subgraph :
     G ⊴ H ↔ ∃ (H' : H.Subgraph) (_e : G ≃g H'.coe), H'.IsInduced' := by
   constructor
   · rintro ⟨f⟩
-    refine'
-      ⟨Subgraph.map f.toHom ⊤,
-        (Subgraph.isoMap f.toHom f.injective _).comp Subgraph.topIso.symm, _⟩
+    refine' ⟨Subgraph.map f.toHom ⊤,
+      (Subgraph.isoMap f.toHom f.injective _).comp Subgraph.topIso.symm, _⟩
     rintro _ _ ⟨a, -, rfl⟩ ⟨b, -, rfl⟩
     simp [Relation.map_apply_apply, f.injective]
   · rintro ⟨H', e, hH'⟩
@@ -156,9 +150,7 @@ alias ⟨IsIndContained.exists_subgraph, _⟩ := isIndContained_iff_exists_subgr
 If `G` and `H` are finite graphs, we can count the number of unlabelled and labelled copies of `G`
 in `H`.
 -/
-
 section CopyCount
-
 variable [Fintype β]
 
 /-- `G.copyCount H` is the number of unlabelled copies of `G` in `H`.
@@ -166,8 +158,7 @@ See `SimpleGraph.labelledCopyCount` for the number of labelled copies. -/
 noncomputable def copyCount (G : SimpleGraph α) (H : SimpleGraph β) : ℕ :=
   (univ.filter fun H' : H.Subgraph ↦ Nonempty (G ≃g H'.coe)).card
 
-@[simp]
-lemma copyCount_bot (H : SimpleGraph β) : copyCount (⊥ : SimpleGraph β) H = 1 := by
+@[simp] lemma copyCount_bot (H : SimpleGraph β) : copyCount (⊥ : SimpleGraph β) H = 1 := by
   rw [copyCount]
   convert
     card_singleton
@@ -179,53 +170,44 @@ lemma copyCount_bot (H : SimpleGraph β) : copyCount (⊥ : SimpleGraph β) H = 
     Nonempty.forall]
   refine'
     ⟨⟨⟨(Equiv.Set.univ _).symm, by
-          simp only [Prop.bot_eq_false, Subgraph.coe_adj, Pi.bot_apply, bot_adj, iff_self_iff,
-            forall₂_true_iff]⟩⟩,
-      fun H' e ↦
+      simp only [Prop.bot_eq_false, Subgraph.coe_adj, Pi.bot_apply, bot_adj, iff_self_iff,
+        forall₂_true_iff]⟩⟩, fun H' e ↦
       Subgraph.ext _ _ ((set_fintype_card_eq_univ_iff _).1 $ Fintype.card_congr e.toEquiv.symm) _⟩
   ext a b
   simp only [Prop.bot_eq_false, Pi.bot_apply, iff_false_iff]
   exact fun hab ↦ e.symm.map_rel_iff.2 hab.coe
 
-@[simp]
-lemma copyCount_of_isEmpty [IsEmpty α] (G : SimpleGraph α) (H : SimpleGraph β) :
+@[simp] lemma copyCount_of_isEmpty [IsEmpty α] (G : SimpleGraph α) (H : SimpleGraph β) :
     G.copyCount H = 1 := by
   rw [copyCount]
   convert card_singleton (⊥ : H.Subgraph)
   simp only [eq_singleton_iff_unique_mem, mem_filter, mem_univ, Subgraph.coe_bot, true_and_iff,
     Nonempty.forall, Subsingleton.elim G ⊥]
   haveI : IsEmpty (⊥ : H.Subgraph).verts := by simp
-  refine'
-    ⟨⟨⟨⟨isEmptyElim, isEmptyElim, isEmptyElim, isEmptyElim⟩, λ {a} ↦ isEmptyElim a⟩⟩, fun H' e ↦
-      Subgraph.ext _ _ _ $ funext₂ fun a b ↦ _⟩
-  ·
-    simpa [Set.eq_empty_iff_forall_not_mem, filter_eq_empty_iff] using
+  refine' ⟨⟨⟨⟨isEmptyElim, isEmptyElim, isEmptyElim, isEmptyElim⟩, λ {a} ↦ isEmptyElim a⟩⟩,
+    fun H' e ↦ Subgraph.ext _ _ _ $ funext₂ fun a b ↦ _⟩
+  · simpa [Set.eq_empty_iff_forall_not_mem, filter_eq_empty_iff] using
       Fintype.card_congr e.toEquiv.symm
   · simp only [Subgraph.not_bot_adj, eq_iff_iff, iff_false_iff]
     exact fun hab ↦ e.symm.map_rel_iff.2 hab.coe
 
-@[simp]
-lemma copyCount_eq_zero : G.copyCount H = 0 ↔ ¬ G ⊑ H := by
+@[simp] lemma copyCount_eq_zero : G.copyCount H = 0 ↔ ¬ G ⊑ H := by
   simp [copyCount, isContained_iff_exists_subgraph, card_pos, filter_eq_empty_iff]
 
-@[simp]
-lemma copyCount_pos : 0 < G.copyCount H ↔ G ⊑ H := by
+@[simp] lemma copyCount_pos : 0 < G.copyCount H ↔ G ⊑ H := by
   simp [copyCount, isContained_iff_exists_subgraph, card_pos, filter_nonempty_iff]
 
 end CopyCount
 
 section LabelledCopyCount
-
 variable [Fintype α] [Fintype β]
 
-/--
-`G.labelledCopyCount H` is the number of labelled copies of `G` in `H`. See `SimpleGraph.copyCount`
-for the number of unlabelled copies. -/
+/-- `G.labelledCopyCount H` is the number of labelled copies of `G` in `H`. See
+`SimpleGraph.copyCount` for the number of unlabelled copies. -/
 noncomputable def labelledCopyCount (G : SimpleGraph α) (H : SimpleGraph β) : ℕ := by
   classical exact Fintype.card {f : G →g H // Injective f}
 
-@[simp]
-lemma labelledCopyCount_of_isEmpty [IsEmpty α] (G : SimpleGraph α) (H : SimpleGraph β) :
+@[simp] lemma labelledCopyCount_of_isEmpty [IsEmpty α] (G : SimpleGraph α) (H : SimpleGraph β) :
     G.labelledCopyCount H = 1 := by
   classical
   have : Unique {f : G →g H // Injective f} :=
@@ -235,23 +217,18 @@ lemma labelledCopyCount_of_isEmpty [IsEmpty α] (G : SimpleGraph α) (H : Simple
   sorry
   -- exact @Fintype.card_unique _ (this) _
 
-@[simp]
-lemma labelledCopyCount_eq_zero : G.labelledCopyCount H = 0 ↔ ¬ G ⊑ H := by
+@[simp] lemma labelledCopyCount_eq_zero : G.labelledCopyCount H = 0 ↔ ¬ G ⊑ H := by
   simp [labelledCopyCount, IsContained, Fintype.card_eq_zero_iff]
 
-@[simp]
-lemma labelledCopyCount_pos : 0 < G.labelledCopyCount H ↔ G ⊑ H := by
+@[simp] lemma labelledCopyCount_pos : 0 < G.labelledCopyCount H ↔ G ⊑ H := by
   simp [labelledCopyCount, IsContained, Fintype.card_pos_iff]
 
 /-- There's more labelled copies of `H` of-`G` than unlabelled ones. -/
 lemma copyCount_le_labelledCopyCount : G.copyCount H ≤ G.labelledCopyCount H := by
   rw [copyCount, ←Fintype.card_coe]
-  refine'
-    Fintype.card_le_of_injective
-      (fun H' ↦
-        ⟨H'.val.hom.comp (mem_filter.1 H'.2).2.some.toHom,
-          Subtype.coe_injective.comp (mem_filter.1 H'.2).2.some.injective⟩)
-      _
+  refine' Fintype.card_le_of_injective (fun H' ↦
+    ⟨H'.val.hom.comp (mem_filter.1 H'.2).2.some.toHom,
+      Subtype.coe_injective.comp (mem_filter.1 H'.2).2.some.injective⟩) _
   sorry
 
 end LabelledCopyCount
@@ -265,7 +242,6 @@ to get a graph `H'` that doesn't contain `G`.
 `SimpleGraph.kill G H` is a subgraph of `H` where an edge was removed from each copy of `G` in `H`. by construction, it doesn't contain `G` and has at most the number of copies of `G` edges less than
 `H`
 -/
-
 
 private lemma aux (hG : G ≠ ⊥) {H' : H.Subgraph} :
     Nonempty (G ≃g H'.coe) → H'.edgeSet.Nonempty := by
@@ -283,8 +259,7 @@ noncomputable irreducible_def kill (G : SimpleGraph α) (H : SimpleGraph β) : S
 /-- Removing an edge from `H` for each subgraph isomorphic to `G` results in a subgraph of `H`. -/
 lemma kill_le : G.kill H ≤ H := by rw [kill]; split_ifs; exacts [le_rfl, deleteEdges_le _ _]
 
-@[simp]
-lemma bot_kill (H : SimpleGraph β) : (⊥ : SimpleGraph α).kill H = H := by
+@[simp] lemma bot_kill (H : SimpleGraph β) : (⊥ : SimpleGraph α).kill H = H := by
   rw [kill]; exact dif_pos rfl
 
 private lemma kill_of_ne_bot (hG : G ≠ ⊥) (H : SimpleGraph β) :
@@ -296,10 +271,8 @@ lemma kill_eq_right (hG : G ≠ ⊥) : G.kill H = H ↔ ¬ G ⊑ H := by
   simp only [kill_of_ne_bot hG, Set.disjoint_left, isContained_iff_exists_subgraph,
     @forall_swap _ H.Subgraph, Set.iUnion_singleton_eq_range, deleteEdges_eq, Set.mem_iUnion,
     Set.mem_range, not_exists, not_nonempty_iff, Nonempty.forall]
-  exact
-    forall_congr' fun H' ↦
-      ⟨fun h ↦ ⟨fun f ↦ h _ (Subgraph.edgeSet_subset _ $ (aux hG ⟨f⟩).choose_spec) f rfl⟩,
-        fun h _ _ ↦ h.elim⟩
+  exact forall_congr' fun H' ↦ ⟨fun h ↦ ⟨fun f ↦ h _
+    (Subgraph.edgeSet_subset _ $ (aux hG ⟨f⟩).choose_spec) f rfl⟩, fun h _ _ ↦ h.elim⟩
 
 lemma kill_of_not_isContained (hGH : ¬ G ⊑ H) : G.kill H = H := by
   obtain rfl | hG := eq_or_ne G ⊥

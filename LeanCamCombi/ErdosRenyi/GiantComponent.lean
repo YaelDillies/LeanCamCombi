@@ -7,6 +7,4 @@ import LeanCamCombi.ErdosRenyi.Basic
 
 /-!
 # The giant component
-
-
 -/

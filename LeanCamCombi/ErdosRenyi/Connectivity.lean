@@ -6,4 +6,5 @@ Authors: Yaël Dillies
 import LeanCamCombi.ErdosRenyi.Basic
 
 /-!
-# Connectivity of the Erdős–Rényi model -/
+# Connectivity of the Erdős–Rényi model
+-/

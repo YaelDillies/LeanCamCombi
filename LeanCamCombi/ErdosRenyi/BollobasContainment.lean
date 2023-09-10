@@ -14,9 +14,7 @@ import LeanCamCombi.ErdosRenyi.Basic
 This file proves Bollobás' lemma on graph containment.
 -/
 
-
 open Asymptotics Filter MeasureTheory ProbabilityTheory
-
 open scoped MeasureTheory ProbabilityTheory ENNReal NNReal SimpleGraph Topology
 
 variable {α β Ω : Type*} [Fintype β] {G : ℕ → Ω → SimpleGraph α} (H : SimpleGraph β)

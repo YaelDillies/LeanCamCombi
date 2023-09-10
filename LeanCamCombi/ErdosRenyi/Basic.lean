@@ -12,9 +12,7 @@ import LeanCamCombi.BernoulliSeq
 In this file, we define the Erdős–Rényi model through its marginals.
 -/
 
-
 open MeasureTheory ProbabilityTheory
-
 open scoped MeasureTheory ProbabilityTheory ENNReal NNReal
 
 variable {α Ω : Type*} [MeasurableSpace Ω]

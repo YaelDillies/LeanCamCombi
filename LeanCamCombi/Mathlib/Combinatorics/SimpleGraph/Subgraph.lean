@@ -2,7 +2,6 @@ import Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
 import LeanCamCombi.Mathlib.Logic.Relation
 
-
 -- attribute [protected] SimpleGraph.Subgraph.mem_edgeSet
 
 open Function
@@ -19,16 +18,13 @@ alias coe_adj := coe_Adj
 instance (G : SimpleGraph V) (H : Subgraph G) [DecidableRel H.Adj] : DecidableRel H.coe.Adj :=
   fun a b ↦ ‹DecidableRel H.Adj› _ _
 
-@[simp]
-lemma map_id {G : SimpleGraph α} (G' : G.Subgraph) : G'.map Hom.id = G' := by ext <;> simp
+@[simp] lemma map_id {G : SimpleGraph α} (G' : G.Subgraph) : G'.map Hom.id = G' := by ext <;> simp
 
-@[simp]
-lemma map_comp {G : SimpleGraph α} {H : SimpleGraph β} {I : SimpleGraph γ} (G' : G.Subgraph)
+@[simp] lemma map_comp {G : SimpleGraph α} {H : SimpleGraph β} {I : SimpleGraph γ} (G' : G.Subgraph)
     (f : G →g H) (g : H →g I) : G'.map (g.comp f) = (G'.map f).map g := by
   ext <;> simp [Subgraph.map]
 
-@[simp]
-lemma edgeSet_map {G : SimpleGraph α} {H : SimpleGraph β} (f : G →g H) (G' : G.Subgraph) :
+@[simp] lemma edgeSet_map {G : SimpleGraph α} {H : SimpleGraph β} (f : G →g H) (G' : G.Subgraph) :
     (G'.map f).edgeSet = Sym2.map f '' G'.edgeSet := by
   ext e
   induction' e using Sym2.ind with a b
@@ -38,8 +34,7 @@ lemma edgeSet_map {G : SimpleGraph α} {H : SimpleGraph β} (f : G →g H) (G' :
   rintro ⟨a, b, hab, rfl, rfl⟩
   exact ⟨b, a, hab.symm, rfl, rfl⟩
 
-@[simp]
-lemma edgeSet_coe {G' : G.Subgraph} : G'.coe.edgeSet = Sym2.map (↑) ⁻¹' G'.edgeSet := by
+@[simp] lemma edgeSet_coe {G' : G.Subgraph} : G'.coe.edgeSet = Sym2.map (↑) ⁻¹' G'.edgeSet := by
   ext e; induction' e using Sym2.ind with a b; simp
 
 lemma image_coe_edgeSet_coe (G' : G.Subgraph) : Sym2.map (↑) '' G'.coe.edgeSet = G'.edgeSet := by

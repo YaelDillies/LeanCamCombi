@@ -60,8 +60,7 @@ variable {p : ℝ≥0} (hp : p ≤ 1) (b : Prop)
 lemma mem_support_bernoulli'_iff : b ∈ (bernoulli' p hp).support ↔ if b then p ≠ 0 else p ≠ 1 := by
   simp
 
-@[simp]
-lemma map_not_bernoulli' : (bernoulli' p hp).map Not = bernoulli' (1 - p) tsub_le_self := by
+@[simp] lemma map_not_bernoulli' : (bernoulli' p hp).map Not = bernoulli' (1 - p) tsub_le_self := by
   have : ∀ p : Prop, (Finset.univ.filter fun q : Prop ↦ ¬ q ↔ p) = {¬ p} := by
     rintro p
     ext q
@@ -74,5 +73,4 @@ lemma map_not_bernoulli' : (bernoulli' p hp).map Not = bernoulli' (1 - p) tsub_l
   split_ifs <;> simp [ENNReal.sub_sub_cancel WithTop.one_ne_top (ENNReal.coe_le_coe.2 hp)]
 
 end bernoulli
-
 end Pmf

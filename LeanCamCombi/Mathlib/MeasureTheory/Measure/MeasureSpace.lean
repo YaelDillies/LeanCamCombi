@@ -13,8 +13,7 @@ variable [MeasurableSpace α] {μ : Measure α}
 
 namespace Measure
 
-@[simp]
-lemma map_eq_zero_iff (hf : AEMeasurable f μ) : μ.map f = 0 ↔ μ = 0 := by
+@[simp] lemma map_eq_zero_iff (hf : AEMeasurable f μ) : μ.map f = 0 ↔ μ = 0 := by
   refine' ⟨fun h ↦ _, _⟩
   · replace h := congr_fun (congr_arg (↑) h) Set.univ
     rwa [map_apply_of_aemeasurable hf MeasurableSet.univ, Set.preimage_univ, coe_zero,
@@ -22,8 +21,7 @@ lemma map_eq_zero_iff (hf : AEMeasurable f μ) : μ.map f = 0 ↔ μ = 0 := by
   · rintro rfl
     exact Measure.map_zero _
 
-@[simp]
-lemma mapₗ_eq_zero_iff (hf : Measurable f) : Measure.mapₗ f μ = 0 ↔ μ = 0 := by
+@[simp] lemma mapₗ_eq_zero_iff (hf : Measurable f) : Measure.mapₗ f μ = 0 ↔ μ = 0 := by
   classical
   rw [←map_eq_zero_iff hf.aemeasurable, map, dif_pos hf.aemeasurable,
     mapₗ_congr hf hf.aemeasurable.measurable_mk]
@@ -69,8 +67,7 @@ lemma comap_compl (h : Measurable (compl : β → β)) (f : α → β) :
     MeasurableSpace.comap (fun a ↦ (f a)ᶜ) inferInstance = MeasurableSpace.comap f inferInstance :=
   comap_of_involutive compl_involutive h _
 
-@[simp]
-lemma comap_not :
+@[simp] lemma comap_not :
     MeasurableSpace.comap (fun a ↦ ¬ p a) inferInstance = MeasurableSpace.comap p inferInstance :=
   comap_compl (fun _ _ ↦ by trivial) _
 
