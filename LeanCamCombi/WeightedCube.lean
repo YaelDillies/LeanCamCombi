@@ -36,7 +36,7 @@ structure IsBernoulliSeq (X : Ω → Set α) (p : outParam ℝ≥0) (μ : Measur
   protected iIndepFun : iIndepFun inferInstance (fun a ω ↦ a ∈ X ω) μ
   protected map : ∀ a, Measure.map (fun ω ↦ a ∈ X ω) μ = (Pmf.bernoulli' p le_one).toMeasure
 
-variable (X Y : Ω → Set α) (μ : Measure Ω) {p q : ℝ≥0} (hX : IsBernoulliSeq X p μ)
+variable {X Y : Ω → Set α} {μ : Measure Ω} {p q : ℝ≥0} (hX : IsBernoulliSeq X p μ)
   (hY : IsBernoulliSeq Y q μ)
 
 namespace IsBernoulliSeq
@@ -60,8 +60,8 @@ protected lemma nullMeasurableSet (a : α) : NullMeasurableSet {ω | a ∈ X ω}
   exact (hX.aemeasurable a).nullMeasurableSet_preimage MeasurableSpace.measurableSet_top
 
 protected lemma identDistrib (a j : α) : IdentDistrib (fun ω ↦ a ∈ X ω) (fun ω ↦ X ω j) μ μ :=
-  { aemeasurable_fst := hX.aemeasurable _ _ _
-    aemeasurable_snd := hX.aemeasurable _ _ _
+  { aemeasurable_fst := hX.aemeasurable _
+    aemeasurable_snd := hX.aemeasurable _
     map_eq := (hX.map _).trans (hX.map _).symm }
 
 @[simp]
@@ -92,8 +92,6 @@ protected lemma meas [Fintype α] (s : Finset α) :
     exact ⟨{True}, trivial, by ext; simp⟩
   · simp only [mem_setOf_eq, Finset.mem_coe, iff_false_iff, *]
     exact ⟨{False}, trivial, by ext; simp⟩
-
-variable {X Y μ}
 
 /-- The complement of a sequence of independent `p`-Bernoulli random variables is a sequence of
 independent `1 - p`-Bernoulli random variables. -/
