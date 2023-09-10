@@ -2,32 +2,23 @@ on:
   pull_request:
 
 jobs:
-  update_main_branch_and_build:
+  build_project:
     runs-on: ubuntu-latest
-    name: Update a branch and build project
+    name: Build project
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     steps:
-      - name: checkout project
+      - name: Checkout project
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: install elan
-        run: |
-          set -o pipefail
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- --default-toolchain none -y
-          ~/.elan/bin/lean --version
-          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      - name: Install elan
+        run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.0.0
 
-      - name: install python
-        uses: actions/setup-python@v3
-        with:
-          python-version: 3.9
+      - name: Get cache
+        run: ~/.elan/bin/lake exe cache get
 
-      - name: lean deps
-        run: |
-          pip install mathlibtools
-
-      - name: build project
-        run: |
-          leanproject get-mathlib-cache
-          lean --make src
+      - name: Build project
+        run: ~/.elan/bin/lake build LeanCamCombi
