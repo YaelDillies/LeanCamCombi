@@ -37,8 +37,7 @@ end OfFintype
 
 variable [MeasurableSpace α] [MeasurableSpace β] {f : α → β}
 
-lemma toMeasure_ne_zero (p : Pmf α) : p.toMeasure ≠ 0 :=
-  IsProbabilityMeasure.ne_zero p.toMeasure
+lemma toMeasure_ne_zero (p : Pmf α) : p.toMeasure ≠ 0 := IsProbabilityMeasure.ne_zero p.toMeasure
 
 @[simp]
 lemma map_toMeasure (p : Pmf α) (hf : Measurable f) : p.toMeasure.map f = (p.map f).toMeasure := by
@@ -53,14 +52,13 @@ noncomputable def bernoulli' (p : ℝ≥0) (h : p ≤ 1) : Pmf Prop :=
 
 variable {p : ℝ≥0} (hp : p ≤ 1) (b : Prop)
 
-@[simp]
-lemma bernoulli'_apply : bernoulli' p hp b = if b then (p : ℝ≥0∞) else 1 - p := rfl
+@[simp] lemma bernoulli'_apply : bernoulli' p hp b = if b then (p : ℝ≥0∞) else 1 - p := rfl
 
-@[simp]
-lemma support_bernoulli' : (bernoulli' p hp).support = {b | if b then p ≠ 0 else p ≠ 1} :=
+@[simp] lemma support_bernoulli' : (bernoulli' p hp).support = {b | if b then p ≠ 0 else p ≠ 1} :=
   Set.ext fun b ↦ by by_cases b <;> simp [h, hp.lt_iff_ne]
 
-lemma mem_support_bernoulli'_iff : b ∈ (bernoulli' p hp).support ↔ if b then p ≠ 0 else p ≠ 1 := by simp
+lemma mem_support_bernoulli'_iff : b ∈ (bernoulli' p hp).support ↔ if b then p ≠ 0 else p ≠ 1 := by
+  simp
 
 @[simp]
 lemma map_not_bernoulli' : (bernoulli' p hp).map Not = bernoulli' (1 - p) tsub_le_self := by

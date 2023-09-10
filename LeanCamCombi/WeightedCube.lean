@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Kexing Ying
 -/
 import Mathlib.Algebra.BigOperators.Basic
-import LeanCamCombi.Mathlib.Pmf
 import Mathlib.Probability.IdentDistrib
+import LeanCamCombi.Mathlib.Pmf
 import LeanCamCombi.Mathlib.Probability.Independence.Basic
 
 /-!
@@ -21,7 +21,7 @@ independent Bernoulli random variables.
 * `ProbabilityTheory.IsBernoulliSeq`: Typeclass for a sequence of iid Bernoulli random variables with parameter
 -/
 
-open MeasureTheory Set
+open Fintype MeasureTheory Set
 open scoped MeasureTheory ProbabilityTheory ENNReal NNReal
 
 namespace ProbabilityTheory
@@ -75,17 +75,17 @@ lemma meas_apply (a : α) : μ {ω | a ∈ X ω} = p := by
 variable [IsProbabilityMeasure (μ : Measure Ω)]
 
 protected lemma meas [Fintype α] (s : Finset α) :
-    μ {ω | {a | a ∈ X ω} = s} = p ^ s.card * (1 - p) ^ (Fintype.card α - s.card) := by
+    μ {ω | {a | a ∈ X ω} = s} = (p : ℝ≥0∞) ^ s.card * (1 - p : ℝ≥0∞) ^ (card α - s.card) := by
   classical
   simp_rw [ext_iff, setOf_forall]
   rw [hX.iIndepFun.meas_iInter, ←s.prod_mul_prod_compl, Finset.prod_eq_pow_card,
     Finset.prod_eq_pow_card, Finset.card_compl]
   · rintro a hi
     rw [Finset.mem_compl] at hi
-    simp only [hi, ←compl_setOf, null_measurable_set.prob_compl_eq_one_sub, mem_setOf_eq,
-      Finset.mem_coe, iff_false_iff, hX.null_measurable_set, meas_apply]
+    simp only [hi, ←compl_setOf, NullMeasurableSet.prob_compl_eq_one_sub, mem_setOf_eq,
+      Finset.mem_coe, iff_false_iff, hX.nullMeasurableSet, hX.meas_apply]
   · rintro a hi
-    simp only [hi, mem_setOf_eq, Finset.mem_coe, iff_true_iff, meas_apply]
+    simp only [hi, mem_setOf_eq, Finset.mem_coe, iff_true_iff, hX.meas_apply]
   rintro a
   by_cases a ∈ s
   · simp only [mem_setOf_eq, Finset.mem_coe, iff_true_iff, *]
@@ -103,35 +103,32 @@ lemma compl : IsBernoulliSeq (fun ω ↦ (X ω)ᶜ) (1 - p) μ where
     simpa only [iIndepFun_iff, mem_compl_iff, MeasurableSpace.comap_not] using hX.iIndepFun
   map a := by
     have : Measurable Not := fun _ _ ↦ trivial
-    simp only [mem_compl_iff]
-    rw [←(this.aemeasurable _).map_map_of_aemeasurable (hX.aemeasurable _),
-      hX.map, Pmf.map_toMeasure _ this, Pmf.map_not_bernoulli']
+    refine' (this.aemeasurable.map_map_of_aemeasurable (hX.aemeasurable _)).symm.trans _
+    rw [hX.map, Pmf.map_toMeasure _ this, Pmf.map_not_bernoulli']
 
 /-- The intersection of a sequence of independent `p`-Bernoulli and `q`-Bernoulli random variables
 is a sequence of independent `p * q`-Bernoulli random variables. -/
 protected lemma inter (h : IndepFun X Y μ) : IsBernoulliSeq (fun ω ↦ X ω ∩ Y ω) (p * q) μ where
   le_one := mul_le_one' hX.le_one hY.le_one
   iIndepFun := by
-    refine' IndepIndep_comap ((Indep_set_iff_measure_Inter_eq_prod fun i ↦ _).2 _)
-    refine' Measurableinter _ _
-    sorry
-    -- needs refactor of `probability.independence`
-    sorry
-    -- needs refactor of `probability.independence`
+    refine' iIndepSet.Indep_comap ((iIndepSet_iff_meas_iInter fun i ↦ _).2 _)
+    refine' MeasurableSet.inter _ _
+    sorry -- needs refactor of `Probability.Independence.Basic`
+    sorry -- needs refactor of `Probability.Independence.Basic`
     refine' fun s ↦ _
-    -- We abused defeq using `Indep_set.Indep_comap`, so we fix it here
+    -- We abused defeq using `iIndepSet.Indep_comap`, so we fix it here
     change μ (⋂ i ∈ s, {ω | X ω i} ∩ {ω | Y ω i}) = s.prod fun i ↦ μ ({ω | X ω i} ∩ {ω | Y ω i})
     simp_rw [iInter_inter_distrib]
-    rw [h, hX.iIndepFun, hY.iIndepFun, ←Finset.prod_mul_distrib]
-    refine' Finset.prod_congr rfl fun i hi ↦ (h _ _ _ _).symm
+    rw [h.meas_inter, hX.iIndepFun.meas_biInter, hY.iIndepFun.meas_biInter,
+      ←Finset.prod_mul_distrib]
+    refine' Finset.prod_congr rfl fun i hi ↦ (h.meas_inter _ _).symm
     sorry -- needs refactor of `Probability.Independence.Basic`
     sorry -- needs refactor of `Probability.Independence.Basic`
     sorry -- needs refactor of `Probability.Independence.Basic`
     sorry -- needs refactor of `Probability.Independence.Basic`
     sorry -- needs refactor of `Probability.Independence.Basic`
     sorry -- needs refactor of `Probability.Independence.Basic`
-  map a := by
-    sorry
+  map a := sorry
 
 /-- The union of a sequence of independent `p`-Bernoulli random variables and `q`-Bernoulli random
 variables is a sequence of independent `p + q - p * q`-Bernoulli random variables. -/
