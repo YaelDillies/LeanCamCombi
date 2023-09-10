@@ -45,7 +45,7 @@ open scoped BigOperators Classical
 
 namespace SimpleGraph
 
-variable {α β γ : Type _} {G G₁ G₂ G₃ : SimpleGraph α} {H : SimpleGraph β} {I : SimpleGraph γ}
+variable {α β γ : Type*} {G G₁ G₂ G₃ : SimpleGraph α} {H : SimpleGraph β} {I : SimpleGraph γ}
 
 /-!
 ### Containment

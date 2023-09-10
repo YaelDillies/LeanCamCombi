@@ -31,7 +31,7 @@ as probabilistic events, the size of the certificator `𝒜 □ ℬ` corresponds
 
 open scoped Classical FinsetFamily
 
-variable {α : Type _}
+variable {α : Type*}
 
 namespace Finset
 section BooleanAlgebra

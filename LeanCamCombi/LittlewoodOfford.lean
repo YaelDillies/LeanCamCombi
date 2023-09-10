@@ -15,7 +15,7 @@ import Mathlib.Order.Partition.Finpartition
 open scoped BigOperators
 
 namespace Finset
-variable {ι E : Type _} [NormedAddCommGroup E] [NormedSpace ℝ E] {𝒜 : Finset (Finset ι)}
+variable {ι E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {𝒜 : Finset (Finset ι)}
   {s : Finset ι} {f : ι → E} {r : ℝ}
 
 lemma exists_littlewood_offord_partition [DecidableEq ι] (hr : 0 < r) (hf : ∀ i ∈ s, r ≤ ‖f i‖) :

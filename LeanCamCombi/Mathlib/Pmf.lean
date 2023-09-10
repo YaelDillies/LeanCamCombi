@@ -7,7 +7,7 @@ open MeasureTheory
 open scoped BigOperators Classical ENNReal NNReal
 
 namespace Pmf
-variable {α β : Type _}
+variable {α β : Type*}
 
 section OfFintype
 variable [Fintype α] [Fintype β]

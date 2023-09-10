@@ -6,7 +6,7 @@ import LeanCamCombi.Mathlib.Logic.Basic
 open Function MeasureTheory Set
 open scoped ENNReal MeasureTheory
 
-variable {α β : Type _} [MeasurableSpace β] {f g : α → β} {s : Set β}
+variable {α β : Type*} [MeasurableSpace β] {f g : α → β} {s : Set β}
 
 namespace MeasureTheory
 variable [MeasurableSpace α] {μ : Measure α}
@@ -40,7 +40,7 @@ instance Prop.measurableSingletonClass : MeasurableSingletonClass Prop := ⟨fun
 instance {α} : MeasurableSpace (Set α) := ⊤
 instance {α} : MeasurableSingletonClass (Set α) := ⟨fun _ ↦ trivial⟩
 
-instance isProbabilityMeasure_neZero {α : Type _} [MeasurableSpace α] {μ : Measure α}
+instance isProbabilityMeasure_neZero {α : Type*} [MeasurableSpace α] {μ : Measure α}
     [IsProbabilityMeasure μ] : NeZero μ :=
   ⟨IsProbabilityMeasure.ne_zero μ⟩
 

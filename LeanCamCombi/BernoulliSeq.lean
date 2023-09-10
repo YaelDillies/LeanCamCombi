@@ -25,7 +25,7 @@ open Fintype MeasureTheory Set
 open scoped MeasureTheory ProbabilityTheory ENNReal NNReal
 
 namespace ProbabilityTheory
-variable {α Ω : Type _} [MeasurableSpace Ω]
+variable {α Ω : Type*} [MeasurableSpace Ω]
 
 /-- We say a `set α`-valued random is a sequence of iid Bernoulli random variables with parameter
 `p` if `p ≤ 1`, the `a` projections (for `a : α`) are independent and are `p`-Bernoulli distributed.

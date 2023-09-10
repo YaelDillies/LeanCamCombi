@@ -17,7 +17,7 @@ open MeasureTheory ProbabilityTheory
 
 open scoped MeasureTheory ProbabilityTheory ENNReal NNReal
 
-variable {α Ω : Type _} [MeasurableSpace Ω]
+variable {α Ω : Type*} [MeasurableSpace Ω]
 
 /-- A sequence iid. real valued Bernoulli random variables with parameter `p ≤ 1`. -/
 abbrev ErdosRenyi (G : Ω → SimpleGraph α) [∀ ω, DecidableRel (G ω).Adj] (p : ℝ≥0)

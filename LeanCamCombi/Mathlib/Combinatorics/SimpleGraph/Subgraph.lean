@@ -7,7 +7,7 @@ import LeanCamCombi.Mathlib.Logic.Relation
 
 open Function
 
-variable {α β γ V : Type _} {G H : SimpleGraph V}
+variable {α β γ V : Type*} {G H : SimpleGraph V}
 
 namespace SimpleGraph
 

@@ -5,7 +5,7 @@ open Finset
 open scoped Classical
 
 namespace SimpleGraph
-variable {α : Type _} [Fintype α] (G : SimpleGraph α) [Fintype G.edgeSet]
+variable {α : Type*} [Fintype α] (G : SimpleGraph α) [Fintype G.edgeSet]
 
 def fullEdgeDensity : ℚ := G.edgeFinset.card / Fintype.card α
 

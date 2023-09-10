@@ -6,7 +6,7 @@ open scoped BigOperators
 
 namespace ProbabilityTheory
 
-variable {Ω ι : Type _} {β : ι → Type*} [MeasurableSpace Ω]
+variable {Ω ι : Type*} {β : ι → Type*} [MeasurableSpace Ω]
   {π : ι → Set (Set Ω)} {μ : Measure Ω} {S : Finset ι} {s : ι → Set Ω} {f : ∀ i, Ω → β i}
 
 lemma iIndepSets.meas_biInter (h : iIndepSets π μ) (hs : ∀ i, i ∈ S → s i ∈ π i) :

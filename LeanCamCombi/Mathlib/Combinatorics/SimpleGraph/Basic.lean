@@ -2,7 +2,7 @@ import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Data.FunLike.Fintype
 import LeanCamCombi.Mathlib.Logic.Basic
 
-variable {α β : Type _} {G H : SimpleGraph α} {s : Set (Sym2 α)}
+variable {α β : Type*} {G H : SimpleGraph α} {s : Set (Sym2 α)}
 
 namespace SimpleGraph
 

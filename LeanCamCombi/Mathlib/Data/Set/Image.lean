@@ -1,6 +1,6 @@
 import Mathlib.Data.Set.Image
 
-variable {α β : Type _}
+variable {α β : Type*}
 
 namespace Set
 

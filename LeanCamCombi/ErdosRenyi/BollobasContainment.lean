@@ -19,7 +19,7 @@ open Asymptotics Filter MeasureTheory ProbabilityTheory
 
 open scoped MeasureTheory ProbabilityTheory ENNReal NNReal SimpleGraph Topology
 
-variable {α β Ω : Type _} [Fintype β] {G : ℕ → Ω → SimpleGraph α} (H : SimpleGraph β)
+variable {α β Ω : Type*} [Fintype β] {G : ℕ → Ω → SimpleGraph α} (H : SimpleGraph β)
   [Fintype H.edgeSet] [∀ n ω, DecidableRel (G n ω).Adj] [MeasurableSpace Ω] (μ : Measure Ω)
   [IsProbabilityMeasure μ] {p : ℕ → ℝ≥0} (hG : ∀ n, ErdosRenyi (G n) (p n) μ)
 

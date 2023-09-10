@@ -1,8 +1,9 @@
+import Mathlib.Logic.Function.Basic
 import Mathlib.Logic.Relation
 
 open Function
 
-variable {α β γ δ ε ν : Type _} {f : α → γ} {g : β → δ}
+variable {α β γ δ ε ν : Type*} {f : α → γ} {g : β → δ}
 
 namespace Relation
 

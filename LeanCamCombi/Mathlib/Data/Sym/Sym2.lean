@@ -2,7 +2,7 @@ import Mathlib.Data.Sym.Sym2
 
 open Function
 
-variable {α β : Type _} {e : Sym2 α} {f : α → β}
+variable {α β : Type*} {e : Sym2 α} {f : α → β}
 
 namespace Sym2
 

@@ -18,18 +18,13 @@ of the Cambridge Part II course Graph Theory.
 If you solve a question in Lean, feel free to open a Pull Request on Github!
 -/
 
-
 open Fintype (card)
-
 open Function SimpleGraph
-
 open scoped BigOperators Cardinal
 
 namespace GraphTheory
-
-namespace Es1
-
-variable {ι α β γ : Type _}
+namespace ES1
+variable {ι α β γ : Type*}
 
 /-!
 ### Question 1
@@ -58,7 +53,7 @@ Show that every graph $$G$$, with $$|G| > 2$$, has two vertices of the same degr
 
 
 -- PLanarity is hard
-lemma q3 [Fintype α] (G : SimpleGraph α) [DecidableRel G.adj] :
+lemma q3 [Fintype α] (G : SimpleGraph α) [DecidableRel G.Adj] :
     ∃ a b, a ≠ b ∧ G.degree a = G.degree b :=
   sorry
 
@@ -84,7 +79,7 @@ Show that if $$G$$ is acyclic and $$|G| ≥ 1$$, then $$e(G) ≤ n − 1$$.
 
 
 -- Note: The statement is true without `nonempty α` due to nat subtraction.
-lemma q5 [Fintype α] [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.adj] (hG : G.IsAcyclic) :
+lemma q5 [Fintype α] [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.Adj] (hG : G.IsAcyclic) :
     G.edgeFinset.card ≤ card α - 1 := by
   cases isEmpty_or_nonempty α
   · simp
@@ -101,12 +96,12 @@ degree sequence of a tree if and only if $$\sum_{i=1}^n d_i = 2n − 2$$.
 
 
 /-- The finset of degrees of a finite graph. -/
-def degreeSequence [Fintype α] (G : SimpleGraph α) [DecidableRel G.adj] : Multiset ℕ :=
+def degreeSequence [Fintype α] (G : SimpleGraph α) [DecidableRel G.Adj] : Multiset ℕ :=
   Finset.univ.val.map fun a ↦ G.degree a
 
-lemma q6 [Fintype α] (s : Multiset ℕ) (hs : s.card = card α) (h₀ : 0 ∉ s) :
-    s.Sum = 2 * card α - 2 ↔
-      ∃ (G : SimpleGraph α) (_ : DecidableRel G.adj), degree_sequence G = s :=
+lemma q6 [Fintype α] (s : Multiset ℕ) (hs : Multiset.card s = card α) (h₀ : 0 ∉ s) :
+    s.sum = 2 * card α - 2 ↔
+      ∃ (G : SimpleGraph α) (_ : DecidableRel G.Adj), degreeSequence G = s :=
   sorry
 
 /-!
@@ -132,11 +127,11 @@ average degree of $$G$$ is $$d$$ then $$G$$ contains a subgraph with minimum deg
 
 
 /-- The average degree of a simple graph is the average of its degrees. -/
-def averageDegree [Fintype α] (G : SimpleGraph α) [DecidableRel G.adj] : ℚ :=
+def averageDegree [Fintype α] (G : SimpleGraph α) [DecidableRel G.Adj] : ℚ :=
   ∑ a, G.degree a / card α
 
-lemma q8 [Fintype α] (G : SimpleGraph α) [DecidableRel G.adj] :
-    ∃ (H : Subgraph G) (_ : DecidableRel H.adj), ∀ a, average_degree G / 2 ≤ H.degree a :=
+lemma q8 [Fintype α] (G : SimpleGraph α) [DecidableRel G.Adj] :
+    ∃ (H : Subgraph G) (_ : DecidableRel H.Adj), ∀ a, averageDegree G / 2 ≤ H.degree a :=
   sorry
 
 /-!
@@ -149,7 +144,7 @@ decomposed into cycles if and only if all degrees of $$G$$ are even.
 
 
 -- This looks painful as a translation. It will likely get better once we have Kyle's eulerian paths
-lemma q9 [Fintype α] (G : SimpleGraph α) [DecidableRel G.adj] :
+lemma q9 [Fintype α] (G : SimpleGraph α) [DecidableRel G.Adj] :
     (∃ 𝒜 : Finset (Σ a, G.Path a a),
         (∀ p q : Σ a, G.Path a a,
             (p.2 : G.Walk p.1 p.1).edges.Disjoint (q.2 : G.Walk q.1 q.1).edges) ∧
@@ -168,12 +163,12 @@ $$1, 2, \dots, n/2$$ and $$n$$.
 
 
 /-- The clique number of a graph is the size of its largest clique. -/
-def cliqueNumber [Fintype α] [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.adj] : ℕ :=
+def cliqueNumber [Fintype α] [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.Adj] : ℕ :=
   (Nat.findGreatest fun n ↦ ∃ s, G.IsNClique n s) $ card α
 
 lemma q10 [Fintype α] [DecidableEq α] (n : ℕ) :
-    (∃ (G : SimpleGraph α) (_ : DecidableRel G.adj) (k : _),
-        G.is_regular_of_degree k ∧ clique_number G = n) ↔
+    (∃ (G : SimpleGraph α) (_ : DecidableRel G.Adj) (k : _),
+        G.IsRegularOfDegree k ∧ cliqueNumber G = n) ↔
       n ≤ card α / 2 ∨ n = card α :=
   sorry
 
@@ -194,11 +189,11 @@ the graphs $$G[A]$$ and $$G[B]$$ are of even degree.
 
 -- PLanarity is hard
 -- Note: This is a bit general than the statement, because we allow partitioning any set of vertices
-lemma q12 [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.adj] (s : Finset α) :
+lemma q12 [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.Adj] (s : Finset α) :
     ∃ u v,
       Disjoint u v ∧
         u ∪ v = s ∧
-          (∀ a ∈ u, Even (u.filter $ G.adj a).card) ∧ ∀ a ∈ v, Even (v.filter $ G.adj a).card :=
+          (∀ a ∈ u, Even (u.filter $ G.Adj a).card) ∧ ∀ a ∈ v, Even (v.filter $ G.Adj a).card :=
   sorry
 
 /-!
@@ -228,21 +223,20 @@ $$G$$ does contain a matching from $$X$$ to $$Y$$. Does this remain true if $$G$
 all degrees of $$X$$ are finite (while degrees in $$Y$$ have no restriction)?
 -/
 
-
 -- This translation looks slightly painful because of the `cardinal`.
 lemma q14_part1 :
     ∃ r : ℕ → ℕ → Prop,
-      (∀ A : Finset ℕ, (A.card : Cardinal) ≤ (#Rel.image r A)) ∧
+      (∀ A : Finset ℕ, (A.card : Cardinal) ≤ #(Rel.image r A)) ∧
         ∀ f : ℕ → ℕ, Injective f → ∃ n, ¬ r n (f n) :=
   sorry
 
 lemma q14_part2 [DecidableEq β] [Countable α] [Countable β] (r : α → β → Prop)
-    [∀ a, Fintype (Rel.image r {a})] (hr : ∀ A : Finset α, A.card ≤ card ↥(Rel.image r A)) :
+    [∀ a, Fintype (Rel.image r {a})] (hr : ∀ A : Finset α, A.card ≤ card (Rel.image r A)) :
     ∃ f : α → β, Injective f ∧ ∀ a, r a (f a) :=
   sorry
 
 lemma q14_part3 [DecidableEq β] (r : α → β → Prop) [∀ a, Fintype (Rel.image r {a})]
-    (hr : ∀ A : Finset α, A.card ≤ card ↥(Rel.image r A)) :
+    (hr : ∀ A : Finset α, A.card ≤ card (Rel.image r A)) :
     ∃ f : α → β, Injective f ∧ ∀ a, r a (f a) :=
   sorry
 
@@ -259,26 +253,20 @@ a metric space $$M = ({x_1, \dots, x_n}, d_M)$$ on $$n$$ points so that every fu
 $$f : M → ℝ^2$$ has distortion $$> cn$$?
 -/
 
-
-/- ./././Mathport/Syntax/Translate/Expr.lean:107:6: warning: expanding binder group (a b) -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:107:6: warning: expanding binder group (a b) -/
 /-- The distortion of a function `f` between metric spaces is the ratio between the maximum and
 minimum of `dist (f a) (f b) / dist a b`. -/
 noncomputable def distortion [PseudoMetricSpace α] [PseudoMetricSpace β] (f : α → β) : ℝ :=
   (⨆ (a) (b), dist (f a) (f b) / dist a b) / ⨅ (a) (b), dist (f a) (f b) / dist a b
 
 lemma q15_part1 :
-    ∃ ε : ℝ,
-      0 < ε ∧
-        ∀ (α) [Fintype α],
-          ∃ _ : MetricSpace α, ∀ f : α → ℝ × ℝ, ε * Real.sqrt (card α) ≤ distortion f :=
+    ∃ ε : ℝ, 0 < ε ∧ ∀ (α) [Fintype α],
+      ∃ _ : MetricSpace α, ∀ f : α → ℝ × ℝ, ε * Real.sqrt (card α) ≤ distortion f :=
   sorry
 
 lemma q15_part2 :
-    ∃ ε : ℝ,
-      0 < ε ∧ ∀ (α) [Fintype α], ∃ _ : MetricSpace α, ∀ f : α → ℝ × ℝ, ε * card α ≤ distortion f :=
+    ∃ ε : ℝ, 0 < ε ∧ ∀ (α) [Fintype α],
+      ∃ _ : MetricSpace α, ∀ f : α → ℝ × ℝ, ε * card α ≤ distortion f :=
   sorry
 
-end Es1
-
+end ES1
 end GraphTheory
