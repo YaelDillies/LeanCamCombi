@@ -2,12 +2,36 @@
  "packagesDir": "lake-packages",
  "packages":
  [{"git":
+   {"url": "https://github.com/xubaiw/CMark.lean",
+    "subDir?": null,
+    "rev": "0077cbbaa92abf855fc1c0413e158ffd8195ec77",
+    "opts": {},
+    "name": "CMark",
+    "inputRev?": "main",
+    "inherited": true}},
+  {"git":
    {"url": "https://github.com/EdAyers/ProofWidgets4",
     "subDir?": null,
     "rev": "a0c2cd0ac3245a0dade4f925bcfa97e06dd84229",
     "opts": {},
     "name": "proofwidgets",
     "inputRev?": "v0.0.13",
+    "inherited": true}},
+  {"git":
+   {"url": "https://github.com/leanprover/doc-gen4",
+    "subDir?": null,
+    "rev": "f7307953d84be8b1edaff97436e67434111244b0",
+    "opts": {},
+    "name": "«doc-gen4»",
+    "inputRev?": "main",
+    "inherited": false}},
+  {"git":
+   {"url": "https://github.com/fgdorais/lean4-unicode-basic",
+    "subDir?": null,
+    "rev": "f09250282cea3ed8c010f430264d9e8e50d7bc32",
+    "opts": {},
+    "name": "«lean4-unicode-basic»",
+    "inputRev?": "main",
     "inherited": true}},
   {"git":
    {"url": "https://github.com/mhuisi/lean4-cli.git",
@@ -20,7 +44,7 @@
   {"git":
    {"url": "https://github.com/leanprover-community/mathlib4.git",
     "subDir?": null,
-    "rev": "a5c7037917334676f4a8af94f2c98f773adae880",
+    "rev": "83d7426bfc4e802df64c373031a369a895b54bfa",
     "opts": {},
     "name": "mathlib",
     "inputRev?": null,
@@ -40,6 +64,14 @@
     "opts": {},
     "name": "aesop",
     "inputRev?": "master",
+    "inherited": true}},
+  {"git":
+   {"url": "https://github.com/hargonix/LeanInk",
+    "subDir?": null,
+    "rev": "2447df5cc6e48eb965c3c3fba87e46d353b5e9f1",
+    "opts": {},
+    "name": "leanInk",
+    "inputRev?": "doc-gen",
     "inherited": true}},
   {"git":
    {"url": "https://github.com/leanprover/std4",
