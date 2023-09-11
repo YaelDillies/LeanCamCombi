@@ -1,8 +1,7 @@
 # Cambridge combinatorics in Lean
 
 [![.github/workflows/push_main.yml](https://github.com/YaelDillies/LeanCamCombi/actions/workflows/push_main.yml/badge.svg)](https://github.com/YaelDillies/LeanCamCombi/actions/workflows/push_main.yml)
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/YaelDillies/LeanCamCombi)
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/YaelDillies/LeanAPAP)
 
 The purpose of this repository is to *digitise* some mathematical definitions, theorem statements and theorem proofs. Digitisation, or formalisation, is a process where the source material, typically a mathematical textbook or a pdf file or website or video, is transformed into definitions in a target system consisting of a computer implementation of a logical theory (such as set theory or type theory).
 
