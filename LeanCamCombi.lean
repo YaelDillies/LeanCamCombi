@@ -6,12 +6,17 @@ import LeanCamCombi.ErdosRenyi.GiantComponent
 import LeanCamCombi.ExampleSheets.Graph.ES1
 import LeanCamCombi.ExampleSheets.Graph.ES2
 import LeanCamCombi.LittlewoodOfford
+import LeanCamCombi.Mathlib.Algebra.BigOperators.Basic
+import LeanCamCombi.Mathlib.Algebra.GroupWithZero.Units.Lemmas
+import LeanCamCombi.Mathlib.Combinatorics.SetFamily.AhlswedeZhang
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Containment
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Data.Finset.Basic
+import LeanCamCombi.Mathlib.Data.Finset.Sups
 import LeanCamCombi.Mathlib.Data.Fintype.Basic
+import LeanCamCombi.Mathlib.Data.Fintype.Powerset
 import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Sym.Sym2
 import LeanCamCombi.Mathlib.Logic.Basic
