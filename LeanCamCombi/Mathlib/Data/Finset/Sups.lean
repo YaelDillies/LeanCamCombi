@@ -7,16 +7,14 @@ This file defines a few binary operations on `Finset α` for use in set family c
 
 ## Main declarations
 
-* `s \\ t`: Finset of elements of the form `a \ b` where `a ∈ s`, `b ∈ t`.
-* `s ⊼ t`: Finset of elements of the form `a ⊓ b` where `a ∈ s`, `b ∈ t`.
-* `Finset.disjDiffs s t`: Finset of elements of the form `a \ b` where `a ∈ s`, `b ∈ t` and `a`
-  and `b` are disjoint.
+* `Finset.diffs`: Finset of elements of the form `a \ b` where `a ∈ s`, `b ∈ t`.
+* `Finset.compls`: Finset of elements of the form `aᶜ` where `a ∈ s`.
 
 ## Notation
 
 We define the following notation in locale `FinsetFamily`:
-* `s \\ t`
-* `s\^c ` for `Finset.disjDiffs s t`
+* `s \\ t` for `Finset.diffs`
+* `sᶜˢ` for `Finset.compls`
 
 ## References
 
@@ -25,14 +23,14 @@ We define the following notation in locale `FinsetFamily`:
 
 -- TODO: Is there a better spot for those two instances?
 namespace Finset
-variable {α : Type*} [Preorder α] {s t : Set α} {a : α}
+variable {α : Type*} [Preorder α] [@DecidableRel α (· ≤ ·)] {s : Finset α}
 
-instance decidablePredMemUpperClosure (s : Finset α) [@DecidableRel α (· ≤ ·)] :
-    DecidablePred (· ∈ upperClosure (s : Set α)) := fun _ => decidableExistsAndFinset
+instance decidablePredMemUpperClosure : DecidablePred (· ∈ upperClosure (s : Set α)) :=
+  fun _ ↦ decidableExistsAndFinset
 #align finset.decidable_pred_mem_upper_closure Finset.decidablePredMemUpperClosure
 
-instance decidablePredMemLowerClosure (s : Finset α) [@DecidableRel α (· ≤ ·)] :
-    DecidablePred (· ∈ lowerClosure (s : Set α)) := fun _ => decidableExistsAndFinset
+instance decidablePredMemLowerClosure : DecidablePred (· ∈ lowerClosure (s : Set α)) :=
+  fun _ ↦ decidableExistsAndFinset
 #align finset.decidable_pred_mem_lower_closure Finset.decidablePredMemLowerClosure
 
 end Finset
@@ -40,13 +38,22 @@ end Finset
 open Function
 open scoped FinsetFamily
 
-variable {α : Type*} [DecidableEq α]
+variable {F α β : Type*} [DecidableEq α] [DecidableEq β]
 
 namespace Finset
 section SemilatticeSup
-variable [SemilatticeSup α] [@DecidableRel α (· ≤ ·)]
+variable [SemilatticeSup α] [SemilatticeSup β] [SupHomClass F α β] {s : Finset α}
 
-lemma filter_sups_le (s t : Finset α) (a : α) :
+lemma image_sups (f : F) (s t : Finset α) : image f (s ⊻ t) = image f s ⊻ image f t :=
+  image_image₂_distrib $ map_sup f
+
+lemma map_sups (f : F) (hf) (s t : Finset α) :
+    map ⟨f, hf⟩ (s ⊻ t) = map ⟨f, hf⟩ s ⊻ map ⟨f, hf⟩ t := by
+  simpa [map_eq_image] using image_sups f s t
+
+lemma subset_sups_self : s ⊆ s ⊻ s := λ _a ha ↦ mem_sups.2 ⟨_, ha, _, ha, sup_idem⟩
+
+lemma filter_sups_le [@DecidableRel α (· ≤ ·)] (s t : Finset α) (a : α) :
     (s ⊻ t).filter (· ≤ a) = s.filter (· ≤ a) ⊻ t.filter (· ≤ a) := by
   ext b
   simp only [mem_filter, mem_sups]
@@ -57,12 +64,25 @@ lemma filter_sups_le (s t : Finset α) (a : α) :
   · rintro ⟨b, hb, c, hc, _, rfl⟩
     exact ⟨⟨_, hb.1, _, hc.1, rfl⟩, _root_.sup_le hb.2 hc.2⟩
 
+variable [Fintype α]
+
+@[simp] lemma univ_sups_univ : (univ : Finset α) ⊻ univ = univ := top_le_iff.1 subset_sups_self
+
 end SemilatticeSup
 
 section SemilatticeInf
-variable [SemilatticeInf α] [@DecidableRel α (· ≤ ·)]
+variable [SemilatticeInf α] [SemilatticeInf β] [InfHomClass F α β] {s : Finset α}
 
-lemma filter_infs_ge (s t : Finset α) (a : α) :
+lemma image_infs (f : F) (s t : Finset α) : image f (s ⊼ t) = image f s ⊼ image f t :=
+  image_image₂_distrib $ map_inf f
+
+lemma map_infs (f : F) (hf) (s t : Finset α) :
+    map ⟨f, hf⟩ (s ⊼ t) = map ⟨f, hf⟩ s ⊼ map ⟨f, hf⟩ t := by
+  simpa [map_eq_image] using image_infs f s t
+
+lemma subset_infs_self : s ⊆ s ⊼ s := λ _a ha ↦ mem_infs.2 ⟨_, ha, _, ha, inf_idem⟩
+
+lemma filter_infs_ge [@DecidableRel α (· ≤ ·)] (s t : Finset α) (a : α) :
     (s ⊼ t).filter (a ≤ ·) = s.filter (a ≤ ·) ⊼ t.filter (a ≤ ·) := by
   ext b
   simp only [mem_filter, mem_infs]
@@ -72,6 +92,42 @@ lemma filter_infs_ge (s t : Finset α) (a : α) :
     exact ⟨_, ⟨hb, ha.1⟩, _, ⟨hc, ha.2⟩, rfl⟩
   · rintro ⟨b, hb, c, hc, _, rfl⟩
     exact ⟨⟨_, hb.1, _, hc.1, rfl⟩, _root_.le_inf hb.2 hc.2⟩
+
+variable [Fintype α]
+
+@[simp] lemma univ_infs_univ : (univ : Finset α) ⊼ univ = univ := top_le_iff.1 subset_infs_self
+
+end SemilatticeInf
+
+variable [DecidableEq α] {𝒜 ℬ : Finset (Finset α)} {s t : Finset α} {a : α}
+
+@[simp] lemma powerset_union (s t : Finset α) : (s ∪ t).powerset = s.powerset ⊻ t.powerset := by
+  ext u
+  simp only [mem_sups, mem_powerset, le_eq_subset, sup_eq_union]
+  refine' ⟨λ h ↦ ⟨_, inter_subset_left _ u, _, inter_subset_left _ u, _⟩, _⟩
+  · rwa [←inter_distrib_right, inter_eq_right_iff_subset]
+  · rintro ⟨v, hv, w, hw, rfl⟩
+    exact union_subset_union hv hw
+
+@[simp] lemma powerset_inter (s t : Finset α) : (s ∩ t).powerset = s.powerset ⊼ t.powerset := by
+  ext u
+  simp only [mem_infs, mem_powerset, le_eq_subset, inf_eq_inter]
+  refine' ⟨λ h ↦ ⟨_, inter_subset_left _ u, _, inter_subset_left _ u, _⟩, _⟩
+  · rwa [←inter_inter_distrib_right, inter_eq_right_iff_subset]
+  · rintro ⟨v, hv, w, hw, rfl⟩
+    exact inter_subset_inter hv hw
+
+@[simp] lemma powerset_sups_powerset_self (s : Finset α) :
+    s.powerset ⊻ s.powerset = s.powerset := by simp [←powerset_union]
+
+@[simp] lemma powerset_infs_powerset_self (s : Finset α) :
+    s.powerset ⊼ s.powerset = s.powerset := by simp [←powerset_inter]
+
+lemma union_mem_sups : s ∈ 𝒜 → t ∈ ℬ → s ∪ t ∈ 𝒜 ⊻ ℬ := sup_mem_sups
+lemma inter_mem_infs : s ∈ 𝒜 → t ∈ ℬ → s ∩ t ∈ 𝒜 ⊼ ℬ := inf_mem_infs
+
+section SemilatticeInf
+variable [SemilatticeInf α]
 
 end SemilatticeInf
 end Finset
@@ -83,6 +139,7 @@ variable [GeneralizedBooleanAlgebra α] (s s₁ s₂ t t₁ t₂ u v : Finset α
 /-- `s \\ t` is the finset of elements of the form `a \ b` where `a ∈ s`, `b ∈ t`. -/
 def diffs : Finset α → Finset α → Finset α := image₂ (· \ ·)
 
+@[inherit_doc]
 scoped[FinsetFamily] infixl:74 " \\\\ " => Finset.diffs
   -- This notation is meant to have higher precedence than `\` and `⊓`, but still within the
   -- realm of other binary notation
@@ -169,7 +226,8 @@ variable [BooleanAlgebra α] (s s₁ s₂ t t₁ t₂ u v : Finset α)
 /-- `s` is the finset of elements of the form `a ⊓ b` where `a ∈ s`, `b ∈ t`. -/
 def compls : Finset α → Finset α := map ⟨compl, compl_injective⟩
 
-scoped[FinsetFamily] postfix:max "ᶜˢ"   => Finset.compls
+@[inherit_doc]
+scoped[FinsetFamily] postfix:max "ᶜˢ" => Finset.compls
 
 open FinsetFamily
 

@@ -15,11 +15,11 @@ instance [Nontrivial α] : Nontrivial (SimpleGraph α) :=
     top_adj, ne_eq, eq_iff_iff, false_iff, not_not] using h⟩⟩⟩
 
 @[simp] lemma disjoint_edgeSet : Disjoint G.edgeSet H.edgeSet ↔ Disjoint G H := by
-  rw [Set.disjoint_iff, disjoint_iff_inf_le, ← edgeSet_inf, ← edgeSet_bot, ←Set.le_iff_subset,
+  rw [Set.disjoint_iff, disjoint_iff_inf_le, ←edgeSet_inf, ←edgeSet_bot, ←Set.le_iff_subset,
     OrderEmbedding.le_iff_le]
 
 @[simp] lemma nonempty_edgeSet : G.edgeSet.Nonempty ↔ G ≠ ⊥ := by
-  rw [Set.nonempty_iff_ne_empty, ← edgeSet_bot,  edgeSet_inj.ne]
+  rw [Set.nonempty_iff_ne_empty, ←edgeSet_bot,  edgeSet_inj.ne]
 
 @[simp] lemma disjoint_fromEdgeSet : Disjoint G (fromEdgeSet s) ↔ Disjoint G.edgeSet s := by
   conv_rhs => rw [←Set.diff_union_inter s {e : Sym2 α | e.IsDiag}]
