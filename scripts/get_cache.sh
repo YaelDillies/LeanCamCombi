@@ -10,7 +10,7 @@ if ! git rev-parse HEAD > /dev/null 2>&1; then
 fi
 
 cd $(git rev-parse --show-toplevel)
-leanproject get-mathlib-cache
+lake exe cache get
 
 echo "Trying to download project cache"
 if wget https://oleanstorage.azureedge.net/mathlib/LeanCamCombi/"$(git rev-parse HEAD)".tar.xz 2> /dev/null; then
