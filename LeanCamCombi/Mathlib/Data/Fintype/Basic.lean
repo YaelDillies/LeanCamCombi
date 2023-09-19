@@ -12,3 +12,23 @@ variable [Fintype α] [DecidableEq α]
 @[simp] lemma compl_subset_compl_iff : sᶜ ⊆ tᶜ ↔ t ⊆ s := @compl_le_compl_iff_le (Finset α) _ _ _
 
 end Finset
+
+namespace Fintype
+variable {α : Type*} [Fintype α]
+
+@[simp, norm_cast] lemma coe_finsetEquivSet : ⇑finsetEquivSet = ((↑) : Finset α → Set α) := rfl
+
+/-- Given a fintype `α`, `finsetOrderIsoSet` is the order isomorphism between `Finset α` and `Set α`
+(all sets on a finite type are finite). -/
+@[simps toEquiv]
+noncomputable def finsetOrderIsoSet : Finset α ≃o Set α where
+  toEquiv := finsetEquivSet
+  map_rel_iff' := Finset.coe_subset
+
+@[simp, norm_cast]
+lemma coe_finsetOrderIsoSet : ⇑finsetOrderIsoSet = ((↑) : Finset α → Set α) := rfl
+
+@[simp] lemma coe_finsetOrderIsoSet_symm :
+    ⇑(finsetOrderIsoSet : Finset α ≃o Set α).symm = ⇑finsetEquivSet.symm := rfl
+
+end Fintype

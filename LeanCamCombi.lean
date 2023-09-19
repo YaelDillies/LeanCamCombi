@@ -18,11 +18,16 @@ import LeanCamCombi.Mathlib.Data.Finset.Sups
 import LeanCamCombi.Mathlib.Data.Fintype.Basic
 import LeanCamCombi.Mathlib.Data.Fintype.Powerset
 import LeanCamCombi.Mathlib.Data.Set.Image
+import LeanCamCombi.Mathlib.Data.SetLike.Basic
 import LeanCamCombi.Mathlib.Data.Sym.Sym2
 import LeanCamCombi.Mathlib.Logic.Basic
 import LeanCamCombi.Mathlib.Logic.Relation
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
 import LeanCamCombi.Mathlib.Order
+import LeanCamCombi.Mathlib.Order.Birkhoff
+import LeanCamCombi.Mathlib.Order.BoundedOrder
+import LeanCamCombi.Mathlib.Order.LocallyFinite
+import LeanCamCombi.Mathlib.Order.UpperLower.Basic
 import LeanCamCombi.Mathlib.Pmf
 import LeanCamCombi.Mathlib.Probability.Independence.Basic
 import LeanCamCombi.VanDenBergKesten
