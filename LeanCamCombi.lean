@@ -21,6 +21,7 @@ import LeanCamCombi.Mathlib.Data.Finset.Basic
 import LeanCamCombi.Mathlib.Data.Finset.Sups
 import LeanCamCombi.Mathlib.Data.Fintype.Basic
 import LeanCamCombi.Mathlib.Data.Fintype.Powerset
+import LeanCamCombi.Mathlib.Data.Polynomial.Eval
 import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.SetLike.Basic
 import LeanCamCombi.Mathlib.Data.Sym.Sym2
