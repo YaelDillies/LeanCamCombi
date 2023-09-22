@@ -1,4 +1,5 @@
 import LeanCamCombi.BernoulliSeq
+import LeanCamCombi.DiscreteDeriv
 import LeanCamCombi.ErdosRenyi.Basic
 import LeanCamCombi.ErdosRenyi.BollobasContainment
 import LeanCamCombi.ErdosRenyi.Connectivity
