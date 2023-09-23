@@ -8,20 +8,20 @@ open Finset
 open scoped BigOperators
 
 namespace Polynomial
-variable {ι R S : Type*} [CommRing R] [CommRing S] [Algebra S R] {w : R →₀ S} {P : R[X]}
+variable {ι R S : Type*} [CommRing R] [CommRing S] [Algebra S R] {P : R[X]}
 
 /-- Convolve an element of the monoid algebra with a polynomial. Concretely, `w` says how much we
 should weigh each translate of the polynomial `P`.  -/
 noncomputable def discConv (w : R →₀ S) (P : R[X]) : R[X] :=
   w.sum λ r s ↦ s • P.comp (X + C r)
 
-/-- Discrete forward difference of polynomials. `discForwardDiff P x = P (x + 1) - P x`. -/
+/-- Discrete forward difference of polynomials; `discForwardDiff P x = P (x + 1) - P x`. -/
 noncomputable def discForwardDiff : R[X] → R[X] :=
-  discConv ((fun₀ | 1 => 1) - fun₀ | 0 => 1 : R →₀ ℤ)
+  discConv ((fun₀ | 1 => 1) - (fun₀ | 0 => 1) : R →₀ ℤ)
 
-/-- Discrete backward difference of polynomials. `discBackwardDiff P x = P x - P (x - 1)`. -/
+/-- Discrete backward difference of polynomials; `discBackwardDiff P x = P x - P (x - 1)`. -/
 noncomputable def discBackwardDiff : R[X] → R[X] :=
-  discConv ((fun₀ | 0 => 1) - fun₀ | -1 => 1 : R →₀ ℤ)
+  discConv ((fun₀ | 0 => 1) - (fun₀ | -1 => 1) : R →₀ ℤ)
 
 @[simp] lemma discConv_single (r : R) (s : S) :
     discConv (Finsupp.single r s) P = s • P.comp (X + C r) := by simp [discConv]
@@ -83,14 +83,14 @@ lemma coeff_discConv_natDegree (w : R →₀ S) (P : R[X]) :
 variable [Nontrivial S] -- feel free to move this assumption around
 
 private lemma discForwardDiff_aux :
-    ((fun₀ | 1 => 1) - fun₀ | 0 => 1 : R →₀ ℤ).sum (λ _ ↦ id) = 0 := by
+    ((fun₀ | 1 => 1) - (fun₀ | 0 => 1) : R →₀ ℤ).sum (λ _ ↦ id) = 0 := by
   classical simp [Finsupp.sum_sub_index, -Finsupp.single_neg]
 
 private lemma discBackwardDiff_aux :
-    ((fun₀ | 0 => 1) - fun₀ | -1 => 1 : R →₀ ℤ).sum (λ _ ↦ id) = 0 := by
+    ((fun₀ | 0 => 1) - (fun₀ | -1 => 1) : R →₀ ℤ).sum (λ _ ↦ id) = 0 := by
   classical simp [Finsupp.sum_sub_index, -Finsupp.single_neg]
 
-variable [NoZeroDivisors R] [Nontrivial R] -- and those too
+variable [NoZeroDivisors R] [Nontrivial R] {w : R →₀ S} -- and those too
 
 lemma natDegree_discConv_le : natDegree (discConv w P) ≤ natDegree P := by
   refine' (natDegree_sum_le _ _).trans $ Finset.sup_le λ r _ ↦ _

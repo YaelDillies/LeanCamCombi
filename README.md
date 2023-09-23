@@ -120,13 +120,6 @@ We highlight two syntactical differences.
   Conveniently, we can write `f : X → Y` to mean "`f` has type `X → Y`",
   in other words "`f` is a function from `X` to `Y`".
 
-* Secondly, type theorists do not use the mapsto symbol (`↦`),
-  but instead use lambda-notation.
-  This means that we can define the square function on the integers via
-  `λ x, x^2`, which translates to `x ↦ x^2` in set-theoretic notation.
-  For more information about `λ`, see the Wikipedia page on
-  [lambda calculus](https://en.wikipedia.org/wiki/Lambda_calculus).
-
 For a more extensive discussion of type theory, see the dedicated
 [page](https://leanprover-community.github.io/lean-perfectoid-spaces/type_theory.html)
 on the perfectoid project website.
