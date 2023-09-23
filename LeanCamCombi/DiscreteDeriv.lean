@@ -121,4 +121,14 @@ lemma degree_discForwardDiff_lt (hP : P ≠ 0) :
 lemma degree_discBackwardDiff_lt (hP : P ≠ 0) :
     degree (discBackwardDiff P) < degree P := degree_discConv_lt discBackwardDiff_aux hP
 
+noncomputable def nthDiscreteDiff : Nat → ℤ[X] → ℤ[X]
+| 0   => id
+| n+1 => discForwardDiff ∘ nthDiscreteDiff n
+
+example : ((nthDiscreteDiff 6) (X^6 : ℤ[X])).eval = 720 :=
+by
+  ext
+  simp [nthDiscreteDiff]
+  ring
+
 end Polynomial
