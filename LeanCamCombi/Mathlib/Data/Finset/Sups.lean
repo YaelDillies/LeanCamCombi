@@ -1,3 +1,4 @@
+import Mathlib.Data.Finset.Slice
 import Mathlib.Data.Finset.Sups
 
 /-!
@@ -35,7 +36,7 @@ instance decidablePredMemLowerClosure : DecidablePred (· ∈ lowerClosure (s : 
 
 end Finset
 
-open Function
+open Fintype Function
 open scoped FinsetFamily
 
 variable {F α β : Type*} [DecidableEq α] [DecidableEq β]
@@ -175,7 +176,7 @@ lemma image_subset_diffs_left : b ∈ t → (s.image fun a ↦ a \ b) ⊆ s \\ t
 lemma image_subset_diffs_right : a ∈ s → t.image (a \ ·) ⊆ s \\ t :=
   image_subset_image₂_right (f := (· \ ·))
 
-lemma forall_diffs_iff {p : α → Prop} : (∀ c ∈ s \\ t, p c) ↔ ∀ a ∈ s, ∀ b ∈ t, p (a \ b) :=
+lemma forall_mem_diffs {p : α → Prop} : (∀ c ∈ s \\ t, p c) ↔ ∀ a ∈ s, ∀ b ∈ t, p (a \ b) :=
   forall_image₂_iff
 
 @[simp] lemma diffs_subset_iff : s \\ t ⊆ u ↔ ∀ a ∈ s, ∀ b ∈ t, a \ b ∈ u := image₂_subset_iff
@@ -248,7 +249,7 @@ variable {s s₁ s₂ t t₁ t₂ u}
 
 lemma compl_mem_compls : a ∈ s → aᶜ ∈ sᶜˢ := mem_map_of_mem _
 @[simp] lemma compls_subset_compls : s₁ᶜˢ ⊆ s₂ᶜˢ ↔ s₁ ⊆ s₂ := map_subset_map
-lemma forall_compls_iff {p : α → Prop} : (∀ a ∈ sᶜˢ, p a) ↔ ∀ a ∈ s, p aᶜ := forall_mem_map
+lemma forall_mem_compls {p : α → Prop} : (∀ a ∈ sᶜˢ, p a) ↔ ∀ a ∈ s, p aᶜ := forall_mem_map
 lemma exists_compls_iff {p : α → Prop} : (∃ a ∈ sᶜˢ, p a) ↔ ∃ a ∈ s, p aᶜ := by aesop
 
 @[simp] lemma compls_compls (s : Finset α) : sᶜˢᶜˢ = s := by ext; simp
@@ -280,6 +281,17 @@ protected alias ⟨Nonempty.of_compls, Nonempty.compls⟩ := compls_nonempty
 
 @[simp] lemma diffs_compls_eq_infs (s t : Finset α) : s \\ tᶜˢ = s ⊼ t := by
   rw [←infs_compls_eq_diffs, compls_compls]
+
+variable [Fintype α] {𝒜 : Finset (Finset α)} {n : ℕ}
+
+protected lemma _root_.Set.Sized.compls (h𝒜 : (𝒜 : Set (Finset α)).Sized n) :
+    (𝒜ᶜˢ : Set (Finset α)).Sized (Fintype.card α - n) :=
+  Finset.forall_mem_compls.2 $ λ s hs ↦ by rw [Finset.card_compl, h𝒜 hs]
+
+lemma sized_compls (hn : n ≤ Fintype.card α) :
+    (𝒜ᶜˢ : Set (Finset α)).Sized n ↔ (𝒜 : Set (Finset α)).Sized (Fintype.card α - n) where
+  mp h𝒜 := by simpa using h𝒜.compls
+  mpr h𝒜 := by simpa only [tsub_tsub_cancel_of_le hn] using h𝒜.compls
 
 end Compls
 end Finset
