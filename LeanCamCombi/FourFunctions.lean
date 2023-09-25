@@ -4,6 +4,8 @@ import LeanCamCombi.Mathlib.Algebra.Order.Pi
 import LeanCamCombi.Mathlib.Data.Finset.Basic
 import LeanCamCombi.Mathlib.Data.Finset.Sups
 import LeanCamCombi.Mathlib.Order.Birkhoff
+import LeanCamCombi.Mathlib.Order.Booleanisation
+import LeanCamCombi.Mathlib.Order.Sublattice
 
 /-!
 # The four functions theorem and corollaries
@@ -245,8 +247,8 @@ private lemma four_functions_theorem_aux (h₁ : 0 ≤ f₁) (h₂ : 0 ≤ f₂)
 end Finset
 
 section DistribLattice
-variable [Finite α] [DistribLattice α] [DecidableEq α] [LinearOrderedCommSemiring β]
-  [ExistsAddOfLE β] (f f₁ f₂ f₃ f₄ g μ : α → β)
+variable [DistribLattice α] [DecidableEq α] [LinearOrderedCommSemiring β] [ExistsAddOfLE β]
+  (f f₁ f₂ f₃ f₄ g μ : α → β)
 
 open Function
 
@@ -254,21 +256,36 @@ open Function
 lemma four_functions_theorem (h₁ : 0 ≤ f₁) (h₂ : 0 ≤ f₂) (h₃ : 0 ≤ f₃) (h₄ : 0 ≤ f₄)
   (h : ∀ a b, f₁ a * f₂ b ≤ f₃ (a ⊓ b) * f₄ (a ⊔ b)) (s t : Finset α) :
     (∑ a in s, f₁ a) * ∑ a in t, f₂ a ≤ (∑ a in s ⊼ t, f₃ a) * ∑ a in s ⊻ t, f₄ a := by
-  obtain ⟨β, _, _, g, hg⟩ := exists_birkhoff_representation α
-  have' := four_functions_theorem_aux (extend g f₁ 0) (extend g f₂ 0) (extend g f₃ 0)
-    (extend g f₄ 0) (extend_nonneg h₁ le_rfl) (extend_nonneg h₂ le_rfl) (extend_nonneg h₃ le_rfl)
-    (extend_nonneg h₄ le_rfl) _ (s.map ⟨g, hg⟩) (t.map ⟨g, hg⟩)
-  simpa only [←map_sups, ←map_infs, sum_map, Embedding.coeFn_mk, hg.extend_apply] using this
+  classical
+  set L : Sublattice α := ⟨latticeClosure (s ∪ t), latticeClosed_latticeClosure.1,
+    latticeClosed_latticeClosure.2⟩
+  have : Finite L := (s.finite_toSet.union t.finite_toSet).latticeClosure.to_subtype
+  set s' : Finset L := s.preimage (↑) $ Subtype.coe_injective.injOn _
+  set t' : Finset L := t.preimage (↑) $ Subtype.coe_injective.injOn _
+  have hs' : s'.map ⟨L.subtype, Subtype.coe_injective⟩ = s := by
+    simp [map_eq_image, image_preimage, filter_eq_self]
+    exact λ a ha ↦ subset_latticeClosure $ Set.subset_union_left _ _ ha
+  have ht' : t'.map ⟨L.subtype, Subtype.coe_injective⟩ = t := by
+    simp [map_eq_image, image_preimage, filter_eq_self]
+    exact λ a ha ↦ subset_latticeClosure $ Set.subset_union_right _ _ ha
+  clear_value s' t'
+  obtain ⟨β, _, _, g, hg⟩ := exists_birkhoff_representation L
+  have := four_functions_theorem_aux (extend g (f₁ ∘ (↑)) 0) (extend g (f₂ ∘ (↑)) 0)
+    (extend g (f₃ ∘ (↑)) 0) (extend g (f₄ ∘ (↑)) 0) (extend_nonneg (λ _ ↦ h₁ _) le_rfl)
+    (extend_nonneg (λ _ ↦ h₂ _) le_rfl) (extend_nonneg (λ _ ↦ h₃ _) le_rfl)
+    (extend_nonneg (λ _ ↦ h₄ _) le_rfl) ?_ (s'.map ⟨g, hg⟩) (t'.map ⟨g, hg⟩)
+  simpa only [←hs', ←ht', ←map_sups, ←map_infs, sum_map, Embedding.coeFn_mk, hg.extend_apply]
+    using this
   rintro s t
   classical
   obtain ⟨a, rfl⟩ | hs := em (∃ a, g a = s)
   · obtain ⟨b, rfl⟩ | ht := em (∃ b, g b = t)
-    · simp_rw [←sup_eq_union, ←inf_eq_inter, ←map_sup g, ←map_inf, hg.extend_apply]
+    · simp_rw [←sup_eq_union, ←inf_eq_inter, ←map_sup, ←map_inf, hg.extend_apply]
       exact h _ _
-    · simpa [extend_apply' _ _ _ ht]
-        using mul_nonneg (extend_nonneg h₃ le_rfl _) (extend_nonneg h₄ le_rfl _)
-  · simpa [extend_apply' _ _ _ hs]
-      using mul_nonneg (extend_nonneg h₃ le_rfl _) (extend_nonneg h₄ le_rfl _)
+    · simpa [extend_apply' _ _ _ ht] using mul_nonneg
+        (extend_nonneg (λ a : L ↦ h₃ a) le_rfl _) (extend_nonneg (λ a : L ↦ h₄ a) le_rfl _)
+  · simpa [extend_apply' _ _ _ hs] using mul_nonneg
+      (extend_nonneg (λ a : L ↦ h₃ a) le_rfl _) (extend_nonneg (λ a : L ↦ h₄ a) le_rfl _)
 
 /-- An inequality of Daykin. Interestingly, any lattice in which this inequality holds is
 distributive. -/
@@ -303,7 +320,7 @@ lemma holley (hμ₀ : 0 ≤ μ) (hf : 0 ≤ f) (hg : 0 ≤ g) (hμ : Monotone �
     exact mul_le_mul (hμ le_sup_left) (h _ _) (mul_nonneg (hf.le _) $ hg.le _) $ hμ₀ _
 
 /-- The **Fortuin-Kastelyn-Ginibre Inequality**. -/
-lemma fkg [Fintype α] (hμ₀ : 0 ≤ μ) (hf₀ : 0 ≤ f) (hg₀ : 0 ≤ g) (hf : Monotone f) (hg : Monotone g)
+lemma fkg (hμ₀ : 0 ≤ μ) (hf₀ : 0 ≤ f) (hg₀ : 0 ≤ g) (hf : Monotone f) (hg : Monotone g)
   (hμ : ∀ a b, μ a * μ b ≤ μ (a ⊓ b) * μ (a ⊔ b)) :
     (∑ a, μ a * f a) * ∑ a, μ a * g a ≤ (∑ a, μ a) * ∑ a, μ a * (f a * g a) := by
   refine' four_functions_theorem_univ (μ * f) (μ * g) μ _ (mul_nonneg hμ₀ hf₀) (mul_nonneg hμ₀ hg₀)
@@ -315,12 +332,21 @@ lemma fkg [Fintype α] (hμ₀ : 0 ≤ μ) (hf₀ : 0 ≤ f) (hg₀ : 0 ≤ g) (
 
 end DistribLattice
 
-variable [Finite α] [DecidableEq α] [BooleanAlgebra α]
+open Booleanisation
+
+variable [DecidableEq α] [GeneralizedBooleanAlgebra α]
 
 /-- A slight generalisation of the **Marica-Schönheim Inequality**. -/
 lemma Finset.le_card_diffs_mul_card_diffs (s t : Finset α) :
     s.card * t.card ≤ (s \\ t).card * (t \\ s).card := by
-  simpa [←card_compls (_ ⊻ _)] using s.le_card_infs_mul_card_sups tᶜˢ
+  have : ∀ s t : Finset α, (s \\ t).map ⟨_, inlLatticeHom_injective⟩ =
+    s.map ⟨_, inlLatticeHom_injective⟩ \\ t.map ⟨_, inlLatticeHom_injective⟩
+  · rintro s t
+    simp_rw [map_eq_image]
+    exact image_image₂_distrib λ a b ↦ rfl
+  simpa [←card_compls (_ ⊻ _), ←map_sup, ←map_inf, ←this] using
+    (s.map ⟨_, inlLatticeHom_injective⟩).le_card_infs_mul_card_sups
+      (t.map ⟨_, inlLatticeHom_injective⟩)ᶜˢ
 
 /-- The **Marica-Schönheim Inequality**. -/
 lemma Finset.card_le_card_diffs (s : Finset α) : s.card ≤ (s \\ s).card :=

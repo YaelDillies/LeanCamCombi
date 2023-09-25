@@ -41,6 +41,7 @@ import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
 import LeanCamCombi.Mathlib.Order
 import LeanCamCombi.Mathlib.Order.Basic
 import LeanCamCombi.Mathlib.Order.Birkhoff
+import LeanCamCombi.Mathlib.Order.Booleanisation
 import LeanCamCombi.Mathlib.Order.BoundedOrder
 import LeanCamCombi.Mathlib.Order.Closure
 import LeanCamCombi.Mathlib.Order.Hom.Lattice
