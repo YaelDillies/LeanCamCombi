@@ -1,13 +1,6 @@
 import Mathlib.Order.Hom.Set
 
-open OrderDual Set
-
-section Lattice
-variable {α : Type*} [Lattice α] [BoundedOrder α] {a b : α}
-
-lemma isCompl_comm : IsCompl a b ↔ IsCompl b a := ⟨IsCompl.symm, IsCompl.symm⟩
-
-end Lattice
+open OrderDual
 
 section BooleanAlgebra
 variable {α : Type*} [BooleanAlgebra α]

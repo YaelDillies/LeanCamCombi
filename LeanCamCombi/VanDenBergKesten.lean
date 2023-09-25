@@ -8,7 +8,7 @@ import Mathlib.Data.Finset.Sups
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Order.UpperLower.Basic
 import LeanCamCombi.Mathlib.Data.Finset.Basic
-import LeanCamCombi.Mathlib.Order
+import LeanCamCombi.Mathlib.Order.Disjoint
 
 /-!
 # Set family certificates

@@ -1,0 +1,3 @@
+-- attribute [protected] Finset.sup_le
+-- attribute [protected] Finset.inf_le
+-- attribute [protected] Finset.inf_eq_top_iff
