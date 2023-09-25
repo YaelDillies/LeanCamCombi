@@ -1,5 +1,6 @@
 import Mathlib.Data.Nat.Squarefree
 import LeanCamCombi.Mathlib.Data.Nat.Factorization.Basic
+import LeanCamCombi.Mathlib.Data.Nat.Order.Lemmas
 
 open Finset
 open scoped BigOperators
@@ -7,12 +8,13 @@ open scoped BigOperators
 namespace Nat
 variable {m n p : ℕ} {s : Finset ℕ}
 
-protected lemma div_ne_zero {a b : ℕ} (hb : b ≠ 0) : a / b ≠ 0 ↔ b ≤ a := by
-  rw [ne_eq, Nat.div_eq_zero_iff hb.bot_lt, not_lt]
-
--- TODO: Protect `Nat.Prime.factorization`
-
 alias _root_.Squarefree.natFactorization_le_one := Squarefree.factorization_le_one
+
+lemma coprime_div_gcd_of_squarefree (hm : Squarefree m) (hn : n ≠ 0) : coprime (m / gcd m n) n := by
+  have : coprime (m / gcd m n) (gcd m n) :=
+    coprime_of_squarefree_mul $ by simpa [Nat.div_mul_cancel, gcd_dvd_left]
+  simpa [Nat.div_mul_cancel, gcd_dvd_right] using
+    (coprime_div_gcd_div_gcd (m := m) (gcd_ne_zero_right hn).bot_lt).mul_right this
 
 lemma factorization_eq_one_of_squarefree (hn : Squarefree n) (hp : p.Prime) (hpn : p ∣ n) :
     factorization n p = 1 :=
@@ -37,11 +39,11 @@ lemma primeFactors_div_gcd (hm : Squarefree m) (hn  : n ≠ 0) :
   ext p
   have : m / m.gcd n ≠ 0 :=
     (Nat.div_ne_zero $ gcd_ne_zero_right hn).2 $ gcd_le_left _ hm.ne_zero.bot_lt
-  simp only [mem_primeFactors, Nat.isUnit_iff, ne_eq, this, not_false_eq_true, and_true, mem_sdiff,
-    hm.ne_zero, hn, not_and, dvd_div_iff (gcd_dvd_left _ _)]
-  refine' ⟨λ hp ↦ ⟨⟨hp.1, dvd_of_mul_left_dvd hp.2⟩, λ _ hpn ↦ hp.1.not_unit $ hm _ $
-    (mul_dvd_mul_right (dvd_gcd (dvd_of_mul_left_dvd hp.2) hpn) _).trans hp.2⟩, λ hp ↦ ⟨hp.1.1, _⟩⟩
-  refine' coprime.mul_dvd_of_dvd_of_dvd _ (gcd_dvd_left _ _) hp.1.2
+  simp only [mem_primeFactors, ne_eq, this, not_false_eq_true, and_true, not_and, mem_sdiff,
+    hm.ne_zero, hn, dvd_div_iff (gcd_dvd_left _ _)]
+  refine ⟨λ hp ↦ ⟨⟨hp.1, dvd_of_mul_left_dvd hp.2⟩, λ _ hpn ↦ hp.1.not_unit $ hm _ $
+    (mul_dvd_mul_right (dvd_gcd (dvd_of_mul_left_dvd hp.2) hpn) _).trans hp.2⟩, λ hp ↦
+      ⟨hp.1.1, coprime.mul_dvd_of_dvd_of_dvd ?_ (gcd_dvd_left _ _) hp.1.2⟩⟩
   rw [coprime_comm, hp.1.1.coprime_iff_not_dvd]
   exact λ hpn ↦ hp.2 hp.1.1 $ hpn.trans $ gcd_dvd_right _ _
 

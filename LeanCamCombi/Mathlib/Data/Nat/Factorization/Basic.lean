@@ -5,6 +5,7 @@ namespace Nat
 variable {n p : ℕ}
 
 -- TODO: Rename `Nat.factors` to `Nat.primeFactorsList`
+-- TODO: Protect `Nat.Prime.factorization`
 
 def primeFactors (n : ℕ) : Finset ℕ := n.factors.toFinset
 
