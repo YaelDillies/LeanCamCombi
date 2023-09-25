@@ -28,6 +28,9 @@ import LeanCamCombi.Mathlib.Data.Finset.Slice
 import LeanCamCombi.Mathlib.Data.Finset.Sups
 import LeanCamCombi.Mathlib.Data.Fintype.Basic
 import LeanCamCombi.Mathlib.Data.Fintype.Powerset
+import LeanCamCombi.Mathlib.Data.Nat.Factorization.Basic
+import LeanCamCombi.Mathlib.Data.Nat.Factors
+import LeanCamCombi.Mathlib.Data.Nat.Squarefree
 import LeanCamCombi.Mathlib.Data.Polynomial.Eval
 import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.SetLike.Basic
@@ -38,6 +41,7 @@ import LeanCamCombi.Mathlib.Logic.Basic
 import LeanCamCombi.Mathlib.Logic.Nontrivial.Basic
 import LeanCamCombi.Mathlib.Logic.Relation
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
+import LeanCamCombi.Mathlib.NumberTheory.MaricaSchoenheim
 import LeanCamCombi.Mathlib.Order
 import LeanCamCombi.Mathlib.Order.Basic
 import LeanCamCombi.Mathlib.Order.Birkhoff

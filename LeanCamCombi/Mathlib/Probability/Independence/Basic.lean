@@ -60,8 +60,8 @@ lemma iIndepSet_iff_iIndepSets_singleton (hs : ∀ i, MeasurableSet (s i))
   (μ : Measure Ω := by volume_tac) [IsProbabilityMeasure μ] :
     iIndepSet s μ ↔ iIndepSets (fun i ↦ {s i}) μ :=
   ⟨iIndep.iIndepSets fun _ ↦ rfl,
-    iIndepSets.iIndep _ (fun i => generateFrom_le $ by rintro t (rfl : t = s i); exact hs _) _
-      (fun _ => IsPiSystem.singleton $ s _) fun _ => rfl⟩
+    iIndepSets.iIndep _ (λ i ↦ generateFrom_le $ by rintro t (rfl : t = s i); exact hs _) _
+      (λ _ => IsPiSystem.singleton $ s _) fun _ ↦ rfl⟩
 
 variable [IsProbabilityMeasure μ]
 
