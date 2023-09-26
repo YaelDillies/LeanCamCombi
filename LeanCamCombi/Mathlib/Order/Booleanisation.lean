@@ -13,7 +13,8 @@ complements.
 ## Main declarations
 
 * `Booleanisation`: Boolean algebra containing a given generalised Boolean algebra as a sublattice.
-* `Booleanisation.inlLatticeHom`: Boolean algebra containing a given generalised Boolean algebra as a sublattice.
+* `Booleanisation.inlLatticeHom`: Boolean algebra containing a given generalised Boolean algebra as
+  a sublattice.
 -/
 
 open Function

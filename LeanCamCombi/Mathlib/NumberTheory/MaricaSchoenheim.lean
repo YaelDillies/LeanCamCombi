@@ -5,13 +5,12 @@ open Finset
 open scoped BigOperators FinsetFamily
 
 namespace Nat
-variable {m n : ℕ} {s : Finset ℕ}
 
 /-- A special case of Graham's conjecture. -/
-lemma marica_schoenheim (f : ℕ → ℕ) (hn : n ≠ 0) (hf : StrictMonoOn f (Set.Iio n))
+lemma marica_schoenheim {n : ℕ} (f : ℕ → ℕ) (hn : n ≠ 0) (hf : StrictMonoOn f (Set.Iio n))
     (hf' : ∀ k < n, Squarefree (f k)) : ∃ i < n, ∃ j < n, (f i).gcd (f j) * n ≤ f i := by
   by_contra'
-  set 𝒜 := (Finset.Iio n).image λ n ↦ primeFactors (f n)
+  set 𝒜 := (Iio n).image λ n ↦ primeFactors (f n)
   have hf'' : ∀ i < n, ∀ j, Squarefree (f i / (f i).gcd (f j)) :=
     λ i hi j ↦ (hf' _ hi).squarefree_of_dvd $ div_dvd_of_dvd $ gcd_dvd_left _ _
   refine lt_irrefl n ?_

@@ -344,9 +344,9 @@ def prodEquiv (L : Sublattice α) (M : Sublattice β) : L.prod M ≃o L × M whe
 section Pi
 variable {κ : Type*} {π : κ → Type*} [∀ i, Lattice (π i)]
 
-/-- A version of `Set.pi` for Sublattices. Given an index set `s` and a family of submodules
-`s : Π i, Sublattice f i`, `pi s s` is the Sublattice of dependent functions `f : Π i, f i` such that
-`f i` belongs to `pi s s` whenever `i ∈ s`. -/
+/-- Arbitrary product of sublattices. Given an index set `s` and a family of sublattices
+`L : Π i, Sublattice (α i)`, `pi s L` is the sublattice of dependent functions `f : Π i, α i` such
+that `f i` belongs to `L i` whenever `i ∈ s`. -/
 def pi (s : Set κ) (L : ∀ i, Sublattice (π i)) : Sublattice (∀ i, π i) where
   carrier := s.pi λ i ↦ L i
   supClosed' := supClosed_pi λ i _ ↦ (L i).supClosed
@@ -936,4 +936,3 @@ instance : IsModularLattice (Sublattice C) :=
     exact ⟨b, hb, c, mem_inf.2 ⟨hc, (mul_mem_cancel_left (xz hb)).1 haz⟩, rfl⟩⟩
 
 end Sublattice
-

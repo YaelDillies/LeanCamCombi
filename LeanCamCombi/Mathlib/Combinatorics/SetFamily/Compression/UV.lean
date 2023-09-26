@@ -159,7 +159,8 @@ theorem compress_mem_compression (ha : a ∈ s) : compress u v a ∈ 𝓓 u v s 
   · exact Or.inr ⟨h, a, ha, rfl⟩
 
 -- This is a special case of `compress_mem_compression` once we have `compression_idem`.
-theorem compress_mem_compression_of_mem_compression (ha : a ∈ 𝓓 u v s) : compress u v a ∈ 𝓓 u v s := by
+theorem compress_mem_compression_of_mem_compression (ha : a ∈ 𝓓 u v s) :
+    compress u v a ∈ 𝓓 u v s := by
   rw [mem_compression] at ha ⊢
   simp only [compress_idem, exists_prop]
   obtain ⟨_, ha⟩ | ⟨_, b, hb, rfl⟩ := ha
@@ -270,17 +271,15 @@ private theorem aux (huv : ∀ x ∈ u, ∃ y ∈ v, IsCompressed (u.erase x) (v
     v = ∅ → u = ∅ := by
   rintro rfl; refine' eq_empty_of_forall_not_mem λ a ha ↦ _; obtain ⟨_, ⟨⟩, -⟩ := huv a ha
 
-/- ./././Mathport/Syntax/Translate/Basic.lean:635:2: warning: expanding binder collection (y «expr ∉ » s) -/
 /-- UW-compression reduces the size of the shadow of `𝒜` if, for all `x ∈ u` there is `y ∈ v` such
 that `𝒜` is `(u.erase x, v.erase y)`-compressed. This is the key fact about compression for
 Kruskal-Katona. -/
 theorem shadow_compression_subset_compression_shadow (u v : Finset α)
     (huv : ∀ x ∈ u, ∃ y ∈ v, IsCompressed (u.erase x) (v.erase y) 𝒜) :
-    (∂ ) (𝓓 u v 𝒜) ⊆ 𝓓 u v ((∂ ) 𝒜) := by
+    ∂ (𝓓 u v 𝒜) ⊆ 𝓓 u v (∂ 𝒜) := by
   set 𝒜' := 𝓓 u v 𝒜
-  suffices H :
-    ∀ s,
-      s ∈ (∂ ) 𝒜' → s ∉ (∂ ) 𝒜 → u ⊆ s ∧ Disjoint v s ∧ (s ∪ v) \ u ∈ (∂ ) 𝒜 ∧ (s ∪ v) \ u ∉ (∂ ) 𝒜'
+  suffices H : ∀ s, s ∈ ∂ 𝒜' → s ∉ ∂ 𝒜 →
+    u ⊆ s ∧ Disjoint v s ∧ (s ∪ v) \ u ∈ ∂ 𝒜 ∧ (s ∪ v) \ u ∉ ∂ 𝒜'
   · rintro s hs'
     rw [mem_compression]
     by_cases hs : s ∈ 𝒜.shadow; swap
@@ -383,7 +382,7 @@ such that `𝒜` is `(u.erase x, v.erase y)`-compressed. This is the key UW-comp
 Kruskal-Katona. -/
 theorem card_shadow_compression_le (u v : Finset α)
     (huv : ∀ x ∈ u, ∃ y ∈ v, IsCompressed (u.erase x) (v.erase y) 𝒜) :
-    ((∂ ) (𝓓 u v 𝒜)).card ≤ ((∂ ) 𝒜).card :=
+    (∂ (𝓓 u v 𝒜)).card ≤ (∂ 𝒜).card :=
   (card_le_of_subset $ shadow_compression_subset_compression_shadow _ _ huv).trans
     (card_compression _ _ _).le
 

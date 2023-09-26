@@ -29,10 +29,12 @@ import LeanCamCombi.Mathlib.Data.Finset.Pointwise
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.Finset.Slice
 import LeanCamCombi.Mathlib.Data.Finset.Sups
+import LeanCamCombi.Mathlib.Data.Finsupp.Order
 import LeanCamCombi.Mathlib.Data.Fintype.Basic
 import LeanCamCombi.Mathlib.Data.Fintype.Powerset
 import LeanCamCombi.Mathlib.Data.Nat.Factorization.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Factors
+import LeanCamCombi.Mathlib.Data.Nat.Order.Lemmas
 import LeanCamCombi.Mathlib.Data.Nat.Squarefree
 import LeanCamCombi.Mathlib.Data.Polynomial.Eval
 import LeanCamCombi.Mathlib.Data.Set.Image

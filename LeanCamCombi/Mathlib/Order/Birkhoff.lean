@@ -14,7 +14,8 @@ import LeanCamCombi.Mathlib.Order.UpperLower.Basic
 /-!
 # Birkhoff's representation theorem
 
-This file proves the Birkhoff representation theorem: Any finite distributive lattice can be represented as a sublattice of some powerset algebra.
+This file proves the Birkhoff representation theorem: Any finite distributive lattice can be
+represented as a sublattice of some powerset algebra.
 
 Precisely, any nonempty finite distributive lattice is isomorphic to the lattice of lower sets of
 its irreducible elements. And conversely it is isomorphic to the order of its irreducible lower

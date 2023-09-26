@@ -18,7 +18,8 @@ independent Bernoulli random variables.
 
 ## Main declarations
 
-* `ProbabilityTheory.IsBernoulliSeq`: Typeclass for a sequence of iid Bernoulli random variables with parameter
+* `ProbabilityTheory.IsBernoulliSeq`: Typeclass for a sequence of iid Bernoulli random variables
+  with parameter `p`
 -/
 
 open Fintype MeasureTheory Set

@@ -51,8 +51,7 @@ description of all graphs that satisfy this equality?
 Show that every graph $$G$$, with $$|G| > 2$$, has two vertices of the same degree.
 -/
 
-
--- PLanarity is hard
+-- Planarity is hard
 lemma q3 [Fintype α] (G : SimpleGraph α) [DecidableRel G.Adj] :
     ∃ a b, a ≠ b ∧ G.degree a = G.degree b :=
   sorry
@@ -63,7 +62,6 @@ lemma q3 [Fintype α] (G : SimpleGraph α) [DecidableRel G.Adj] :
 Show that in every connected graph with $$|G| ≥ 2$$ there exists a vertex $$v$$ so that $$G − v$$ is
 connected.
 -/
-
 
 -- This looks a bit painful as a translation. Probably better stated using connectivity on a set.
 lemma q4 [Finite α] [Nontrivial α] (G : SimpleGraph α) (hG : G.Connected) :
@@ -76,7 +74,6 @@ lemma q4 [Finite α] [Nontrivial α] (G : SimpleGraph α) (hG : G.Connected) :
 
 Show that if $$G$$ is acyclic and $$|G| ≥ 1$$, then $$e(G) ≤ n − 1$$.
 -/
-
 
 -- Note: The statement is true without `nonempty α` due to nat subtraction.
 lemma q5 [Fintype α] [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.Adj] (hG : G.IsAcyclic) :
@@ -94,7 +91,6 @@ For $$n ≥ 2$$, let $$1 ≤ d_1 ≤ d_2 ≤ \dots ≤ d_n$$ be integers. Show t
 degree sequence of a tree if and only if $$\sum_{i=1}^n d_i = 2n − 2$$.
 -/
 
-
 /-- The finset of degrees of a finite graph. -/
 def degreeSequence [Fintype α] (G : SimpleGraph α) [DecidableRel G.Adj] : Multiset ℕ :=
   Finset.univ.val.map fun a ↦ G.degree a
@@ -111,10 +107,8 @@ Let $$T_1, \dots, T_k$$ be subtrees of a tree $$T$$. Show that if $$V(T_i) ∩ V
 $$i, j ∈ [k]$$ then $$V(T_1) ∩ \dots ∩ V(T_k) ≠ ∅$$.
 -/
 
-
-/- ./././Mathport/Syntax/Translate/Basic.lean:635:2: warning: expanding binder collection (i j «expr ∈ » s) -/
 lemma q7 (G : SimpleGraph α) (hG : G.IsAcyclic) (s : Finset ι) (f : ι → G.Subgraph)
-    (hf : ∀ i ∈ s, (f i).coe.IsAcyclic) (h : ∀ (i) (_ : i ∈ s) (j) (_ : j ∈ s), f i ⊓ f j ≠ ⊥) :
+    (hf : ∀ i ∈ s, (f i).coe.IsAcyclic) (h : ∀ i ∈ s, ∀ j ∈ s, f i ⊓ f j ≠ ⊥) :
     s.inf f ≠ ⊥ :=
   sorry
 
@@ -124,7 +118,6 @@ lemma q7 (G : SimpleGraph α) (hG : G.IsAcyclic) (s : Finset ι) (f : ι → G.S
 The average degree of a graph $$G = (V, E)$$ is $$n^{-1} \sum_{x ∈ V} d(x)$$. Show that if the
 average degree of $$G$$ is $$d$$ then $$G$$ contains a subgraph with minimum degree $≥ d/2$$.
 -/
-
 
 /-- The average degree of a simple graph is the average of its degrees. -/
 def averageDegree [Fintype α] (G : SimpleGraph α) [DecidableRel G.Adj] : ℚ :=
@@ -141,7 +134,6 @@ Say that a graph $$G = (V, E)$$ can be decomposed into cycles if $$E$$ can be pa
 $$E = E_1 ∪ \dots ∪ E_k$$, where each $$E_i$$ is the edge set of a cycle. Show that $$G$$ can be
 decomposed into cycles if and only if all degrees of $$G$$ are even.
 -/
-
 
 -- This looks painful as a translation. It will likely get better once we have Kyle's eulerian paths
 lemma q9 [Fintype α] (G : SimpleGraph α) [DecidableRel G.Adj] :
@@ -160,7 +152,6 @@ $$t$$ vertices.
 Show that the possible clique numbers for a regular graph on $$n$$ vertices are
 $$1, 2, \dots, n/2$$ and $$n$$.
 -/
-
 
 /-- The clique number of a graph is the size of its largest clique. -/
 def cliqueNumber [Fintype α] [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.Adj] : ℕ :=
@@ -186,8 +177,6 @@ Let $$G = (V, E)$$ be a graph. Show that there is a partition $$V = A ∪ B$$ so
 the graphs $$G[A]$$ and $$G[B]$$ are of even degree.
 -/
 
-
--- PLanarity is hard
 -- Note: This is a bit general than the statement, because we allow partitioning any set of vertices
 lemma q12 [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.Adj] (s : Finset α) :
     ∃ u v,
@@ -203,7 +192,6 @@ A $$m × n$$ Latin rectangle is a $$m × n$$ matrix, with each entry from $${1, 
 that no two entries in the same row or column are the same. Prove that every $$m × n$$ Latin
 rectangle may be extended to a $$n × n$$ Latin square.
 -/
-
 
 /-- A Latin rectangle is a binary function whose transversals are all injective. -/
 def IsLatin (f : α → β → γ) : Prop :=

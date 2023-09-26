@@ -38,8 +38,8 @@ lemma iIndepFun.meas_iInter [Fintype ι] {m : ∀ i, MeasurableSpace (β i)} (hf
   (hs : ∀ i, MeasurableSet[(m i).comap (f i)] (s i)) :
     μ (⋂ i, s i) = ∏ i, μ (s i) := hf.iIndep.meas_iInter hs
 
-lemma IndepFun.meas_inter {β γ : Type* } [mβ : MeasurableSpace β] [mγ : MeasurableSpace γ] {f : Ω → β}
-  {g : Ω → γ} (hfg : IndepFun f g μ) {s t : Set Ω} (hs : MeasurableSet[mβ.comap f] s)
+lemma IndepFun.meas_inter {β γ : Type* } [mβ : MeasurableSpace β] [mγ : MeasurableSpace γ]
+  {f : Ω → β} {g : Ω → γ} (hfg : IndepFun f g μ) {s t : Set Ω} (hs : MeasurableSet[mβ.comap f] s)
   (ht : MeasurableSet[mγ.comap g] t) :
     μ (s ∩ t) = μ s * μ t := (IndepFun_iff _ _ _).1 hfg _ _ hs ht
 

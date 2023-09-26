@@ -428,8 +428,9 @@ end KK
 
 /-- The **Erdős–Ko–Rado lemma**: The maximum size of an intersecting family in `α` where all sets
 have size `r` is bounded by `(card α - 1).choose (r - 1)`. This bound is sharp. -/
-lemma EKR {𝒜 : Finset (Finset (Fin n))} {r : ℕ} (h𝒜 : Set.Intersecting (𝒜 : Set (Finset (Fin n))))
-    (h₂ : (𝒜 : Set (Finset (Fin n))).Sized r) (h₃ : r ≤ n / 2) : 𝒜.card ≤ (n - 1).choose (r - 1) := by
+lemma EKR {𝒜 : Finset (Finset (Fin n))} {r : ℕ} (h𝒜 : (𝒜 : Set (Finset (Fin n))).Intersecting)
+    (h₂ : (𝒜 : Set (Finset (Fin n))).Sized r) (h₃ : r ≤ n / 2) :
+    𝒜.card ≤ (n - 1).choose (r - 1) := by
   -- Take care of the r=0 case first: it's not very interesting.
   cases' Nat.eq_zero_or_pos r with b h1r
   · convert Nat.zero_le _

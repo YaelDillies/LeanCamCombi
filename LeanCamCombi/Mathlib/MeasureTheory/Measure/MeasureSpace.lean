@@ -28,7 +28,8 @@ namespace Measure
   exact hf.aemeasurable.ae_eq_mk
 
 lemma map_ne_zero_iff (hf : AEMeasurable f μ) : μ.map f ≠ 0 ↔ μ ≠ 0 := (map_eq_zero_iff hf).ne
-lemma mapₗ_ne_zero_iff (hf : Measurable f) : Measure.mapₗ f μ ≠ 0 ↔ μ ≠ 0 := (mapₗ_eq_zero_iff hf).ne
+lemma mapₗ_ne_zero_iff (hf : Measurable f) : Measure.mapₗ f μ ≠ 0 ↔ μ ≠ 0 :=
+  (mapₗ_eq_zero_iff hf).ne
 
 end Measure
 
@@ -78,10 +79,10 @@ lemma AEMeasurable.nullMeasurableSet_preimage [MeasurableSpace α] {μ : Measure
   ⟨hf.mk _ ⁻¹' s, hf.measurable_mk hs, hf.ae_eq_mk.preimage _⟩
 
 namespace MeasureTheory
-variable [MeasurableSpace α] {μ : Measure α}
+variable [MeasurableSpace α] {μ : Measure α} {s : Set α}
 
--- change `measure_compl` to `measurable_set.compl` in the `measure_theory` namespace
-nonrec lemma NullMeasurableSet.measure_compl {s : Set α} (h : NullMeasurableSet s μ) (hs : μ s ≠ ∞) :
+-- change `measure_compl` to `MeasurableSet.compl` in the `MeasureTheory` namespace
+nonrec lemma NullMeasurableSet.measure_compl (h : NullMeasurableSet s μ) (hs : μ s ≠ ∞) :
     μ sᶜ = μ Set.univ - μ s := by
   rw [←measure_congr h.toMeasurable_ae_eq, ←measure_compl (measurableSet_toMeasurable _ _)]
   · exact measure_congr h.toMeasurable_ae_eq.symm.compl
