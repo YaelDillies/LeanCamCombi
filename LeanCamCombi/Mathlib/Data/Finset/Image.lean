@@ -9,7 +9,4 @@ lemma image_filter' (s : Finset α) (f : α → β) (p : β → Prop) [Decidable
     (s.image f).filter p = (s.filter λ a ↦ p $ f a).image f :=
   image_filter
 
-lemma _root_.Function.Injective.finset_image (hf : Injective f) : Injective (image f) :=
-  λ s t hst ↦ coe_injective $ hf.image_injective $ by simpa using coe_inj.2 hst
-
 end Finset

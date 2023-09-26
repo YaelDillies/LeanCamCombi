@@ -13,6 +13,7 @@ import LeanCamCombi.Mathlib.Algebra.BigOperators.Basic
 import LeanCamCombi.Mathlib.Algebra.BigOperators.Order
 import LeanCamCombi.Mathlib.Algebra.GroupWithZero.Units.Lemmas
 import LeanCamCombi.Mathlib.Algebra.Order.Pi
+import LeanCamCombi.Mathlib.Combinatorics.Colex
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.AhlswedeZhang
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Compression.UV
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shadow
@@ -22,7 +23,6 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Data.Finset.Basic
 import LeanCamCombi.Mathlib.Data.Finset.Card
-import LeanCamCombi.Mathlib.Data.Finset.Colex
 import LeanCamCombi.Mathlib.Data.Finset.Image
 import LeanCamCombi.Mathlib.Data.Finset.Lattice
 import LeanCamCombi.Mathlib.Data.Finset.Pointwise

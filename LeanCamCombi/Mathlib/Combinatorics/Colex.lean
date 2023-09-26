@@ -23,22 +23,22 @@ fixed size. If the size is 3, wolex on ℕ starts
 * `Finset.Wolex.forall_lt_mono`: if `s < t` in wolex, and everything in `t` is `< a`, then
   everything in `s` is `< a`. This confirms the idea that an enumeration under wolex will exhaust
   all sets using elements `< a` before allowing `a` to be included.
-* `FinsetoWolex t_image_lt_toWolex_image`: Strictly monotone functions preserve wolex.
+* `Finse.toWolex_image_lt_toWolex_image`: Strictly monotone functions preserve wolex.
 * `Finset.sum_two_pow_le_iff_wolex_le`: wolex for α = ℕ is the same as binary
   (this also proves binary expansions are unique)
 
 ## See also
 
 Related files are:
-* `data.list.lex`: Lexicographic order on lists.
-* `data.pi.lex`: Lexicographic order on `Πₗ i, α i`.
-* `data.psigma.order`: Lexicographic order on `Σ' i, α i`.
-* `data.sigma.order`: Lexicographic order on `Σ i, α i`.
-* `data.prod.lex`: Lexicographic order on `α × β`.
+* `Data.List.Lex`: Lexicographic order on lists.
+* `Data.Pi.Lex`: Lexicographic order on `Πₗ i, α i`.
+* `Data.PSigma.Order`: Lexicographic order on `Σ' i, α i`.
+* `Data.Sigma.Order`: Lexicographic order on `Σ i, α i`.
+* `Data.Prod.Lex`: Lexicographic order on `α × β`.
 
 ## TODO
 
-* Generalise `wolex.initSeg` so that it applies to `ℕ`.
+* Generalise `Wolex.initSeg` so that it applies to `ℕ`.
 
 ## References
 

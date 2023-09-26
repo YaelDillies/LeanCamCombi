@@ -1,7 +1,5 @@
 import Mathlib.Data.Finset.Basic
 
--- attribute [protected] Finset.sdiff_self
-
 -- TODO: Fix implicitness of `Finset.inter_eq_left_iff_subset`
 -- TODO: Rename `Finset.union_eq_empty_iff` → `Finset.union_eq_empty`
 

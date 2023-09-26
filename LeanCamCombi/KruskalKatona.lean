@@ -7,9 +7,9 @@ import Mathlib.Algebra.GeomSum
 import Mathlib.Combinatorics.SetFamily.Intersecting
 import Mathlib.Data.Finset.Fin
 import Mathlib.Data.Finset.Sort
+import LeanCamCombi.Mathlib.Combinatorics.Colex
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shadow
 import LeanCamCombi.Mathlib.Data.Finset.Card
-import LeanCamCombi.Mathlib.Data.Finset.Colex
 import LeanCamCombi.Mathlib.Data.Finset.Sups
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Compression.UV
 import LeanCamCombi.Mathlib.Order.RelClasses
