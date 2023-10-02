@@ -6,7 +6,6 @@ Authors: Yaël Dillies
 import Mathlib.Data.Finset.Pointwise
 import Mathlib.Data.Set.Intervals.OrdConnected
 import Mathlib.Order.UpperLower.Basic
-import LeanCamCombi.Mathlib.Data.Finset.Basic
 import LeanCamCombi.Mathlib.Data.Finset.Sups
 
 /-!

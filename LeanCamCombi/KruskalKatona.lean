@@ -9,7 +9,6 @@ import Mathlib.Data.Finset.Fin
 import Mathlib.Data.Finset.Sort
 import LeanCamCombi.Mathlib.Combinatorics.Colex
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shadow
-import LeanCamCombi.Mathlib.Data.Finset.Card
 import LeanCamCombi.Mathlib.Data.Finset.Sups
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Compression.UV
 import LeanCamCombi.Mathlib.Order.RelClasses
@@ -284,13 +283,12 @@ lemma familyMeasure_compression_lt_familyMeasure {U V : Finset (Fin n)} {hU : U.
     filter_union_filter_neg_eq _ _
   have ne₂ : (𝒜.filter λ A ↦ compress U V A ∉ 𝒜).Nonempty := by
     refine' nonempty_iff_ne_empty.2 λ z ↦ a _
-    simp_rw [image_filter, Function.comp]
-    rw [z, image_empty, union_empty]
+    rw [image_filter, z, image_empty, union_empty]
     rwa [z, union_empty] at uA
   rw [familyMeasure, familyMeasure, sum_union compress_disjoint]
   conv_rhs => rw [←uA]
-  simp_rw [sum_union (disjoint_filter_filter_neg _ _ _), add_lt_add_iff_left, image_filter,
-    Function.comp_def, sum_image compress_injOn]
+  rw [sum_union (disjoint_filter_filter_neg _ _ _), add_lt_add_iff_left, image_filter,
+    sum_image compress_injOn]
   refine' sum_lt_sum_of_nonempty ne₂ λ A hA ↦ _
   simp_rw [←sum_image (Fin.val_injective.injOn _)]
   rw [sum_two_pow_lt_iff_wolex_lt, toWolex_image_lt_toWolex_image Fin.val_strictMono]

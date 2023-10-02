@@ -1,7 +1,4 @@
 import Mathlib.Combinatorics.SetFamily.Compression.UV
-import LeanCamCombi.Mathlib.Data.Finset.Basic
-import LeanCamCombi.Mathlib.Data.Finset.Image
-import LeanCamCombi.Mathlib.Init.Function
 
 /-!
 # UW-compressions
@@ -172,13 +169,13 @@ theorem compress_mem_compression_of_mem_compression (ha : a ∈ 𝓓 u v s) :
 theorem compression_idem (u v : α) (s : Finset α) : 𝓓 u v (𝓓 u v s) = 𝓓 u v s := by
   have h : filter (λ a ↦ compress u v a ∉ 𝓓 u v s) (𝓓 u v s) = ∅ :=
     filter_false_of_mem λ a ha h ↦ h $ compress_mem_compression_of_mem_compression ha
-  rw [compression, image_filter', h, image_empty, ←h]
+  rw [compression, image_filter, h, image_empty, ←h]
   exact filter_union_filter_neg_eq _ (compression u v s)
 
 /-- Compressing a family doesn't change its size. -/
 @[simp]
 theorem card_compression (u v : α) (s : Finset α) : (𝓓 u v s).card = s.card := by
-  rw [compression, card_disjoint_union compress_disjoint, image_filter',
+  rw [compression, card_disjoint_union compress_disjoint, image_filter,
     card_image_of_injOn compress_injOn, ←card_disjoint_union (disjoint_filter_filter_neg s _ _),
     filter_union_filter_neg_eq]
 

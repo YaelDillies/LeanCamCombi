@@ -8,13 +8,3 @@ namespace Set
 @[simp] lemma preimage_mem_singleton_false (s : Set α) : (· ∈ s) ⁻¹' {False} = sᶜ := by ext; simp
 
 end Set
-
-open Set
-
-namespace Function
-variable {f : α → α}
-
-protected lemma Involutive.preimage (hf : Involutive f) : Involutive (preimage f) :=
-  hf.rightInverse.preimage_preimage
-
-end Function

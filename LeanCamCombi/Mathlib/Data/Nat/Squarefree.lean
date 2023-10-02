@@ -10,8 +10,8 @@ variable {m n p : ℕ} {s : Finset ℕ}
 
 alias _root_.Squarefree.natFactorization_le_one := Squarefree.factorization_le_one
 
-lemma coprime_div_gcd_of_squarefree (hm : Squarefree m) (hn : n ≠ 0) : coprime (m / gcd m n) n := by
-  have : coprime (m / gcd m n) (gcd m n) :=
+lemma coprime_div_gcd_of_squarefree (hm : Squarefree m) (hn : n ≠ 0) : Coprime (m / gcd m n) n := by
+  have : Coprime (m / gcd m n) (gcd m n) :=
     coprime_of_squarefree_mul $ by simpa [Nat.div_mul_cancel, gcd_dvd_left]
   simpa [Nat.div_mul_cancel, gcd_dvd_right] using
     (coprime_div_gcd_div_gcd (m := m) (gcd_ne_zero_right hn).bot_lt).mul_right this
@@ -43,7 +43,7 @@ lemma primeFactors_div_gcd (hm : Squarefree m) (hn  : n ≠ 0) :
     hm.ne_zero, hn, dvd_div_iff (gcd_dvd_left _ _)]
   refine ⟨λ hp ↦ ⟨⟨hp.1, dvd_of_mul_left_dvd hp.2⟩, λ _ hpn ↦ hp.1.not_unit $ hm _ $
     (mul_dvd_mul_right (dvd_gcd (dvd_of_mul_left_dvd hp.2) hpn) _).trans hp.2⟩, λ hp ↦
-      ⟨hp.1.1, coprime.mul_dvd_of_dvd_of_dvd ?_ (gcd_dvd_left _ _) hp.1.2⟩⟩
+      ⟨hp.1.1, Coprime.mul_dvd_of_dvd_of_dvd ?_ (gcd_dvd_left _ _) hp.1.2⟩⟩
   rw [coprime_comm, hp.1.1.coprime_iff_not_dvd]
   exact λ hpn ↦ hp.2 hp.1.1 $ hpn.trans $ gcd_dvd_right _ _
 

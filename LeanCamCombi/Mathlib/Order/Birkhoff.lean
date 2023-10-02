@@ -5,10 +5,8 @@ Authors: Yaël Dillies
 -/
 import Mathlib.Data.Fintype.Order
 import Mathlib.Order.Irreducible
+import Mathlib.Data.Finset.LocallyFinite
 import Mathlib.Order.UpperLower.Basic
-import LeanCamCombi.Mathlib.Data.Fintype.Basic
-import LeanCamCombi.Mathlib.Order.BoundedOrder
-import LeanCamCombi.Mathlib.Order.LocallyFinite
 import LeanCamCombi.Mathlib.Order.UpperLower.Basic
 
 /-!

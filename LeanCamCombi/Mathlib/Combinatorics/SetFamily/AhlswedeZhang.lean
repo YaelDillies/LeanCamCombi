@@ -8,12 +8,8 @@ import Mathlib.Algebra.BigOperators.Ring
 import Mathlib.Order.Hom.Lattice
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
-import LeanCamCombi.Mathlib.Algebra.BigOperators.Basic
 import LeanCamCombi.Mathlib.Algebra.GroupWithZero.Units.Lemmas
-import LeanCamCombi.Mathlib.Data.Finset.Basic
 import LeanCamCombi.Mathlib.Data.Finset.Sups
-import LeanCamCombi.Mathlib.Data.Fintype.Basic
-import LeanCamCombi.Mathlib.Data.Fintype.Powerset
 
 /-!
 # The Ahlswede-Zhang identity
@@ -271,7 +267,7 @@ private lemma sups_aux : a ∈ upperClosure ↑(s ⊻ t) ↔ a ∈ upperClosure 
 
 lemma truncatedSup_infs (hs : a ∈ lowerClosure s) (ht : a ∈ lowerClosure t) :
     truncatedSup (s ⊼ t) a = truncatedSup s a ⊓ truncatedSup t a := by
-  simp only [truncatedSup_of_mem, hs, ht, infs_aux.2 ⟨hs, ht⟩, sup'_inf_sup', filter_infs_ge]
+  simp only [truncatedSup_of_mem, hs, ht, infs_aux.2 ⟨hs, ht⟩, sup'_inf_sup', filter_infs_le]
   simp_rw [←image_inf_product]
   rw [sup'_image]
   rfl

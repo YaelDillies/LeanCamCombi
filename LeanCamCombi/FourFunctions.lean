@@ -1,7 +1,6 @@
 import Mathlib.Tactic.Ring
-import LeanCamCombi.Mathlib.Algebra.BigOperators.Order
-import LeanCamCombi.Mathlib.Algebra.Order.Pi
-import LeanCamCombi.Mathlib.Data.Finset.Basic
+import Mathlib.Algebra.BigOperators.Order
+import Mathlib.Algebra.Order.Pi
 import LeanCamCombi.Mathlib.Data.Finset.Sups
 import LeanCamCombi.Mathlib.Order.Birkhoff
 import LeanCamCombi.Mathlib.Order.Booleanisation
@@ -218,8 +217,7 @@ lemma sum_collapse (h𝒜 : 𝒜 ⊆ (insert a u).powerset) (hu : a ∉ u) :
       rw [hs] at h
       exact h.2 h.1
   · rw [←sum_union (disjoint_sdiff_self_right.mono inf_le_left inf_le_left), ←inter_distrib_right,
-      union_sdiff_of_subset (powerset_mono.2 $ subset_insert _ _),
-      (inter_eq_right_iff_subset _ _).2 h𝒜]
+      union_sdiff_of_subset (powerset_mono.2 $ subset_insert _ _), inter_eq_right.2 h𝒜]
 
 /-- The **Four Functions Theorem** on a powerset algebra. See `four_functions_theorem` for the
 finite distributive lattice generalisation. -/
@@ -351,4 +349,3 @@ lemma Finset.le_card_diffs_mul_card_diffs (s t : Finset α) :
 /-- The **Marica-Schönheim Inequality**. -/
 lemma Finset.card_le_card_diffs (s : Finset α) : s.card ≤ (s \\ s).card :=
   le_of_pow_le_pow 2 (zero_le _) two_pos $ by simpa [←sq] using s.le_card_diffs_mul_card_diffs s
-

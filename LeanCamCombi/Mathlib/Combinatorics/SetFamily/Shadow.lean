@@ -1,5 +1,4 @@
 import Mathlib.Combinatorics.SetFamily.Shadow
-import LeanCamCombi.Mathlib.Data.Finset.Basic
 
 open Nat
 open scoped FinsetFamily

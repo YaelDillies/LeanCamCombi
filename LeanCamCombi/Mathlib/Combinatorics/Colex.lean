@@ -1,7 +1,6 @@
 import Mathlib.Combinatorics.Colex
+import Mathlib.Data.Finset.Slice
 import Mathlib.Order.SupClosed
-import LeanCamCombi.Mathlib.Data.Finset.Basic
-import LeanCamCombi.Mathlib.Data.Finset.Slice
 
 /-!
 # Wolex

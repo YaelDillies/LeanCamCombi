@@ -97,7 +97,9 @@ independent `1 - p`-Bernoulli random variables. -/
 lemma compl : IsBernoulliSeq (fun ω ↦ (X ω)ᶜ) (1 - p) μ where
   le_one := tsub_le_self
   iIndepFun := by
-    simpa only [iIndepFun_iff, mem_compl_iff, MeasurableSpace.comap_not] using hX.iIndepFun
+    simp only [iIndepFun_iff, mem_compl_iff, MeasurableSpace.comap_not]
+    convert (iIndepFun_iff _ _ _).1 hX.iIndepFun using 6
+    exact MeasurableSpace.comap_not _ -- Why do `rw` and `simp_rw` not work?
   map a := by
     have : Measurable Not := fun _ _ ↦ trivial
     refine' (this.aemeasurable.map_map_of_aemeasurable (hX.aemeasurable _)).symm.trans _

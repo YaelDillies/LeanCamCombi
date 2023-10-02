@@ -43,80 +43,20 @@ variable {F α β : Type*} [DecidableEq α] [DecidableEq β]
 
 namespace Finset
 section SemilatticeSup
-variable [SemilatticeSup α] [SemilatticeSup β] [SupHomClass F α β] {s : Finset α}
-
-lemma image_sups (f : F) (s t : Finset α) : image f (s ⊻ t) = image f s ⊻ image f t :=
-  image_image₂_distrib $ map_sup f
-
-lemma map_sups (f : F) (hf) (s t : Finset α) :
-    map ⟨f, hf⟩ (s ⊻ t) = map ⟨f, hf⟩ s ⊻ map ⟨f, hf⟩ t := by
-  simpa [map_eq_image] using image_sups f s t
-
-lemma subset_sups_self : s ⊆ s ⊻ s := λ _a ha ↦ mem_sups.2 ⟨_, ha, _, ha, sup_idem⟩
-
-lemma filter_sups_le [@DecidableRel α (· ≤ ·)] (s t : Finset α) (a : α) :
-    (s ⊻ t).filter (· ≤ a) = s.filter (· ≤ a) ⊻ t.filter (· ≤ a) := by
-  ext b
-  simp only [mem_filter, mem_sups]
-  constructor
-  · rintro ⟨⟨b, hb, c, hc, rfl⟩, ha⟩
-    rw [sup_le_iff] at ha
-    exact ⟨_, ⟨hb, ha.1⟩, _, ⟨hc, ha.2⟩, rfl⟩
-  · rintro ⟨b, hb, c, hc, _, rfl⟩
-    exact ⟨⟨_, hb.1, _, hc.1, rfl⟩, _root_.sup_le hb.2 hc.2⟩
-
-variable [Fintype α]
+variable [Fintype α] [SemilatticeSup α] [SemilatticeSup β] [SupHomClass F α β] {s : Finset α}
 
 @[simp] lemma univ_sups_univ : (univ : Finset α) ⊻ univ = univ := top_le_iff.1 subset_sups_self
 
 end SemilatticeSup
 
 section SemilatticeInf
-variable [SemilatticeInf α] [SemilatticeInf β] [InfHomClass F α β] {s : Finset α}
-
-lemma image_infs (f : F) (s t : Finset α) : image f (s ⊼ t) = image f s ⊼ image f t :=
-  image_image₂_distrib $ map_inf f
-
-lemma map_infs (f : F) (hf) (s t : Finset α) :
-    map ⟨f, hf⟩ (s ⊼ t) = map ⟨f, hf⟩ s ⊼ map ⟨f, hf⟩ t := by
-  simpa [map_eq_image] using image_infs f s t
-
-lemma subset_infs_self : s ⊆ s ⊼ s := λ _a ha ↦ mem_infs.2 ⟨_, ha, _, ha, inf_idem⟩
-
-lemma filter_infs_ge [@DecidableRel α (· ≤ ·)] (s t : Finset α) (a : α) :
-    (s ⊼ t).filter (a ≤ ·) = s.filter (a ≤ ·) ⊼ t.filter (a ≤ ·) := by
-  ext b
-  simp only [mem_filter, mem_infs]
-  constructor
-  · rintro ⟨⟨b, hb, c, hc, rfl⟩, ha⟩
-    rw [le_inf_iff] at ha
-    exact ⟨_, ⟨hb, ha.1⟩, _, ⟨hc, ha.2⟩, rfl⟩
-  · rintro ⟨b, hb, c, hc, _, rfl⟩
-    exact ⟨⟨_, hb.1, _, hc.1, rfl⟩, _root_.le_inf hb.2 hc.2⟩
-
-variable [Fintype α]
+variable [Fintype α] [SemilatticeInf α] [SemilatticeInf β] [InfHomClass F α β] {s : Finset α}
 
 @[simp] lemma univ_infs_univ : (univ : Finset α) ⊼ univ = univ := top_le_iff.1 subset_infs_self
 
 end SemilatticeInf
 
 variable [DecidableEq α] {𝒜 ℬ : Finset (Finset α)} {s t : Finset α} {a : α}
-
-@[simp] lemma powerset_union (s t : Finset α) : (s ∪ t).powerset = s.powerset ⊻ t.powerset := by
-  ext u
-  simp only [mem_sups, mem_powerset, le_eq_subset, sup_eq_union]
-  refine' ⟨λ h ↦ ⟨_, inter_subset_left _ u, _, inter_subset_left _ u, _⟩, _⟩
-  · rwa [←inter_distrib_right, inter_eq_right_iff_subset]
-  · rintro ⟨v, hv, w, hw, rfl⟩
-    exact union_subset_union hv hw
-
-@[simp] lemma powerset_inter (s t : Finset α) : (s ∩ t).powerset = s.powerset ⊼ t.powerset := by
-  ext u
-  simp only [mem_infs, mem_powerset, le_eq_subset, inf_eq_inter]
-  refine' ⟨λ h ↦ ⟨_, inter_subset_left _ u, _, inter_subset_left _ u, _⟩, _⟩
-  · rwa [←inter_inter_distrib_right, inter_eq_right_iff_subset]
-  · rintro ⟨v, hv, w, hw, rfl⟩
-    exact inter_subset_inter hv hw
 
 @[simp] lemma powerset_sups_powerset_self (s : Finset α) :
     s.powerset ⊻ s.powerset = s.powerset := by simp [←powerset_union]
