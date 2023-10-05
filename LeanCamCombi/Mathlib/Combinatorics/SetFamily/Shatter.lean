@@ -3,11 +3,9 @@ Copyright (c) 2022 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
-import Mathlib.Algebra.BigOperators.Basic
 import Mathlib.Data.Finset.Sort
 import Mathlib.Data.Nat.Interval
 import Mathlib.Order.UpperLower.Basic
-import Mathlib.Tactic.Linarith
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Compression.Down
 
 /-!
@@ -45,7 +43,7 @@ lemma Shatter.mono_left (h : 𝒜 ⊆ ℬ) (h𝒜 : 𝒜.Shatter s) : ℬ.Shatte
   fun _t ht ↦ let ⟨u, hu, hut⟩ := h𝒜 ht; ⟨u, h hu, hut⟩
 
 lemma Shatter.mono_right (h : t ⊆ s) (hs : 𝒜.Shatter s) : 𝒜.Shatter t := fun u hu ↦ by
-  obtain ⟨v, hv, rfl⟩ := hs (hu.trans h);exact ⟨v, hv, inf_congr_right hu $ inf_le_of_left_le h⟩
+  obtain ⟨v, hv, rfl⟩ := hs (hu.trans h); exact ⟨v, hv, inf_congr_right hu $ inf_le_of_left_le h⟩
 
 lemma Shatter.exists_superset (h : 𝒜.Shatter s) : ∃ t ∈ 𝒜, s ⊆ t :=
   let ⟨t, ht, hst⟩ := h Subset.rfl; ⟨t, ht, inter_eq_left.1 hst⟩
@@ -102,7 +100,7 @@ lemma subset_shatterer (h : IsLowerSet (𝒜 : Set (Finset α))) : 𝒜 ⊆ 𝒜
 
 protected alias ⟨_, Shatter.shatterer⟩ := shatter_shatterer
 
-private lemma aux (h : ∀ t ∈ 𝒜, a ∉ t) (ht :  𝒜.Shatter t) : a ∉ t := by
+private lemma aux (h : ∀ t ∈ 𝒜, a ∉ t) (ht : 𝒜.Shatter t) : a ∉ t := by
   obtain ⟨u, hu, htu⟩ := ht.exists_superset; exact not_mem_mono htu $ h u hu
 
 /-- Pajor's variant of the **Sauer-Shelah lemma**. -/

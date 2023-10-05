@@ -6,6 +6,7 @@ Authors: Yaël Dillies
 import Mathlib.Data.Finset.Pointwise
 import Mathlib.Data.Set.Intervals.OrdConnected
 import Mathlib.Order.UpperLower.Basic
+import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Compression.Down
 import LeanCamCombi.Mathlib.Data.Finset.Sups
 
 /-!
@@ -32,19 +33,6 @@ We declare the following notation in the `finset_family` locale:
 open scoped Pointwise
 
 variable {α : Type*}
-namespace Finset
-
-@[elab_as_elim]
-protected theorem family_induction_on {p : Finset (Finset α) → Prop} [DecidableEq α]
-    (𝒜 : Finset (Finset α)) (h₀ : p ∅)
-    (h₁ : ∀ ⦃a : α⦄ ⦃𝒜 : Finset (Finset α)⦄, (∀ s ∈ 𝒜, a ∉ s) → p 𝒜 → p (𝒜.image $ insert a))
-    (h₂ :
-      ∀ ⦃a : α⦄ ⦃𝒜 : Finset (Finset α)⦄,
-        p (𝒜.filter ((· ∉ ·) a)) → p (𝒜.filter ((· ∈ ·) a)) → p 𝒜) :
-    p 𝒜 :=
-  sorry
-
-end Finset
 
 namespace Finset
 
@@ -85,11 +73,12 @@ variable [DecidableEq α] {𝒜 ℬ : Finset (Finset α)}
 lemma card_posDiffs_self_le (h𝒜 : (𝒜 : Set (Finset α)).OrdConnected) :
     (𝒜 \₊ 𝒜).card ≤ 𝒜.card := by
   revert h𝒜
-  refine' Finset.family_induction_on 𝒜 _ _ _
+  refine' Finset.memberFamily_induction_on 𝒜 _ _ _
   · simp
-  · rintro a 𝒜 h𝒜
+  · intro
+    rfl
+  · rintro a 𝒜 h𝒜₀ h𝒜₁ h𝒜
     sorry
-  sorry
 
 /-- A **reverse Kleitman inequality**. -/
 lemma le_card_upper_inter_lower (h𝒜 : IsLowerSet (𝒜 : Set (Finset α)))
@@ -102,11 +91,9 @@ lemma le_card_upper_inter_lower (h𝒜 : IsLowerSet (𝒜 : Set (Finset α)))
     exact h𝒜.ordConnected.inter hℬ.ordConnected
 
 end Finset
-
 end posDiffs
 
 /-! ### Positive subtraction -/
-
 
 section posSub
 
@@ -131,5 +118,4 @@ theorem card_posSub_self_le (hs : (s : Set α).OrdConnected) : (s -₊ s).card �
   sorry
 
 end posSub
-
 end Finset

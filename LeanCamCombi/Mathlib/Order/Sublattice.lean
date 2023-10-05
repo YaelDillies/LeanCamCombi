@@ -375,10 +375,18 @@ lemma le_pi {s : Set κ} {L : ∀ i, Sublattice (π i)} {M : Sublattice (∀ i, 
 end Pi
 end Sublattice
 
+#exit
+
 open Sublattice
 
 namespace LatticeHom
-variable {β : Type*} {P : Type*} [Lattice β] [Lattice P] (L : Sublattice α)
+variable [Lattice β] [Lattice γ] {L : Sublattice α} {f : LatticeHom α β} {b : β}
+
+/-- Restriction of a lattice hom to a sublattice of the domain. -/
+def restrict (f : LatticeHom α β) (L : Sublattice α) : LatticeHom L β := f.comp L.subtype
+
+@[simp]
+lemma restrict_apply (f : LatticeHom α β) (L : Sublattice α) (a : L) : f.restrict L a = f a := rfl
 
 /-- Restriction of a lattice hom to a sublattice of the codomain. -/
 def codRestrict (f : LatticeHom α β) (L : Sublattice β) (h : ∀ x, f x ∈ L) : LatticeHom α L where
@@ -389,7 +397,8 @@ def codRestrict (f : LatticeHom α β) (L : Sublattice β) (h : ∀ x, f x ∈ L
 @[simp, norm_cast] lemma coe_codRestrict (f : LatticeHom α β) (L : Sublattice β) (h) :
     codRestrict f L h = Set.codRestrict f L h := rfl
 
-#exit
+lemma codRestrict_injective {L : Sublattice β} {h} :
+    Injective (f.codRestrict L h) ↔ Injective f := Set.injective_codRestrict _
 
 /-- The range of a monoid homomorphism from a lattice is a sublattice. -/
 def range (f : LatticeHom α β) : Sublattice β :=
@@ -397,27 +406,23 @@ def range (f : LatticeHom α β) : Sublattice β :=
 
 @[simp, norm_cast] lemma coe_range (f : LatticeHom α β) : (f.range : Set β) = Set.range f := rfl
 
-@[simp] lemma mem_range {f : LatticeHom α β} {y : β} : y ∈ f.range ↔ ∃ a, f a = y :=
-  Iff.rfl
+@[simp] lemma mem_range : b ∈ f.range ↔ ∃ a, f a = b := Iff.rfl
 
 @[simp] lemma map_top (f : LatticeHom α β) : (⊤ : Sublattice α).map f = f.range :=
   (Sublattice.copy_eq _ _ _).symm
 
 lemma restrict_range (f : LatticeHom α β) : (f.restrict L).range = L.map f := by
-  simp_rw [SetLike.ext_iff, mem_range, mem_map, restrict_apply, SetLike.exists,
-    exists_prop, forall_const]
+  simp [SetLike.ext_iff]
 
-/-- The canonical surjective lattice homomorphism `α →* f(α)` induced by a lattice
+/-- The canonical surjective lattice homomorphism `α → f(α)` induced by a lattice
 homomorphism `LatticeHom α β`. -/
-def rangeRestrict (f : LatticeHom α β) : LatticeHom α f.range :=
-  codRestrict f _ λ a ↦ ⟨a, rfl⟩
+def rangeRestrict (f : LatticeHom α β) : LatticeHom α f.range := codRestrict f _ λ a ↦ ⟨a, rfl⟩
 
-lemma coe_rangeRestrict (f : LatticeHom α β) (g : α) : (f.rangeRestrict g : β) = f g :=
-  rfl
+@[simp, norm_cast]
+lemma coe_rangeRestrict (f : LatticeHom α β) (a : α) : (f.rangeRestrict a : β) = f a := rfl
 
-lemma coe_comp_rangeRestrict (f : LatticeHom α β) :
-    ((↑) : f.range → β) ∘ (⇑f.rangeRestrict : α → f.range) = f :=
-  rfl
+@[simp] lemma coe_comp_rangeRestrict (f : LatticeHom α β) :
+    ((↑) : f.range → β) ∘ (⇑f.rangeRestrict : α → f.range) = f := rfl
 
 lemma subtype_comp_rangeRestrict (f : LatticeHom α β) : f.range.subtype.comp f.rangeRestrict = f :=
   ext $ f.coe_rangeRestrict
@@ -425,40 +430,21 @@ lemma subtype_comp_rangeRestrict (f : LatticeHom α β) : f.range.subtype.comp f
 lemma rangeRestrict_surjective (f : LatticeHom α β) : Surjective f.rangeRestrict :=
   λ ⟨_, g, rfl⟩ ↦ ⟨g, rfl⟩
 
-lemma rangeRestrict_injective_iff {f : LatticeHom α β} : Injective f.rangeRestrict ↔ Injective f := by
-  convert Set.injective_codRestrict _
+lemma rangeRestrict_injective : Injective f.rangeRestrict ↔ Injective f := codRestrict_injective
 
-lemma map_range (g : β →* P) (f : LatticeHom α β) : f.range.map g = (g.comp f).range := by
-  rw [range_eq_map, range_eq_map]; exact (⊤ : Sublattice α).map_map g f
+lemma map_range (g : LatticeHom β γ) (f : LatticeHom α β) : f.range.map g = (g.comp f).range := by
+  simpa only [map_top] using (⊤ : Sublattice α).map_map g f
 
-lemma range_top_iff_surjective {β} [Lattice β] {f : LatticeHom α β} :
-    f.range = (⊤ : Sublattice β) ↔ Surjective f :=
-  SetLike.ext'_iff.trans $ Iff.trans (by rw [coe_range, coe_top]) Set.range_iff_surjective
+@[simp] lemma range_eq_top : f.range = (⊤ : Sublattice β) ↔ Surjective f :=
+  SetLike.ext'_iff.trans Set.range_iff_surjective
 
-/-- The range of a surjective monoid homomorphism is the whole of the codomain. -/
-  "The range of a surjective `AddMonoid` homomorphism is the whole of the codomain."]
-lemma range_top_of_surjective {β} [Lattice β] (f : LatticeHom α β) (hf : Surjective f) :
+/-- The range of a surjective lattice homomorphism is the whole of the codomain. -/
+lemma range_eq_top_of_surjective {β} [Lattice β] (f : LatticeHom α β) (hf : Surjective f) :
     f.range = (⊤ : Sublattice β) :=
-  range_top_iff_surjective.2 hf
+  range_eq_top.2 hf
 
-lemma range_one : (1 : LatticeHom α β).range = ⊥ :=
-  SetLike.ext λ a ↦ by simpa using @comm _ (· = ·) _ 1 a
-
-lemma _root_.Sublattice.subtype_range (L : Sublattice α) : L.subtype.range = L := by
-  rw [range_eq_map, ← SetLike.coe_set_eq, coe_map, Sublattice.coeSubtype]
-  ext
-  simp
-
-lemma _root_.Sublattice.inclusion_range {L M : Sublattice α} (h_le : L ≤ L) :
-    (inclusion h_le).range = L.SublatticeOf L :=
-  Sublattice.ext λ g ↦ Set.ext_iff.mp (Set.range_inclusion h_le) g
-
-lemma sublatticeOf_range_eq_of_le {G₁ G₂ : Type*} [Lattice G₁] [Lattice G₂] {L : Sublattice G₂}
-    (f : G₁ →* G₂) (h : f.range ≤ L) :
-    f.range.SublatticeOf L = (f.codRestrict L λ a ↦ h ⟨a, rfl⟩).range := by
-  ext k
-  refine' exists_congr _
-  simp [Subtype.ext_iff]
+lemma _root_.Sublattice.range_subtype (L : Sublattice α) : L.subtype.range = L := by
+  rw [←map_top, ←SetLike.coe_set_eq, coe_map, Sublattice.coe_subtype]; ext; simp
 
 /-- Computable alternative to `LatticeHom.ofInjective`. -/
 def ofLeftInverse {f : LatticeHom α β} {g : β →* α} (h : LeftInverse g f) : α ≃o f.range :=
@@ -494,91 +480,6 @@ lemma apply_ofInjective_symm {f : LatticeHom α β} (hf : Injective f) (a : f.ra
     f ((ofInjective hf).symm a) = a :=
   Subtype.ext_iff.1 $ (ofInjective hf).apply_symm_apply a
 
-section Ker
-
-variable {M : Type*} [MulOneClass M]
-
-/-- The multiplicative kernel of a monoid homomorphism is the Sublattice of elements `a : α` such that
-`f a = 1` -/
-def ker (f : α →* M) : Sublattice α :=
-  { LatticeHom.mker f with
-    inv_mem' := λ {a} (hx : f a = 1) ↦
-      calc
-        f x⁻¹ = f a * f x⁻¹ := by rw [hx, one_mul]
-        _ = 1 := by rw [← map_mul, mul_inv_self, map_one] }
-
-lemma mem_ker (f : α →* M) {a : α} : a ∈ f.ker ↔ f a = 1 :=
-  Iff.rfl
-
-lemma coe_ker (f : α →* M) : (f.ker : Set α) = (f : α → M) ⁻¹' {1} :=
-  rfl
-
-lemma ker_toHomUnits {M} [Monoid M] (f : α →* M) : f.toHomUnits.ker = f.ker := by
-  ext a
-  simp [mem_ker, Units.ext_iff]
-
-lemma eq_iff (f : α →* M) {a y : α} : f a = f y ↔ y⁻¹ * a ∈ f.ker := by
-  constructor <;> intro h
-  · rw [mem_ker, map_mul, h, ← map_mul, inv_mul_self, map_one]
-  · rw [← one_mul a, ← mul_inv_self y, mul_assoc, map_mul, f.mem_ker.1 h, mul_one]
-
-instance decidableMemKer [DecidableEq M] (f : α →* M) : DecidablePred (· ∈ f.ker) := λ a ↦
-  decidable_of_iff (f a = 1) f.mem_ker
-
-lemma comap_ker (g : β →* P) (f : LatticeHom α β) : g.ker.comap f = (g.comp f).ker :=
-  rfl
-
-lemma comap_bot (f : LatticeHom α β) : (⊥ : Sublattice β).comap f = f.ker :=
-  rfl
-
-lemma ker_restrict (f : LatticeHom α β) : (f.restrict L).ker = f.ker.SublatticeOf L :=
-  rfl
-
-lemma ker_codRestrict {S} [SetLike S β] [SubmonoidClass S β] (f : LatticeHom α β) (s : S)
-    (h : ∀ a, f a ∈ s) : (f.codRestrict s h).ker = f.ker :=
-  SetLike.ext λ _x ↦ Subtype.ext_iff
-
-lemma ker_rangeRestrict (f : LatticeHom α β) : ker (rangeRestrict f) = ker f :=
-  ker_codRestrict _ _ _
-
-lemma ker_one : (1 : α →* M).ker = ⊤ :=
-  SetLike.ext λ _x ↦ eq_self_iff_true _
-
-lemma ker_id : (LatticeHom.id α).ker = ⊥ :=
-  rfl
-
-lemma ker_eq_bot_iff (f : α →* M) : f.ker = ⊥ ↔ Injective f :=
-  ⟨λ h a y hxy ↦ by rwa [eq_iff, h, mem_bot, inv_mul_eq_one, eq_comm] at hxy, λ h ↦
-    bot_unique λ a hx ↦ h (hx.trans f.map_one.symm)⟩
-
-lemma _root_.Sublattice.ker_subtype (L : Sublattice α) : L.subtype.ker = ⊥ :=
-  L.subtype.ker_eq_bot_iff.mpr Subtype.coe_injective
-
-lemma _root_.Sublattice.ker_inclusion {L M : Sublattice α} (h : L ≤ L) : (inclusion h).ker = ⊥ :=
-  (inclusion h).ker_eq_bot_iff.mpr (Set.inclusion_injective h)
-
-lemma prodMap_comap_prod {G' : Type*} {N' : Type*} [Lattice G'] [Lattice N'] (f : LatticeHom α β)
-    (g : G' →* N') (S : Sublattice β) (S' : Sublattice N') :
-    (S.prod S').comap (prodMap f g) = (S.comap f).prod (S'.comap g) :=
-  SetLike.coe_injective $ Set.preimage_prod_map_prod f g _ _
-
-lemma ker_prodMap {G' : Type*} {N' : Type*} [Lattice G'] [Lattice N'] (f : LatticeHom α β) (g : G' →* N') :
-    (prodMap f g).ker = f.ker.prod g.ker := by
-  rw [← comap_bot, ← comap_bot, ← comap_bot, ← prodMap_comap_prod, bot_prod_bot]
-
-lemma range_le_ker_iff (f : α →* G') (g : G' →* G'') : f.range ≤ g.ker ↔ g.comp f = 1 :=
-  ⟨λ h ↦ ext λ a ↦ h ⟨a, rfl⟩, by rintro h _ ⟨y, rfl⟩; exact FunLike.congr_fun h y⟩
-
-instance (priority := 100) normal_ker (f : α →* M) : f.ker.Normal :=
-  ⟨λ a hx y ↦ by
-    rw [mem_ker, map_mul, map_mul, f.mem_ker.1 hx, mul_one, map_mul_eq_one f (mul_inv_self y)]⟩
-
-lemma ker_fst : ker (fst α G') = .prod ⊥ ⊤ := SetLike.ext λ _ ↦ (and_true_iff _).symm
-
-lemma ker_snd : ker (snd α G') = .prod ⊤ ⊥ := SetLike.ext λ _ ↦ (true_and_iff _).symm
-
-end Ker
-
 section EqLocus
 
 variable {M : Type*} [Monoid M]
@@ -591,8 +492,6 @@ lemma eqLocus_same (f : LatticeHom α β) : f.eqLocus f = ⊤ :=
   SetLike.ext λ _ ↦ eq_self_iff_true _
 
 /-- If two monoid homomorphisms are equal on a set, then they are equal on its Sublattice closure. -/
-      "If two monoid homomorphisms are equal on a set, then they are equal on its Sublattice
-      closure."]
 lemma eqOn_closure {f g : α →* M} {s : Set α} (h : Set.EqOn f g s) : Set.EqOn f g (closure s) :=
   show closure s ≤ f.eqLocus g from (closure_le _).2 h
 

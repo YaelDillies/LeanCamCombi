@@ -44,30 +44,4 @@ lemma prod_mk_inf'_inf' (hs : s.Nonempty) (ht : t.Nonempty) (f : ι → α) (g :
   (prod_mk_inf'_inf' _ _ _ _).symm
 
 end SemilatticeInf
-
-@[elab_as_elim]
-protected lemma family_induction_on {p : Finset (Finset α) → Prop} [DecidableEq α]
-    (𝒜 : Finset (Finset α)) (empty : p ∅) (singleton_empty : p {∅})
-    (image_insert : ∀ (a : α) (𝒜 : Finset (Finset α)),
-      (∀ s ∈ 𝒜, a ∉ s) → p 𝒜 → p (𝒜.image $ insert a))
-    (subfamily : ∀ (a : α) ⦃𝒜 : Finset (Finset α)⦄,
-      p (𝒜.filter (a ∉ ·)) → p (𝒜.filter (a ∈ ·)) → p 𝒜) :
-    p 𝒜 := by
-  set u := 𝒜.sup id
-  have hu : ∀ s ∈ 𝒜, s ⊆ u := fun s ↦ le_sup (f := id)
-  clear_value u
-  induction' u using Finset.induction with a u _ ih generalizing 𝒜
-  · simp_rw [subset_empty] at hu
-    rw [←subset_singleton_iff', subset_singleton_iff] at hu
-    obtain rfl | rfl := hu <;> assumption
-  refine subfamily a (ih _ ?_) ?_
-  · simp only [not_not, mem_filter, and_imp]
-    exact fun s hs has ↦ (subset_insert_iff_of_not_mem has).1 $ hu _ hs
-  · have := image_insert a ((𝒜.filter (a ∈ ·)).image (erase · a))
-      (forall_image.2 fun s _ ↦ not_mem_erase _ _)
-      (ih _ $ forall_image.2 fun s hs ↦ subset_insert_iff.1 $ hu _ $ filter_subset _ _ hs)
-    rwa [image_image, Finset.image_congr, image_id] at this
-    rintro s hs
-    exact insert_erase $ (mem_filter.1 hs).2
-
 end Finset
