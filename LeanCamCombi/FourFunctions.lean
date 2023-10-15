@@ -337,14 +337,14 @@ variable [DecidableEq α] [GeneralizedBooleanAlgebra α]
 /-- A slight generalisation of the **Marica-Schönheim Inequality**. -/
 lemma Finset.le_card_diffs_mul_card_diffs (s t : Finset α) :
     s.card * t.card ≤ (s \\ t).card * (t \\ s).card := by
-  have : ∀ s t : Finset α, (s \\ t).map ⟨_, inlLatticeHom_injective⟩ =
-    s.map ⟨_, inlLatticeHom_injective⟩ \\ t.map ⟨_, inlLatticeHom_injective⟩
+  have : ∀ s t : Finset α, (s \\ t).map ⟨_, liftLatticeHom_injective⟩ =
+    s.map ⟨_, liftLatticeHom_injective⟩ \\ t.map ⟨_, liftLatticeHom_injective⟩
   · rintro s t
     simp_rw [map_eq_image]
     exact image_image₂_distrib fun a b ↦ rfl
   simpa [←card_compls (_ ⊻ _), ←map_sup, ←map_inf, ←this] using
-    (s.map ⟨_, inlLatticeHom_injective⟩).le_card_infs_mul_card_sups
-      (t.map ⟨_, inlLatticeHom_injective⟩)ᶜˢ
+    (s.map ⟨_, liftLatticeHom_injective⟩).le_card_infs_mul_card_sups
+      (t.map ⟨_, liftLatticeHom_injective⟩)ᶜˢ
 
 /-- The **Marica-Schönheim Inequality**. -/
 lemma Finset.card_le_card_diffs (s : Finset α) : s.card ≤ (s \\ s).card :=

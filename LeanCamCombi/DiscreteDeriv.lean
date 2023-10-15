@@ -2,7 +2,6 @@ import Mathlib.Algebra.Polynomial.BigOperators
 import Mathlib.Data.Finsupp.Notation
 import Mathlib.Data.Polynomial.AlgebraMap
 import Mathlib.Data.Polynomial.Degree.Lemmas
-import LeanCamCombi.Mathlib.Data.Polynomial.Eval
 
 open Finset
 open scoped BigOperators

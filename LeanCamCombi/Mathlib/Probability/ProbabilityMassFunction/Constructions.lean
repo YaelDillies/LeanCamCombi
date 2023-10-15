@@ -1,12 +1,12 @@
-import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
 import Mathlib.Probability.ProbabilityMassFunction.Constructions
+import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
 
--- TODO: On a countable space, define one-to-one correspondance between `pmf` and probability
+-- TODO: On a countable space, define one-to-one correspondance between `PMF` and probability
 -- measures
 open MeasureTheory
 open scoped BigOperators Classical ENNReal NNReal
 
-namespace Pmf
+namespace PMF
 variable {α β : Type*}
 
 section OfFintype
@@ -37,16 +37,16 @@ end OfFintype
 
 variable [MeasurableSpace α] [MeasurableSpace β] {f : α → β}
 
-lemma toMeasure_ne_zero (p : Pmf α) : p.toMeasure ≠ 0 := IsProbabilityMeasure.ne_zero p.toMeasure
+lemma toMeasure_ne_zero (p : PMF α) : p.toMeasure ≠ 0 := IsProbabilityMeasure.ne_zero p.toMeasure
 
 @[simp]
-lemma map_toMeasure (p : Pmf α) (hf : Measurable f) : p.toMeasure.map f = (p.map f).toMeasure := by
-  ext s hs : 1; rw [Pmf.toMeasure_map_apply _ _ _ hf hs, Measure.map_apply hf hs]
+lemma map_toMeasure (p : PMF α) (hf : Measurable f) : p.toMeasure.map f = (p.map f).toMeasure := by
+  ext s hs : 1; rw [PMF.toMeasure_map_apply _ _ _ hf hs, Measure.map_apply hf hs]
 
 section bernoulli
 
-/-- A `pmf` which assigns probability `p` to true propositions and `1 - p` to false ones. -/
-noncomputable def bernoulli' (p : ℝ≥0) (h : p ≤ 1) : Pmf Prop :=
+/-- A `PMF` which assigns probability `p` to true propositions and `1 - p` to false ones. -/
+noncomputable def bernoulli' (p : ℝ≥0) (h : p ≤ 1) : PMF Prop :=
   (ofFintype fun b ↦ if b then p else 1 - p) $ by simp_rw [←ENNReal.coe_one, ←ENNReal.coe_sub,
     ←apply_ite ((↑) : ℝ≥0 → ℝ≥0∞), ←ENNReal.coe_finset_sum, ENNReal.coe_eq_coe]; simp [h]
 
@@ -73,4 +73,4 @@ lemma mem_support_bernoulli'_iff : b ∈ (bernoulli' p hp).support ↔ if b then
   split_ifs <;> simp [ENNReal.sub_sub_cancel WithTop.one_ne_top (ENNReal.coe_le_coe.2 hp)]
 
 end bernoulli
-end Pmf
+end PMF

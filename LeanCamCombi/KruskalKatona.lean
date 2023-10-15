@@ -216,7 +216,7 @@ shadow. In particular, 'good' means it's useful, and every smaller compression w
 difference. -/
 lemma compression_improved (𝒜 : Finset (Finset α)) (h₁ : UsefulCompression U V)
     (h₂ : ∀ ⦃U₁ V₁⦄, UsefulCompression U₁ V₁ → U₁.card < U.card → IsCompressed U₁ V₁ 𝒜) :
-    (∂ (𝓓 U V 𝒜)).card ≤ (∂ 𝒜).card := by
+    (∂ (𝓔 U V 𝒜)).card ≤ (∂ 𝒜).card := by
   obtain ⟨UWd, same_size, hU, hV, max_lt⟩ := h₁
   refine' card_shadow_compression_le _ _ fun x Hx ↦ ⟨min' V hV, min'_mem _ _, _⟩
   obtain hU' | hU' := eq_or_lt_of_le (succ_le_iff.2 hU.card_pos)
@@ -271,8 +271,8 @@ private def familyMeasure (𝒜 : Finset (Finset (Fin n))) : ℕ := ∑ A in �
 /-- Applying a compression strictly decreases the measure. This helps show that "compress until we
 can't any more" is a terminating process. -/
 lemma familyMeasure_compression_lt_familyMeasure {U V : Finset (Fin n)} {hU : U.Nonempty}
-    {hV : V.Nonempty} (h : max' U hU < max' V hV) {𝒜 : Finset (Finset (Fin n))} (a : 𝓓 U V 𝒜 ≠ 𝒜) :
-    familyMeasure (𝓓 U V 𝒜) < familyMeasure 𝒜 := by
+    {hV : V.Nonempty} (h : max' U hU < max' V hV) {𝒜 : Finset (Finset (Fin n))} (a : 𝓔 U V 𝒜 ≠ 𝒜) :
+    familyMeasure (𝓔 U V 𝒜) < familyMeasure 𝒜 := by
   rw [compression] at a ⊢
   have q : ∀ Q ∈ 𝒜.filter fun A ↦ compress U V A ∉ 𝒜, compress U V Q ≠ Q := by
     simp_rw [mem_filter]
@@ -322,10 +322,10 @@ private lemma kruskal_katona_helper {r : ℕ} (𝒜 : Finset (Finset (Fin n)))
     rintro U₁ V₁ huseful hUcard
     by_contra h
     exact hUcard.not_le $ t ⟨U₁, V₁⟩ $ mem_filter.2 ⟨mem_univ _, huseful, h⟩
-  have p1 : (∂ (𝓓 U V A)).card ≤ (∂ A).card := compression_improved _ hUV.2.1 h₂
+  have p1 : (∂ (𝓔 U V A)).card ≤ (∂ A).card := compression_improved _ hUV.2.1 h₂
   obtain ⟨-, hUV', hu, hv, hmax⟩ := hUV.2.1
   unfold InvImage at ih
-  obtain ⟨t, q1, q2, q3, q4⟩ := ih (𝓓 U V A)
+  obtain ⟨t, q1, q2, q3, q4⟩ := ih (𝓔 U V A)
     (familyMeasure_compression_lt_familyMeasure hmax hUV.2.2) (h.uwCompression hUV')
   exact ⟨t, q1.trans p1, (card_compression _ _ _).symm.trans q2, q3, q4⟩
 

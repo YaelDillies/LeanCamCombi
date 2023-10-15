@@ -3,10 +3,10 @@ Copyright (c) 2022 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
+import Mathlib.Combinatorics.SetFamily.Compression.Down
 import Mathlib.Data.Finset.Sort
 import Mathlib.Data.Nat.Interval
 import Mathlib.Order.UpperLower.Basic
-import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Compression.Down
 
 /-!
 # Shattering families

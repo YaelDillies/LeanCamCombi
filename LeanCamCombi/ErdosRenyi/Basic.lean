@@ -33,7 +33,7 @@ protected nonrec lemma iIndepFun : iIndepFun inferInstance (fun e ω ↦ e ∈ (
   hG.iIndepFun
 
 protected nonrec lemma map (e : Sym2 α) :
-    Measure.map (fun ω ↦ e ∈ (G ω).edgeSet) μ = (Pmf.bernoulli' p hG.le_one).toMeasure :=
+    Measure.map (fun ω ↦ e ∈ (G ω).edgeSet) μ = (PMF.bernoulli' p hG.le_one).toMeasure :=
   hG.map _
 
 protected nonrec lemma aemeasurable (e : Sym2 α) : AEMeasurable (fun ω ↦ e ∈ (G ω).edgeSet) μ :=

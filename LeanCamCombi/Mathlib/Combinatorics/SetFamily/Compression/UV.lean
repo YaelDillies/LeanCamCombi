@@ -25,7 +25,7 @@ minimise the shadow.
 
 ## Notation
 
-`𝓓` (typed with `\MCC`) is notation for `UW.compression` in locale `FinsetFamily`.
+`𝓔` (typed with `\MCC`) is notation for `UW.compression` in locale `FinsetFamily`.
 
 ## Notes
 
@@ -102,13 +102,13 @@ reduce the cardinality, so we keep all elements whose compression is already pre
 def compression (u v : α) (s : Finset α) :=
   (s.filter fun a => compress u v a ∈ s) ∪ (s.image $ compress u v).filter fun a ↦ a ∉ s
 
-scoped[FinsetFamily] notation "𝓓 " => UW.compression
+scoped[FinsetFamily] notation "𝓔 " => UW.compression
 
 open scoped FinsetFamily
 
 /-- `IsCompressed u v s` expresses that `s` is UW-compressed. -/
 def IsCompressed (u v : α) (s : Finset α) :=
-  𝓓 u v s = s
+  𝓔 u v s = s
 
 /-- UW-compression is injective on the sets that are not UW-compressed. -/
 theorem compress_injOn : Set.InjOn (compress u v) ↑(s.filter fun a ↦ compress u v a ∉ s) := by
@@ -125,13 +125,13 @@ theorem compress_injOn : Set.InjOn (compress u v) ↑(s.filter fun a ↦ compres
 /-- `a` is in the UW-compressed family iff it's in the original and its compression is in the
 original, or it's not in the original but it's the compression of something in the original. -/
 theorem mem_compression :
-    a ∈ 𝓓 u v s ↔ a ∈ s ∧ compress u v a ∈ s ∨ a ∉ s ∧ ∃ b ∈ s, compress u v b = a := by
+    a ∈ 𝓔 u v s ↔ a ∈ s ∧ compress u v a ∈ s ∨ a ∉ s ∧ ∃ b ∈ s, compress u v b = a := by
   simp_rw [compression, mem_union, mem_filter, mem_image, @and_comm (a ∉ s)]
 
-protected theorem IsCompressed.eq (h : IsCompressed u v s) : 𝓓 u v s = s := h
+protected theorem IsCompressed.eq (h : IsCompressed u v s) : 𝓔 u v s = s := h
 
 @[simp]
-theorem compression_self (u : α) (s : Finset α) : 𝓓 u u s = s := by
+theorem compression_self (u : α) (s : Finset α) : 𝓔 u u s = s := by
   unfold compression
   convert union_empty s
   · ext a
@@ -148,7 +148,7 @@ theorem compress_disjoint :
     Disjoint (s.filter fun a ↦ compress u v a ∈ s) ((s.image $ compress u v).filter (· ∉ s)) :=
   disjoint_left.2 fun _a ha₁ ha₂ ↦ (mem_filter.1 ha₂).2 (mem_filter.1 ha₁).1
 
-theorem compress_mem_compression (ha : a ∈ s) : compress u v a ∈ 𝓓 u v s := by
+theorem compress_mem_compression (ha : a ∈ s) : compress u v a ∈ 𝓔 u v s := by
   rw [mem_compression]
   by_cases compress u v a ∈ s
   · rw [compress_idem]
@@ -156,8 +156,8 @@ theorem compress_mem_compression (ha : a ∈ s) : compress u v a ∈ 𝓓 u v s 
   · exact Or.inr ⟨h, a, ha, rfl⟩
 
 -- This is a special case of `compress_mem_compression` once we have `compression_idem`.
-theorem compress_mem_compression_of_mem_compression (ha : a ∈ 𝓓 u v s) :
-    compress u v a ∈ 𝓓 u v s := by
+theorem compress_mem_compression_of_mem_compression (ha : a ∈ 𝓔 u v s) :
+    compress u v a ∈ 𝓔 u v s := by
   rw [mem_compression] at ha ⊢
   simp only [compress_idem, exists_prop]
   obtain ⟨_, ha⟩ | ⟨_, b, hb, rfl⟩ := ha
@@ -166,20 +166,20 @@ theorem compress_mem_compression_of_mem_compression (ha : a ∈ 𝓓 u v s) :
 
 /-- Compressing a family is idempotent. -/
 @[simp]
-theorem compression_idem (u v : α) (s : Finset α) : 𝓓 u v (𝓓 u v s) = 𝓓 u v s := by
-  have h : filter (fun a ↦ compress u v a ∉ 𝓓 u v s) (𝓓 u v s) = ∅ :=
+theorem compression_idem (u v : α) (s : Finset α) : 𝓔 u v (𝓔 u v s) = 𝓔 u v s := by
+  have h : filter (fun a ↦ compress u v a ∉ 𝓔 u v s) (𝓔 u v s) = ∅ :=
     filter_false_of_mem fun a ha h ↦ h $ compress_mem_compression_of_mem_compression ha
   rw [compression, image_filter, h, image_empty, ←h]
   exact filter_union_filter_neg_eq _ (compression u v s)
 
 /-- Compressing a family doesn't change its size. -/
 @[simp]
-theorem card_compression (u v : α) (s : Finset α) : (𝓓 u v s).card = s.card := by
+theorem card_compression (u v : α) (s : Finset α) : (𝓔 u v s).card = s.card := by
   rw [compression, card_disjoint_union compress_disjoint, image_filter,
     card_image_of_injOn compress_injOn, ←card_disjoint_union (disjoint_filter_filter_neg s _ _),
     filter_union_filter_neg_eq]
 
-theorem le_of_mem_compression_of_not_mem (h : a ∈ 𝓓 u v s) (ha : a ∉ s) : u ≤ a := by
+theorem le_of_mem_compression_of_not_mem (h : a ∈ 𝓔 u v s) (ha : a ∉ s) : u ≤ a := by
   rw [mem_compression] at h
   obtain h | ⟨-, b, hb, hba⟩ := h
   · cases ha h.1
@@ -189,7 +189,7 @@ theorem le_of_mem_compression_of_not_mem (h : a ∈ 𝓓 u v s) (ha : a ∉ s) :
     exact ⟨le_sup_right, h.1.mono_right h.2⟩
   · cases ne_of_mem_of_not_mem hb ha hba
 
-theorem disjoint_of_mem_compression_of_not_mem (h : a ∈ 𝓓 u v s) (ha : a ∉ s) : Disjoint v a := by
+theorem disjoint_of_mem_compression_of_not_mem (h : a ∈ 𝓔 u v s) (ha : a ∉ s) : Disjoint v a := by
   rw [mem_compression] at h
   obtain h | ⟨-, b, hb, hba⟩ := h
   · cases ha h.1
@@ -199,7 +199,7 @@ theorem disjoint_of_mem_compression_of_not_mem (h : a ∈ 𝓓 u v s) (ha : a �
     exact disjoint_sdiff_self_right
   · cases ne_of_mem_of_not_mem hb ha hba
 
-theorem sup_sdiff_mem_of_mem_compression_of_not_mem (h : a ∈ 𝓓 u v s) (ha : a ∉ s) :
+theorem sup_sdiff_mem_of_mem_compression_of_not_mem (h : a ∈ 𝓔 u v s) (ha : a ∉ s) :
     (a ⊔ v) \ u ∈ s := by
   rw [mem_compression] at h
   obtain h | ⟨-, b, hb, hba⟩ := h
@@ -212,7 +212,7 @@ theorem sup_sdiff_mem_of_mem_compression_of_not_mem (h : a ∈ 𝓓 u v s) (ha :
 
 /-- If `a` is in the family compression and can be compressed, then its compression is in the
 original family. -/
-theorem sup_sdiff_mem_of_mem_compression (ha : a ∈ 𝓓 u v s) (hva : v ≤ a) (hua : Disjoint u a) :
+theorem sup_sdiff_mem_of_mem_compression (ha : a ∈ 𝓔 u v s) (hva : v ≤ a) (hua : Disjoint u a) :
     (a ⊔ u) \ v ∈ s := by
   rw [mem_compression, compress_of_disjoint_of_le hua hva] at ha
   obtain ⟨_, ha⟩ | ⟨_, b, hb, rfl⟩ := ha
@@ -231,7 +231,7 @@ theorem sup_sdiff_mem_of_mem_compression (ha : a ∈ 𝓓 u v s) (hva : v ≤ a)
 
 /-- If `a` is in the `u, v`-compression but `v ≤ a`, then `a` must have been in the original
 family. -/
-theorem mem_of_mem_compression (ha : a ∈ 𝓓 u v s) (hva : v ≤ a) (hvu : v = ⊥ → u = ⊥) : a ∈ s := by
+theorem mem_of_mem_compression (ha : a ∈ 𝓔 u v s) (hva : v ≤ a) (hvu : v = ⊥ → u = ⊥) : a ∈ s := by
   rw [mem_compression] at ha
   obtain ha | ⟨_, b, hb, h⟩ := ha
   · exact ha.1
@@ -258,7 +258,7 @@ theorem card_compress (hUV : u.card = v.card) (A : Finset α) : (compress u v A)
   · rfl
 
 lemma _root_.Set.Sized.uwCompression (huv : u.card = v.card) (h𝒜 : (𝒜 : Set (Finset α)).Sized r) :
-    (𝓓 u v 𝒜 : Set (Finset α)).Sized r := by
+    (𝓔 u v 𝒜 : Set (Finset α)).Sized r := by
   simp_rw [Set.Sized, mem_coe, mem_compression]
   rintro s (hs | ⟨huvt, t, ht, rfl⟩)
   · exact h𝒜 hs.1
@@ -273,8 +273,8 @@ that `𝒜` is `(u.erase x, v.erase y)`-compressed. This is the key fact about c
 Kruskal-Katona. -/
 theorem shadow_compression_subset_compression_shadow (u v : Finset α)
     (huv : ∀ x ∈ u, ∃ y ∈ v, IsCompressed (u.erase x) (v.erase y) 𝒜) :
-    ∂ (𝓓 u v 𝒜) ⊆ 𝓓 u v (∂ 𝒜) := by
-  set 𝒜' := 𝓓 u v 𝒜
+    ∂ (𝓔 u v 𝒜) ⊆ 𝓔 u v (∂ 𝒜) := by
+  set 𝒜' := 𝓔 u v 𝒜
   suffices H : ∀ s, s ∈ ∂ 𝒜' → s ∉ ∂ 𝒜 →
     u ⊆ s ∧ Disjoint v s ∧ (s ∪ v) \ u ∈ ∂ 𝒜 ∧ (s ∪ v) \ u ∉ ∂ 𝒜'
   · rintro s hs'
@@ -379,7 +379,7 @@ such that `𝒜` is `(u.erase x, v.erase y)`-compressed. This is the key UW-comp
 Kruskal-Katona. -/
 theorem card_shadow_compression_le (u v : Finset α)
     (huv : ∀ x ∈ u, ∃ y ∈ v, IsCompressed (u.erase x) (v.erase y) 𝒜) :
-    (∂ (𝓓 u v 𝒜)).card ≤ (∂ 𝒜).card :=
+    (∂ (𝓔 u v 𝒜)).card ≤ (∂ 𝒜).card :=
   (card_le_of_subset $ shadow_compression_subset_compression_shadow _ _ huv).trans
     (card_compression _ _ _).le
 

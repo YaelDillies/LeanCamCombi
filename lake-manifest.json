@@ -4,7 +4,7 @@
  [{"git":
    {"url": "https://github.com/leanprover-community/mathlib4.git",
     "subDir?": null,
-    "rev": "2372c7a7b72bfd454fb451b676778b5e81b55db1",
+    "rev": "39796d114b0eb24b437387e237a3b4fb26ef61d5",
     "opts": {},
     "name": "mathlib",
     "inputRev?": null,
@@ -12,7 +12,7 @@
   {"git":
    {"url": "https://github.com/leanprover/doc-gen4",
     "subDir?": null,
-    "rev": "649e7791fa2e6864bf624aea0c03308598123ec3",
+    "rev": "f9d987567129f422ebd8cfac6a1e6233a06c720b",
     "opts": {},
     "name": "«doc-gen4»",
     "inputRev?": "main",
@@ -28,7 +28,7 @@
   {"git":
    {"url": "https://github.com/JLimperg/aesop",
     "subDir?": null,
-    "rev": "4f8b397237411249930791f1cba0a9d2880a02dd",
+    "rev": "41c6370eb2f0c9052bee6af0e0a017b9ba8da2b8",
     "opts": {},
     "name": "aesop",
     "inputRev?": "master",
@@ -42,20 +42,20 @@
     "inputRev?": "nightly",
     "inherited": true}},
   {"git":
+   {"url": "https://github.com/EdAyers/ProofWidgets4",
+    "subDir?": null,
+    "rev": "27715d1daf32b9657dc38cd52172d77b19bde4ba",
+    "opts": {},
+    "name": "proofwidgets",
+    "inputRev?": "v0.0.18",
+    "inherited": true}},
+  {"git":
    {"url": "https://github.com/leanprover/std4",
     "subDir?": null,
-    "rev": "f2df4ab8c0726fce3bafb73a5727336b0c3120ea",
+    "rev": "a093d7a6ac721071d8ba3774b0318063928cd3e2",
     "opts": {},
     "name": "std",
     "inputRev?": "main",
-    "inherited": true}},
-  {"git":
-   {"url": "https://github.com/EdAyers/ProofWidgets4",
-    "subDir?": null,
-    "rev": "9f68f14df384f43b74aeb2908b97ae54a0ad9d95",
-    "opts": {},
-    "name": "proofwidgets",
-    "inputRev?": "v0.0.17",
     "inherited": true}},
   {"git":
    {"url": "https://github.com/xubaiw/CMark.lean",
