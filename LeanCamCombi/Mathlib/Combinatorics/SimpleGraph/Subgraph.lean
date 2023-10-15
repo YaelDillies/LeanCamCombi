@@ -79,8 +79,8 @@ noncomputable instance [Fintype V] : Fintype G.Subgraph :=
     {H : Set V × (V → V → Prop) // H.2 ≤ G.Adj ∧ (∀ a b, H.2 a b → a ∈ H.1) ∧ Symmetric H.2}
     { toFun := fun H ↦ ⟨H.1.1, H.1.2, @H.2.1, @H.2.2.1, H.2.2.2⟩
       invFun := fun H ↦ ⟨⟨H.1, H.2⟩, fun _ _ ↦ H.3, fun _ _ ↦ H.4, H.5⟩
-      left_inv := λ {x} ↦ by ext <;> rfl
-      right_inv := λ {x} ↦ by ext <;> rfl }
+      left_inv := fun {x} ↦ by ext <;> rfl
+      right_inv := fun {x} ↦ by ext <;> rfl }
 
 instance [Finite V] : Finite G.Subgraph := by cases nonempty_fintype V; infer_instance
 

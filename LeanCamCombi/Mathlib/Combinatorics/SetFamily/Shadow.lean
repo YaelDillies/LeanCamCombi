@@ -24,7 +24,7 @@ lemma mem_shadow_iterate_iff_exists_sdiff {𝒜 : Finset (Finset α)} {t : Finse
     t ∈ ∂^[k] 𝒜 ↔ ∃ s ∈ 𝒜, t ⊆ s ∧ (s \ t).card = k := by
   induction' k with k ih generalizing 𝒜 t
   · simp only [sdiff_eq_empty_iff_subset, Function.iterate_zero, id.def, card_eq_zero, exists_prop]
-    refine' ⟨λ p ↦ ⟨t, p, Subset.rfl, Subset.rfl⟩, _⟩
+    refine' ⟨fun p ↦ ⟨t, p, Subset.rfl, Subset.rfl⟩, _⟩
     rintro ⟨s, hs, hst, hts⟩
     rwa [subset_antisymm hst hts]
   simp only [exists_prop, Function.comp_apply, Function.iterate_succ, ih,

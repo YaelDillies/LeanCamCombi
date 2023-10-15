@@ -41,7 +41,7 @@ instance [Subsingleton (α → β)] {H : SimpleGraph β} : Subsingleton (G →g 
   FunLike.coe_injective.subsingleton
 
 instance [IsEmpty α] {H : SimpleGraph β} : Unique (G →g H) where
-  default := ⟨isEmptyElim, λ {a} ↦ isEmptyElim a⟩
+  default := ⟨isEmptyElim, fun {a} ↦ isEmptyElim a⟩
   uniq _ := Subsingleton.elim _ _
 
 noncomputable instance [Fintype α] [Fintype β] {H : SimpleGraph β} : Fintype (G →g H) := by

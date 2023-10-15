@@ -81,7 +81,7 @@ alias IsContained.trans_le := IsContained.mono_right
 
 lemma isContained_of_isEmpty [IsEmpty α] : G ⊑ H :=
   ⟨{  toFun := isEmptyElim
-      map_rel' := λ {a} ↦ isEmptyElim a }, isEmptyElim⟩
+      map_rel' := fun {a} ↦ isEmptyElim a }, isEmptyElim⟩
 
 lemma bot_isContained (f : α ↪ β) : (⊥ : SimpleGraph α) ⊑ H :=
   ⟨{  toFun := f
@@ -128,7 +128,7 @@ lemma IsIndContained.trans : G ⊴ H → H ⊴ I → G ⊴ I := fun ⟨f⟩ ⟨g
 lemma isIndContained_of_isEmpty [IsEmpty α] : G ⊴ H :=
   ⟨{  toFun := isEmptyElim
       inj' := isEmptyElim
-      map_rel_iff' := λ {a} ↦ isEmptyElim a }⟩
+      map_rel_iff' := fun {a} ↦ isEmptyElim a }⟩
 
 lemma isIndContained_iff_exists_subgraph :
     G ⊴ H ↔ ∃ (H' : H.Subgraph) (_e : G ≃g H'.coe), H'.IsInduced' := by
@@ -183,7 +183,7 @@ noncomputable def copyCount (G : SimpleGraph α) (H : SimpleGraph β) : ℕ :=
   simp only [eq_singleton_iff_unique_mem, mem_filter, mem_univ, Subgraph.coe_bot, true_and_iff,
     Nonempty.forall, Subsingleton.elim G ⊥]
   haveI : IsEmpty (⊥ : H.Subgraph).verts := by simp
-  refine' ⟨⟨⟨⟨isEmptyElim, isEmptyElim, isEmptyElim, isEmptyElim⟩, λ {a} ↦ isEmptyElim a⟩⟩,
+  refine' ⟨⟨⟨⟨isEmptyElim, isEmptyElim, isEmptyElim, isEmptyElim⟩, fun {a} ↦ isEmptyElim a⟩⟩,
     fun H' e ↦ Subgraph.ext _ _ _ $ funext₂ fun a b ↦ _⟩
   · simpa [Set.eq_empty_iff_forall_not_mem, filter_eq_empty_iff] using
       Fintype.card_congr e.toEquiv.symm

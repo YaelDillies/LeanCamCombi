@@ -37,7 +37,7 @@ lemma erase_lt {has} (ha : a ∈ s) : s.erase a has < s :=
 lemma coe_erase (s : LowerSet α) (a : α) (ha) : (s.erase a ha : Set α) = ↑s \ {a} := rfl
 
 @[simp] lemma erase_idem (s : LowerSet α) (a : α) (ha) :
-    ((s.erase a ha).erase a λ _b hb ↦ ha _ hb.1) = s.erase a ha :=
+    ((s.erase a ha).erase a fun _b hb ↦ ha _ hb.1) = s.erase a ha :=
   SetLike.coe_injective sdiff_idem
 
 end LE
@@ -46,11 +46,11 @@ section Preorder
 variable [Preorder α] {s : LowerSet α} {a : α}
 
 @[simp] lemma Iic_ne_bot (a : α) : Iic a ≠ ⊥ := SetLike.coe_ne_coe.1 nonempty_Iic.ne_empty
-@[simp] lemma Iic_le : Iic a ≤ s ↔ a ∈ s := ⟨λ h ↦ h le_rfl, λ ha ↦ s.lower.Iic_subset ha⟩
+@[simp] lemma Iic_le : Iic a ≤ s ↔ a ∈ s := ⟨fun h ↦ h le_rfl, fun ha ↦ s.lower.Iic_subset ha⟩
 
 @[simp]
 lemma erase_sup_Iic (has) (ha : a ∈ s) : s.erase a has ⊔ Iic a = s := by
-  refine' le_antisymm (sup_le erase_le $ Iic_le.2 ha) λ b hb ↦ _
+  refine' le_antisymm (sup_le erase_le $ Iic_le.2 ha) fun b hb ↦ _
   obtain rfl | hba := eq_or_ne b a
   · exact subset_union_right _ _ (mem_Iic.2 le_rfl)
   · exact subset_union_left _ _ ⟨hb, hba⟩
@@ -63,7 +63,7 @@ end Preorder
 section PartialOrder
 variable [PartialOrder α] {a b : α}
 
-nonrec lemma Iic_injective : Injective (Iic : α → LowerSet α) := λ _a _b hab ↦
+nonrec lemma Iic_injective : Injective (Iic : α → LowerSet α) := fun _a _b hab ↦
   Iic_injective $ congr_arg ((↑) : _ → Set α) hab
 
 @[simp] lemma Iic_inj : Iic a = Iic b ↔ a = b := Iic_injective.eq_iff
@@ -104,7 +104,7 @@ lemma lt_erase {has} (ha : a ∈ s) : s < s.erase a has :=
 lemma coe_erase (s : UpperSet α) (a : α) (ha) : (s.erase a ha : Set α) = ↑s \ {a} := rfl
 
 @[simp] lemma erase_idem (s : UpperSet α) (a : α) (ha) :
-    ((s.erase a ha).erase a λ _b hb ↦ ha _ hb.1) = s.erase a ha :=
+    ((s.erase a ha).erase a fun _b hb ↦ ha _ hb.1) = s.erase a ha :=
   SetLike.coe_injective sdiff_idem
 
 end LE
@@ -114,7 +114,7 @@ variable [Preorder α] {s : UpperSet α} {a : α}
 
 @[simp] lemma Ici_ne_top (a : α) : Ici a ≠ ⊤ := SetLike.coe_ne_coe.1 nonempty_Ici.ne_empty
 
-@[simp] lemma le_Ici : s ≤ Ici a ↔ a ∈ s := ⟨λ h ↦ h le_rfl, λ ha ↦ s.upper.Ici_subset ha⟩
+@[simp] lemma le_Ici : s ≤ Ici a ↔ a ∈ s := ⟨fun h ↦ h le_rfl, fun ha ↦ s.upper.Ici_subset ha⟩
 
 @[simp] lemma erase_inf_Ici (has) (ha : a ∈ s) : s.erase a has ⊓ Ici a = s := by
   refine' le_antisymm _ (le_inf le_erase $ le_Ici.2 ha)
@@ -131,7 +131,7 @@ end Preorder
 section PartialOrder
 variable [PartialOrder α] {a b : α}
 
-nonrec lemma Ici_injective : Injective (Ici : α → UpperSet α) := λ _a _b hab ↦
+nonrec lemma Ici_injective : Injective (Ici : α → UpperSet α) := fun _a _b hab ↦
   Ici_injective $ congr_arg ((↑) : _ → Set α) hab
 
 @[simp] lemma Ici_inj : Ici a = Ici b ↔ a = b := Ici_injective.eq_iff

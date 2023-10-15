@@ -13,7 +13,7 @@ variable {ι R S : Type*} [CommRing R] [CommRing S] [Algebra S R] {w : R →₀ 
 /-- Convolve an element of the monoid algebra with a polynomial. Concretely, `w` says how much we
 should weigh each translate of the polynomial `P`.  -/
 noncomputable def discConv (w : R →₀ S) (P : R[X]) : R[X] :=
-  w.sum λ r s ↦ s • P.comp (X + C r)
+  w.sum fun r s ↦ s • P.comp (X + C r)
 
 /-- Discrete forward difference of polynomials. `discForwardDiff P x = P (x + 1) - P x`. -/
 noncomputable def discForwardDiff : R[X] → R[X] :=
@@ -58,7 +58,7 @@ lemma discConv_sub_weight (v w : R →₀ S) (P : R[X]) :
   Finsupp.sum_sum_index' (by simp) $ by simp [add_smul]
 
 @[simp] lemma eval_discConv (w : R →₀ S) (P : R[X]) (x : R) :
-    (discConv w P).eval x = w.sum λ r s ↦ s • P.eval (x + r) := by
+    (discConv w P).eval x = w.sum fun r s ↦ s • P.eval (x + r) := by
   simp [discConv, Finsupp.sum,eval_finset_sum]
 
 @[simp] lemma eval_discForwardDiff (P : R[X]) (x : R) :
@@ -77,23 +77,23 @@ lemma discConv_discConv (v w : AddMonoidAlgebra S R) (P : R[X]) :
   sorry
 
 lemma coeff_discConv_natDegree (w : R →₀ S) (P : R[X]) :
-    coeff (discConv w P) P.natDegree = w.sum (λ _ ↦ id) • leadingCoeff P := by
+    coeff (discConv w P) P.natDegree = w.sum (fun _ ↦ id) • leadingCoeff P := by
   sorry -- not so easy but still obvious on paper
 
 variable [Nontrivial S] -- feel free to move this assumption around
 
 private lemma discForwardDiff_aux :
-    ((fun₀ | 1 => 1) - fun₀ | 0 => 1 : R →₀ ℤ).sum (λ _ ↦ id) = 0 := by
+    ((fun₀ | 1 => 1) - fun₀ | 0 => 1 : R →₀ ℤ).sum (fun _ ↦ id) = 0 := by
   classical simp [Finsupp.sum_sub_index, -Finsupp.single_neg]
 
 private lemma discBackwardDiff_aux :
-    ((fun₀ | 0 => 1) - fun₀ | -1 => 1 : R →₀ ℤ).sum (λ _ ↦ id) = 0 := by
+    ((fun₀ | 0 => 1) - fun₀ | -1 => 1 : R →₀ ℤ).sum (fun _ ↦ id) = 0 := by
   classical simp [Finsupp.sum_sub_index, -Finsupp.single_neg]
 
 variable [NoZeroDivisors R] [Nontrivial R] -- and those too
 
 lemma natDegree_discConv_le : natDegree (discConv w P) ≤ natDegree P := by
-  refine' (natDegree_sum_le _ _).trans $ Finset.sup_le λ r _ ↦ _
+  refine' (natDegree_sum_le _ _).trans $ Finset.sup_le fun r _ ↦ _
   dsimp
   simp_rw [algebra_compatible_smul R (w r)]
   refine (natDegree_smul_le _ _).trans ?_
@@ -106,7 +106,7 @@ lemma degree_discConv_le : degree (discConv w P) ≤ degree P := by
   rw [degree_eq_natDegree hP]
 
 -- easy consequence of `coeff_discConv_natDegree`
-lemma degree_discConv_lt (hw : w.sum (λ _ ↦ id) = 0) (hP : P ≠ 0) :
+lemma degree_discConv_lt (hw : w.sum (fun _ ↦ id) = 0) (hP : P ≠ 0) :
     degree (discConv w P) < degree P := by
   have := coeff_discConv_natDegree w P
   rw [hw, zero_smul] at this

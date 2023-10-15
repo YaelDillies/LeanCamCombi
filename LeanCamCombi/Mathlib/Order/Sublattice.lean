@@ -89,12 +89,12 @@ instance instInfCoe : Inf L where
 
 /-- A sublattice of a lattice inherits a lattice structure. -/
 instance instLatticeCoe (L : Sublattice α) : Lattice L :=
-  Subtype.coe_injective.lattice _ (λ _ _ ↦ rfl) (λ _ _ ↦ rfl)
+  Subtype.coe_injective.lattice _ (fun _ _ ↦ rfl) (fun _ _ ↦ rfl)
 
 /-- A sublattice of a distributive lattice inherits a distributive lattice structure. -/
 instance instDistribLatticeCoe {α : Type*} [DistribLattice α] (L : Sublattice α) :
     DistribLattice L :=
-  Subtype.coe_injective.distribLattice _ (λ _ _ ↦ rfl) (λ _ _ ↦ rfl)
+  Subtype.coe_injective.distribLattice _ (fun _ _ ↦ rfl) (fun _ _ ↦ rfl)
 
 /-- The natural lattice hom from a sublattice to the original lattice. -/
 def subtype (L : Sublattice α) : LatticeHom L α where
@@ -142,10 +142,10 @@ instance instInf : Inf (Sublattice α) where
 /-- The inf of sublattices is their intersection. -/
 instance instInfSet : InfSet (Sublattice α) where
   sInf S := { carrier := ⨅ L ∈ S, L
-              supClosed' := supClosed_sInter $ forall_range_iff.2 $ λ L ↦ supClosed_sInter $
-                forall_range_iff.2 λ _ ↦ L.supClosed
-              infClosed' := infClosed_sInter $ forall_range_iff.2 $ λ L ↦ infClosed_sInter $
-                forall_range_iff.2 λ _ ↦ L.infClosed }
+              supClosed' := supClosed_sInter $ forall_range_iff.2 $ fun L ↦ supClosed_sInter $
+                forall_range_iff.2 fun _ ↦ L.supClosed
+              infClosed' := infClosed_sInter $ forall_range_iff.2 $ fun L ↦ infClosed_sInter $
+                forall_range_iff.2 fun _ ↦ L.infClosed }
 
 instance instInhabited : Inhabited (Sublattice α) := ⟨⊥⟩
 
@@ -177,19 +177,19 @@ def topEquiv : (⊤ : Sublattice α) ≃o α where
 /-- Sublattices of a lattice form a complete lattice. -/
 instance instCompleteLattice : CompleteLattice (Sublattice α) :=
   { completeLatticeOfInf (Sublattice α)
-      λ _s ↦ IsGLB.of_image SetLike.coe_subset_coe isGLB_biInf with
+      fun _s ↦ IsGLB.of_image SetLike.coe_subset_coe isGLB_biInf with
     bot := ⊥
-    bot_le := λ _S _a ↦ False.elim
+    bot_le := fun _S _a ↦ False.elim
     top := ⊤
-    le_top := λ _S a _ha ↦ mem_top a
+    le_top := fun _S a _ha ↦ mem_top a
     inf := (· ⊓ ·)
-    le_inf := λ _L _M _N hM hN _a ha ↦ ⟨hM ha, hN ha⟩
-    inf_le_left := λ _L _M _a ↦ And.left
-    inf_le_right := λ _L _M _a ↦ And.right }
+    le_inf := fun _L _M _N hM hN _a ha ↦ ⟨hM ha, hN ha⟩
+    inf_le_left := fun _L _M _a ↦ And.left
+    inf_le_right := fun _L _M _a ↦ And.right }
 
 lemma subsingleton_iff : Subsingleton (Sublattice α) ↔ IsEmpty α :=
-  ⟨λ _ ↦ univ_eq_empty_iff.1 $ coe_inj.2 $ Subsingleton.elim ⊤ ⊥,
-    λ _ ↦ SetLike.coe_injective.subsingleton⟩
+  ⟨fun _ ↦ univ_eq_empty_iff.1 $ coe_inj.2 $ Subsingleton.elim ⊤ ⊥,
+    fun _ ↦ SetLike.coe_injective.subsingleton⟩
 
 lemma nontrivial_iff : Nontrivial (Sublattice α) ↔ Nonempty α := by
   rw [←not_subsingleton_iff_nontrivial, subsingleton_iff, not_isEmpty_iff]
@@ -210,7 +210,7 @@ def comap (f : LatticeHom α β) (L : Sublattice β) : Sublattice α where
 
 @[simp] lemma mem_comap {L : Sublattice β} : a ∈ L.comap f ↔ f a ∈ L := Iff.rfl
 
-lemma comap_mono : Monotone (comap f) := λ _ _ ↦ preimage_mono
+lemma comap_mono : Monotone (comap f) := fun _ _ ↦ preimage_mono
 
 @[simp] lemma comap_id (L : Sublattice α) : L.comap (LatticeHom.id _) = L := rfl
 
@@ -229,7 +229,7 @@ def map (f : LatticeHom α β) (L : Sublattice α) : Sublattice β where
 lemma mem_map_of_mem (f : LatticeHom α β) {a : α} : a ∈ L → f a ∈ L.map f := mem_image_of_mem f
 lemma apply_coe_mem_map (f : LatticeHom α β) (a : L) : f a ∈ L.map f := mem_map_of_mem f a.prop
 
-lemma map_mono : Monotone (map f) := λ _ _ ↦ image_subset _
+lemma map_mono : Monotone (map f) := fun _ _ ↦ image_subset _
 
 @[simp] lemma map_id : L.map (LatticeHom.id α) = L := SetLike.coe_injective $ image_id _
 
@@ -255,7 +255,7 @@ lemma map_le_iff_le_comap {f : LatticeHom α β} {M : Sublattice β} : L.map f �
   image_subset_iff
 
 lemma gc_map_comap (f : LatticeHom α β) : GaloisConnection (map f) (comap f) :=
-  λ _ _ ↦ map_le_iff_le_comap
+  fun _ _ ↦ map_le_iff_le_comap
 
 @[simp] lemma map_bot (f : LatticeHom α β) : (⊥ : Sublattice α).map f = ⊥ := (gc_map_comap f).l_bot
 
@@ -312,10 +312,10 @@ lemma prod_mono_left {L₁ L₂ : Sublattice α} {M : Sublattice β} (hL : L₁ 
     L₁.prod M ≤ L₂.prod M := prod_mono hL le_rfl
 
 lemma prod_top (L : Sublattice α) : L.prod (⊤ : Sublattice β) = L.comap (LatticeHom.fst α β) :=
-  ext λ a ↦ by simp [mem_prod, LatticeHom.coe_fst]
+  ext fun a ↦ by simp [mem_prod, LatticeHom.coe_fst]
 
 lemma top_prod (L : Sublattice β) : (⊤ : Sublattice α).prod L = L.comap (LatticeHom.snd α β) :=
-  ext λ a ↦ by simp [mem_prod, LatticeHom.coe_snd]
+  ext fun a ↦ by simp [mem_prod, LatticeHom.coe_snd]
 
 @[simp] lemma top_prod_top : (⊤ : Sublattice α).prod (⊤ : Sublattice β) = ⊤ :=
   (top_prod _).trans $ comap_top _
@@ -348,23 +348,23 @@ variable {κ : Type*} {π : κ → Type*} [∀ i, Lattice (π i)]
 `L : Π i, Sublattice (α i)`, `pi s L` is the sublattice of dependent functions `f : Π i, α i` such
 that `f i` belongs to `L i` whenever `i ∈ s`. -/
 def pi (s : Set κ) (L : ∀ i, Sublattice (π i)) : Sublattice (∀ i, π i) where
-  carrier := s.pi λ i ↦ L i
-  supClosed' := supClosed_pi λ i _ ↦ (L i).supClosed
-  infClosed' := infClosed_pi λ i _ ↦ (L i).infClosed
+  carrier := s.pi fun i ↦ L i
+  supClosed' := supClosed_pi fun i _ ↦ (L i).supClosed
+  infClosed' := infClosed_pi fun i _ ↦ (L i).infClosed
 
 @[simp, norm_cast] lemma coe_pi (s : Set κ) (L : ∀ i, Sublattice (π i)) :
-    (pi s L : Set (∀ i, π i)) = Set.pi s λ i ↦ L i := rfl
+    (pi s L : Set (∀ i, π i)) = Set.pi s fun i ↦ L i := rfl
 
 @[simp] lemma mem_pi {s : Set κ} {L : ∀ i, Sublattice (π i)} {x : ∀ i, π i} :
     x ∈ pi s L ↔ ∀ i, i ∈ s → x i ∈ L i := Iff.rfl
 
-@[simp] lemma pi_empty (L : ∀ i, Sublattice (π i)) : pi ∅ L = ⊤ := ext λ a ↦ by simp [mem_pi]
+@[simp] lemma pi_empty (L : ∀ i, Sublattice (π i)) : pi ∅ L = ⊤ := ext fun a ↦ by simp [mem_pi]
 
-@[simp] lemma pi_top (s : Set κ) : (pi s λ i ↦ ⊤ : Sublattice (∀ i, π i)) = ⊤ :=
-  ext λ a ↦ by simp [mem_pi]
+@[simp] lemma pi_top (s : Set κ) : (pi s fun i ↦ ⊤ : Sublattice (∀ i, π i)) = ⊤ :=
+  ext fun a ↦ by simp [mem_pi]
 
-@[simp] lemma pi_bot [Nonempty κ] : (pi univ λ i ↦ ⊥ : Sublattice (∀ i, π i)) = ⊥ :=
-  ext λ a ↦ by simp [mem_pi]
+@[simp] lemma pi_bot [Nonempty κ] : (pi univ fun i ↦ ⊥ : Sublattice (∀ i, π i)) = ⊥ :=
+  ext fun a ↦ by simp [mem_pi]
 
 lemma le_pi {s : Set κ} {L : ∀ i, Sublattice (π i)} {M : Sublattice (∀ i, π i)} :
     M ≤ pi s L ↔ ∀ i ∈ s, M ≤ comap (Pi.evalLatticeHom π i) (L i) := by simp [SetLike.le_def]; aesop
@@ -416,7 +416,7 @@ lemma restrict_range (f : LatticeHom α β) : (f.restrict L).range = L.map f := 
 
 /-- The canonical surjective lattice homomorphism `α → f(α)` induced by a lattice
 homomorphism `LatticeHom α β`. -/
-def rangeRestrict (f : LatticeHom α β) : LatticeHom α f.range := codRestrict f _ λ a ↦ ⟨a, rfl⟩
+def rangeRestrict (f : LatticeHom α β) : LatticeHom α f.range := codRestrict f _ fun a ↦ ⟨a, rfl⟩
 
 @[simp, norm_cast]
 lemma coe_rangeRestrict (f : LatticeHom α β) (a : α) : (f.rangeRestrict a : β) = f a := rfl
@@ -428,7 +428,7 @@ lemma subtype_comp_rangeRestrict (f : LatticeHom α β) : f.range.subtype.comp f
   ext $ f.coe_rangeRestrict
 
 lemma rangeRestrict_surjective (f : LatticeHom α β) : Surjective f.rangeRestrict :=
-  λ ⟨_, g, rfl⟩ ↦ ⟨g, rfl⟩
+  fun ⟨_, g, rfl⟩ ↦ ⟨g, rfl⟩
 
 lemma rangeRestrict_injective : Injective f.rangeRestrict ↔ Injective f := codRestrict_injective
 
@@ -467,8 +467,8 @@ lemma ofLeftInverse_symm_apply {f : LatticeHom α β} {g : β →* α} (h : Left
 
 /-- The range of an injective lattice homomorphism is isomorphic to its domain. -/
 noncomputable def ofInjective {f : LatticeHom α β} (hf : Injective f) : α ≃o f.range :=
-  MulEquiv.ofBijective (f.codRestrict f.range λ a ↦ ⟨a, rfl⟩)
-    ⟨λ a y h ↦ hf (Subtype.ext_iff.mp h), by
+  MulEquiv.ofBijective (f.codRestrict f.range fun a ↦ ⟨a, rfl⟩)
+    ⟨fun a y h ↦ hf (Subtype.ext_iff.mp h), by
       rintro ⟨a, y, rfl⟩
       exact ⟨y, rfl⟩⟩
 
@@ -489,14 +489,14 @@ def eqLocus (f g : α →* M) : Sublattice α :=
   { eqLocusM f g with inv_mem' := eq_on_inv f g }
 
 lemma eqLocus_same (f : LatticeHom α β) : f.eqLocus f = ⊤ :=
-  SetLike.ext λ _ ↦ eq_self_iff_true _
+  SetLike.ext fun _ ↦ eq_self_iff_true _
 
 /-- If two monoid homomorphisms are equal on a set, then they are equal on its Sublattice closure. -/
 lemma eqOn_closure {f g : α →* M} {s : Set α} (h : Set.EqOn f g s) : Set.EqOn f g (closure s) :=
   show closure s ≤ f.eqLocus g from (closure_le _).2 h
 
 lemma eq_of_eqOn_top {f g : α →* M} (h : Set.EqOn f g (⊤ : Sublattice α)) : f = g :=
-  ext λ _x ↦ h trivial
+  ext fun _x ↦ h trivial
 
 lemma eq_of_eqOn_dense {s : Set α} (hs : closure s = ⊤) {f g : α →* M} (h : s.EqOn f g) : f = g :=
   eq_of_eqOn_top $ hs ▸ eqOn_closure h
@@ -504,13 +504,13 @@ lemma eq_of_eqOn_dense {s : Set α} (hs : closure s = ⊤) {f g : α →* M} (h 
 end EqLocus
 
 lemma closure_preimage_le (f : LatticeHom α β) (s : Set β) : closure (f ⁻¹' s) ≤ (closure s).comap f :=
-  (closure_le _).2 λ a hx ↦ by rw [SetLike.mem_coe, mem_comap]; exact subset_closure hx
+  (closure_le _).2 fun a hx ↦ by rw [SetLike.mem_coe, mem_comap]; exact subset_closure hx
 
 /-- The image under a monoid homomorphism of the Sublattice generated by a set equals the Sublattice
 generated by the image of the set. -/
 lemma map_closure (f : LatticeHom α β) (s : Set α) : (closure s).map f = closure (f '' s) :=
   Set.image_preimage.l_comm_of_u_comm (Sublattice.gc_map_comap f) (Sublattice.gi β).gc
-    (Sublattice.gi α).gc λ _t ↦ rfl
+    (Sublattice.gi α).gc fun _t ↦ rfl
 
 end LatticeHom
 
@@ -577,7 +577,7 @@ lemma comap_lt_comap_of_surjective {f : LatticeHom α β} {L L : Sublattice β} 
     L.comap f < L.comap f ↔ L < L := by simp_rw [lt_iff_le_not_le, comap_le_comap_of_surjective hf]
 
 lemma comap_injective {f : LatticeHom α β} (h : Surjective f) : Injective (comap f) :=
-  λ L L ↦ by simp only [le_antisymm_iff, comap_le_comap_of_surjective h, imp_self]
+  fun L L ↦ by simp only [le_antisymm_iff, comap_le_comap_of_surjective h, imp_self]
 
 lemma comap_map_eq_self {f : LatticeHom α β} (h : f.ker ≤ L) : comap f (map f L) = L :=
   by rwa [comap_map_eq, sup_eq_left]
@@ -651,7 +651,7 @@ lemma codisjoint_SublatticeOf_sup (L M : Sublattice α) :
 use `MulEquiv.SublatticeMap` for better definitional equalities. -/
 noncomputable def equivMapOfInjective (L : Sublattice α) (f : LatticeHom α β) (hf : Injective f) :
     L ≃o L.map f :=
-  { Equiv.Set.image f L hf with map_mul' := λ _ _ ↦ Subtype.ext (f.map_mul _ _) }
+  { Equiv.Set.image f L hf with map_mul' := fun _ _ ↦ Subtype.ext (f.map_mul _ _) }
 
 lemma coe_equivMapOfInjective_apply (L : Sublattice α) (f : LatticeHom α β) (hf : Injective f)
     (h : L) : (equivMapOfInjective L f hf h : β) = f h :=
@@ -721,7 +721,7 @@ def liftOfRightInverse (hf : RightInverse f_inv f) :
     { g : G₁ →* G₃ // f.ker ≤ g.ker } ≃ (G₂ →* G₃)
     where
   toFun g := f.liftOfRightInverseAux f_inv hf g.1 g.2
-  invFun φ := ⟨φ.comp f, λ a hx ↦ (mem_ker _).mpr $ by simp [(mem_ker _).mp hx]⟩
+  invFun φ := ⟨φ.comp f, fun a hx ↦ (mem_ker _).mpr $ by simp [(mem_ker _).mp hx]⟩
   left_inv g := by
     ext
     simp only [comp_apply, liftOfRightInverseAux_comp_apply, Subtype.coe_mk]
@@ -779,7 +779,7 @@ variable {L M : Sublattice α}
 /-- Makes the identity isomorphism from a proof two sublattices of a multiplicative
     lattice are equal. -/
 def SublatticeCongr (h : L = L) : L ≃o L :=
-  { Equiv.setCongr $ congr_arg _ h with map_mul' := λ _ _ ↦ rfl }
+  { Equiv.setCongr $ congr_arg _ h with map_mul' := fun _ _ ↦ rfl }
 
 /-- A sublattice is isomorphic to its image under an isomorphism. If you only have an injective map,
 use `Sublattice.equiv_map_of_injective`. -/
@@ -806,7 +806,7 @@ lemma equivMapOfInjective_coe_mulEquiv (L : Sublattice α) (e : α ≃o G') :
 variable {C : Type*} [CommGroup C] {s t : Sublattice C} {a : C}
 
 lemma mem_sup : a ∈ s ⊔ t ↔ ∃ y ∈ s, ∃ z ∈ t, y * z = a :=
-  ⟨λ h ↦ by
+  ⟨fun h ↦ by
     rw [← closure_eq s, ← closure_eq t, ← closure_union] at h
     refine Sublattice.closure_induction h ?_ ?_ ?_ ?_
     · rintro y (h | h)
@@ -828,7 +828,7 @@ lemma mem_closure_pair {a y z : C} :
   simp_rw [mem_closure_singleton, exists_exists_eq_and]
 
 instance : IsModularLattice (Sublattice C) :=
-  ⟨λ {a} y z xz a ha ↦ by
+  ⟨fun {a} y z xz a ha ↦ by
     rw [mem_inf, mem_sup] at ha
     rcases ha with ⟨⟨b, hb, c, hc, rfl⟩, haz⟩
     rw [mem_sup]

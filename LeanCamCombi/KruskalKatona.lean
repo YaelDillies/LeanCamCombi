@@ -99,18 +99,18 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
     -- Case on t ∪ i = s or t ∪ i < s
     obtain rfl | ⟨k, z, hkt, hks⟩ := hts
     · -- Case on i = min s or not
-      refine' ⟨cards, le_def.2 $ (eq_or_ne i $ min' _ hs).imp (λ q => _) fun q ↦ _⟩
+      refine' ⟨cards, le_def.2 $ (eq_or_ne i $ min' _ hs).imp (fun q => _) fun q ↦ _⟩
       · rw [←q, erase_insert ih]
-      · refine' ⟨i, λ x hx ↦ _, ih, mem_erase.2 ⟨q, mem_insert_self _ _⟩⟩
+      · refine' ⟨i, fun x hx ↦ _, ih, mem_erase.2 ⟨q, mem_insert_self _ _⟩⟩
         simpa only [ofWolex_toWolex, mem_erase, mem_insert, hx.ne', Ne.def, false_or_iff,
-          iff_and_self] using λ _ ↦ ((min'_le _ _ $ mem_insert_self _ _).trans_lt hx).ne'
+          iff_and_self] using fun _ ↦ ((min'_le _ _ $ mem_insert_self _ _).trans_lt hx).ne'
     · simp only [cards, eq_self_iff_true, true_and_iff, mem_insert, not_or, ←Ne.def] at hkt hks z ⊢
       -- t ∪ i < s, with k as the wolex witness. Cases on k < i or k > i.
       obtain h | h := hkt.1.lt_or_lt
-      · refine' Or.inr ⟨i, λ x hx ↦ _, ih, _⟩
+      · refine' Or.inr ⟨i, fun x hx ↦ _, ih, _⟩
         -- When k < i, then i works as the wolex witness to show t < s - min s
-        · refine' ⟨λ p ↦ mem_erase_of_ne_of_mem (((min'_le _ _ ‹_›).trans_lt h).trans hx).ne'
-            ((z $ h.trans hx).1 $ Or.inr p), λ p ↦ _⟩
+        · refine' ⟨fun p ↦ mem_erase_of_ne_of_mem (((min'_le _ _ ‹_›).trans_lt h).trans hx).ne'
+            ((z $ h.trans hx).1 $ Or.inr p), fun p ↦ _⟩
           exact ((z $ h.trans hx).2 $ mem_of_mem_erase p).resolve_left hx.ne'
         apply mem_erase_of_ne_of_mem _ ((z h).1 $ Or.inl rfl)
         refine (lt_of_le_of_lt ?_ h).ne'
@@ -119,14 +119,14 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
       · -- When k > i, cases on min s < k or min s = k
         obtain h₁ | h₁ := (min'_le _ _ ‹k ∈ s›).lt_or_eq
         -- If min s < k, k works as the wolex witness for t < s - min s
-        · refine' Or.inr ⟨k, λ x hx ↦ _, hkt.2, mem_erase_of_ne_of_mem (ne_of_gt h₁) ‹_›⟩
-          simpa [(h.trans hx).ne', ←z hx] using λ _ ↦ (h₁.trans hx).ne'
+        · refine' Or.inr ⟨k, fun x hx ↦ _, hkt.2, mem_erase_of_ne_of_mem (ne_of_gt h₁) ‹_›⟩
+          simpa [(h.trans hx).ne', ←z hx] using fun _ ↦ (h₁.trans hx).ne'
         -- If k = min s, then t = s - min s
         -- TODO: In Lean 3, this was `generalize_proofs at h₁`
         set h : ∃ x, x ∈ s := ⟨_, hks⟩
         clear_value h
         subst h₁
-        refine' Or.inl (eq_of_subset_of_card_le (λ a ha ↦ _) cards.ge).symm
+        refine' Or.inl (eq_of_subset_of_card_le (fun a ha ↦ _) cards.ge).symm
         rw [mem_erase] at ha
         have : a ≠ i := ne_of_gt (lt_of_lt_of_le h $ min'_le _ _ ha.2)
         rw [←z] at ha
@@ -151,12 +151,12 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
   -- Cases on j < k or j = k
   obtain hjk | r₁ := hjk.lt_or_eq
   -- if j < k, k is our wolex witness for t ∪ {j} < s
-  · refine' Or.inr ⟨k, λ x hx ↦ _, λ hk ↦ hkt $ mem_of_mem_insert_of_ne hk hjk.ne',
+  · refine' Or.inr ⟨k, fun x hx ↦ _, fun hk ↦ hkt $ mem_of_mem_insert_of_ne hk hjk.ne',
       mem_of_mem_erase ‹_›⟩
     simpa only [mem_insert, z hx, (hjk.trans hx).ne', mem_erase, Ne.def, false_or_iff,
-      and_iff_right_iff_imp] using λ _ ↦ ((min'_le _ _ $ mem_of_mem_erase hks).trans_lt hx).ne'
+      and_iff_right_iff_imp] using fun _ ↦ ((min'_le _ _ $ mem_of_mem_erase hks).trans_lt hx).ne'
   -- if j = k, all of range k is in t so by sizes t ∪ {j} = s
-  refine' Or.inl (eq_of_subset_of_card_le (λ a ha ↦ _) cards.ge).symm
+  refine' Or.inl (eq_of_subset_of_card_le (fun a ha ↦ _) cards.ge).symm
   rcases lt_trichotomy k a with (lt | rfl | gt)
   · apply mem_insert_of_mem
     rw [z lt]
@@ -173,7 +173,7 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
 protected lemma IsInitSeg.shadow [Finite α] (h₁ : IsInitSeg 𝒜 r) : IsInitSeg (∂ 𝒜) (r - 1) := by
   cases nonempty_fintype α
   obtain rfl | hr := Nat.eq_zero_or_pos r
-  · have : 𝒜 ⊆ {∅} := λ s hs ↦ by rw [mem_singleton, ←Finset.card_eq_zero]; exact h₁.1 hs
+  · have : 𝒜 ⊆ {∅} := fun s hs ↦ by rw [mem_singleton, ←Finset.card_eq_zero]; exact h₁.1 hs
     have := shadow_monotone this
     simp only [subset_empty, le_eq_subset, shadow_singleton_empty] at this
     simp [this]
@@ -199,9 +199,9 @@ lemma toWolex_compress_lt_toWolex {hU : U.Nonempty} {hV : V.Nonempty} (h : max' 
   rw [compress, ite_ne_right_iff] at hA
   rw [compress, if_pos hA.1, lt_def]
   refine'
-    ⟨max' V hV, λ a ha ↦ _, not_mem_sdiff_of_mem_right $ max'_mem _ _, hA.1.2 $ max'_mem _ _⟩
-  have : a ∉ V := λ H ↦ ha.not_le (le_max' _ _ H)
-  have : a ∉ U := λ H ↦ ha.not_lt ((le_max' _ _ H).trans_lt h)
+    ⟨max' V hV, fun a ha ↦ _, not_mem_sdiff_of_mem_right $ max'_mem _ _, hA.1.2 $ max'_mem _ _⟩
+  have : a ∉ V := fun H ↦ ha.not_le (le_max' _ _ H)
+  have : a ∉ U := fun H ↦ ha.not_lt ((le_max' _ _ H).trans_lt h)
   simp [‹a ∉ U›, ‹a ∉ V›]
 
 /-- These are the compressions which we will apply to decrease the "measure" of a family of sets.-/
@@ -209,7 +209,7 @@ private def UsefulCompression (U V : Finset α) : Prop :=
   Disjoint U V ∧ U.card = V.card ∧ ∃ (HU : U.Nonempty) (HV : V.Nonempty), max' U HU < max' V HV
 
 instance UsefulCompression.instDecidableRel : @DecidableRel (Finset α) UsefulCompression :=
-  λ _U _V ↦ And.decidable
+  fun _U _V ↦ And.decidable
 
 /-- Applying a good compression will decrease measure, keep cardinality, keep sizes and decrease
 shadow. In particular, 'good' means it's useful, and every smaller compression won't make a
@@ -218,7 +218,7 @@ lemma compression_improved (𝒜 : Finset (Finset α)) (h₁ : UsefulCompression
     (h₂ : ∀ ⦃U₁ V₁⦄, UsefulCompression U₁ V₁ → U₁.card < U.card → IsCompressed U₁ V₁ 𝒜) :
     (∂ (𝓓 U V 𝒜)).card ≤ (∂ 𝒜).card := by
   obtain ⟨UWd, same_size, hU, hV, max_lt⟩ := h₁
-  refine' card_shadow_compression_le _ _ λ x Hx ↦ ⟨min' V hV, min'_mem _ _, _⟩
+  refine' card_shadow_compression_le _ _ fun x Hx ↦ ⟨min' V hV, min'_mem _ _, _⟩
   obtain hU' | hU' := eq_or_lt_of_le (succ_le_iff.2 hU.card_pos)
   · rw [←hU'] at same_size
     have : erase U x = ∅ := by rw [←Finset.card_eq_zero, card_erase_of_mem Hx, ←hU']
@@ -243,9 +243,9 @@ lemma isInitSeg_of_compressed {ℬ : Finset (Finset α)} {r : ℕ} (h₁ : (ℬ 
   by_contra hB
   have hAB : A ≠ B := ne_of_mem_of_not_mem hA hB
   have hAB' : A.card = B.card := (h₁ hA).trans sizeA.symm
-  have hU : (A \ B).Nonempty := sdiff_nonempty.2 λ h ↦ hAB $ eq_of_subset_of_card_le h hAB'.ge
+  have hU : (A \ B).Nonempty := sdiff_nonempty.2 fun h ↦ hAB $ eq_of_subset_of_card_le h hAB'.ge
   have hV : (B \ A).Nonempty :=
-    sdiff_nonempty.2 λ h ↦ hAB.symm $ eq_of_subset_of_card_le h hAB'.le
+    sdiff_nonempty.2 fun h ↦ hAB.symm $ eq_of_subset_of_card_le h hAB'.le
   have disj : Disjoint (B \ A) (A \ B) := disjoint_sdiff.mono_left (sdiff_subset _ _)
   have smaller : max' _ hV < max' _ hU := by
     obtain hlt | heq | hgt := lt_trichotomy (max' _ hU) (max' _ hV)
@@ -274,22 +274,22 @@ lemma familyMeasure_compression_lt_familyMeasure {U V : Finset (Fin n)} {hU : U.
     {hV : V.Nonempty} (h : max' U hU < max' V hV) {𝒜 : Finset (Finset (Fin n))} (a : 𝓓 U V 𝒜 ≠ 𝒜) :
     familyMeasure (𝓓 U V 𝒜) < familyMeasure 𝒜 := by
   rw [compression] at a ⊢
-  have q : ∀ Q ∈ 𝒜.filter λ A ↦ compress U V A ∉ 𝒜, compress U V Q ≠ Q := by
+  have q : ∀ Q ∈ 𝒜.filter fun A ↦ compress U V A ∉ 𝒜, compress U V Q ≠ Q := by
     simp_rw [mem_filter]
     intro Q hQ h
     rw [h] at hQ
     exact hQ.2 hQ.1
-  have uA : (𝒜.filter λ A => compress U V A ∈ 𝒜) ∪ 𝒜.filter (fun A ↦ compress U V A ∉ 𝒜) = 𝒜 :=
+  have uA : (𝒜.filter fun A => compress U V A ∈ 𝒜) ∪ 𝒜.filter (fun A ↦ compress U V A ∉ 𝒜) = 𝒜 :=
     filter_union_filter_neg_eq _ _
-  have ne₂ : (𝒜.filter λ A ↦ compress U V A ∉ 𝒜).Nonempty := by
-    refine' nonempty_iff_ne_empty.2 λ z ↦ a _
+  have ne₂ : (𝒜.filter fun A ↦ compress U V A ∉ 𝒜).Nonempty := by
+    refine' nonempty_iff_ne_empty.2 fun z ↦ a _
     rw [image_filter, z, image_empty, union_empty]
     rwa [z, union_empty] at uA
   rw [familyMeasure, familyMeasure, sum_union compress_disjoint]
   conv_rhs => rw [←uA]
   rw [sum_union (disjoint_filter_filter_neg _ _ _), add_lt_add_iff_left, image_filter,
     sum_image compress_injOn]
-  refine' sum_lt_sum_of_nonempty ne₂ λ A hA ↦ _
+  refine' sum_lt_sum_of_nonempty ne₂ fun A hA ↦ _
   simp_rw [←sum_image (Fin.val_injective.injOn _)]
   rw [sum_two_pow_lt_iff_wolex_lt, toWolex_image_lt_toWolex_image Fin.val_strictMono]
   convert toWolex_compress_lt_toWolex h ?_
@@ -308,15 +308,15 @@ private lemma kruskal_katona_helper {r : ℕ} (𝒜 : Finset (Finset (Fin n)))
   intro A ih h
   -- Are there any compressions we can make now?
   set usable : Finset (Finset (Fin n) × Finset (Fin n)) :=
-    univ.filter λ t ↦ UsefulCompression t.1 t.2 ∧ ¬ IsCompressed t.1 t.2 A
+    univ.filter fun t ↦ UsefulCompression t.1 t.2 ∧ ¬ IsCompressed t.1 t.2 A
   obtain husable | husable := usable.eq_empty_or_nonempty
   -- No. Then where we are is the required set family.
-  · refine' ⟨A, le_rfl, rfl, h, λ U V hUW ↦ _⟩
+  · refine' ⟨A, le_rfl, rfl, h, fun U V hUW ↦ _⟩
     rw [eq_empty_iff_forall_not_mem] at husable
     by_contra h
     exact husable ⟨U, V⟩ $ mem_filter.2 ⟨mem_univ _, hUW, h⟩
   -- Yes. Then apply the compression, then keep going
-  obtain ⟨⟨U, V⟩, hUV, t⟩ := exists_min_image usable (λ t ↦ t.1.card) husable
+  obtain ⟨⟨U, V⟩, hUV, t⟩ := exists_min_image usable (fun t ↦ t.1.card) husable
   rw [mem_filter] at hUV
   have h₂ : ∀ U₁ V₁, UsefulCompression U₁ V₁ → U₁.card < U.card → IsCompressed U₁ V₁ A := by
     rintro U₁ V₁ huseful hUcard
@@ -349,7 +349,7 @@ lemma kruskal_katona (h₁ : (𝒜 : Set (Finset (Fin n))).Sized r) (h₂ : 𝒜
   convert card_le
   have hcard : card ℬ = card 𝒞 := t.symm.trans h₂
   obtain CB | BC :=
-    h₃.total (UW.isInitSeg_of_compressed hℬ λ U V hUW ↦ by convert fully_comp U V hUW)
+    h₃.total (UW.isInitSeg_of_compressed hℬ fun U V hUW ↦ by convert fully_comp U V hUW)
   · exact eq_of_subset_of_card_le CB hcard.le
   · exact (eq_of_subset_of_card_le BC hcard.ge).symm
 
@@ -358,7 +358,7 @@ This shows that the minimum possible shadow size is attained by initial segments
 lemma strengthened_kk (h₁ : (𝒜 : Set (Finset (Fin n))).Sized r) (h₂ : 𝒞.card ≤ 𝒜.card)
     (h₃ : IsInitSeg 𝒞 r) : (∂ 𝒞).card ≤ (∂ 𝒜).card := by
   rcases exists_smaller_set 𝒜 𝒞.card h₂ with ⟨𝒜', prop, size⟩
-  refine' (kruskal_katona (λ A hA ↦ h₁ (prop hA)) size h₃).trans (card_le_of_subset _)
+  refine' (kruskal_katona (fun A hA ↦ h₁ (prop hA)) size h₃).trans (card_le_of_subset _)
   rw [shadow, shadow]
   apply shadow_monotone prop
 
@@ -380,7 +380,7 @@ lemma lovasz_form (hir : i ≤ r) (hrk : r ≤ k) (hkn : k ≤ n)
     (h₁ : (𝒜 : Set (Finset $ Fin n)).Sized r) (h₂ : k.choose r ≤ 𝒜.card) :
     k.choose (r - i) ≤ (∂^[i] 𝒜).card := by
   set range'k : Finset (Fin n) :=
-    attachFin (range k) λ m ↦ by rw [mem_range]; apply forall_lt_iff_le.2 hkn
+    attachFin (range k) fun m ↦ by rw [mem_range]; apply forall_lt_iff_le.2 hkn
   set 𝒞 : Finset (Finset (Fin n)) := powersetLen r range'k
   have Ccard : 𝒞.card = k.choose r
   rw [card_powersetLen, card_attachFin, card_range]
@@ -392,7 +392,7 @@ lemma lovasz_form (hir : i ≤ r) (hrk : r ≤ k) (hkn : k ≤ n)
     refine' ⟨‹_›, _⟩
     rintro A B hA ⟨HB₁, HB₂⟩
     rw [mem_powersetLen]
-    refine' ⟨λ t ht ↦ _, ‹_›⟩
+    refine' ⟨fun t ht ↦ _, ‹_›⟩
     rw [mem_attachFin, mem_range]
     have : toWolex (image Fin.val B) < toWolex (image Fin.val A) := by
       rwa [toWolex_image_lt_toWolex_image Fin.val_strictMono]
@@ -433,13 +433,13 @@ lemma EKR {𝒜 : Finset (Finset (Fin n))} {r : ℕ} (h𝒜 : (𝒜 : Set (Finse
   cases' Nat.eq_zero_or_pos r with b h1r
   · convert Nat.zero_le _
     rw [Finset.card_eq_zero, eq_empty_iff_forall_not_mem]
-    refine' λ A HA ↦ h𝒜 HA HA _
+    refine' fun A HA ↦ h𝒜 HA HA _
     rw [disjoint_self_iff_empty, ←Finset.card_eq_zero, ←b]
     exact h₂ HA
-  refine' le_of_not_lt λ size ↦ _
+  refine' le_of_not_lt fun size ↦ _
   -- Consider 𝒜ᶜˢ = {sᶜ | s ∈ 𝒜}
   -- Its iterated shadow (∂^[n-2k] 𝒜ᶜˢ) is disjoint from 𝒜 by intersecting-ness
-  have : Disjoint 𝒜 (∂^[n - 2 * r] 𝒜ᶜˢ) := disjoint_right.2 λ A hAbar hA ↦ by
+  have : Disjoint 𝒜 (∂^[n - 2 * r] 𝒜ᶜˢ) := disjoint_right.2 fun A hAbar hA ↦ by
     simp [mem_shadow_iterate_iff_exists_sdiff, mem_compls] at hAbar
     obtain ⟨C, hC, hAC, _⟩ := hAbar
     exact h𝒜 hA hC (disjoint_of_subset_left hAC disjoint_compl_right)

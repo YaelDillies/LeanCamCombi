@@ -100,7 +100,7 @@ variable [DecidableEq α]
 /-- To UW-compress a set family, we compress each of its elements, except that we don't want to
 reduce the cardinality, so we keep all elements whose compression is already present. -/
 def compression (u v : α) (s : Finset α) :=
-  (s.filter λ a => compress u v a ∈ s) ∪ (s.image $ compress u v).filter fun a ↦ a ∉ s
+  (s.filter fun a => compress u v a ∈ s) ∪ (s.image $ compress u v).filter fun a ↦ a ∉ s
 
 scoped[FinsetFamily] notation "𝓓 " => UW.compression
 
@@ -111,7 +111,7 @@ def IsCompressed (u v : α) (s : Finset α) :=
   𝓓 u v s = s
 
 /-- UW-compression is injective on the sets that are not UW-compressed. -/
-theorem compress_injOn : Set.InjOn (compress u v) ↑(s.filter λ a ↦ compress u v a ∉ s) := by
+theorem compress_injOn : Set.InjOn (compress u v) ↑(s.filter fun a ↦ compress u v a ∉ s) := by
   intro a ha b hb hab
   rw [mem_coe, mem_filter] at ha hb
   rw [compress] at ha hab
@@ -136,7 +136,7 @@ theorem compression_self (u : α) (s : Finset α) : 𝓓 u u s = s := by
   convert union_empty s
   · ext a
     rw [mem_filter, compress_self, and_self_iff]
-  · refine' eq_empty_of_forall_not_mem λ a ha ↦ _
+  · refine' eq_empty_of_forall_not_mem fun a ha ↦ _
     simp_rw [mem_filter, mem_image, compress_self] at ha
     obtain ⟨⟨b, hb, rfl⟩, hb'⟩ := ha
     exact hb' hb
@@ -145,8 +145,8 @@ theorem compression_self (u : α) (s : Finset α) : 𝓓 u u s = s := by
 theorem isCompressed_self (u : α) (s : Finset α) : IsCompressed u u s := compression_self u s
 
 theorem compress_disjoint :
-    Disjoint (s.filter λ a ↦ compress u v a ∈ s) ((s.image $ compress u v).filter (· ∉ s)) :=
-  disjoint_left.2 λ _a ha₁ ha₂ ↦ (mem_filter.1 ha₂).2 (mem_filter.1 ha₁).1
+    Disjoint (s.filter fun a ↦ compress u v a ∈ s) ((s.image $ compress u v).filter (· ∉ s)) :=
+  disjoint_left.2 fun _a ha₁ ha₂ ↦ (mem_filter.1 ha₂).2 (mem_filter.1 ha₁).1
 
 theorem compress_mem_compression (ha : a ∈ s) : compress u v a ∈ 𝓓 u v s := by
   rw [mem_compression]
@@ -167,8 +167,8 @@ theorem compress_mem_compression_of_mem_compression (ha : a ∈ 𝓓 u v s) :
 /-- Compressing a family is idempotent. -/
 @[simp]
 theorem compression_idem (u v : α) (s : Finset α) : 𝓓 u v (𝓓 u v s) = 𝓓 u v s := by
-  have h : filter (λ a ↦ compress u v a ∉ 𝓓 u v s) (𝓓 u v s) = ∅ :=
-    filter_false_of_mem λ a ha h ↦ h $ compress_mem_compression_of_mem_compression ha
+  have h : filter (fun a ↦ compress u v a ∉ 𝓓 u v s) (𝓓 u v s) = ∅ :=
+    filter_false_of_mem fun a ha h ↦ h $ compress_mem_compression_of_mem_compression ha
   rw [compression, image_filter, h, image_empty, ←h]
   exact filter_union_filter_neg_eq _ (compression u v s)
 
@@ -266,7 +266,7 @@ lemma _root_.Set.Sized.uwCompression (huv : u.card = v.card) (h𝒜 : (𝒜 : Se
 
 private theorem aux (huv : ∀ x ∈ u, ∃ y ∈ v, IsCompressed (u.erase x) (v.erase y) 𝒜) :
     v = ∅ → u = ∅ := by
-  rintro rfl; refine' eq_empty_of_forall_not_mem λ a ha ↦ _; obtain ⟨_, ⟨⟩, -⟩ := huv a ha
+  rintro rfl; refine' eq_empty_of_forall_not_mem fun a ha ↦ _; obtain ⟨_, ⟨⟩, -⟩ := huv a ha
 
 /-- UW-compression reduces the size of the shadow of `𝒜` if, for all `x ∈ u` there is `y ∈ v` such
 that `𝒜` is `(u.erase x, v.erase y)`-compressed. This is the key fact about compression for
@@ -309,7 +309,7 @@ theorem shadow_compression_subset_compression_shadow (u v : Finset α)
       · rw [←erase_sdiff_comm, sup_eq_union, erase_union_distrib, erase_eq_of_not_mem hau]
   intro s hs𝒜' hs𝒜
   -- This is gonna be useful a couple of times so let's name it.
-  have m : ∀ (y) (_ : y ∉ s), insert y s ∉ 𝒜 := λ y h a ↦
+  have m : ∀ (y) (_ : y ∉ s), insert y s ∉ 𝒜 := fun y h a ↦
     hs𝒜 (mem_shadow_iff_insert_mem.2 ⟨y, h, a⟩)
   obtain ⟨x, _, _⟩ := mem_shadow_iff_insert_mem.1 hs𝒜'
   have hus : u ⊆ insert x s := le_of_mem_compression_of_not_mem ‹_ ∈ 𝒜'› (m _ ‹x ∉ s›)

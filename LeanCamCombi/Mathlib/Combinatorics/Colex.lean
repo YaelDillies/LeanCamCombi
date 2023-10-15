@@ -88,10 +88,10 @@ variable [LT α] {s t : Finset α}
 /-- `s` is less than `t` in the wolex ordering if the largest thing that's not in both sets is in t.
 In other words, `max (s ∆ t) ∈ t` (if the maximum exists). -/
 instance instLT : LT (Wolex α) :=
-  ⟨λ s t ↦ ∃ a, (∀ ⦃x⦄, a < x → (x ∈ ofWolex s ↔ x ∈ ofWolex t)) ∧ a ∉ ofWolex s ∧ a ∈ ofWolex t⟩
+  ⟨fun s t ↦ ∃ a, (∀ ⦃x⦄, a < x → (x ∈ ofWolex s ↔ x ∈ ofWolex t)) ∧ a ∉ ofWolex s ∧ a ∈ ofWolex t⟩
 
 /-- We can define (≤) in the obvious way. -/
-instance instLE : LE (Wolex α) := ⟨λ s t ↦ s = t ∨ s < t⟩
+instance instLE : LE (Wolex α) := ⟨fun s t ↦ s = t ∨ s < t⟩
 
 lemma lt_def {s t : Wolex α} :
     s < t ↔ ∃ a, (∀ ⦃x⦄, a < x → (x ∈ ofWolex s ↔ x ∈ ofWolex t)) ∧ a ∉ ofWolex s ∧ a ∈ ofWolex t :=
@@ -116,15 +116,15 @@ instance instIsIrrefl : IsIrrefl (Wolex α) (· < ·) := ⟨by simp [lt_def]⟩
 lemma sdiff_lt_sdiff_iff_lt [DecidableEq α] (s t : Finset α) :
     toWolex (s \ t) < toWolex (t \ s) ↔ toWolex s < toWolex t := by
   rw [toWolex_lt_toWolex, toWolex_lt_toWolex]
-  refine' exists_congr λ k ↦ _
+  refine' exists_congr fun k ↦ _
   simp only [mem_sdiff, not_and, Classical.not_not]
   constructor
   · rintro ⟨z, kAB, kB, kA⟩
-    refine' ⟨λ x hx ↦ _, kA, kB⟩
+    refine' ⟨fun x hx ↦ _, kA, kB⟩
     specialize z hx
     tauto
   · rintro ⟨z, kA, kB⟩
-    refine' ⟨λ x hx => _, fun _ ↦ kB, kB, kA⟩
+    refine' ⟨fun x hx => _, fun _ ↦ kB, kB, kA⟩
     rw [z hx]
 
 end LT
@@ -139,10 +139,10 @@ instance : IsStrictTotalOrder (Wolex α) (· < ·) where
   trans s t u := by
     rintro ⟨k₁, k₁z, notinA, inB⟩ ⟨k₂, k₂z, notinB, inC⟩
     obtain h | h := (ne_of_mem_of_not_mem inB notinB).lt_or_lt
-    · refine' ⟨k₂, λ x hx ↦ _, by rwa [k₁z h], inC⟩
+    · refine' ⟨k₂, fun x hx ↦ _, by rwa [k₁z h], inC⟩
       rw [←k₂z hx]
       exact k₁z (h.trans hx)
-    · refine' ⟨k₁, λ x hx ↦ _, notinA, by rwa [←k₂z h]⟩
+    · refine' ⟨k₁, fun x hx ↦ _, notinA, by rwa [←k₂z h]⟩
       rw [k₁z hx]
       exact k₂z (h.trans hx)
   trichotomous s t := by
@@ -150,16 +150,16 @@ instance : IsStrictTotalOrder (Wolex α) (· < ·) where
     obtain rfl | hts := eq_or_ne t s
     · simp
     obtain ⟨k, hk, z⟩ := exists_max_image (ofWolex t ∆ ofWolex s) id (symmDiff_nonempty.2 hts)
-    refine' (mem_symmDiff.1 hk).imp (λ hk => ⟨k, λ a ha ↦ _, hk.2, hk.1⟩) fun hk ↦
-        Or.inr ⟨k, λ a ha ↦ _, hk.2, hk.1⟩ <;>
+    refine' (mem_symmDiff.1 hk).imp (fun hk => ⟨k, fun a ha ↦ _, hk.2, hk.1⟩) fun hk ↦
+        Or.inr ⟨k, fun a ha ↦ _, hk.2, hk.1⟩ <;>
       simpa [mem_symmDiff, not_or, iff_iff_implies_and_implies, and_comm, not_imp_not]
         using not_imp_not.2 (z a) ha.not_le
 
-instance instDecidableLT : @DecidableRel (Wolex α) (· < ·) := λ s t ↦
+instance instDecidableLT : @DecidableRel (Wolex α) (· < ·) := fun s t ↦
   decidable_of_iff'
     (∃ k ∈ ofWolex t,
       (∀ x ∈ ofWolex s ∪ ofWolex t, k < x → (x ∈ ofWolex s ↔ x ∈ ofWolex t)) ∧ k ∉ ofWolex s) $
-    exists_congr λ a ↦ by
+    exists_congr fun a ↦ by
       simp only [mem_union, exists_prop, or_imp, @and_comm (_ ∈ ofWolex t), and_assoc]
       exact and_congr_left' $ forall_congr' $ by tauto
 
@@ -179,7 +179,7 @@ instance instOrderBot : OrderBot (Wolex α) where
     · simp
     refine' Or.inr ⟨max' _ hs, _, by simp, max'_mem _ _⟩
     simp only [max'_lt_iff, ofWolex_bot, not_mem_empty, ofWolex_toWolex, false_iff]
-    exact λ x hs hx ↦ lt_irrefl _ $ hs _ hx
+    exact fun x hs hx ↦ lt_irrefl _ $ hs _ hx
 
 /-- Wolex doesn't care if you remove the other set -/
 @[simp]
@@ -209,7 +209,7 @@ instance [Fintype α] : BoundedOrder (Wolex α) where
 /-- `s < {a}` in wolex iff all elements of `s` are strictly less than `a`. -/
 lemma toWolex_lt_singleton : toWolex s < toWolex {a} ↔ ∀ x ∈ s, x < a := by
   simp only [toWolex_lt_toWolex, mem_singleton, ←and_assoc, exists_eq_right, ←not_le (a := a)]
-  refine ⟨λ t x hx hax ↦ ?_, λ h ↦ ⟨λ z hz ↦ ?_, by simpa using h a⟩⟩
+  refine ⟨fun t x hx hax ↦ ?_, fun h ↦ ⟨fun z hz ↦ ?_, by simpa using h a⟩⟩
   · obtain hax | rfl := hax.lt_or_eq
     · exact hax.ne' $ (t.1 hax).1 hx
     · exact t.2 hx
@@ -232,7 +232,7 @@ lemma singleton_le_singleton : (toWolex {a} : Wolex α) ≤ toWolex {b} ↔ a �
 lemma forall_lt_mono (h₁ : toWolex s ≤ toWolex t) (h₂ : ∀ x ∈ t, x < a) : ∀ x ∈ s, x < a := by
   obtain rfl | ⟨k, z, -, hk⟩ := toWolex_le_toWolex.1 h₁
   · assumption
-  · refine' λ x hx => lt_of_not_le fun h ↦ h.not_lt $ h₂ x _
+  · refine' fun x hx => lt_of_not_le fun h ↦ h.not_lt $ h₂ x _
     rwa [←z ((h₂ k hk).trans_le h)]
 
 /-- Strictly monotone functions preserve the wolex ordering. -/
@@ -241,10 +241,10 @@ lemma toWolex_image_lt_toWolex_image (hf : StrictMono f) :
   simp only [toWolex_lt_toWolex, not_exists, mem_image, exists_prop, not_and]
   constructor
   · rintro ⟨k, z, q, k', _, rfl⟩
-    exact ⟨k', λ x hx => by simpa [hf.injective.eq_iff] using z (hf hx),
+    exact ⟨k', fun x hx => by simpa [hf.injective.eq_iff] using z (hf hx),
       fun t ↦ q _ t rfl, ‹k' ∈ t›⟩
   rintro ⟨k, z, ka, _⟩
-  refine' ⟨f k, λ x hx ↦ _, _, k, ‹k ∈ t›, rfl⟩
+  refine' ⟨f k, fun x hx ↦ _, _, k, ‹k ∈ t›, rfl⟩
   · constructor
     all_goals
       rintro ⟨x', hx', rfl⟩
@@ -254,7 +254,7 @@ lemma toWolex_image_lt_toWolex_image (hf : StrictMono f) :
       | rwa [z _]
       rwa [StrictMono.lt_iff_lt hf] at hx
   · simp only [hf.injective, Function.Injective.eq_iff]
-    exact λ x hx ↦ ne_of_mem_of_not_mem hx ka
+    exact fun x hx ↦ ne_of_mem_of_not_mem hx ka
 
 /-- Strictly monotone functions preserve the wolex ordering. -/
 lemma toWolex_image_le_toWolex_image (hf : StrictMono f) :
@@ -290,7 +290,7 @@ variable [Fintype α]
 /-- Gives all sets up to `s` with the same size as it: this is equivalent to
 being an initial segment of wolex. -/
 def initSeg (s : Finset α) : Finset (Finset α) :=
-  univ.filter λ t ↦ s.card = t.card ∧ toWolex t ≤ toWolex s
+  univ.filter fun t ↦ s.card = t.card ∧ toWolex t ≤ toWolex s
 
 @[simp]
 lemma mem_initSeg : t ∈ initSeg s ↔ s.card = t.card ∧ toWolex t ≤ toWolex s := by simp [initSeg]
@@ -299,18 +299,18 @@ lemma mem_initSeg_self : s ∈ initSeg s := by simp
 @[simp] lemma initSeg_nonempty : (initSeg s).Nonempty := ⟨s, mem_initSeg_self⟩
 
 lemma isInitSeg_initSeg : IsInitSeg (initSeg s) s.card := by
-  refine ⟨λ t ht => (mem_initSeg.1 ht).1.symm, λ t₁ t₂ ht₁ ht₂ ↦ mem_initSeg.2 ⟨ht₂.2.symm, ?_⟩⟩
+  refine ⟨fun t ht => (mem_initSeg.1 ht).1.symm, fun t₁ t₂ ht₁ ht₂ ↦ mem_initSeg.2 ⟨ht₂.2.symm, ?_⟩⟩
   rw [mem_initSeg] at ht₁
   exact ht₂.1.le.trans ht₁.2
 
 lemma IsInitSeg.exists_initSeg (h𝒜 : IsInitSeg 𝒜 r) (h𝒜₀ : 𝒜.Nonempty) :
     ∃ s : Finset α, s.card = r ∧ 𝒜 = initSeg s := by
   have hs := sup'_mem (ofWolex ⁻¹' 𝒜) (LinearOrder.supClosed _) 𝒜 h𝒜₀ toWolex
-    (λ a ha ↦ by simpa using ha)
+    (fun a ha ↦ by simpa using ha)
   refine' ⟨_, h𝒜.1 hs, _⟩
   ext t
   rw [mem_initSeg]
-  refine' ⟨λ p ↦ _, _⟩
+  refine' ⟨fun p ↦ _, _⟩
   · rw [h𝒜.1 p, h𝒜.1 hs]
     exact ⟨rfl, le_sup' _ p⟩
   rintro ⟨cards, le⟩
@@ -321,7 +321,7 @@ lemma IsInitSeg.exists_initSeg (h𝒜 : IsInitSeg 𝒜 r) (h𝒜₀ : 𝒜.Nonem
 /-- Being a nonempty initial segment of wolex if equivalent to being an `initSeg`. -/
 lemma isInitSeg_iff_exists_initSeg :
     IsInitSeg 𝒜 r ∧ 𝒜.Nonempty ↔ ∃ s : Finset α, s.card = r ∧ 𝒜 = initSeg s := by
-  refine ⟨λ h𝒜 ↦ h𝒜.1.exists_initSeg h𝒜.2, ?_⟩
+  refine ⟨fun h𝒜 ↦ h𝒜.1.exists_initSeg h𝒜.2, ?_⟩
   rintro ⟨s, rfl, rfl⟩
   exact ⟨isInitSeg_initSeg, initSeg_nonempty⟩
 
@@ -351,13 +351,13 @@ lemma sum_two_pow_lt_iff_wolex_lt (s t : Finset ℕ) :
     rw [sum_union (disjoint_sdiff_inter _ _), sum_union (disjoint_sdiff_inter _ _), inter_comm,
       add_lt_add_iff_right]
     apply (@Nat.sum_two_pow_lt a (s \ t) _).trans_le
-    · apply single_le_sum (λ _ _ ↦ Nat.zero_le _) hat
+    · apply single_le_sum (fun _ _ ↦ Nat.zero_le _) hat
     intro x hx
-    refine' (ne_of_mem_of_not_mem hx has).lt_or_lt.resolve_right $ λ hax ↦ _
+    refine' (ne_of_mem_of_not_mem hx has).lt_or_lt.resolve_right $ fun hax ↦ _
     have := (ha hax).1 hx
     rw [mem_sdiff] at this hx
     exact hx.2 this.1
-  refine' ⟨λ h ↦ (lt_trichotomy (toWolex s) $ toWolex t).resolve_right λ h₁ ↦
+  refine' ⟨fun h ↦ (lt_trichotomy (toWolex s) $ toWolex t).resolve_right fun h₁ ↦
     h₁.elim _ (not_lt_of_gt h ∘ z _ _), z s t⟩
   rw [toWolex_inj]
   rintro rfl

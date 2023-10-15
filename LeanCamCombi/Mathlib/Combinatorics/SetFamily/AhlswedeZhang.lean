@@ -367,8 +367,8 @@ lemma IsAntichain.le_infSum (h𝒜 : IsAntichain (· ⊆ ·) (𝒜 : Set (Finset
     ∑ s in 𝒜, ((card α).choose s.card : ℚ)⁻¹ ≤ infSum 𝒜 := by
   calc
     _ = ∑ s in 𝒜, (truncatedInf 𝒜 s).card / (s.card * (card α).choose s.card : ℚ) := ?_
-    _ ≤ _ := sum_le_univ_sum_of_nonneg λ s ↦ by positivity
-  refine' sum_congr rfl λ s hs ↦ _
+    _ ≤ _ := sum_le_univ_sum_of_nonneg fun s ↦ by positivity
+  refine' sum_congr rfl fun s hs ↦ _
   rw [truncatedInf_of_isAntichain h𝒜 hs, div_mul_cancel''₀]
   have := (nonempty_iff_ne_empty.2 $ ne_of_mem_of_not_mem hs h𝒜₀).card_pos
   positivity

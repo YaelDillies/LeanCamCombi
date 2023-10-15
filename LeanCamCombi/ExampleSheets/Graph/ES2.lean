@@ -22,7 +22,7 @@ If you solve a question in Lean, feel free to open a Pull Request on Github!
 /-!
 ### Question 1
 
-For a graph $$G$$, show that $$κ(G) ≤ λ(G) ≤ δ(G)$$.
+For a graph $$G$$, show that $$κ(G) ≤ fun(G) ≤ δ(G)$$.
 -/
 
 

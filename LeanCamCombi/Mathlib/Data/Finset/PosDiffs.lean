@@ -60,7 +60,7 @@ open scoped FinsetFamily
 
 lemma posDiffs_subset_diffs : s \₊ t ⊆ s \\ t := by
   simp only [subset_iff, mem_posDiffs, mem_diffs]
-  exact λ a ⟨b, hb, c, hc, _, ha⟩ ↦ ⟨b, hb, c, hc, ha⟩
+  exact fun a ⟨b, hb, c, hc, _, ha⟩ ↦ ⟨b, hb, c, hc, ha⟩
 
 end GeneralizedBooleanAlgebra
 
