@@ -3,7 +3,7 @@ import Mathlib.Algebra.BigOperators.Order
 import Mathlib.Algebra.Order.Pi
 import LeanCamCombi.Mathlib.Data.Finset.Sups
 import LeanCamCombi.Mathlib.Order.Birkhoff
-import LeanCamCombi.Mathlib.Order.Booleanisation
+import Mathlib.Order.Booleanisation
 import LeanCamCombi.Mathlib.Order.Sublattice
 
 /-!

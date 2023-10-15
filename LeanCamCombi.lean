@@ -41,7 +41,6 @@ import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
 import LeanCamCombi.Mathlib.NumberTheory.MaricaSchoenheim
 import LeanCamCombi.Mathlib.Order.Birkhoff
 import LeanCamCombi.Mathlib.Order.BooleanAlgebra
-import LeanCamCombi.Mathlib.Order.Booleanisation
 import LeanCamCombi.Mathlib.Order.Category.BoolAlg
 import LeanCamCombi.Mathlib.Order.Closure
 import LeanCamCombi.Mathlib.Order.Disjoint
