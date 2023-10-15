@@ -9,7 +9,6 @@ import LeanCamCombi.ExampleSheets.Graph.ES2
 import LeanCamCombi.FourFunctions
 import LeanCamCombi.KruskalKatona
 import LeanCamCombi.LittlewoodOfford
-import LeanCamCombi.Mathlib.Algebra.GroupWithZero.Units.Lemmas
 import LeanCamCombi.Mathlib.Algebra.Order.Group.Defs
 import LeanCamCombi.Mathlib.Algebra.Order.Module
 import LeanCamCombi.Mathlib.Algebra.Order.Monovary
@@ -31,7 +30,6 @@ import LeanCamCombi.Mathlib.Data.Finset.Lattice
 import LeanCamCombi.Mathlib.Data.Finset.Pointwise
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.Finset.Sups
-import LeanCamCombi.Mathlib.Data.Finsupp.Order
 import LeanCamCombi.Mathlib.Data.Fintype.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Factorization.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Factors
