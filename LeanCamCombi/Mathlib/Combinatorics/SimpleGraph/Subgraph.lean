@@ -70,7 +70,7 @@ def topIso : (⊤ : G.Subgraph).coe ≃g G where
 @[simps]
 noncomputable def isoMap {H : SimpleGraph β} (f : G →g H) (hf : Injective f) (G' : G.Subgraph) :
     G'.coe ≃g (G'.map f).coe :=
-  { Equiv.Set.image f G'.verts hf with map_rel_iff' := by simp [hf] }
+  { Equiv.Set.image f G'.verts hf with map_rel_iff' := by dsimp; simp [hf] }
 
 open scoped Classical
 

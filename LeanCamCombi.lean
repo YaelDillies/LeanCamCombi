@@ -19,7 +19,6 @@ import LeanCamCombi.Mathlib.Analysis.Convex.Mul
 import LeanCamCombi.Mathlib.Analysis.Convex.Strong
 import LeanCamCombi.Mathlib.Combinatorics.Colex
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.AhlswedeZhang
-import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Compression.UV
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shadow
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shatter
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic

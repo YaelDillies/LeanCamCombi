@@ -7,10 +7,10 @@ import Mathlib.Algebra.GeomSum
 import Mathlib.Combinatorics.SetFamily.Intersecting
 import Mathlib.Data.Finset.Fin
 import Mathlib.Data.Finset.Sort
+import Mathlib.Combinatorics.SetFamily.Compression.UV
 import LeanCamCombi.Mathlib.Combinatorics.Colex
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shadow
 import LeanCamCombi.Mathlib.Data.Finset.Sups
-import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Compression.UV
 import LeanCamCombi.Mathlib.Order.RelClasses
 
 /-!
@@ -185,12 +185,12 @@ protected lemma IsInitSeg.shadow [Finite α] (h₁ : IsInitSeg 𝒜 r) : IsInitS
 
 end Wolex
 
-open Finset Wolex Nat UW
+open Finset Wolex Nat UV
 open scoped BigOperators FinsetFamily
 
 variable {α : Type*} [LinearOrder α] {s U V : Finset α} {n : ℕ}
 
-namespace UW
+namespace UV
 
 /-- Applying the compression makes the set smaller in wolex. This is intuitive since a portion of
 the set is being "shifted 'down" as `max U < max V`. -/
@@ -216,8 +216,8 @@ shadow. In particular, 'good' means it's useful, and every smaller compression w
 difference. -/
 lemma compression_improved (𝒜 : Finset (Finset α)) (h₁ : UsefulCompression U V)
     (h₂ : ∀ ⦃U₁ V₁⦄, UsefulCompression U₁ V₁ → U₁.card < U.card → IsCompressed U₁ V₁ 𝒜) :
-    (∂ (𝓔 U V 𝒜)).card ≤ (∂ 𝒜).card := by
-  obtain ⟨UWd, same_size, hU, hV, max_lt⟩ := h₁
+    (∂ (𝓒 U V 𝒜)).card ≤ (∂ 𝒜).card := by
+  obtain ⟨UVd, same_size, hU, hV, max_lt⟩ := h₁
   refine' card_shadow_compression_le _ _ fun x Hx ↦ ⟨min' V hV, min'_mem _ _, _⟩
   obtain hU' | hU' := eq_or_lt_of_le (succ_le_iff.2 hU.card_pos)
   · rw [←hU'] at same_size
@@ -226,7 +226,7 @@ lemma compression_improved (𝒜 : Finset (Finset α)) (h₁ : UsefulCompression
       rw [←Finset.card_eq_zero, card_erase_of_mem (min'_mem _ _), ←same_size]
     rw [‹erase U x = ∅›, ‹erase V (min' V hV) = ∅›]
     exact isCompressed_self _ _
-  refine' h₂ ⟨UWd.mono (erase_subset _ _) (erase_subset _ _), _, _, _, _⟩ (card_erase_lt_of_mem Hx)
+  refine' h₂ ⟨UVd.mono (erase_subset _ _) (erase_subset _ _), _, _, _, _⟩ (card_erase_lt_of_mem Hx)
   · rw [card_erase_of_mem (min'_mem _ _), card_erase_of_mem Hx, same_size]
   · rwa [←card_pos, card_erase_of_mem Hx, tsub_pos_iff_lt]
   · rwa [←Finset.card_pos, card_erase_of_mem (min'_mem _ _), ←same_size, tsub_pos_iff_lt]
@@ -271,8 +271,8 @@ private def familyMeasure (𝒜 : Finset (Finset (Fin n))) : ℕ := ∑ A in �
 /-- Applying a compression strictly decreases the measure. This helps show that "compress until we
 can't any more" is a terminating process. -/
 lemma familyMeasure_compression_lt_familyMeasure {U V : Finset (Fin n)} {hU : U.Nonempty}
-    {hV : V.Nonempty} (h : max' U hU < max' V hV) {𝒜 : Finset (Finset (Fin n))} (a : 𝓔 U V 𝒜 ≠ 𝒜) :
-    familyMeasure (𝓔 U V 𝒜) < familyMeasure 𝒜 := by
+    {hV : V.Nonempty} (h : max' U hU < max' V hV) {𝒜 : Finset (Finset (Fin n))} (a : 𝓒 U V 𝒜 ≠ 𝒜) :
+    familyMeasure (𝓒 U V 𝒜) < familyMeasure 𝒜 := by
   rw [compression] at a ⊢
   have q : ∀ Q ∈ 𝒜.filter fun A ↦ compress U V A ∉ 𝒜, compress U V Q ≠ Q := by
     simp_rw [mem_filter]
@@ -311,10 +311,10 @@ private lemma kruskal_katona_helper {r : ℕ} (𝒜 : Finset (Finset (Fin n)))
     univ.filter fun t ↦ UsefulCompression t.1 t.2 ∧ ¬ IsCompressed t.1 t.2 A
   obtain husable | husable := usable.eq_empty_or_nonempty
   -- No. Then where we are is the required set family.
-  · refine' ⟨A, le_rfl, rfl, h, fun U V hUW ↦ _⟩
+  · refine' ⟨A, le_rfl, rfl, h, fun U V hUV ↦ _⟩
     rw [eq_empty_iff_forall_not_mem] at husable
     by_contra h
-    exact husable ⟨U, V⟩ $ mem_filter.2 ⟨mem_univ _, hUW, h⟩
+    exact husable ⟨U, V⟩ $ mem_filter.2 ⟨mem_univ _, hUV, h⟩
   -- Yes. Then apply the compression, then keep going
   obtain ⟨⟨U, V⟩, hUV, t⟩ := exists_min_image usable (fun t ↦ t.1.card) husable
   rw [mem_filter] at hUV
@@ -322,14 +322,14 @@ private lemma kruskal_katona_helper {r : ℕ} (𝒜 : Finset (Finset (Fin n)))
     rintro U₁ V₁ huseful hUcard
     by_contra h
     exact hUcard.not_le $ t ⟨U₁, V₁⟩ $ mem_filter.2 ⟨mem_univ _, huseful, h⟩
-  have p1 : (∂ (𝓔 U V A)).card ≤ (∂ A).card := compression_improved _ hUV.2.1 h₂
+  have p1 : (∂ (𝓒 U V A)).card ≤ (∂ A).card := compression_improved _ hUV.2.1 h₂
   obtain ⟨-, hUV', hu, hv, hmax⟩ := hUV.2.1
   unfold InvImage at ih
-  obtain ⟨t, q1, q2, q3, q4⟩ := ih (𝓔 U V A)
-    (familyMeasure_compression_lt_familyMeasure hmax hUV.2.2) (h.uwCompression hUV')
+  obtain ⟨t, q1, q2, q3, q4⟩ := ih (𝓒 U V A)
+    (familyMeasure_compression_lt_familyMeasure hmax hUV.2.2) (h.uvCompression hUV')
   exact ⟨t, q1.trans p1, (card_compression _ _ _).symm.trans q2, q3, q4⟩
 
-end UW
+end UV
 
 -- Finally we can prove Kruskal-Katona.
 section KK
@@ -345,11 +345,11 @@ Proof notes: Most of the work was done in Kruskal-Katona helper; it gives a `ℬ
 compressed, and so we know it's an initial segment, which by uniqueness is the same as `𝒞`. -/
 lemma kruskal_katona (h₁ : (𝒜 : Set (Finset (Fin n))).Sized r) (h₂ : 𝒜.card = 𝒞.card)
     (h₃ : IsInitSeg 𝒞 r) : (∂ 𝒞).card ≤ (∂ 𝒜).card := by
-  obtain ⟨ℬ, card_le, t, hℬ, fully_comp⟩ := UW.kruskal_katona_helper 𝒜 h₁
+  obtain ⟨ℬ, card_le, t, hℬ, fully_comp⟩ := UV.kruskal_katona_helper 𝒜 h₁
   convert card_le
   have hcard : card ℬ = card 𝒞 := t.symm.trans h₂
   obtain CB | BC :=
-    h₃.total (UW.isInitSeg_of_compressed hℬ fun U V hUW ↦ by convert fully_comp U V hUW)
+    h₃.total (UV.isInitSeg_of_compressed hℬ fun U V hUV ↦ by convert fully_comp U V hUV)
   · exact eq_of_subset_of_card_le CB hcard.le
   · exact (eq_of_subset_of_card_le BC hcard.ge).symm
 
@@ -457,7 +457,7 @@ lemma EKR {𝒜 : Finset (Finset (Fin n))} {r : ℕ} (h𝒜 : (𝒜 : Set (Finse
   have kk :=
     lovasz_form ‹n - 2 * r ≤ n - r› ((tsub_le_tsub_iff_left ‹1 ≤ n›).2 h1r) tsub_le_self h𝒜bar z.le
   have q : n - r - (n - 2 * r) = r := by
-    rw [Nat.sub.right_comm, Nat.sub_sub_self, two_mul]
+    rw [tsub_right_comm, Nat.sub_sub_self, two_mul]
     apply Nat.add_sub_cancel
     rw [mul_comm, ←Nat.le_div_iff_mul_le' zero_lt_two]
     exact h₃
