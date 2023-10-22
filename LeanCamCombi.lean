@@ -35,7 +35,6 @@ import LeanCamCombi.Mathlib.Data.Nat.Factors
 import LeanCamCombi.Mathlib.Data.Nat.Order.Lemmas
 import LeanCamCombi.Mathlib.Data.Nat.Squarefree
 import LeanCamCombi.Mathlib.Data.Set.Image
-import LeanCamCombi.Mathlib.Data.SetLike.Basic
 import LeanCamCombi.Mathlib.Data.Set.Prod
 import LeanCamCombi.Mathlib.Data.Sum.Lattice
 import LeanCamCombi.Mathlib.Data.Sym.Sym2
@@ -56,7 +55,6 @@ import LeanCamCombi.Mathlib.Order.RelClasses
 import LeanCamCombi.Mathlib.Order.Sublattice
 import LeanCamCombi.Mathlib.Order.SupClosed
 import LeanCamCombi.Mathlib.Order.Synonym
-import LeanCamCombi.Mathlib.Order.UpperLower.Basic
 import LeanCamCombi.Mathlib.Probability.Independence.Basic
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.VanDenBergKesten

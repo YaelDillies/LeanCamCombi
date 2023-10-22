@@ -381,17 +381,17 @@ lemma lovasz_form (hir : i ≤ r) (hrk : r ≤ k) (hkn : k ≤ n)
     k.choose (r - i) ≤ (∂^[i] 𝒜).card := by
   set range'k : Finset (Fin n) :=
     attachFin (range k) fun m ↦ by rw [mem_range]; apply forall_lt_iff_le.2 hkn
-  set 𝒞 : Finset (Finset (Fin n)) := powersetLen r range'k
+  set 𝒞 : Finset (Finset (Fin n)) := powersetCard r range'k
   have Ccard : 𝒞.card = k.choose r
-  rw [card_powersetLen, card_attachFin, card_range]
-  have : (𝒞 : Set (Finset (Fin n))).Sized r := Set.sized_powersetLen _ _
+  rw [card_powersetCard, card_attachFin, card_range]
+  have : (𝒞 : Set (Finset (Fin n))).Sized r := Set.sized_powersetCard _ _
   suffices this : (∂^[i] 𝒞).card = k.choose  (r - i)
   · rw [←this]
     apply iterated_kk h₁ _ _
     rwa [Ccard]
     refine' ⟨‹_›, _⟩
     rintro A B hA ⟨HB₁, HB₂⟩
-    rw [mem_powersetLen]
+    rw [mem_powersetCard]
     refine' ⟨fun t ht ↦ _, ‹_›⟩
     rw [mem_attachFin, mem_range]
     have : toWolex (image Fin.val B) < toWolex (image Fin.val A) := by
@@ -399,17 +399,17 @@ lemma lovasz_form (hir : i ≤ r) (hrk : r ≤ k) (hkn : k ≤ n)
     apply Wolex.forall_lt_mono this.le _ t (mem_image.2 ⟨t, ht, rfl⟩)
     simp_rw [mem_image]
     rintro _ ⟨a, ha, q⟩
-    rw [mem_powersetLen] at hA
+    rw [mem_powersetCard] at hA
     rw [←q, ←mem_range]
     have := hA.1 ha
     rwa [mem_attachFin] at this
-  suffices ∂^[i] 𝒞 = powersetLen (r - i) range'k by
-    rw [this, card_powersetLen, card_attachFin, card_range]
+  suffices ∂^[i] 𝒞 = powersetCard (r - i) range'k by
+    rw [this, card_powersetCard, card_attachFin, card_range]
   ext B
-  rw [mem_powersetLen, mem_shadow_iterate_iff_exists_sdiff]
+  rw [mem_powersetCard, mem_shadow_iterate_iff_exists_sdiff]
   constructor
   · rintro ⟨A, Ah, BsubA, card_sdiff_i⟩
-    rw [mem_powersetLen] at Ah
+    rw [mem_powersetCard] at Ah
     refine' ⟨BsubA.trans Ah.1, _⟩
     symm
     rw [Nat.sub_eq_iff_eq_add hir, ←Ah.2, ←card_sdiff_i, ←card_disjoint_union disjoint_sdiff,
@@ -418,7 +418,7 @@ lemma lovasz_form (hir : i ≤ r) (hrk : r ≤ k) (hkn : k ≤ n)
   have := exists_intermediate_set i ?_ hBk
   obtain ⟨C, BsubC, hCrange, cards⟩ := this
   rw [hB, ←Nat.add_sub_assoc hir, Nat.add_sub_cancel_left] at cards
-  refine' ⟨C, _, BsubC, _⟩; rw [mem_powersetLen]; exact ⟨hCrange, cards⟩
+  refine' ⟨C, _, BsubC, _⟩; rw [mem_powersetCard]; exact ⟨hCrange, cards⟩
   · rw [card_sdiff BsubC, cards, hB, Nat.sub_sub_self hir]
   · rwa [hB, card_attachFin, card_range, ←Nat.add_sub_assoc hir, Nat.add_sub_cancel_left]
 
