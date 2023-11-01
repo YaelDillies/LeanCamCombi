@@ -3,6 +3,11 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build_project:
     runs-on: ubuntu-latest
