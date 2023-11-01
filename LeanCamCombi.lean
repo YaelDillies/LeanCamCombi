@@ -10,10 +10,8 @@ import LeanCamCombi.FourFunctions
 import LeanCamCombi.KruskalKatona
 import LeanCamCombi.LittlewoodOfford
 import LeanCamCombi.Mathlib.Algebra.Order.Group.Defs
-import LeanCamCombi.Mathlib.Algebra.Order.Module
 import LeanCamCombi.Mathlib.Algebra.Order.Monovary
 import LeanCamCombi.Mathlib.Algebra.Order.Ring.Defs
-import LeanCamCombi.Mathlib.Algebra.Order.SMul
 import LeanCamCombi.Mathlib.Analysis.Convex.Function
 import LeanCamCombi.Mathlib.Analysis.Convex.Mul
 import LeanCamCombi.Mathlib.Analysis.Convex.Strong
@@ -44,10 +42,8 @@ import LeanCamCombi.Mathlib.Logic.Nontrivial.Basic
 import LeanCamCombi.Mathlib.Logic.Relation
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
 import LeanCamCombi.Mathlib.NumberTheory.MaricaSchoenheim
-import LeanCamCombi.Mathlib.Order.Birkhoff
 import LeanCamCombi.Mathlib.Order.BooleanAlgebra
 import LeanCamCombi.Mathlib.Order.Category.BoolAlg
-import LeanCamCombi.Mathlib.Order.Closure
 import LeanCamCombi.Mathlib.Order.Disjoint
 import LeanCamCombi.Mathlib.Order.Hom.Lattice
 import LeanCamCombi.Mathlib.Order.Hom.Set

@@ -98,8 +98,7 @@ lemma compl : IsBernoulliSeq (fun ω ↦ (X ω)ᶜ) (1 - p) μ where
   le_one := tsub_le_self
   iIndepFun := by
     simp only [iIndepFun_iff, mem_compl_iff, MeasurableSpace.comap_not]
-    convert (iIndepFun_iff _ _ _).1 hX.iIndepFun using 6
-    exact MeasurableSpace.comap_not _ -- Why do `rw` and `simp_rw` not work?
+    exact (iIndepFun_iff _ _ _).1 hX.iIndepFun
   map a := by
     have : Measurable Not := fun _ _ ↦ trivial
     refine' (this.aemeasurable.map_map_of_aemeasurable (hX.aemeasurable _)).symm.trans _
@@ -139,8 +138,7 @@ protected lemma union (h : IndepFun X Y μ) :
       add_tsub_assoc_of_le (mul_le_of_le_one_left' $ hX.le_one)]
     · exact (add_le_add_left (mul_le_of_le_one_right' $ hY.le_one) _).trans_eq
         (add_tsub_cancel_of_le hX.le_one)
-  · have : Measurable (HasCompl.compl : Set α → Set α) := fun _ _ ↦ trivial
-    rwa [IndepFun_iff, MeasurableSpace.comap_compl this, MeasurableSpace.comap_compl this,
+  · rwa [IndepFun_iff, MeasurableSpace.comap_compl measurable_compl, MeasurableSpace.comap_compl measurable_compl,
       ←IndepFun_iff]
 
 end IsBernoulliSeq

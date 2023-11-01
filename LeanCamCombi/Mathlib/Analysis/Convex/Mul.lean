@@ -5,7 +5,6 @@ Authors: Yaël Dillies
 -/
 import Mathlib.Analysis.Convex.Function
 import LeanCamCombi.Mathlib.Algebra.Order.Monovary
-import LeanCamCombi.Mathlib.Algebra.Order.SMul
 
 /-!
 # Product of convex functions

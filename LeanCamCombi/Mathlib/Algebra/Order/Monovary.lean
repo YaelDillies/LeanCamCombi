@@ -3,10 +3,10 @@ Copyright (c) 2023 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
+import Mathlib.Algebra.Order.Module
 import Mathlib.Algebra.Order.Monoid.MinMax
 import Mathlib.Order.Monotone.Monovary
 import LeanCamCombi.Mathlib.Algebra.Order.Group.Defs
-import LeanCamCombi.Mathlib.Algebra.Order.Module
 
 /-!
 # Monovarying functions and algebraic operations

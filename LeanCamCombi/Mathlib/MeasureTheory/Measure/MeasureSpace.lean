@@ -31,11 +31,9 @@ lemma mapₗ_ne_zero_iff (hf : Measurable f) : Measure.mapₗ f μ ≠ 0 ↔ μ 
 
 end Measure
 
-instance Prop.measurableSpace : MeasurableSpace Prop := ⊤
-instance Prop.measurableSingletonClass : MeasurableSingletonClass Prop := ⟨fun _ ↦ trivial⟩
+instance Set.instMeasurableSpace {α} : MeasurableSpace (Set α) := by unfold Set; infer_instance
 
-instance {α} : MeasurableSpace (Set α) := ⊤
-instance {α} : MeasurableSingletonClass (Set α) := ⟨fun _ ↦ trivial⟩
+lemma measurable_compl : Measurable (HasCompl.compl : Set α → Set α) := sorry
 
 instance isProbabilityMeasure_neZero {α : Type*} [MeasurableSpace α] {μ : Measure α}
     [IsProbabilityMeasure μ] : NeZero μ :=

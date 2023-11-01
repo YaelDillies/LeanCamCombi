@@ -114,7 +114,7 @@ lemma mem_posSub : a ∈ s -₊ t ↔ ∃ b ∈ s, ∃ c ∈ t, c ≤ b ∧ b - 
 lemma posSub_subset_sub : s -₊ t ⊆ s - t := fun x ↦ by
   rw [mem_posSub, mem_sub]; exact fun ⟨b, hb, c, hc, _, h⟩ ↦ ⟨b, c, hb, hc, h⟩
 
-theorem card_posSub_self_le (hs : (s : Set α).OrdConnected) : (s -₊ s).card ≤ s.card :=
+lemma card_posSub_self_le (hs : (s : Set α).OrdConnected) : (s -₊ s).card ≤ s.card :=
   sorry
 
 end posSub
