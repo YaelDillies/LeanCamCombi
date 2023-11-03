@@ -23,8 +23,8 @@ The formal system which we are using as a target system is Lean's dependent type
 ### Blueprint
 
 Below we explain how to engage with the Lean code directly.
-We also provide a [blueprint](https://yaeldillies.github.io/leancamcombi/)
-including a [dependency graph](https://yaeldillies.github.io/leancamcombi/blueprint/dep_graph.html)
+We also provide a [blueprint](https://yaeldillies.github.io/LeanCamCombi/)
+including a [dependency graph](https://yaeldillies.github.io/LeanCamCombi/blueprint/dep_graph.html)
 of the main ingredients in the repository.
 This blueprint is developed in sync with the Lean formalization,
 and will hence see frequent updates during the length of the project.
