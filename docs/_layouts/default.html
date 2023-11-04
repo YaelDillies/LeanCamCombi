@@ -27,7 +27,7 @@
     <h1 class="project-name">{{ page.title | default: site.title | default: site.github.repository_name }}</h1>
     <h2 class="project-tagline">{{ page.description | default: site.description | default: site.github.project_tagline
       }}</h2>
-    <a href="blueprint" class="btn">Blueprint</a>
+    <!-- <a href="blueprint" class="btn">Blueprint</a> -->
     <a href="doc" class="btn">Documentation</a>
     {% if site.github.is_project_page %}
     <a href="{{ site.github.repository_url }}" class="btn">View on GitHub</a>
@@ -44,8 +44,8 @@
     <footer class="site-footer">
       {% if site.github.is_project_page %}
       <span class="site-footer-owner"><a href="{{ site.github.repository_url }}">{{ site.github.repository_name }}</a>
-        is maintained by a team of contributors from the University of Cambridge. Visit the repository on GitHub for
-        more information.</span>
+        is maintained by Yaël Dillies, Part III student at the University of Cambridge. Visit the repository on GitHub for
+        the full list of contributors.</span>
       {% endif %}
     </footer>
   </main>
