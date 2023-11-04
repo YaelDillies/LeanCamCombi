@@ -17,6 +17,10 @@ The project is not yet finished. The following table details live which files ar
 
 {% include sorries.md %}
 
+## Files to upstream to mathlib
+
+{% include files_to_upstream.md %}
+
 ## The source
 
 The definitions, theorems and proofs in this repository are taken from three Cambridge courses:
