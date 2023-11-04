@@ -23,8 +23,8 @@ jobs:
 
       - name: print minimal files in import tree
         run: |
-          grep -r --files-without-match 'import LeanCamCombi' LeanCamCombi | sort > 1.txt
-          grep -r --files-with-match 'sorry' LeanCamCombi | sort > 2.txt
+          grep -r --exclude-dir=ExampleSheets --files-without-match 'import LeanCamCombi' LeanCamCombi | sort > 1.txt
+          grep -r --exclude-dir=ExampleSheets --files-with-match 'sorry' LeanCamCombi | sort > 2.txt
           comm -23 1.txt 2.txt
           rm 1.txt 2.txt
 
