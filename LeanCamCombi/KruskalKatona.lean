@@ -4,14 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Yaël Dillies
 -/
 import Mathlib.Algebra.GeomSum
+import Mathlib.Combinatorics.SetFamily.Compression.UV
 import Mathlib.Combinatorics.SetFamily.Intersecting
+import Mathlib.Combinatorics.SetFamily.Shadow
 import Mathlib.Data.Finset.Fin
 import Mathlib.Data.Finset.Sort
 import Mathlib.Data.Finset.Sups
-import Mathlib.Combinatorics.SetFamily.Compression.UV
 import LeanCamCombi.Mathlib.Combinatorics.Colex
-import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shadow
-import LeanCamCombi.Mathlib.Order.RelClasses
 
 /-!
 # Kruskal-Katona theorem

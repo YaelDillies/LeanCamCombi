@@ -5,10 +5,10 @@ Authors: Yaël Dillies, Vladimir Ivanov
 -/
 import Mathlib.Algebra.BigOperators.Order
 import Mathlib.Algebra.BigOperators.Ring
+import Mathlib.Data.Finset.Sups
 import Mathlib.Order.Hom.Lattice
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
-import LeanCamCombi.Mathlib.Data.Finset.Sups
 
 /-!
 # The Ahlswede-Zhang identity

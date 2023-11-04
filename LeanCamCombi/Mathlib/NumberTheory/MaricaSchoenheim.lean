@@ -1,5 +1,5 @@
+import Mathlib.Combinatorics.SetFamily.FourFunctions
 import LeanCamCombi.Mathlib.Data.Nat.Squarefree
-import LeanCamCombi.FourFunctions
 
 open Finset
 open scoped BigOperators FinsetFamily
