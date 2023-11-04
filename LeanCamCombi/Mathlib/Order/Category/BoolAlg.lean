@@ -5,7 +5,7 @@ open CategoryTheory OrderDual Opposite Set
 
 universe u
 
-/-- The powerset functor. `set` as a functor. -/
+/-- The powerset functor. `Set` as a contravariant functor. -/
 def typeToBoolAlgOp : Type u ⥤ BoolAlgᵒᵖ where
   obj X := op $ BoolAlg.of (Set X)
   map {X Y} f := Quiver.Hom.op
