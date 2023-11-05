@@ -189,7 +189,7 @@ lemma sdiff_le_sdiff_iff_le (s t : Finset α) :
 
 /-- If `s ⊂ t`, then `s` is less than `t` in the wolex order. Note the converse does not hold, as
 `⊆` is not a linear order. -/
-lemma wolex_lt_of_sSubset (h : s ⊂ t) : toWolex s < toWolex t := by
+lemma wolex_lt_of_ssubset (h : s ⊂ t) : toWolex s < toWolex t := by
   rw [←sdiff_lt_sdiff_iff_lt, sdiff_eq_empty_iff_subset.2 h.1, toWolex_empty, bot_lt_iff_ne_bot, ←
     toWolex_empty, toWolex_ne_toWolex]
   simpa using h.not_subset
