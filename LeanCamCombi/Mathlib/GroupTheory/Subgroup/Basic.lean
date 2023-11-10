@@ -9,4 +9,7 @@ attribute [norm_cast] coe_eq_univ AddSubgroup.coe_eq_univ
 
 @[to_additive (attr := simp)] lemma coeSort_coe (s : Subgroup G) : ↥(s : Set G) = ↥s := rfl
 
+@[to_additive (attr := simp)]
+lemma nonempty (s : Subgroup G) : (s : Set G).Nonempty := ⟨1, one_mem _⟩
+
 end Subgroup

@@ -1,6 +1,14 @@
 import Mathlib.Data.Set.Finite
 
 namespace Set
+variable {α β : Type*} {s : Set α} {t : Set β}
+
+lemma Finite.of_surjOn (f : α → β) (hf : SurjOn f s t) (hs : s.Finite) : t.Finite :=
+  (hs.image _).subset hf
+
+end Set
+
+namespace Set
 variable {α : Type*} [Infinite α] {s : Set α}
 
 lemma Finite.exists_not_mem (hs : s.Finite) : ∃ a, a ∉ s := by

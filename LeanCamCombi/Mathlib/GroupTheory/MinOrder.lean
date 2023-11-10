@@ -63,7 +63,7 @@ lemma le_minOrder' {n : ℕ∞} :
   · obtain ⟨a, has, ha⟩ := s.bot_or_exists_ne_one.resolve_left hs
     exact
       (h ha <| finite_zpowers.1 <| hs'.subset <| zpowers_le.2 has).trans
-        (WithTop.coe_le_coe.2 <| orderOf_le_card hs' has)
+        (WithTop.coe_le_coe.2 <| orderOf_le_card_subgroup hs' has)
   · simpa using h (zpowers_ne_bot.2 ha) ha'.finite_zpowers'
 
 @[to_additive]
