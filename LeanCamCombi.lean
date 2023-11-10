@@ -51,12 +51,10 @@ import LeanCamCombi.Mathlib.Data.Nat.Factors
 import LeanCamCombi.Mathlib.Data.Nat.Lattice
 import LeanCamCombi.Mathlib.Data.Nat.Order.Lemmas
 import LeanCamCombi.Mathlib.Data.Nat.Squarefree
-import LeanCamCombi.Mathlib.Data.Set.Equitable
 import LeanCamCombi.Mathlib.Data.Set.Finite
 import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.Data.Set.Prod
-import LeanCamCombi.Mathlib.Data.Sym.Sym2
 import LeanCamCombi.Mathlib.Data.ZMod.Defs
 import LeanCamCombi.Mathlib.Data.ZMod.Quotient
 import LeanCamCombi.Mathlib.GroupTheory.GroupAction.Defs
@@ -70,7 +68,6 @@ import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Stabilizer
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.ZPowers
 import LeanCamCombi.Mathlib.GroupTheory.Submonoid.Membership
 import LeanCamCombi.Mathlib.GroupTheory.Submonoid.Operations
-import LeanCamCombi.Mathlib.GroupTheory.Torsion
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.Independent
 import LeanCamCombi.Mathlib.Logic.Basic
@@ -80,11 +77,9 @@ import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
 import LeanCamCombi.Mathlib.NumberTheory.MaricaSchoenheim
 import LeanCamCombi.Mathlib.Order.Category.BoolAlg
 import LeanCamCombi.Mathlib.Order.ConditionallyCompleteLattice.Basic
-import LeanCamCombi.Mathlib.Order.Disjoint
 import LeanCamCombi.Mathlib.Order.Hom.Lattice
 import LeanCamCombi.Mathlib.Order.Hom.Set
 import LeanCamCombi.Mathlib.Order.LocallyFinite
-import LeanCamCombi.Mathlib.Order.Partition.Equipartition
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.Sublattice
 import LeanCamCombi.Mathlib.Order.SupClosed

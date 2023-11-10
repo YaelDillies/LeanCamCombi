@@ -3,7 +3,7 @@ Copyright (c) 2023 Mantas Bakšys, Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mantas Bakšys, Yaël Dillies
 -/
-import Mathlib.Combinatorics.Additive.Etransform
+import Mathlib.Combinatorics.Additive.ETransform
 import LeanCamCombi.Mathlib.Algebra.Order.Ring.Canonical
 import LeanCamCombi.Mathlib.Data.Finset.Basic
 import LeanCamCombi.Mathlib.Data.Finset.Card
@@ -158,8 +158,8 @@ lemma le_card_mul_add_card_mulStab_mul (hs : s.Nonempty) (ht : t.Nonempty) :
   refine'
     Nat.find_min' _
       ⟨_, _, mem_inter.2 ⟨hbt' _, _⟩, (hs' _).trans <| subset_union_left _ _,
-        (mulDysonEtransform.subset _ (s' b, t' b)).trans <| hst' _,
-        (mulDysonEtransform.card _ _).trans <| hstcard _, rfl⟩
+        (mulDysonETransform.subset _ (s' b, t' b)).trans <| hst' _,
+        (mulDysonETransform.card _ _).trans <| hstcard _, rfl⟩
   rwa [mem_inv_smul_finset_iff, smul_eq_mul, inv_mul_cancel_right]
 
 /-- **Kneser's multiplication lemma**: A lower bound on the size of `s * t` in terms of its

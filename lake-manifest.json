@@ -4,7 +4,7 @@
  [{"git":
    {"url": "https://github.com/leanprover-community/mathlib4.git",
     "subDir?": null,
-    "rev": "874ff0574c19582d3d275d1c803846549cd53dce",
+    "rev": "9e03d9ced7ba4d2bf95f9ed7da0e3a3ffbc81d9e",
     "opts": {},
     "name": "mathlib",
     "inputRev?": null,
@@ -12,7 +12,7 @@
   {"git":
    {"url": "https://github.com/leanprover/doc-gen4",
     "subDir?": null,
-    "rev": "8bccb92b531248af1b6692d65486e8640c8bcd10",
+    "rev": "e859e2f777521f82050b8f28e0205491a4ead0f5",
     "opts": {},
     "name": "«doc-gen4»",
     "inputRev?": "main",
@@ -20,7 +20,7 @@
   {"git":
    {"url": "https://github.com/leanprover/std4",
     "subDir?": null,
-    "rev": "9bfbd2a12ee9cf2e159a8a6b4d1ef6c149728f66",
+    "rev": "fb07d160aff0e8bdf403a78a5167fc7acf9c8227",
     "opts": {},
     "name": "std",
     "inputRev?": "main",
@@ -28,9 +28,17 @@
   {"git":
    {"url": "https://github.com/leanprover-community/quote4",
     "subDir?": null,
-    "rev": "396201245bf244f9d78e9007a02dd1c388193d27",
+    "rev": "511eb96eca98a7474683b8ae55193a7e7c51bc39",
     "opts": {},
     "name": "Qq",
+    "inputRev?": "master",
+    "inherited": true}},
+  {"git":
+   {"url": "https://github.com/leanprover-community/aesop",
+    "subDir?": null,
+    "rev": "cb87803274405db79ec578fc07c4730c093efb90",
+    "opts": {},
+    "name": "aesop",
     "inputRev?": "master",
     "inherited": true}},
   {"git":
@@ -50,14 +58,6 @@
     "inputRev?": "v0.0.21",
     "inherited": true}},
   {"git":
-   {"url": "https://github.com/leanprover-community/aesop",
-    "subDir?": null,
-    "rev": "cb87803274405db79ec578fc07c4730c093efb90",
-    "opts": {},
-    "name": "aesop",
-    "inputRev?": "master",
-    "inherited": true}},
-  {"git":
    {"url": "https://github.com/xubaiw/CMark.lean",
     "subDir?": null,
     "rev": "0077cbbaa92abf855fc1c0413e158ffd8195ec77",
@@ -68,9 +68,9 @@
   {"git":
    {"url": "https://github.com/fgdorais/lean4-unicode-basic",
     "subDir?": null,
-    "rev": "f09250282cea3ed8c010f430264d9e8e50d7bc32",
+    "rev": "4ecf4f1f98d14d03a9e84fa1c082630fa69df88b",
     "opts": {},
-    "name": "«lean4-unicode-basic»",
+    "name": "UnicodeBasic",
     "inputRev?": "main",
     "inherited": true}},
   {"git":

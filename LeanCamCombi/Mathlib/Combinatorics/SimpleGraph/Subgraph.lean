@@ -12,9 +12,6 @@ namespace SimpleGraph
 
 namespace Subgraph
 
--- TODO: Replace `coe_Adj`
-alias coe_adj := coe_Adj
-
 instance (G : SimpleGraph V) (H : Subgraph G) [DecidableRel H.Adj] : DecidableRel H.coe.Adj :=
   fun a b ↦ ‹DecidableRel H.Adj› _ _
 

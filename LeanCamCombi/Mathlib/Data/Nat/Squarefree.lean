@@ -1,5 +1,4 @@
 import Mathlib.Data.Nat.Squarefree
-import LeanCamCombi.Mathlib.Data.Nat.Factorization.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Order.Lemmas
 
 open Finset

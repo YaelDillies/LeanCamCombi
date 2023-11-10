@@ -5,7 +5,6 @@ Authors: Yaël Dillies
 -/
 import Mathlib.Algebra.BigOperators.Basic
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
-import LeanCamCombi.Mathlib.Data.Sym.Sym2
 
 /-!
 # Containment of graphs
@@ -208,13 +207,8 @@ noncomputable def labelledCopyCount (G : SimpleGraph α) (H : SimpleGraph β) : 
 
 @[simp] lemma labelledCopyCount_of_isEmpty [IsEmpty α] (G : SimpleGraph α) (H : SimpleGraph β) :
     G.labelledCopyCount H = 1 := by
-  classical
-  have : Unique {f : G →g H // Injective f} :=
-    { default := ⟨default, isEmptyElim⟩
-      uniq := fun _ ↦ Subsingleton.elim _ _ }
-  rw [labelledCopyCount]
-  sorry
-  -- exact @Fintype.card_unique _ (this) _
+  convert Fintype.card_unique
+  exact { default := ⟨default, isEmptyElim⟩, uniq := fun _ ↦ Subsingleton.elim _ _ }
 
 @[simp] lemma labelledCopyCount_eq_zero : G.labelledCopyCount H = 0 ↔ ¬ G ⊑ H := by
   simp [labelledCopyCount, IsContained, Fintype.card_eq_zero_iff]
@@ -225,9 +219,9 @@ noncomputable def labelledCopyCount (G : SimpleGraph α) (H : SimpleGraph β) : 
 /-- There's more labelled copies of `H` of-`G` than unlabelled ones. -/
 lemma copyCount_le_labelledCopyCount : G.copyCount H ≤ G.labelledCopyCount H := by
   rw [copyCount, ←Fintype.card_coe]
-  refine' Fintype.card_le_of_injective (fun H' ↦
+  refine Fintype.card_le_of_injective (fun H' ↦
     ⟨H'.val.hom.comp (mem_filter.1 H'.2).2.some.toHom,
-      Subtype.coe_injective.comp (mem_filter.1 H'.2).2.some.injective⟩) _
+      Subtype.coe_injective.comp (mem_filter.1 H'.2).2.some.injective⟩) ?_
   sorry
 
 end LabelledCopyCount

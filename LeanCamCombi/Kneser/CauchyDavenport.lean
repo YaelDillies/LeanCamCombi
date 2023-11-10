@@ -3,7 +3,7 @@ Copyright (c) 2023 Yaël Dillies, Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Bhavik Mehta
 -/
-import Mathlib.Combinatorics.Additive.Etransform
+import Mathlib.Combinatorics.Additive.ETransform
 import LeanCamCombi.Mathlib.Algebra.Group.Defs
 import LeanCamCombi.Mathlib.GroupTheory.MinOrder
 import LeanCamCombi.Kneser.Mathlib
@@ -138,8 +138,8 @@ lemma Finset.min_le_card_mul (hs : s.Nonempty) (ht : t.Nonempty) :
       ⟨inter_subset_left _ _, fun h =>
         hsg <|
           eq_of_superset_of_card_ge (h.trans <| inter_subset_right _ _) (card_smul_finset _ _).le⟩
-  replace aux1 := card_mono (mulEtransformLeft.fst_mul_snd_subset g (s, t))
-  replace aux2 := card_mono (mulEtransformRight.fst_mul_snd_subset g (s, t))
+  replace aux1 := card_mono (mulETransformLeft.fst_mul_snd_subset g (s, t))
+  replace aux2 := card_mono (mulETransformRight.fst_mul_snd_subset g (s, t))
   -- If the left translate of `t` by `g⁻¹` is disjoint from `t`, then we're easily done.
   obtain hgt | hgt := disjoint_or_nonempty_inter t (g⁻¹ • t)
   · rw [← card_smul_finset g⁻¹ t]
@@ -149,7 +149,7 @@ lemma Finset.min_le_card_mul (hs : s.Nonempty) (ht : t.Nonempty) :
   -- Else, we're done by induction on either `(s', t')` or `(s'', t'')` depending on whether
   -- `|s| + |t| ≤ |s'| + |t'|` or `|s| + |t| < |s''| + |t''|`. One of those two inequalities must
   -- hold since `2 * (|s| + |t|) = |s'| + |t'| + |s''| + |t''|`.
-  obtain hstg | hstg := le_or_lt_of_add_le_add (MulEtransform.card g (s, t)).ge
+  obtain hstg | hstg := le_or_lt_of_add_le_add (MulETransform.card g (s, t)).ge
   · exact
       (ih _ _ hgs (hgt.mono inter_subset_union) <| devosMulRel_of_le_of_le aux1 hstg hsg).imp
         (WithTop.coe_le_coe.2 aux1).trans' fun h => hstg.trans <| h.trans <| add_le_add_right aux1 _
