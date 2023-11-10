@@ -23,7 +23,6 @@ import LeanCamCombi.Mathlib.Algebra.Order.Group.Defs
 import LeanCamCombi.Mathlib.Algebra.Order.Monovary
 import LeanCamCombi.Mathlib.Algebra.Order.Ring.Canonical
 import LeanCamCombi.Mathlib.Algebra.Order.Ring.Defs
-import LeanCamCombi.Mathlib.Analysis.Convex.Basic
 import LeanCamCombi.Mathlib.Analysis.Convex.Combination
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
@@ -80,7 +79,6 @@ import LeanCamCombi.Mathlib.Order.ConditionallyCompleteLattice.Basic
 import LeanCamCombi.Mathlib.Order.Hom.Lattice
 import LeanCamCombi.Mathlib.Order.Hom.Set
 import LeanCamCombi.Mathlib.Order.LocallyFinite
-import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.Sublattice
 import LeanCamCombi.Mathlib.Order.SupClosed
 import LeanCamCombi.Mathlib.Probability.Independence.Basic

@@ -1,5 +1,5 @@
 import Mathlib.Combinatorics.SimpleGraph.Basic
-import LeanCamCombi.Mathlib.Order.Partition.Finpartition
+import Mathlib.Order.Partition.Finpartition
 
 open Finset
 
@@ -8,8 +8,7 @@ variable {α : Type*} [Fintype α] [DecidableEq α] {P : Finpartition (univ : Fi
   {s t : Finset α} {a b : α}
 
 @[simps]
-def multipartiteGraph (P : Finpartition (univ : Finset α)) : SimpleGraph α
-    where
+def multipartiteGraph (P : Finpartition (univ : Finset α)) : SimpleGraph α where
   Adj a b := ∀ ⦃s⦄, s ∈ P.parts → a ∈ s → b ∉ s
   symm a b hab := by simpa only [imp_not_comm] using hab
   loopless a ha := by obtain ⟨s, hs, has⟩ := P.exists_mem (mem_univ a); exact ha hs has has
