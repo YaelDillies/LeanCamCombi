@@ -54,13 +54,11 @@ import LeanCamCombi.Mathlib.Data.Set.Finite
 import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.Data.Set.Prod
-import LeanCamCombi.Mathlib.Data.ZMod.Defs
 import LeanCamCombi.Mathlib.Data.ZMod.Quotient
 import LeanCamCombi.Mathlib.GroupTheory.GroupAction.Defs
 import LeanCamCombi.Mathlib.GroupTheory.MinOrder
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
-import LeanCamCombi.Mathlib.GroupTheory.SpecificGroups.Cyclic
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Actions
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Basic
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Stabilizer

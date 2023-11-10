@@ -222,6 +222,7 @@ lemma copyCount_le_labelledCopyCount : G.copyCount H ≤ G.labelledCopyCount H :
   refine Fintype.card_le_of_injective (fun H' ↦
     ⟨H'.val.hom.comp (mem_filter.1 H'.2).2.some.toHom,
       Subtype.coe_injective.comp (mem_filter.1 H'.2).2.some.injective⟩) ?_
+    
   sorry
 
 end LabelledCopyCount
