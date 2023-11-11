@@ -1,9 +1,6 @@
 import Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.Data.Set.Finite
-import LeanCamCombi.Mathlib.SetTheory.Cardinal.Finite
 
---TODO: Turn `isOfFinOrder_iff_coe` around. Rename to `Subgroup.isOfFinOrder_coe`
---TODO: Turn `isOfFinOrder_iff_coe` around. Rename to `Subgroup.isOfFinOrder_coe`
 open Function Set Subgroup Submonoid
 
 variable {α : Type*}
@@ -11,7 +8,6 @@ variable {α : Type*}
 section Monoid
 variable [Monoid α] {a : α}
 
--- TODO: Rename `orderOf_pos` to `orderOf_pos_of_finite`, or even delete it
 -- TODO: Replace `pow_eq_mod_orderOf`
 
 @[to_additive (attr := simp)]

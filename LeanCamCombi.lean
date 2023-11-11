@@ -47,7 +47,6 @@ import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.Fintype.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Factorization.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Factors
-import LeanCamCombi.Mathlib.Data.Nat.Lattice
 import LeanCamCombi.Mathlib.Data.Nat.Order.Lemmas
 import LeanCamCombi.Mathlib.Data.Nat.Squarefree
 import LeanCamCombi.Mathlib.Data.Set.Finite
@@ -62,9 +61,6 @@ import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Actions
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Basic
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Stabilizer
-import LeanCamCombi.Mathlib.GroupTheory.Subgroup.ZPowers
-import LeanCamCombi.Mathlib.GroupTheory.Submonoid.Membership
-import LeanCamCombi.Mathlib.GroupTheory.Submonoid.Operations
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.Independent
 import LeanCamCombi.Mathlib.Logic.Basic
@@ -81,7 +77,6 @@ import LeanCamCombi.Mathlib.Order.Sublattice
 import LeanCamCombi.Mathlib.Order.SupClosed
 import LeanCamCombi.Mathlib.Probability.Independence.Basic
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
-import LeanCamCombi.Mathlib.SetTheory.Cardinal.Basic
 import LeanCamCombi.Mathlib.SetTheory.Cardinal.Finite
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.SimplicialComplex.Basic

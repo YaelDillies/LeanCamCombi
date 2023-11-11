@@ -296,7 +296,7 @@ lemma card_mul_card_image_coe' (s t : Finset α) :
     QuotientGroup.preimageMkEquivSubgroupProdSet (stabilizer α t)
       ((↑) '' (s : Set α) : Set (α ⧸ stabilizer α t))
   have that : ↥(stabilizer α t) = ↥t.mulStab := by
-    rw [← Subgroup.coeSort_coe, ← coe_mulStab ht, Finset.coe_sort_coe]
+    rw [←SetLike.coe_sort_coe, ← coe_mulStab ht, Finset.coe_sort_coe]
   have temp := this.trans (Equiv.prodCongr (Equiv.cast that) (Equiv.refl _))
   rw [to_name_mul s t ht] at temp
   replace temp := Fintype.card_congr temp
@@ -320,7 +320,7 @@ lemma card_mul_card_eq_mulStab_card_mul_coe (s t : Finset α) :
     QuotientGroup.preimageMkEquivSubgroupProdSet (stabilizer α (s * t))
       ((↑) '' ((s : Set α) * (t : Set α) : Set (α ⧸ stabilizer α (s * t))))
   have that : ↥(stabilizer α (s * t)) = ↥(s * t).mulStab := by
-    rw [← Subgroup.coeSort_coe, ← coe_mulStab (hs.mul ht), Finset.coe_sort_coe]
+    rw [←SetLike.coe_sort_coe, ← coe_mulStab (hs.mul ht), Finset.coe_sort_coe]
   have temp := this.trans (Equiv.prodCongr (Equiv.cast that) (Equiv.refl _))
   sorry
   -- rw [to_name_mul_also s t] at temp
@@ -355,7 +355,7 @@ lemma card_mul_card_image_coe (s t : Finset α) :
             ((t : Set α).image (↑) : Set (α ⧸ stabilizer α (s * t))))) =
       ((s * t).mulStab ×
         ↥(((s : Set α).image (↑) : Set (α ⧸ stabilizer α (s * t))) *
-            ((t : Set α).image (↑) : Set (α ⧸ stabilizer α (s * t))))) := by rw [← Subgroup.coeSort_coe, ← coe_mulStab (hs.mul ht), Finset.coe_sort_coe]
+            ((t : Set α).image (↑) : Set (α ⧸ stabilizer α (s * t))))) := by rw [←SetLike.coe_sort_coe, ← coe_mulStab (hs.mul ht), Finset.coe_sort_coe]
   have temp := this.trans (Equiv.cast that)
   replace temp := Fintype.card_congr temp
   simp_rw [← Finset.coe_mul s t] at temp
