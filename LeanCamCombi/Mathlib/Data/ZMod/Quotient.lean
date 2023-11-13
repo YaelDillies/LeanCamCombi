@@ -1,5 +1,5 @@
 import Mathlib.Data.ZMod.Quotient
-import LeanCamCombi.Mathlib.SetTheory.Cardinal.Finite
+import Mathlib.SetTheory.Cardinal.Finite
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Basic
 
 open Function Set Subgroup Submonoid
@@ -19,7 +19,7 @@ variable {a}
 
 @[to_additive (attr := simp) finite_zmultiples]
 lemma finite_zpowers : (zpowers a : Set α).Finite ↔ IsOfFinOrder a := by
-  simp only [← orderOf_pos_iff, ← Nat.card_zpowers, Nat.card_pos, ← SetLike.coe_sort_coe,
+  simp only [← orderOf_pos_iff, ← Nat.card_zpowers, Nat.card_pos_iff, ← SetLike.coe_sort_coe,
     nonempty_coe_sort, Nat.card_pos_iff, Set.finite_coe_iff, Subgroup.nonempty, true_and]
 
 @[to_additive (attr := simp) infinite_zmultiples]

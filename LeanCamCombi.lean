@@ -56,7 +56,6 @@ import LeanCamCombi.Mathlib.Data.Set.Prod
 import LeanCamCombi.Mathlib.Data.ZMod.Quotient
 import LeanCamCombi.Mathlib.GroupTheory.GroupAction.Defs
 import LeanCamCombi.Mathlib.GroupTheory.MinOrder
-import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Actions
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Basic
@@ -77,7 +76,6 @@ import LeanCamCombi.Mathlib.Order.Sublattice
 import LeanCamCombi.Mathlib.Order.SupClosed
 import LeanCamCombi.Mathlib.Probability.Independence.Basic
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
-import LeanCamCombi.Mathlib.SetTheory.Cardinal.Finite
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.SimplicialComplex.Basic
 import LeanCamCombi.SimplicialComplex.Finite
@@ -85,4 +83,5 @@ import LeanCamCombi.SimplicialComplex.Pure
 import LeanCamCombi.SimplicialComplex.Simplex
 import LeanCamCombi.SimplicialComplex.Skeleton
 import LeanCamCombi.SimplicialComplex.Subdivision
+import LeanCamCombi.SylvesterChvatal
 import LeanCamCombi.VanDenBergKesten

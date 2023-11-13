@@ -6,7 +6,7 @@ Authors: Mantas Bakšys, Yaël Dillies
 import Mathlib.Algebra.CharP.Basic
 import Mathlib.Data.Finset.Pointwise
 import Mathlib.GroupTheory.Subgroup.Basic
-import LeanCamCombi.Mathlib.SetTheory.Cardinal.Finite
+import Mathlib.SetTheory.Cardinal.Finite
 
 /-!
 # For mathlib
