@@ -29,7 +29,6 @@ import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
 import LeanCamCombi.Mathlib.Analysis.Convex.Mul
 import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
-import LeanCamCombi.Mathlib.Combinatorics.Additive.MulETransform
 import LeanCamCombi.Mathlib.Combinatorics.Colex
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.AhlswedeZhang
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shatter
@@ -82,4 +81,5 @@ import LeanCamCombi.SimplicialComplex.Pure
 import LeanCamCombi.SimplicialComplex.Simplex
 import LeanCamCombi.SimplicialComplex.Skeleton
 import LeanCamCombi.SimplicialComplex.Subdivision
+import LeanCamCombi.SylvesterChvatal
 import LeanCamCombi.VanDenBergKesten
