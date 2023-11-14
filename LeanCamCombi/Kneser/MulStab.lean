@@ -3,8 +3,7 @@ Copyright (c) 2023 Mantas Bakšys, Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mantas Bakšys, Yaël Dillies
 -/
-import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Actions
-import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Basic
+import Mathlib.GroupTheory.Subgroup.Actions
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Stabilizer
 import LeanCamCombi.Kneser.Mathlib
 

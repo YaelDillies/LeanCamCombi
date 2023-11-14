@@ -1,6 +1,6 @@
 import Mathlib.Data.ZMod.Quotient
+import Mathlib.GroupTheory.Subgroup.Basic
 import Mathlib.SetTheory.Cardinal.Finite
-import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Basic
 
 open Function Set Subgroup Submonoid
 

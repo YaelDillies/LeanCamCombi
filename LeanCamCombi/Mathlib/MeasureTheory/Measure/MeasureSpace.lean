@@ -35,10 +35,6 @@ instance Set.instMeasurableSpace {α} : MeasurableSpace (Set α) := by unfold Se
 
 lemma measurable_compl : Measurable (HasCompl.compl : Set α → Set α) := sorry
 
-instance isProbabilityMeasure_neZero {α : Type*} [MeasurableSpace α] {μ : Measure α}
-    [IsProbabilityMeasure μ] : NeZero μ :=
-  ⟨IsProbabilityMeasure.ne_zero μ⟩
-
 end MeasureTheory
 
 namespace MeasurableSpace
@@ -75,9 +71,5 @@ nonrec lemma NullMeasurableSet.measure_compl (h : NullMeasurableSet s μ) (hs : 
   rw [←measure_congr h.toMeasurable_ae_eq, ←measure_compl (measurableSet_toMeasurable _ _)]
   · exact measure_congr h.toMeasurable_ae_eq.symm.compl
   · rwa [measure_congr h.toMeasurable_ae_eq]
-
-lemma NullMeasurableSet.prob_compl_eq_one_sub [IsProbabilityMeasure μ] {s : Set α}
-    (h : NullMeasurableSet s μ) : μ (sᶜ) = 1 - μ s := by
-  rw [h.measure_compl (measure_ne_top _ _), measure_univ]
 
 end MeasureTheory

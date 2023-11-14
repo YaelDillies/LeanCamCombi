@@ -4,7 +4,7 @@
  [{"git":
    {"url": "https://github.com/leanprover-community/mathlib4.git",
     "subDir?": null,
-    "rev": "1ec654bb08d3a29684db83e30f09c5a02fcfd139",
+    "rev": "b6a9eb9c91b5126e59c157f254704af8f3b5cf1c",
     "opts": {},
     "name": "mathlib",
     "inputRev?": null,
@@ -12,7 +12,7 @@
   {"git":
    {"url": "https://github.com/leanprover/doc-gen4",
     "subDir?": null,
-    "rev": "162de4ad98c7c79bc1fc0b1110816247679b3ce0",
+    "rev": "96147eaa0c066a95210fe5518c987e77be034b9f",
     "opts": {},
     "name": "«doc-gen4»",
     "inputRev?": "main",
@@ -52,10 +52,10 @@
   {"git":
    {"url": "https://github.com/leanprover-community/ProofWidgets4",
     "subDir?": null,
-    "rev": "f1a5c7808b001305ba07d8626f45ee054282f589",
+    "rev": "c3b9f0d4ebedc43635d3f7e764e277b1010844b7",
     "opts": {},
     "name": "proofwidgets",
-    "inputRev?": "v0.0.21",
+    "inputRev?": "v0.0.22",
     "inherited": true}},
   {"git":
    {"url": "https://github.com/xubaiw/CMark.lean",

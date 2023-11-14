@@ -57,8 +57,6 @@ import LeanCamCombi.Mathlib.Data.ZMod.Quotient
 import LeanCamCombi.Mathlib.GroupTheory.GroupAction.Defs
 import LeanCamCombi.Mathlib.GroupTheory.MinOrder
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
-import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Actions
-import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Basic
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Stabilizer
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.Independent
@@ -66,6 +64,7 @@ import LeanCamCombi.Mathlib.Logic.Basic
 import LeanCamCombi.Mathlib.Logic.Nontrivial.Basic
 import LeanCamCombi.Mathlib.Logic.Relation
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
+import LeanCamCombi.Mathlib.MeasureTheory.Measure.Typeclasses
 import LeanCamCombi.Mathlib.NumberTheory.MaricaSchoenheim
 import LeanCamCombi.Mathlib.Order.Category.BoolAlg
 import LeanCamCombi.Mathlib.Order.ConditionallyCompleteLattice.Basic
@@ -83,5 +82,4 @@ import LeanCamCombi.SimplicialComplex.Pure
 import LeanCamCombi.SimplicialComplex.Simplex
 import LeanCamCombi.SimplicialComplex.Skeleton
 import LeanCamCombi.SimplicialComplex.Subdivision
-import LeanCamCombi.SylvesterChvatal
 import LeanCamCombi.VanDenBergKesten
