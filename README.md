@@ -53,8 +53,8 @@ The following topics are covered in LeanCamCombi and could be upstreamed to math
 * The Kruskal-Katona theorem and the Erdős-Ko-Rado theorem
 <!-- * The Erdős-Ginzburg-Ziv theorem -->
 * Kneser's addition theorem and the Cauchy-Davenport theorem
+* The Sylvester-Chvatal theorem
 * The Ahlswede-Zhang inequality
-* Shatterings of sets, the Sauer-Shelah lemma and the Vapnik-Chervonenkis dimension
 * The Marica-Schönheim proof of the squarefree special case of Graham's conjecture
 * Containment of graphs
 * Incidence algebras
@@ -65,6 +65,7 @@ The following topics have been upstreamed to mathlib and no longer live in LeanC
 
 * The four functions theorem and related discrete correlation inequalities: FKG inequality, Holley inequality, Daykin inequality, Marica-Schönheim inequality
 * The Birkhoff representation theorem, non-categorical version
+* Shatterings of sets, the Sauer-Shelah lemma and the Vapnik-Chervonenkis dimension
 * Sublattices
 * Strongly convex functions
 
