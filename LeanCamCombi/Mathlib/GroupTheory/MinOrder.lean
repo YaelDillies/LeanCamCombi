@@ -3,8 +3,6 @@ Copyright (c) 2023 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
-import Mathlib.Data.Nat.Prime
-import Mathlib.Data.ZMod.Basic
 import Mathlib.GroupTheory.Torsion
 import LeanCamCombi.Mathlib.Data.ZMod.Quotient
 
@@ -63,8 +61,8 @@ lemma le_minOrder' {n : ℕ∞} :
   · obtain ⟨a, has, ha⟩ := s.bot_or_exists_ne_one.resolve_left hs
     exact
       (h ha <| finite_zpowers.1 <| hs'.subset <| zpowers_le.2 has).trans
-        (WithTop.coe_le_coe.2 <| orderOf_le_card_subgroup hs' has)
-  · simpa using h (zpowers_ne_bot.2 ha) ha'.finite_zpowers'
+        (WithTop.coe_le_coe.2 <| s.orderOf_le_card hs' has)
+  · simpa using h (zpowers_ne_bot.2 ha) ha'.finite_zpowers
 
 @[to_additive]
 lemma minOrder_le_nat_card (hs : s ≠ ⊥) (hs' : (s : Set α).Finite) : minOrder α ≤ Nat.card s :=
@@ -92,7 +90,7 @@ protected lemma minOrder {n : ℕ} (hn : n ≠ 0) (hn₁ : n ≠ 1) : minOrder (
   refine'
     ((minOrder_le_nat_card (zmultiples_eq_bot.not.2 this) <| toFinite _).trans _).antisymm
       (le_minOrder'.2 fun s hs _ => _)
-  · rw [card_eq_fintype_card, ← addOrderOf_eq_card_zmultiples, ZMod.addOrderOf_coe _ hn,
+  · rw [card_eq_fintype_card, Fintype.card_zmultiples, ZMod.addOrderOf_coe _ hn,
       gcd_eq_right (div_dvd_of_dvd n.minFac_dvd), Nat.div_div_self n.minFac_dvd hn]
   · rw [card_eq_fintype_card]
     haveI : Nontrivial s := s.bot_or_nontrivial.resolve_left hs
