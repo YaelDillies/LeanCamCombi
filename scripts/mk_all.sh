@@ -6,8 +6,8 @@
 #   ./scripts/mk_all.sh data/real
 #   ./scripts/mk_all.sh ../archive
 #
-# Makes a mathlib/src/$directory/all.lean importing all files inside $directory.
-# If $directory is omitted, creates `mathlib/src/all.lean`.
+# Makes a $directory/../$directory.lean file importing all files inside $directory.
+# If $directory is omitted, creates `LeanCamCombi.lean`.
 
 cd "$( dirname "${BASH_SOURCE[0]}" )"/../LeanCamCombi
 if [[ $# = 1 ]]; then
