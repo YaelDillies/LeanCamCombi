@@ -31,7 +31,7 @@ The project contains
 * **Prerequisites** to be upstreamed to mathlib: Lemmas that belong in existing mathlib files and background theories. Those are located in the `Mathlib` subfolder.
 * **Formal translations of example sheets**: Every course in Cambridge comes with 3 or 4 "example sheets", which are lists of questions/exercises/problems for the students to solve. Those are located in the `ExampleSheets` subfolder.
 * **Theory developments**: Formalisation of the courses per se. The mathlib philosophy of proving the most general result accessible applies here as well. This means that not all proofs follow the lecture notes, and might instead derive a result from the lectures from a more general theorem. Those make up the other subfolders and standalone lemmas.
-* **Archived results**: It sometimes happens in mathlib that a long argument gets replaced by a shorter one, with a different proof. When the long argument was proved in a lecture, we salvage it to `LeanCamCombi` for conservation purposes. There is currently no archived result.
+* **Archived results**: It sometimes happens in mathlib that a long argument gets replaced by a shorter one, with a different proof. When the long argument was proved in a lecture, we salvage it to `LeanCamCombi` for conservation purposes.
 
 ### Content under development
 
@@ -52,12 +52,15 @@ The following topics are covered in LeanCamCombi and could be upstreamed to math
 
 * The Kruskal-Katona theorem and the Erdős-Ko-Rado theorem
 <!-- * The Erdős-Ginzburg-Ziv theorem -->
-* Kneser's addition theorem and the Cauchy-Davenport theorem
+* Kneser's addition theorem
 * The Sylvester-Chvatal theorem
 * The Ahlswede-Zhang inequality
 * The Marica-Schönheim proof of the squarefree special case of Graham's conjecture
 * Containment of graphs
 * Incidence algebras
+
+The following topics are archived because they are already covered by mathlib, but nevertheless display interesting proofs:
+* The Cauchy-Davenport theorem for `ℤ/pℤ` as a corollary of Kneser's theorem.
 
 ### Past content
 
@@ -65,6 +68,7 @@ The following topics have been upstreamed to mathlib and no longer live in LeanC
 
 * The four functions theorem and related discrete correlation inequalities: FKG inequality, Holley inequality, Daykin inequality, Marica-Schönheim inequality
 * The Birkhoff representation theorem, non-categorical version
+* The Cauchy-Davenport theorem for general groups, and also for linearly ordered cancellative semigroup
 * Shatterings of sets, the Sauer-Shelah lemma and the Vapnik-Chervonenkis dimension
 * Sublattices
 * Strongly convex functions

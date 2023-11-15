@@ -63,7 +63,7 @@ The following topics are covered in LeanCamCombi and could be upstreamed to math
 
 * The Kruskal-Katona theorem and the Erdős-Ko-Rado theorem
 <!-- * The Erdős-Ginzburg-Ziv theorem -->
-* Kneser's addition theorem and the Cauchy-Davenport theorem
+* Kneser's addition theorem
 * The Sylvester-Chvatal theorem
 * The Ahlswede-Zhang inequality
 * The Marica-Schönheim proof of the squarefree special case of Graham's conjecture
@@ -74,12 +74,16 @@ Here is the list of files that do not depend on any other LeanCamCombi file, ind
 
 {% include files_to_upstream.md %}
 
+The following topics are archived because they are already covered by mathlib, but nevertheless display interesting proofs:
+* The Cauchy-Davenport theorem for `ℤ/pℤ` as a corollary of Kneser's theorem.
+
 ### Past content
 
 The following topics have been upstreamed to mathlib and no longer live in LeanCamCombi.
 
 * The four functions theorem and related discrete correlation inequalities: FKG inequality, Holley inequality, Daykin inequality, Marica-Schönheim inequality
 * The Birkhoff representation theorem, non-categorical version
+* The Cauchy-Davenport theorem for general groups, and also for linearly ordered cancellative semigroup
 * Shatterings of sets, the Sauer-Shelah lemma and the Vapnik-Chervonenkis dimension
 * Sublattices
 * Strongly convex functions

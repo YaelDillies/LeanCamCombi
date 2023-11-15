@@ -1,3 +1,4 @@
+import LeanCamCombi.Archive.CauchyDavenportFromKneser
 import LeanCamCombi.BernoulliSeq
 import LeanCamCombi.DiscreteDeriv
 import LeanCamCombi.ErdosRenyi.Basic
@@ -7,8 +8,6 @@ import LeanCamCombi.ErdosRenyi.GiantComponent
 import LeanCamCombi.ExampleSheets.Graph.ES1
 import LeanCamCombi.ExampleSheets.Graph.ES2
 import LeanCamCombi.Incidence
-import LeanCamCombi.Kneser.CauchyDavenport
-import LeanCamCombi.Kneser.CauchyDavenportFromKneser
 import LeanCamCombi.Kneser.Impact
 import LeanCamCombi.Kneser.Kneser
 import LeanCamCombi.Kneser.KneserRuzsa
