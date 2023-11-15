@@ -315,9 +315,8 @@ lemma card_mul_card_eq_mulStab_card_mul_coe (s t : Finset α) :
   · simp
   obtain rfl | ht := t.eq_empty_or_nonempty
   · simp
-  have :=
-    QuotientGroup.preimageMkEquivSubgroupProdSet (stabilizer α (s * t))
-      ((↑) '' ((s : Set α) * (t : Set α) : Set (α ⧸ stabilizer α (s * t))))
+  have := QuotientGroup.preimageMkEquivSubgroupProdSet (stabilizer α (s * t)) $
+    (↑) '' (s * t : Set α)
   have that : ↥(stabilizer α (s * t)) = ↥(s * t).mulStab := by
     rw [←SetLike.coe_sort_coe, ← coe_mulStab (hs.mul ht), Finset.coe_sort_coe]
   have temp := this.trans (Equiv.prodCongr (Equiv.cast that) (Equiv.refl _))
