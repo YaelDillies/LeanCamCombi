@@ -55,7 +55,6 @@ The following topics are covered in LeanCamCombi and could be upstreamed to math
 * Kneser's addition theorem
 * The Sylvester-Chvatal theorem
 * The Ahlswede-Zhang inequality
-* The Marica-Schönheim proof of the squarefree special case of Graham's conjecture
 * Containment of graphs
 * Incidence algebras
 
@@ -72,6 +71,7 @@ The following topics have been upstreamed to mathlib and no longer live in LeanC
 * Shatterings of sets, the Sauer-Shelah lemma and the Vapnik-Chervonenkis dimension
 * Sublattices
 * Strongly convex functions
+* The Marica-Schönheim proof of the squarefree special case of Graham's conjecture
 
 ## Interacting with the project
 

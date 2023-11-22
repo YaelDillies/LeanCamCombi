@@ -70,9 +70,8 @@ lemma simplex_combiInteriors_cover : convexHull 𝕜 ↑s = ⋃ (t) (_ : t ⊆ s
   apply Subset.antisymm _ _
   · refine s.strongInductionOn ?_
     rintro s ih x hx
-    by_cases x ∈ combiFrontier 𝕜 s
-    · rw [combiFrontier] at h
-      simp only [exists_prop, Set.mem_iUnion] at h
+    by_cases h : x ∈ combiFrontier 𝕜 s
+    · rw [mem_combiFrontier_iff] at h
       obtain ⟨t, st, ht⟩ := h
       specialize ih _ st ht
       simp only [exists_prop, Set.mem_iUnion] at ih ⊢

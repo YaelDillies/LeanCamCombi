@@ -1,10 +1,10 @@
-import Mathlib.Data.Fintype.Basic
-import Mathlib.Topology.MetricSpace.Basic
-import Mathlib.Order.Circular
+import Mathlib.Analysis.Convex.Between
 import Mathlib.Combinatorics.SimpleGraph.Clique
+import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Set.Card
 import Mathlib.LinearAlgebra.AffineSpace.AffineSubspace
-import Mathlib.Analysis.Convex.Between
+import Mathlib.Order.Circular
+import Mathlib.Topology.MetricSpace.Basic
 
 universe u
 
@@ -132,7 +132,7 @@ lemma Set.IsLine.generateLine_subset {S L : Set V} (hL₀ : S ⊆ L) (hL : L.IsL
 
 attribute [local simp] Set.subset_def
 
-variable [Finite V] [Nontrivial V]
+variable [Finite V] [Nontrivial V] {x y z : V}
 
 lemma exists_isLine (a b : V) : ∃ L : Set V, L.IsLine ∧ {a, b} ⊆ L := by
   rcases ne_or_eq a b with h | rfl
@@ -143,8 +143,10 @@ lemma exists_isLine (a b : V) : ∃ L : Set V, L.IsLine ∧ {a, b} ⊆ L := by
 def NotCollinear (x y z : V) : Prop :=
   x ≠ y ∧ x ≠ z ∧ y ≠ z ∧ ∀ l : Set V, l.IsLine → ¬ {x, y, z} ⊆ l
 
-lemma NotCollinear.mk {x y z : V} (hl : ∀ l : Set V, l.IsLine → ¬ {x, y, z} ⊆ l) :
-    NotCollinear x y z := by
+lemma notCollinear_iff :
+   NotCollinear x y z ↔ x ≠ y ∧ x ≠ z ∧ y ≠ z ∧ ∀ l : Set V, l.IsLine → ¬ {x, y, z} ⊆ l := Iff.rfl
+
+lemma NotCollinear.mk (hl : ∀ l : Set V, l.IsLine → ¬ {x, y, z} ⊆ l) : NotCollinear x y z := by
   refine ⟨?_, ?_, ?_, hl⟩
   · rintro rfl
     obtain ⟨L, hL, hL'⟩ := exists_isLine x z
@@ -235,8 +237,8 @@ lemma one_implies_two (h : ∃ x y z : V, NotCollinear x y z) :
   replace : dist a d + dist d c + dist c a < dist a b + dist b c + dist c a
   · linarith only [this, adb.2.2.2]
   replace : ¬ NotCollinear a d c := fun h => (h₂ a d c h).not_lt this
-  simp only [NotCollinear, adb.ne12, hcd.symm, h₁.2.1, true_and, not_and, forall_true_left, ne_eq,
-    not_forall, not_not, exists_prop] at this
+  simp only [notCollinear_iff, adb.ne12, hcd.symm, h₁.2.1, true_and, not_and, forall_true_left,
+    ne_eq, not_forall, not_not, exists_prop, not_false_eq_true] at this
   obtain ⟨L, hL, hL'⟩ := this
   simp only [Set.subset_def, Set.mem_singleton_iff, Set.mem_insert_iff, forall_eq_or_imp,
     forall_eq] at hL'
@@ -246,8 +248,8 @@ lemma one_implies_two (h : ∃ x y z : V, NotCollinear x y z) :
 
 def Delta (u v w : V) : ℝ := dist u v + dist v w - dist u w
 
-lemma Delta_comm {u v w : V} : Delta u v w = Delta w v u :=
-  by simp only [Delta, add_comm, dist_comm]
+lemma Delta_comm {u v w : V} : Delta u v w = Delta w v u := by
+  simp only [Delta, add_comm, dist_comm]
 
 lemma Delta_pos_of {u v w : V} (h : NotCollinear u v w) : 0 < Delta u v w := by
   rw [Delta]
@@ -384,11 +386,11 @@ lemma abd_special {a b c d : V} (habc : SimpleTriangle a b c) (hacd : sbtw a c d
     [a, b, d].Special a b d := by
   simp only [List.Special, ne_eq, List.getLast_cons, List.getLast_singleton', and_true, hbd,
     or_true, true_and, List.nodup_cons, List.nodup_nil, List.not_mem_nil, List.mem_cons,
-    List.mem_singleton, or_false, hbd', hacd.ne13, NotCollinear, habc.1.ne, Set.subset_def,
+    List.mem_singleton, or_false, hbd', hacd.ne13, notCollinear_iff, habc.1.ne, Set.subset_def,
     Set.mem_singleton_iff, Set.mem_insert_iff, forall_eq_or_imp, forall_eq, le_refl,
-    List.chain'_cons, List.chain'_singleton]
+    List.chain'_cons, List.chain'_singleton, not_false_eq_true]
   intro l hl hl'
-  exact habc.2.2.2.2.2.2 l hl (by simp [*, hl.close_middle hl'.1 hl'.2.2 hacd])
+  exact habc.2.2.2.2.2.2 l hl $ by simp [*, hl.close_middle hl'.1 hl'.2.2 hacd]
 
 lemma Finite.length_eq {α : Type*} [Finite α] {n : ℕ} :
     Set.Finite {l : List α | l.length = n} := by
@@ -481,7 +483,7 @@ lemma case1 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
   replace hP'ns : ¬ P'.Special a b d
   · intro hP'
     linarith [hPmin _ hP']
-  simp only [ne_eq, List.getLast_cons] at hPd
+  simp only [ne_eq, not_false_eq_true, List.getLast_cons] at hPd
   have hP'₁ : NotCollinear a₁ b₁₂ b₂₃
   · refine NotCollinear.mk <| fun l hl hl' => ?_
     simp only [Set.mem_singleton_iff, Set.mem_insert_iff, Set.subset_def, forall_eq_or_imp,
@@ -548,7 +550,7 @@ lemma case2 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
   replace hP'ns : ¬ P'.Special a b d
   · intro hP'
     linarith [hPmin _ hP']
-  simp only [ne_eq, List.getLast_cons] at hPd
+  simp only [ne_eq, not_false_eq_true, List.getLast_cons] at hPd
   have ha₃b₂₃ : a₃ ≠ b₂₃ := hb₂₃.ne23.symm
   have hP'₂ : P'.pathLength ≤ (a₁ :: b :: d :: []).pathLength :=
     ha₁ ▸ hP'lt.le.trans (hPmin _ (abd_special habc hacd hbd' hbd))
@@ -600,7 +602,7 @@ lemma case3 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
   replace hP'ns : ¬ P'.Special a b d
   · intro hP'
     linarith [hPmin _ hP']
-  simp only [ne_eq, List.getLast_cons] at hPd
+  simp only [ne_eq, not_false_eq_true, List.getLast_cons] at hPd
   have hP'₁ : NotCollinear a₁ b₁₂ a₃
   · refine NotCollinear.mk <| fun l hl hl' => ?_
     simp only [Set.mem_singleton_iff, Set.mem_insert_iff, Set.subset_def, forall_eq_or_imp,

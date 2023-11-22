@@ -22,7 +22,7 @@ variable {α β : Type*} [Group α] [MulAction α β]
 open Cardinal
 
 @[to_additive (attr := simp)]
-lemma card_smul_set (a : α) (s : Set β) : Nat.card (a • s) = Nat.card s := by
+lemma card_smul_set (a : α) (s : Set β) : Nat.card ↑(a • s) = Nat.card s := by
   obtain hs | hs := s.infinite_or_finite
   · rw [hs.card_eq_zero, hs.smul_set.card_eq_zero]
   classical

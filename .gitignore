@@ -1,10 +1,11 @@
 
 *.olean
 /_target
+/.lake
 /doc-gen
 /build
-/leanpkg.path
 /lake-packages
+/leanpkg.path
 
 decls.pickle
 decls.yaml

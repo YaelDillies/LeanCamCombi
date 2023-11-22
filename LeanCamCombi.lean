@@ -41,8 +41,6 @@ import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.Fintype.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Factorization.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Factors
-import LeanCamCombi.Mathlib.Data.Nat.Order.Lemmas
-import LeanCamCombi.Mathlib.Data.Nat.Squarefree
 import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.Data.Set.Prod
@@ -56,7 +54,6 @@ import LeanCamCombi.Mathlib.Logic.Nontrivial.Basic
 import LeanCamCombi.Mathlib.Logic.Relation
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.Typeclasses
-import LeanCamCombi.Mathlib.NumberTheory.MaricaSchoenheim
 import LeanCamCombi.Mathlib.Order.Category.BoolAlg
 import LeanCamCombi.Mathlib.Order.ConditionallyCompleteLattice.Basic
 import LeanCamCombi.Mathlib.Order.Hom.Lattice

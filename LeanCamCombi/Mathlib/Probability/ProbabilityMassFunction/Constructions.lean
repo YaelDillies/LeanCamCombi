@@ -55,7 +55,7 @@ variable {p : ℝ≥0} (hp : p ≤ 1) (b : Prop)
 @[simp] lemma bernoulli'_apply : bernoulli' p hp b = if b then (p : ℝ≥0∞) else 1 - p := rfl
 
 @[simp] lemma support_bernoulli' : (bernoulli' p hp).support = {b | if b then p ≠ 0 else p ≠ 1} :=
-  Set.ext fun b ↦ by by_cases b <;> simp [h, hp.lt_iff_ne]
+  Set.ext fun b ↦ by by_cases b <;> simp [*, hp.lt_iff_ne]
 
 lemma mem_support_bernoulli'_iff : b ∈ (bernoulli' p hp).support ↔ if b then p ≠ 0 else p ≠ 1 := by
   simp
