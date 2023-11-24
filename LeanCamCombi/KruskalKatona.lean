@@ -3,14 +3,13 @@ Copyright (c) 2020 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Yaël Dillies
 -/
-import Mathlib.Algebra.GeomSum
+import Mathlib.Combinatorics.Colex
 import Mathlib.Combinatorics.SetFamily.Compression.UV
 import Mathlib.Combinatorics.SetFamily.Intersecting
 import Mathlib.Combinatorics.SetFamily.Shadow
 import Mathlib.Data.Finset.Fin
 import Mathlib.Data.Finset.Sort
 import Mathlib.Data.Finset.Sups
-import LeanCamCombi.Mathlib.Combinatorics.Colex
 
 /-!
 # Kruskal-Katona theorem
@@ -21,10 +20,10 @@ the Erdos-Ko-Rado theorem.
 The key results proved here are:
 
 * The basic Kruskal-Katona theorem, expressing that given a set family 𝒜
-  consisting of `r`-sets, and 𝒞 an initial segment of the wolex order of the
+  consisting of `r`-sets, and 𝒞 an initial segment of the colex order of the
   same size, the shadow of 𝒞 is smaller than the shadow of 𝒜.
   In particular, this shows that the minimum shadow size is achieved by initial
-  segments of wolex.
+  segments of colex.
 
 lemma kruskal_katona {r : ℕ} {𝒜 𝒞 : Finset (Finset (Fin n))} (h₁ : (𝒜 : set (Finset α)).Sized r)
   (h₂ : 𝒜.card = 𝒞.card) (h₃ : IsInitSeg 𝒞 r) :
@@ -37,7 +36,7 @@ lemma strengthened_kk {r : ℕ} {𝒜 𝒞 : Finset (Finset (Fin n))} (h₁ : (�
   (∂𝒞).card ≤ (∂𝒜).card :=
 
 * An iterated form, giving that the minimum iterated shadow size is given
-  by initial segments of wolex.
+  by initial segments of colex.
 
 lemma iterated_kk {r k : ℕ} {𝒜 𝒞 : Finset (Finset (Fin n))} (h₁ : (𝒜 : set (Finset α)).Sized r)
   (h₂ : 𝒞.card ≤ 𝒜.card) (h₃ : IsInitSeg 𝒞 r) :
@@ -78,7 +77,7 @@ open Nat
 open scoped FinsetFamily
 
 namespace Finset
-namespace Wolex
+namespace Colex
 variable {α : Type*} [LinearOrder α] {𝒜 𝒜₁ 𝒜₂ : Finset (Finset α)} {s t : Finset α} {r : ℕ}
 
 /-- This is important for iterating Kruskal-Katona: the shadow of an initial segment is also an
@@ -104,10 +103,10 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
         simpa only [ofWolex_toWolex, mem_erase, mem_insert, hx.ne', Ne.def, false_or_iff,
           iff_and_self] using fun _ ↦ ((min'_le _ _ $ mem_insert_self _ _).trans_lt hx).ne'
     · simp only [cards, eq_self_iff_true, true_and_iff, mem_insert, not_or, ←Ne.def] at hkt hks z ⊢
-      -- t ∪ i < s, with k as the wolex witness. Cases on k < i or k > i.
+      -- t ∪ i < s, with k as the colex witness. Cases on k < i or k > i.
       obtain h | h := hkt.1.lt_or_lt
       · refine' Or.inr ⟨i, fun x hx ↦ _, ih, _⟩
-        -- When k < i, then i works as the wolex witness to show t < s - min s
+        -- When k < i, then i works as the colex witness to show t < s - min s
         · refine' ⟨fun p ↦ mem_erase_of_ne_of_mem (((min'_le _ _ ‹_›).trans_lt h).trans hx).ne'
             ((z $ h.trans hx).1 $ Or.inr p), fun p ↦ _⟩
           exact ((z $ h.trans hx).2 $ mem_of_mem_erase p).resolve_left hx.ne'
@@ -117,7 +116,7 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
         assumption
       · -- When k > i, cases on min s < k or min s = k
         obtain h₁ | h₁ := (min'_le _ _ ‹k ∈ s›).lt_or_eq
-        -- If min s < k, k works as the wolex witness for t < s - min s
+        -- If min s < k, k works as the colex witness for t < s - min s
         · refine' Or.inr ⟨k, fun x hx ↦ _, hkt.2, mem_erase_of_ne_of_mem (ne_of_gt h₁) ‹_›⟩
           simpa [(h.trans hx).ne', ←z hx] using fun _ ↦ (h₁.trans hx).ne'
         -- If k = min s, then t = s - min s
@@ -134,14 +133,14 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
   -- Now show that if t ≤ s - min s, there is j such that t ∪ j ≤ s
   -- We choose j as the smallest thing not in t
   simp_rw [le_def]
-  simp only [toWolex_inj, ofWolex_toWolex, ne_eq, and_imp]
+  simp only [toColex_inj, ofColex_toColex, ne_eq, and_imp]
   rintro cards' (rfl | ⟨k, z, hkt, hks⟩)
   -- If t = s - min s, then use j = min s so t ∪ j = s
   · refine' ⟨min' s hs, not_mem_erase _ _, _⟩
     rw [insert_erase (min'_mem _ _)]
     exact ⟨rfl, Or.inl rfl⟩
   set j := min' tᶜ ⟨k, mem_compl.2 hkt⟩
-  -- Assume first t < s - min s, and take k as the wolex witness for this
+  -- Assume first t < s - min s, and take k as the colex witness for this
   have hjk : j ≤ k := min'_le _ _ (mem_compl.2 ‹k ∉ t›)
   have : j ∉ t := mem_compl.1 (min'_mem _ _)
   have cards : card s = card (insert j t) := by
@@ -149,7 +148,7 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
   refine' ⟨j, ‹_›, cards, _⟩
   -- Cases on j < k or j = k
   obtain hjk | r₁ := hjk.lt_or_eq
-  -- if j < k, k is our wolex witness for t ∪ {j} < s
+  -- if j < k, k is our colex witness for t ∪ {j} < s
   · refine' Or.inr ⟨k, fun x hx ↦ _, fun hk ↦ hkt $ mem_of_mem_insert_of_ne hk hjk.ne',
       mem_of_mem_erase ‹_›⟩
     simpa only [mem_insert, z hx, (hjk.trans hx).ne', mem_erase, Ne.def, false_or_iff,
@@ -182,19 +181,19 @@ protected lemma IsInitSeg.shadow [Finite α] (h₁ : IsInitSeg 𝒜 r) : IsInitS
   rw [shadow_initSeg (card_pos.1 hr), ←card_erase_of_mem (min'_mem _ _)]
   exact isInitSeg_initSeg
 
-end Wolex
+end Colex
 
-open Finset Wolex Nat UV
+open Finset Colex Nat UV
 open scoped BigOperators FinsetFamily
 
 variable {α : Type*} [LinearOrder α] {s U V : Finset α} {n : ℕ}
 
 namespace UV
 
-/-- Applying the compression makes the set smaller in wolex. This is intuitive since a portion of
+/-- Applying the compression makes the set smaller in colex. This is intuitive since a portion of
 the set is being "shifted 'down" as `max U < max V`. -/
-lemma toWolex_compress_lt_toWolex {hU : U.Nonempty} {hV : V.Nonempty} (h : max' U hU < max' V hV)
-    (hA : compress U V s ≠ s) : toWolex (compress U V s) < toWolex s := by
+lemma toColex_compress_lt_toColex {hU : U.Nonempty} {hV : V.Nonempty} (h : max' U hU < max' V hV)
+    (hA : compress U V s ≠ s) : toColex (compress U V s) < toColex s := by
   rw [compress, ite_ne_right_iff] at hA
   rw [compress, if_pos hA.1, lt_def]
   refine'
@@ -249,7 +248,7 @@ lemma isInitSeg_of_compressed {ℬ : Finset (Finset α)} {r : ℕ} (h₁ : (ℬ 
   have smaller : max' _ hV < max' _ hU := by
     obtain hlt | heq | hgt := lt_trichotomy (max' _ hU) (max' _ hV)
     · rw [←compress_sdiff_sdiff A B] at hAB hBA
-      cases hBA.not_lt $ toWolex_compress_lt_toWolex hlt hAB
+      cases hBA.not_lt $ toColex_compress_lt_toColex hlt hAB
     · exact (disjoint_right.1 disj (max'_mem _ hU) $ heq.symm ▸ max'_mem _ _).elim
     · assumption
   refine' hB _
@@ -290,9 +289,9 @@ lemma familyMeasure_compression_lt_familyMeasure {U V : Finset (Fin n)} {hU : U.
     sum_image compress_injOn]
   refine' sum_lt_sum_of_nonempty ne₂ fun A hA ↦ _
   simp_rw [←sum_image (Fin.val_injective.injOn _)]
-  rw [sum_two_pow_lt_iff_wolex_lt, toWolex_image_lt_toWolex_image Fin.val_strictMono]
-  convert toWolex_compress_lt_toWolex h ?_
-  convert q _ hA
+  rw [geomSum_lt_geomSum_iff_toColex_lt_toColex le_rfl,
+    toColex_image_lt_toColex_image Fin.val_strictMono]
+  exact toColex_compress_lt_toColex h $ q _ hA
 
 /-- The main Kruskal-Katona helper: use induction with our measure to keep compressing until
 we can't any more, which gives a set family which is fully compressed and has the nice properties we
@@ -336,9 +335,9 @@ section KK
 variable {r k i : ℕ} {𝒜 𝒞 : Finset $ Finset $ Fin n}
 
 /-- The Kruskal-Katona theorem. It says that given a set family `𝒜` consisting of `r`-sets, and `𝒞`
-an initial segment of the wolex order of the same size, the shadow of `𝒞` is smaller than the shadow
+an initial segment of the colex order of the same size, the shadow of `𝒞` is smaller than the shadow
 of `𝒜`. In particular, this gives that the minimum shadow size is achieved by initial segments of
-wolex.
+colex.
 
 Proof notes: Most of the work was done in Kruskal-Katona helper; it gives a `ℬ` which is fully
 compressed, and so we know it's an initial segment, which by uniqueness is the same as `𝒞`. -/
@@ -393,9 +392,9 @@ lemma lovasz_form (hir : i ≤ r) (hrk : r ≤ k) (hkn : k ≤ n)
     rw [mem_powersetCard]
     refine' ⟨fun t ht ↦ _, ‹_›⟩
     rw [mem_attachFin, mem_range]
-    have : toWolex (image Fin.val B) < toWolex (image Fin.val A) := by
-      rwa [toWolex_image_lt_toWolex_image Fin.val_strictMono]
-    apply Wolex.forall_lt_mono this.le _ t (mem_image.2 ⟨t, ht, rfl⟩)
+    have : toColex (image Fin.val B) < toColex (image Fin.val A) := by
+      rwa [toColex_image_lt_toColex_image Fin.val_strictMono]
+    apply Colex.forall_lt_mono this.le _ t (mem_image.2 ⟨t, ht, rfl⟩)
     simp_rw [mem_image]
     rintro _ ⟨a, ha, q⟩
     rw [mem_powersetCard] at hA
