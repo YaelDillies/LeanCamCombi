@@ -3,13 +3,13 @@ Copyright (c) 2020 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Yaël Dillies
 -/
-import Mathlib.Combinatorics.Colex
 import Mathlib.Combinatorics.SetFamily.Compression.UV
 import Mathlib.Combinatorics.SetFamily.Intersecting
 import Mathlib.Combinatorics.SetFamily.Shadow
 import Mathlib.Data.Finset.Fin
 import Mathlib.Data.Finset.Sort
 import Mathlib.Data.Finset.Sups
+import LeanCamCombi.Mathlib.Combinatorics.Colex
 
 /-!
 # Kruskal-Katona theorem
@@ -88,53 +88,16 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
   ext t
   simp only [mem_shadow_iff_insert_mem, mem_initSeg, exists_prop]
   constructor
-  -- First show that if t ∪ i ≤ s, then t ≤ s - min s
-  · rintro ⟨i, ih, p, hts⟩
-    rw [card_insert_of_not_mem ih] at p
-    rw [toWolex_le_toWolex] at hts
-    have cards : (erase s $ min' s hs).card = t.card := by
-      rw [card_erase_of_mem (min'_mem _ _), p, add_tsub_cancel_right]
-    -- Case on t ∪ i = s or t ∪ i < s
-    obtain rfl | ⟨k, z, hkt, hks⟩ := hts
-    · -- Case on i = min s or not
-      refine' ⟨cards, le_def.2 $ (eq_or_ne i $ min' _ hs).imp (fun q => _) fun q ↦ _⟩
-      · rw [←q, erase_insert ih]
-      · refine' ⟨i, fun x hx ↦ _, ih, mem_erase.2 ⟨q, mem_insert_self _ _⟩⟩
-        simpa only [ofWolex_toWolex, mem_erase, mem_insert, hx.ne', Ne.def, false_or_iff,
-          iff_and_self] using fun _ ↦ ((min'_le _ _ $ mem_insert_self _ _).trans_lt hx).ne'
-    · simp only [cards, eq_self_iff_true, true_and_iff, mem_insert, not_or, ←Ne.def] at hkt hks z ⊢
-      -- t ∪ i < s, with k as the colex witness. Cases on k < i or k > i.
-      obtain h | h := hkt.1.lt_or_lt
-      · refine' Or.inr ⟨i, fun x hx ↦ _, ih, _⟩
-        -- When k < i, then i works as the colex witness to show t < s - min s
-        · refine' ⟨fun p ↦ mem_erase_of_ne_of_mem (((min'_le _ _ ‹_›).trans_lt h).trans hx).ne'
-            ((z $ h.trans hx).1 $ Or.inr p), fun p ↦ _⟩
-          exact ((z $ h.trans hx).2 $ mem_of_mem_erase p).resolve_left hx.ne'
-        apply mem_erase_of_ne_of_mem _ ((z h).1 $ Or.inl rfl)
-        refine (lt_of_le_of_lt ?_ h).ne'
-        apply min'_le
-        assumption
-      · -- When k > i, cases on min s < k or min s = k
-        obtain h₁ | h₁ := (min'_le _ _ ‹k ∈ s›).lt_or_eq
-        -- If min s < k, k works as the colex witness for t < s - min s
-        · refine' Or.inr ⟨k, fun x hx ↦ _, hkt.2, mem_erase_of_ne_of_mem (ne_of_gt h₁) ‹_›⟩
-          simpa [(h.trans hx).ne', ←z hx] using fun _ ↦ (h₁.trans hx).ne'
-        -- If k = min s, then t = s - min s
-        -- TODO: In Lean 3, this was `generalize_proofs at h₁`
-        set h : ∃ x, x ∈ s := ⟨_, hks⟩
-        clear_value h
-        subst h₁
-        refine' Or.inl (eq_of_subset_of_card_le (fun a ha ↦ _) cards.ge).symm
-        rw [mem_erase] at ha
-        have : a ≠ i := ne_of_gt (lt_of_lt_of_le h $ min'_le _ _ ha.2)
-        rw [←z] at ha
-        apply ha.2.resolve_left ‹a ≠ i›
-        exact (min'_le _ _ ha.2).lt_of_ne ha.1.symm
+  -- First show that if t ∪ a ≤ s, then t ≤ s - min s
+  · rintro ⟨a, ha, hst, hts⟩
+    constructor
+    · rw [card_erase_of_mem (min'_mem _ _), hst, card_insert_of_not_mem ha, add_tsub_cancel_right]
+    · simpa [ha] using erase_le_erase_min' hts hst.ge (mem_insert_self _ _)
   -- Now show that if t ≤ s - min s, there is j such that t ∪ j ≤ s
   -- We choose j as the smallest thing not in t
-  simp_rw [le_def]
+  simp_rw [le_iff_eq_or_lt, lt_iff_exists_forall_lt_mem_iff_mem]
   simp only [toColex_inj, ofColex_toColex, ne_eq, and_imp]
-  rintro cards' (rfl | ⟨k, z, hkt, hks⟩)
+  rintro cards' (rfl | ⟨k, hks, hkt, z⟩)
   -- If t = s - min s, then use j = min s so t ∪ j = s
   · refine' ⟨min' s hs, not_mem_erase _ _, _⟩
     rw [insert_erase (min'_mem _ _)]
@@ -143,18 +106,18 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
   -- Assume first t < s - min s, and take k as the colex witness for this
   have hjk : j ≤ k := min'_le _ _ (mem_compl.2 ‹k ∉ t›)
   have : j ∉ t := mem_compl.1 (min'_mem _ _)
-  have cards : card s = card (insert j t) := by
+  have hcard : card s = card (insert j t) := by
     rw [card_insert_of_not_mem ‹j ∉ t›, ←‹_ = card t›, card_erase_add_one (min'_mem _ _)]
-  refine' ⟨j, ‹_›, cards, _⟩
+  refine' ⟨j, ‹_›, hcard, _⟩
   -- Cases on j < k or j = k
   obtain hjk | r₁ := hjk.lt_or_eq
   -- if j < k, k is our colex witness for t ∪ {j} < s
-  · refine' Or.inr ⟨k, fun x hx ↦ _, fun hk ↦ hkt $ mem_of_mem_insert_of_ne hk hjk.ne',
-      mem_of_mem_erase ‹_›⟩
+  · refine Or.inr ⟨k, mem_of_mem_erase ‹_›, fun hk ↦ hkt $ mem_of_mem_insert_of_ne hk hjk.ne',
+      fun x hx ↦ ?_⟩
     simpa only [mem_insert, z hx, (hjk.trans hx).ne', mem_erase, Ne.def, false_or_iff,
       and_iff_right_iff_imp] using fun _ ↦ ((min'_le _ _ $ mem_of_mem_erase hks).trans_lt hx).ne'
   -- if j = k, all of range k is in t so by sizes t ∪ {j} = s
-  refine' Or.inl (eq_of_subset_of_card_le (fun a ha ↦ _) cards.ge).symm
+  refine' Or.inl (eq_of_subset_of_card_le (fun a ha ↦ _) hcard.ge).symm
   rcases lt_trichotomy k a with (lt | rfl | gt)
   · apply mem_insert_of_mem
     rw [z lt]
@@ -195,9 +158,8 @@ the set is being "shifted 'down" as `max U < max V`. -/
 lemma toColex_compress_lt_toColex {hU : U.Nonempty} {hV : V.Nonempty} (h : max' U hU < max' V hV)
     (hA : compress U V s ≠ s) : toColex (compress U V s) < toColex s := by
   rw [compress, ite_ne_right_iff] at hA
-  rw [compress, if_pos hA.1, lt_def]
-  refine'
-    ⟨max' V hV, fun a ha ↦ _, not_mem_sdiff_of_mem_right $ max'_mem _ _, hA.1.2 $ max'_mem _ _⟩
+  rw [compress, if_pos hA.1, lt_iff_exists_forall_lt_mem_iff_mem]
+  refine ⟨_, hA.1.2 $ max'_mem _ hV, not_mem_sdiff_of_mem_right $ max'_mem _ _, fun a ha ↦ ?_⟩
   have : a ∉ V := fun H ↦ ha.not_le (le_max' _ _ H)
   have : a ∉ U := fun H ↦ ha.not_lt ((le_max' _ _ H).trans_lt h)
   simp [‹a ∉ U›, ‹a ∉ V›]
@@ -414,10 +376,10 @@ lemma lovasz_form (hir : i ≤ r) (hrk : r ≤ k) (hkn : k ≤ n)
       union_sdiff_of_subset BsubA]
   rintro ⟨hBk, hB⟩
   have := exists_intermediate_set i ?_ hBk
-  obtain ⟨C, BsubC, hCrange, cards⟩ := this
-  rw [hB, ←Nat.add_sub_assoc hir, Nat.add_sub_cancel_left] at cards
-  refine' ⟨C, _, BsubC, _⟩; rw [mem_powersetCard]; exact ⟨hCrange, cards⟩
-  · rw [card_sdiff BsubC, cards, hB, Nat.sub_sub_self hir]
+  obtain ⟨C, BsubC, hCrange, hcard⟩ := this
+  rw [hB, ←Nat.add_sub_assoc hir, Nat.add_sub_cancel_left] at hcard
+  refine' ⟨C, _, BsubC, _⟩; rw [mem_powersetCard]; exact ⟨hCrange, hcard⟩
+  · rw [card_sdiff BsubC, hcard, hB, Nat.sub_sub_self hir]
   · rwa [hB, card_attachFin, card_range, ←Nat.add_sub_assoc hir, Nat.add_sub_cancel_left]
 
 end KK

@@ -76,7 +76,7 @@ lemma le_card_union_add_card_mulStab_union :
     · refine' Or.inr ((tsub_eq_zero_of_le <| card_mono _).trans_le <| zero_le _)
       sorry
   suffices hHst : (Hs.card - 1) * (Ht.card - 1) ≤ (s \ t).card * (t \ s).card
-  · by_contra'
+  · by_contra!
     exact
       hHst.not_lt
         (mul_lt_mul_of_lt_of_lt'' (this.1.trans_le <| tsub_le_tsub_left (one_le_card.2 hH) _) <|

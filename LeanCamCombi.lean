@@ -44,14 +44,11 @@ import LeanCamCombi.Mathlib.Data.Nat.Factors
 import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.Data.Set.Prod
-import LeanCamCombi.Mathlib.GroupTheory.GroupAction.Defs
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Stabilizer
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.Independent
-import LeanCamCombi.Mathlib.Logic.Basic
 import LeanCamCombi.Mathlib.Logic.Nontrivial.Basic
-import LeanCamCombi.Mathlib.Logic.Relation
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.Typeclasses
 import LeanCamCombi.Mathlib.Order.Category.BoolAlg

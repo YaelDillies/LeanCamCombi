@@ -1,6 +1,5 @@
 import Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
-import LeanCamCombi.Mathlib.Logic.Relation
 
 -- attribute [protected] SimpleGraph.Subgraph.mem_edgeSet
 

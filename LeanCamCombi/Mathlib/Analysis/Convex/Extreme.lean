@@ -36,7 +36,7 @@ lemma extremePoints_convexHull_eq_iff_convexIndependent :
     exact (convex_convexHull 𝕜 _).convexIndependent_extremePoints
   rw [convexIndependent_set_iff_not_mem_convexHull_diff] at hs
   refine' extremePoints_convexHull_subset.antisymm fun x hxs => ⟨subset_convexHull 𝕜 _ hxs, _⟩
-  by_contra' h
+  by_contra! h
   obtain ⟨x₁, hx₁, x₂, hx₂, hx⟩ := h
   suffices h : x₁ ∈ convexHull 𝕜 (s \ {x}) ∧ x₂ ∈ convexHull 𝕜 (s \ {x})
   · exact hs _ hxs (convex_iff_openSegment_subset.1 (convex_convexHull 𝕜 _) h.1 h.2 hx.1)

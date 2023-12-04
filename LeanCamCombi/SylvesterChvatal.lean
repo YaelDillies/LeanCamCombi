@@ -174,7 +174,7 @@ theorem thm_two (h : ∀ x y z : V, ¬ NotCollinear x y z) :
   dsimp at hL'
   suffices L = Set.univ by rwa [←this]
   rw [Set.eq_univ_iff_forall]
-  by_contra'
+  by_contra!
   obtain ⟨a, b, hab, rfl⟩ := hL
   obtain ⟨c, hc'⟩ := this
   have hac : a ≠ c := fun h => hc' (subset_GenerateLine _ (by simp [h]))
@@ -211,10 +211,10 @@ lemma one_implies_two (h : ∃ x y z : V, NotCollinear x y z) :
   replace h₂ : ∀ a' b' c' : V, NotCollinear a' b' c' →
       dist a b + dist b c + dist c a ≤ dist a' b' + dist b' c' + dist c' a'
   · intro a' b' c' hL
-    by_contra' h
+    by_contra! h
     exact h.ne' (h₂ a' b' c' hL h.le)
   simp only [SimpleTriangle]
-  by_contra' cont
+  by_contra! cont
   wlog hab : ¬ SimpleEdges.Adj a b generalizing a b c
   · rw [not_not] at hab
     refine cont a b c hab ?_ ?_ h₁
@@ -231,7 +231,7 @@ lemma one_implies_two (h : ∃ x y z : V, NotCollinear x y z) :
   have hdab : d ∈ Line a b := middle_extend_mem_Line adb
   have hcd : c ≠ d := (habc <| · ▸ hdab)
   have : dist d c < dist d b + dist b c
-  · by_contra'
+  · by_contra!
     refine habc (GenerateLine_close_right hdab right_mem_Line ?_)
     exact ⟨adb.ne23, hcd.symm, h₁.2.2.1, this.antisymm (dist_triangle _ _ _)⟩
   replace : dist a d + dist d c + dist c a < dist a b + dist b c + dist c a
@@ -253,13 +253,13 @@ lemma Delta_comm {u v w : V} : Delta u v w = Delta w v u := by
 
 lemma Delta_pos_of {u v w : V} (h : NotCollinear u v w) : 0 < Delta u v w := by
   rw [Delta]
-  by_contra'
+  by_contra!
   have : sbtw u v w := sbtw_mk h.1 h.2.2.1 (by linarith only [this])
   exact h.2.2.2 (Line u v) (Line_isLine this.ne12) (by simp [right_extend_mem_Line this])
 
 lemma exists_third {a b : V} (hab : a ≠ b) (h : Line a b ≠ {a, b}) :
     ∃ c, c ∈ Line a b ∧ (sbtw c a b ∨ sbtw a c b ∨ sbtw a b c) := by
-  by_contra' h'
+  by_contra! h'
   have : Line a b = {a, b}
   · refine (subset_GenerateLine _).antisymm' ?_
     change Line a b ⊆ {a, b}
@@ -298,7 +298,7 @@ lemma eqn_7 {a b c d : V} (habc : SimpleTriangle a b c)
 
 lemma eqn_8 {a b c d : V} (habc : SimpleTriangle a b c) (hacd : sbtw a c d) :
     dist a b + dist b d < dist a d + Delta a b c := by
-  by_contra'
+  by_contra!
   have hbcd : sbtw b c d
   · refine sbtw_mk habc.2.1.ne hacd.ne23 ?_
     rw [Delta] at this
@@ -643,10 +643,10 @@ lemma two_implies_three (h : ∃ x y z : V, SimpleTriangle x y z) :
     S.toFinite.exists_minimal_wrt (fun ⟨x, y, z⟩ => Delta x y z) S this
   replace hmin : ∀ a' b' c' : V, SimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c'
   · intro a' b' c' h
-    by_contra' h'
+    by_contra! h'
     exact h'.ne' (hmin (a', b', c') h h'.le)
   refine ⟨a, c, habc.2.2.1.1.symm, ?_⟩
-  by_contra' h3
+  by_contra! h3
   obtain ⟨d, hd, hd'⟩ := exists_third habc.2.2.1.1.symm h3
   simp only [habc.2.2.1.symm.2 d, false_or] at hd'
   wlog acd : sbtw a c d generalizing a c
@@ -666,7 +666,7 @@ lemma two_implies_three (h : ∃ x y z : V, SimpleTriangle x y z) :
     simp [right_extend_mem_Line hd] at this
   replace hdmin : ∀ d', sbtw a c d' → dist c d ≤ dist c d'
   · intro d' hd'
-    by_contra' hd''
+    by_contra! hd''
     exact hd''.ne' (hdmin d' hd' hd''.le)
   have hcd : SimpleEdges.Adj c d
   · use hd.2.2.1
@@ -684,7 +684,7 @@ lemma two_implies_three (h : ∃ x y z : V, SimpleTriangle x y z) :
     this.exists_minimal_wrt List.pathLength S ⟨[a, b, d], abd_special habc hd hbd' hbd⟩
   replace hPmin : ∀ P' : List V, P'.Special a b d → P.pathLength ≤ P'.pathLength
   · intro P' hP'
-    by_contra' h
+    by_contra! h
     exact h.ne' (hPmin P' hP' h.le)
   match P with
   | (a₁ :: a₂ :: a₃ :: l) =>
