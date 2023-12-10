@@ -31,10 +31,6 @@ lemma mapₗ_ne_zero_iff (hf : Measurable f) : Measure.mapₗ f μ ≠ 0 ↔ μ 
 
 end Measure
 
-instance Set.instMeasurableSpace {α} : MeasurableSpace (Set α) := by unfold Set; infer_instance
-
-lemma measurable_compl : Measurable (HasCompl.compl : Set α → Set α) := sorry
-
 end MeasureTheory
 
 namespace MeasurableSpace
@@ -65,7 +61,6 @@ lemma AEMeasurable.nullMeasurableSet_preimage [MeasurableSpace α] {μ : Measure
 namespace MeasureTheory
 variable [MeasurableSpace α] {μ : Measure α} {s : Set α}
 
--- change `measure_compl` to `MeasurableSet.compl` in the `MeasureTheory` namespace
 nonrec lemma NullMeasurableSet.measure_compl (h : NullMeasurableSet s μ) (hs : μ s ≠ ∞) :
     μ sᶜ = μ Set.univ - μ s := by
   rw [←measure_congr h.toMeasurable_ae_eq, ←measure_compl (measurableSet_toMeasurable _ _)]
