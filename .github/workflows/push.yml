@@ -37,6 +37,7 @@ jobs:
         run: |
           grep -r --exclude-dir=ExampleSheets --files-without-match 'import LeanCamCombi' LeanCamCombi | sort > 1.txt
           grep -r --exclude-dir=ExampleSheets --files-with-match 'sorry' LeanCamCombi | sort > 2.txt
+          mkdir -p docs/_includes
           comm -23 1.txt 2.txt | sed -e 's/^\(.*\)$/- [`\1`](https:\/\/github.com\/YaelDillies\/LeanCamCombi\/blob\/master\/\1)/' > docs/_includes/files_to_upstream.md
           rm 1.txt 2.txt
 
