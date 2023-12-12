@@ -10,7 +10,7 @@ from blueprint.tasks import web, bp, print_bp, serve
 
 ROOT = Path(__file__).parent
 BP_DIR = ROOT/'blueprint'
-PROJ = 'LeanAPAP'
+PROJ = 'LeanCamCombi'
 
 @task(bp, web)
 def all(ctx):
