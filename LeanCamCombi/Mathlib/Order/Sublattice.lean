@@ -1,5 +1,4 @@
 import Mathlib.Order.Sublattice
-import LeanCamCombi.Mathlib.Data.Set.Prod
 import LeanCamCombi.Mathlib.Order.Hom.Lattice
 
 /-!

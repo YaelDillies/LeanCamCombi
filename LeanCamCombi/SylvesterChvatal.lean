@@ -1,64 +1,13 @@
-import Mathlib.Analysis.Convex.Between
-import Mathlib.Combinatorics.SimpleGraph.Clique
-import Mathlib.Data.Fintype.Basic
-import Mathlib.Data.Set.Card
-import Mathlib.LinearAlgebra.AffineSpace.AffineSubspace
-import Mathlib.Order.Circular
-import Mathlib.Topology.MetricSpace.Basic
+import Mathlib.Combinatorics.SimpleGraph.Basic
+import LeanCamCombi.Mathlib.Data.Set.Finite
+import LeanCamCombi.MetricBetween
 
-universe u
-
-variable {V : Type u} [MetricSpace V]
+variable {V : Type*} [MetricSpace V]
 
 section
-
 variable {u v w : V}
 
-def MetricSBtw : SBtw V where
-  sbtw u v w := u ≠ v ∧ u ≠ w ∧ v ≠ w ∧ dist u v + dist v w = dist u w
-
-scoped[MetricBetweenness] attribute [instance] MetricSBtw
-
-open MetricBetweenness
-
-lemma MetricSpace.sbtw_iff :
-  sbtw u v w ↔ u ≠ v ∧ u ≠ w ∧ v ≠ w ∧ dist u v + dist v w = dist u w := Iff.rfl
-
-lemma SBtw.sbtw.ne12 (h : sbtw u v w) : u ≠ v := h.1
-lemma SBtw.sbtw.ne13 (h : sbtw u v w) : u ≠ w := h.2.1
-lemma SBtw.sbtw.ne23 (h : sbtw u v w) : v ≠ w := h.2.2.1
-lemma SBtw.sbtw.dist (h : sbtw u v w) : dist u v + dist v w = dist u w := h.2.2.2
-
-lemma SBtw.sbtw.symm : sbtw u v w → sbtw w v u
-| ⟨huv, huw, hvw, d⟩ => ⟨hvw.symm, huw.symm, huv.symm, by simpa [dist_comm, add_comm] using d⟩
-lemma SBtw.comm : sbtw u v w ↔ sbtw w v u :=
-⟨.symm, .symm⟩
-
-
-lemma sbtw_iff_of_ne (h12 : u ≠ v) (h13 : u ≠ w) (h23 : v ≠ w) :
-    sbtw u v w ↔ dist u v + dist v w = dist u w :=
-  by simp [MetricSpace.sbtw_iff, h12, h13, h23]
-
-lemma sbtw_mk (h12 : u ≠ v) (h23 : v ≠ w) (h : dist u v + dist v w ≤ dist u w) : sbtw u v w := by
-  refine ⟨h12, ?_, h23, h.antisymm (dist_triangle _ _ _)⟩
-  rintro rfl
-  rw [dist_self] at h
-  replace h : dist v u ≤ 0 := by linarith [dist_comm v u]
-  simp only [dist_le_zero] at h
-  exact h23 h
-
-lemma SBtw.sbtw.right_cancel {u v w x : V} (h : sbtw u v x) (h' : sbtw v w x) : sbtw u v w :=
-  sbtw_mk h.ne12 h'.ne12 (by linarith [h.dist, h'.dist, dist_triangle u w x, dist_triangle u v w])
-
-lemma SBtw.sbtw.asymm_right {u v x : V} (h : sbtw u v x) (h' : sbtw v u x) : False := by
-  have := h'.dist
-  rw [dist_comm] at this
-  have : Dist.dist u v = 0 := by linarith [h.dist]
-  simp [h.ne12] at this
-
-lemma SBtw.sbtw.trans_right' {u v w x : V} (h : sbtw u v x) (h' : sbtw v w x) : sbtw u w x :=
-  have : u ≠ w := by rintro rfl; exact h.asymm_right h'
-  sbtw_mk this h'.ne23 <| by linarith [h.dist, h'.dist, dist_triangle u v w]
+open scoped MetricBetweenness
 
 @[mk_iff]
 inductive Set.collinearTriple : Set V → Prop
@@ -70,21 +19,21 @@ inductive GenerateLine (s : Set V) : Set V
 | extend_out (u v w : V) : GenerateLine s u → GenerateLine s v → sbtw u v w → GenerateLine s w
 | extend_in (u v w : V) : GenerateLine s u → GenerateLine s v → sbtw u w v → GenerateLine s w
 
-lemma subset_GenerateLine (s : Set V) : s ⊆ GenerateLine s := fun _ => GenerateLine.basic
+lemma subset_generateLine (s : Set V) : s ⊆ GenerateLine s := fun _ => GenerateLine.basic
 
-lemma GenerateLine_close_right {s : Set V} {x y z : V}
+lemma generateLine_close_right {s : Set V} {x y z : V}
   (hx : x ∈ GenerateLine s) (hy : y ∈ GenerateLine s)
   (h : sbtw x y z) : z ∈ GenerateLine s := GenerateLine.extend_out x y _ hx hy h
 
-lemma GenerateLine_close_left {s : Set V} {x y z : V}
+lemma generateLine_close_left {s : Set V} {x y z : V}
   (hx : x ∈ GenerateLine s) (hy : y ∈ GenerateLine s)
   (h : sbtw z x y) : z ∈ GenerateLine s := GenerateLine.extend_out y x _ hy hx h.symm
 
-lemma GenerateLine_close_middle {s : Set V} {x y z : V}
+lemma generateLine_close_middle {s : Set V} {x y z : V}
   (hx : x ∈ GenerateLine s) (hy : y ∈ GenerateLine s)
   (h : sbtw x z y) : z ∈ GenerateLine s := GenerateLine.extend_in _ _ _ hx hy h
 
-lemma GenerateLine_minimal {S L : Set V} (hL₀ : S ⊆ L)
+lemma generateLine_minimal {S L : Set V} (hL₀ : S ⊆ L)
     (out_closed : ∀ {x y z}, x ∈ L → y ∈ L → sbtw x y z → z ∈ L)
     (in_closed : ∀ {x y z}, x ∈ L → y ∈ L → sbtw x z y → z ∈ L) :
     GenerateLine S ⊆ L := by
@@ -96,14 +45,14 @@ lemma GenerateLine_minimal {S L : Set V} (hL₀ : S ⊆ L)
 
 def Line (a b : V) : Set V := GenerateLine ({a, b} : Set V)
 
-@[simp] lemma left_mem_Line {a b : V} : a ∈ Line a b := subset_GenerateLine _ (by simp)
-@[simp] lemma right_mem_Line {a b : V} : b ∈ Line a b := subset_GenerateLine _ (by simp)
+@[simp] lemma left_mem_Line {a b : V} : a ∈ Line a b := subset_generateLine _ (by simp)
+@[simp] lemma right_mem_Line {a b : V} : b ∈ Line a b := subset_generateLine _ (by simp)
 lemma left_extend_mem_Line {a b c : V} (h : sbtw c a b) : c ∈ Line a b :=
-GenerateLine_close_left left_mem_Line right_mem_Line h
+  generateLine_close_left left_mem_Line right_mem_Line h
 lemma middle_extend_mem_Line {a b c : V} (h : sbtw a c b) : c ∈ Line a b :=
-GenerateLine_close_middle left_mem_Line right_mem_Line h
+  generateLine_close_middle left_mem_Line right_mem_Line h
 lemma right_extend_mem_Line {a b c : V} (h : sbtw a b c) : c ∈ Line a b :=
-GenerateLine_close_right left_mem_Line right_mem_Line h
+  generateLine_close_right left_mem_Line right_mem_Line h
 
 lemma Line_comm : Line u v = Line v u := by rw [Line, Line, Set.pair_comm]
 
@@ -114,21 +63,21 @@ lemma Line_isLine {a b : V} (h : a ≠ b) : (Line a b).IsLine := ⟨a, b, h, rfl
 lemma Set.IsLine.close_right {L : Set V} (hL : L.IsLine) {a b c : V} (ha : a ∈ L) (hb : b ∈ L)
     (hc : sbtw a b c) : c ∈ L := by
   obtain ⟨x, y, _, rfl⟩ := hL
-  exact GenerateLine_close_right ha hb hc
+  exact generateLine_close_right ha hb hc
 
 lemma Set.IsLine.close_left {L : Set V} (hL : L.IsLine) {a b c : V} (ha : a ∈ L) (hb : b ∈ L)
     (hc : sbtw c a b) : c ∈ L := by
   obtain ⟨x, y, _, rfl⟩ := hL
-  exact GenerateLine_close_left ha hb hc
+  exact generateLine_close_left ha hb hc
 
 lemma Set.IsLine.close_middle {L : Set V} (hL : L.IsLine) {a b c : V} (ha : a ∈ L) (hb : b ∈ L)
     (hc : sbtw a c b) : c ∈ L := by
   obtain ⟨x, y, _, rfl⟩ := hL
-  exact GenerateLine_close_middle ha hb hc
+  exact generateLine_close_middle ha hb hc
 
 lemma Set.IsLine.generateLine_subset {S L : Set V} (hL₀ : S ⊆ L) (hL : L.IsLine) :
     GenerateLine S ⊆ L :=
-  GenerateLine_minimal hL₀ hL.close_right hL.close_middle
+  generateLine_minimal hL₀ hL.close_right hL.close_middle
 
 attribute [local simp] Set.subset_def
 
@@ -177,8 +126,8 @@ theorem thm_two (h : ∀ x y z : V, ¬ NotCollinear x y z) :
   by_contra!
   obtain ⟨a, b, hab, rfl⟩ := hL
   obtain ⟨c, hc'⟩ := this
-  have hac : a ≠ c := fun h => hc' (subset_GenerateLine _ (by simp [h]))
-  have hbc : b ≠ c := fun h => hc' (subset_GenerateLine _ (by simp [h]))
+  have hac : a ≠ c := fun h => hc' (subset_generateLine _ (by simp [h]))
+  have hbc : b ≠ c := fun h => hc' (subset_generateLine _ (by simp [h]))
   simp only [NotCollinear, not_and, not_forall, not_not] at h
   obtain ⟨M, hM, habc⟩ := h a b c hab hac hbc
   have := hL' M hM (Set.IsLine.generateLine_subset (habc.trans' (by simp)) hM)
@@ -232,7 +181,7 @@ lemma one_implies_two (h : ∃ x y z : V, NotCollinear x y z) :
   have hcd : c ≠ d := (habc <| · ▸ hdab)
   have : dist d c < dist d b + dist b c
   · by_contra!
-    refine habc (GenerateLine_close_right hdab right_mem_Line ?_)
+    refine habc (generateLine_close_right hdab right_mem_Line ?_)
     exact ⟨adb.ne23, hcd.symm, h₁.2.2.1, this.antisymm (dist_triangle _ _ _)⟩
   replace : dist a d + dist d c + dist c a < dist a b + dist b c + dist c a
   · linarith only [this, adb.2.2.2]
@@ -261,9 +210,9 @@ lemma exists_third {a b : V} (hab : a ≠ b) (h : Line a b ≠ {a, b}) :
     ∃ c, c ∈ Line a b ∧ (sbtw c a b ∨ sbtw a c b ∨ sbtw a b c) := by
   by_contra! h'
   have : Line a b = {a, b}
-  · refine (subset_GenerateLine _).antisymm' ?_
+  · refine (subset_generateLine _).antisymm' ?_
     change Line a b ⊆ {a, b}
-    refine GenerateLine_minimal le_rfl ?_ ?_
+    refine generateLine_minimal le_rfl ?_ ?_
     · rintro x y z (rfl | rfl) (rfl | rfl) h
       · exact (h.ne12 rfl).elim
       · exact ((h' z (right_extend_mem_Line h)).2.2 h).elim
@@ -340,7 +289,15 @@ def List.Special (a b d : V) : List V → Prop
       (a1 :: a2 :: a3 :: l).Chain' (· ≠ ·) ∧
       (a1 :: a2 :: a3 :: l).pathLength ≤ [a, b, d].pathLength
 
-lemma exists_min_dist (V : Type u) [MetricSpace V] [Finite V] :
+lemma List.Special.pathLength_le {a b d : V} :
+    ∀ {P : List V}, P.Special a b d → P.pathLength ≤ [a, b, d].pathLength
+  | _ :: _ :: _ :: _, ⟨_, _, _, _, _, h⟩ => h
+
+lemma List.Special.chain_ne {a b d : V} :
+    ∀ {P : List V}, P.Special a b d → P.Chain' (· ≠ ·)
+  | _ :: _ :: _ :: _, ⟨_, _, _, _, h, _⟩ => h
+
+lemma exists_min_dist (V : Type*) [MetricSpace V] [Finite V] :
     ∃ r : ℝ, 0 < r ∧ ∀ x y : V, x ≠ y → r ≤ dist x y := by
   cases subsingleton_or_nontrivial V
   · exact ⟨1, zero_lt_one, fun x y ↦ by simp [Subsingleton.elim x y]⟩
@@ -373,14 +330,6 @@ lemma uniformly_bounded_of_chain_ne_of_pathLength_le (V : Type*) [MetricSpace V]
   · linarith
   · positivity
 
-lemma List.Special.pathLength_le {a b d : V} :
-    ∀ {P : List V}, P.Special a b d → P.pathLength ≤ [a, b, d].pathLength
-  | (_ :: _ :: _ :: _), ⟨_, _, _, _, _, h⟩ => h
-
-lemma List.Special.Chain_ne {a b d : V} :
-    ∀ {P : List V}, P.Special a b d → P.Chain' (· ≠ ·)
-  | (_ :: _ :: _ :: _), ⟨_, _, _, _, h, _⟩ => h
-
 lemma abd_special {a b c d : V} (habc : SimpleTriangle a b c) (hacd : sbtw a c d) (hbd' : b ≠ d)
     (hbd : ¬ SimpleEdges.Adj b d) :
     [a, b, d].Special a b d := by
@@ -391,21 +340,6 @@ lemma abd_special {a b c d : V} (habc : SimpleTriangle a b c) (hacd : sbtw a c d
     List.chain'_cons, List.chain'_singleton, not_false_eq_true]
   intro l hl hl'
   exact habc.2.2.2.2.2.2 l hl $ by simp [*, hl.close_middle hl'.1 hl'.2.2 hacd]
-
-lemma Finite.length_eq {α : Type*} [Finite α] {n : ℕ} :
-    Set.Finite {l : List α | l.length = n} := by
-  induction n with
-  | zero => simp [List.length_eq_zero]
-  | succ n ih =>
-    suffices : {l : List α | l.length = n + 1} = Set.univ.image2 (· :: ·) {l | l.length = n}
-    · rw [this]; exact Set.finite_univ.image2 _ ih
-    ext (_ | _) <;> simp [n.succ_ne_zero.symm]
-
-lemma Finite.length_le {α : Type*} [Finite α] {n : ℕ} :
-    Set.Finite {l : List α | l.length ≤ n} :=
-  have : {l : List α | l.length ≤ n} = ⋃ i ∈ Set.Iic n, {l : List α | l.length = i} :=
-    by ext l; simp
-  this ▸ Set.Finite.biUnion (Set.finite_Iic n) fun i _ => Finite.length_eq
 
 lemma eqn_9 {a b c d : V} {P : List V} (habc : SimpleTriangle a b c) (hacd : sbtw a c d)
     (hbd' : b ≠ d) (hbd : ¬ SimpleEdges.Adj b d)
@@ -433,27 +367,6 @@ lemma exists_simple_split_left {a b : V} (hab : a ≠ b) (hab' : ¬ SimpleEdges.
     ∃ c, sbtw a c b ∧ SimpleEdges.Adj a c :=
   have ⟨c, hc, hc'⟩ := exists_simple_split_right hab.symm (hab' ·.symm); ⟨c, hc.symm, hc'.symm⟩
 
-lemma List.filter_cons {α : Type*} {p : α → Bool} (a : α) {l : List α} :
-  (a :: l).filter p = bif p a then a :: l.filter p else l.filter p := rfl
-
-lemma getLast_filter {α : Type*} {p : α → Bool} :
-    (l : List α) → (hlp : l.filter p ≠ []) → p (l.getLast (hlp <| ·.symm ▸ rfl)) = true →
-    (l.filter p).getLast hlp = l.getLast (hlp <| ·.symm ▸ rfl)
-  | [a], h, h' => by rw [List.getLast_singleton'] at h'; simp [List.filter_cons, h']
-  | (a :: b :: as), h, h' => by
-      rw [List.getLast_cons_cons] at h' ⊢
-      simp only [List.filter_cons a] at h ⊢
-      rcases Bool.eq_false_or_eq_true (p a) with ha | ha
-      · simp only [ha, cond_true]
-        have : (b :: as).filter p ≠ []
-        · have : (b :: as).getLast (List.cons_ne_nil _ _) ∈ (b :: as).filter p
-          · rw [List.mem_filter]
-            exact ⟨List.getLast_mem _, h'⟩
-          exact List.ne_nil_of_mem this
-        rw [List.getLast_cons this, getLast_filter (b :: as) this h']
-      simp only [ha, cond_false] at h ⊢
-      exact getLast_filter (b :: as) h h'
-
 lemma case1 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b c)
     (habc_min : ∀ a' b' c' : V, SimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c')
     (hacd : sbtw a c d) (hbd' : b ≠ d) (hbd : ¬ SimpleEdges.Adj b d)
@@ -461,8 +374,8 @@ lemma case1 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
     (ha₁ : a₁ = a) (hα : NotCollinear a₁ a₂ a₃)
     (hPd : List.getLast (a₁ :: a₂ :: a₃ :: l) (by simp) = d)
     (hPc : (a₁ :: a₂ :: a₃ :: l).Chain' (· ≠ ·))
-    (c₁1 : ¬SimpleGraph.Adj SimpleEdges a₁ a₂)
-    (c₁2 : ¬SimpleGraph.Adj SimpleEdges a₂ a₃) :
+    (c₁1 : ¬ SimpleEdges.Adj a₁ a₂)
+    (c₁2 : ¬ SimpleEdges.Adj a₂ a₃) :
     False := by
   have ⟨b₁₂, hb₁₂, hba⟩ := exists_simple_split_right hα.1 c₁1
   have ⟨b₂₃, hb₂₃, hab⟩ := exists_simple_split_left hα.2.2.1 c₁2
@@ -679,7 +592,7 @@ lemma two_implies_three (h : ∃ x y z : V, SimpleTriangle x y z) :
   let S : Set (List V) := setOf (List.Special a b d)
   have : S.Finite
   · have ⟨n, hn⟩ := uniformly_bounded_of_chain_ne_of_pathLength_le V [a, b, d].pathLength
-    exact Finite.length_le.subset fun l hl => hn l hl.Chain_ne hl.pathLength_le
+    exact (List.finite_length_le _ _).subset fun l hl => hn l hl.chain_ne hl.pathLength_le
   have ⟨P, (hP : P.Special a b d), hPmin⟩ :=
     this.exists_minimal_wrt List.pathLength S ⟨[a, b, d], abd_special habc hd hbd' hbd⟩
   replace hPmin : ∀ P' : List V, P'.Special a b d → P.pathLength ≤ P'.pathLength
@@ -719,16 +632,6 @@ end
 --   rw [MetricSpace.sbtw_iff, Sbtw, Wbtw]
 --   suffices : dist a b + dist b c = dist a c ↔ b ∈ affineSegment ℝ a c
 
-
-
-
-
-
-
-
-
-
--- #exit
 
 -- theorem Line_eq_line {n : ℕ} {a b : Fin n → ℝ} : Line a b = line[Fin n → ℝ, a, b] := by
 

@@ -298,7 +298,6 @@ lemma not_isContained_kill (hG : G ≠ ⊥) : ¬ G ⊑ G.kill H := by
   rw [Sym2.map_map, Set.mem_singleton_iff, ←he₁]
   congr 1 with x
   refine' congr_arg (↑) (Equiv.Set.image_symm_apply _ _ injective_id _ _)
-  simpa using x.2
 
 variable [Fintype H.edgeSet]
 
