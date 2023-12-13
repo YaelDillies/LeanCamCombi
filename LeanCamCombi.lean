@@ -62,6 +62,7 @@ import LeanCamCombi.Mathlib.Probability.Independence.Basic
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
+import LeanCamCombi.Schnirelmann
 import LeanCamCombi.SimplicialComplex.Basic
 import LeanCamCombi.SimplicialComplex.Finite
 import LeanCamCombi.SimplicialComplex.Pure
