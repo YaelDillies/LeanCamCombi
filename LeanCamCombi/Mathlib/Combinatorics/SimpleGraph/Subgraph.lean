@@ -1,6 +1,5 @@
 import Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
-import LeanCamCombi.Mathlib.Logic.Relation
 
 -- attribute [protected] SimpleGraph.Subgraph.mem_edgeSet
 
@@ -11,9 +10,6 @@ variable {α β γ V : Type*} {G H : SimpleGraph V}
 namespace SimpleGraph
 
 namespace Subgraph
-
--- TODO: Replace `coe_Adj`
-alias coe_adj := coe_Adj
 
 instance (G : SimpleGraph V) (H : Subgraph G) [DecidableRel H.Adj] : DecidableRel H.coe.Adj :=
   fun a b ↦ ‹DecidableRel H.Adj› _ _
@@ -70,7 +66,7 @@ def topIso : (⊤ : G.Subgraph).coe ≃g G where
 @[simps]
 noncomputable def isoMap {H : SimpleGraph β} (f : G →g H) (hf : Injective f) (G' : G.Subgraph) :
     G'.coe ≃g (G'.map f).coe :=
-  { Equiv.Set.image f G'.verts hf with map_rel_iff' := by simp [hf] }
+  { Equiv.Set.image f G'.verts hf with map_rel_iff' := by dsimp; simp [hf] }
 
 open scoped Classical
 
@@ -79,8 +75,8 @@ noncomputable instance [Fintype V] : Fintype G.Subgraph :=
     {H : Set V × (V → V → Prop) // H.2 ≤ G.Adj ∧ (∀ a b, H.2 a b → a ∈ H.1) ∧ Symmetric H.2}
     { toFun := fun H ↦ ⟨H.1.1, H.1.2, @H.2.1, @H.2.2.1, H.2.2.2⟩
       invFun := fun H ↦ ⟨⟨H.1, H.2⟩, fun _ _ ↦ H.3, fun _ _ ↦ H.4, H.5⟩
-      left_inv := λ {x} ↦ by ext <;> rfl
-      right_inv := λ {x} ↦ by ext <;> rfl }
+      left_inv := fun {x} ↦ by ext <;> rfl
+      right_inv := fun {x} ↦ by ext <;> rfl }
 
 instance [Finite V] : Finite G.Subgraph := by cases nonempty_fintype V; infer_instance
 

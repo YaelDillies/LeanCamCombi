@@ -1,0 +1,116 @@
+on:
+  push:
+    branches:
+      - master
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  style_lint:
+    name: Lint style
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for long lines
+        if: always()
+        run: |
+          ! (find LeanCamCombi -name "*.lean" -type f -exec grep -E -H -n '^.{101,}$' {} \; | grep -v -E 'https?://')
+
+      - name: Don't 'import Mathlib', use precise imports
+        if: always()
+        run: |
+          ! (find LeanCamCombi -name "*.lean" -type f -print0 | xargs -0 grep -E -n '^import Mathlib$')
+
+  build_project:
+    runs-on: ubuntu-latest
+    name: Build project
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Print files to upstream
+        run: |
+          grep -r --exclude-dir=ExampleSheets --files-without-match 'import LeanCamCombi' LeanCamCombi | sort > 1.txt
+          grep -r --exclude-dir=ExampleSheets --files-with-match 'sorry' LeanCamCombi | sort > 2.txt
+          mkdir -p docs/_includes
+          comm -23 1.txt 2.txt | sed -e 's/^\(.*\)$/- [`\1`](https:\/\/github.com\/YaelDillies\/LeanCamCombi\/blob\/master\/\1)/' > docs/_includes/files_to_upstream.md
+          rm 1.txt 2.txt
+
+      - name: Count sorries
+        run: |
+          python scripts/count_sorry.py
+
+      - name: Install elan
+        run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.0.0
+
+      - name: Get cache
+        run: ~/.elan/bin/lake -Kenv=dev exe cache get || true
+
+      - name: Build project
+        run: ~/.elan/bin/lake -Kenv=dev build LeanCamCombi
+
+      - name: Cache mathlib docs
+        uses: actions/cache@v3
+        with:
+          path: |
+            .lake/build/doc/Init
+            .lake/build/doc/Lake
+            .lake/build/doc/Lean
+            .lake/build/doc/Std
+            .lake/build/doc/Mathlib
+            .lake/build/doc/declarations
+          key: MathlibDoc-${{ hashFiles('lake-manifest.json') }}
+          restore-keys: |
+            MathlibDoc-
+
+      - name: Build documentation
+        run: ~/.elan/bin/lake -Kenv=dev build LeanCamCombi:docs
+
+      # - name: Build blueprint and copy to `docs/blueprint`
+      #   uses: xu-cheng/texlive-action@v2
+      #   with:
+      #     scheme: full
+      #     run: |
+      #       apk update
+      #       apk add --update make py3-pip git
+      #       apk add --update make py3-pip git pkgconfig graphviz graphviz-dev gcc musl-dev
+      #       git config --global --add safe.directory $GITHUB_WORKSPACE
+      #       git config --global --add safe.directory `pwd`
+      #       python3 -m pip install --upgrade pip requests wheel
+      #       python3 -m pip install pygraphviz --global-option=build_ext --global-option="-L/usr/lib/graphviz/" --global-option="-R/usr/lib/graphviz/"
+      #       pip install -r blueprint/requirements.txt
+      #       python3 -m pip install invoke
+      #       inv all
+
+      - name: Copy documentation to `docs/docs`
+        run: |
+          mv .lake/build/doc docs/docs
+
+      - name: Bundle dependencies
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: docs
+          ruby-version: "3.0" # Not needed with a .ruby-version file
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
+      - name: Bundle website
+        working-directory: docs
+        run: JEKYLL_ENV=production bundle exec jekyll build
+
+      - name: Upload docs & blueprint artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: docs/_site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
+
+      - name: Make sure the cache works
+        run: |
+          mv docs/docs .lake/build/doc

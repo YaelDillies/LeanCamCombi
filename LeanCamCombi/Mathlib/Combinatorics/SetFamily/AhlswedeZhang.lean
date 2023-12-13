@@ -5,15 +5,10 @@ Authors: Yaël Dillies, Vladimir Ivanov
 -/
 import Mathlib.Algebra.BigOperators.Order
 import Mathlib.Algebra.BigOperators.Ring
+import Mathlib.Data.Finset.Sups
 import Mathlib.Order.Hom.Lattice
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
-import LeanCamCombi.Mathlib.Algebra.BigOperators.Basic
-import LeanCamCombi.Mathlib.Algebra.GroupWithZero.Units.Lemmas
-import LeanCamCombi.Mathlib.Data.Finset.Basic
-import LeanCamCombi.Mathlib.Data.Finset.Sups
-import LeanCamCombi.Mathlib.Data.Fintype.Basic
-import LeanCamCombi.Mathlib.Data.Fintype.Powerset
 
 /-!
 # The Ahlswede-Zhang identity
@@ -81,12 +76,12 @@ private lemma Fintype.sum_div_mul_card_choose_card :
     ∑ s : Finset α, (card α / ((card α - s.card) * (card α).choose s.card) : ℚ) =
       card α * ∑ k in range (card α), (↑k)⁻¹ + 1 := by
   rw [←powerset_univ, powerset_card_disjiUnion, sum_disjiUnion]
-  have : ∀ {x : ℕ}, ∀ s ∈ powersetLen x (univ : Finset α),
+  have : ∀ {x : ℕ}, ∀ s ∈ powersetCard x (univ : Finset α),
     (card α / ((card α - Finset.card s) * (card α).choose (Finset.card s)) : ℚ) =
       card α / ((card α - x) * (card α).choose x)
   · intros n s hs
-    rw [mem_powersetLen_univ.1 hs]
-  simp_rw [sum_congr rfl this, sum_const, card_powersetLen, card_univ]
+    rw [mem_powersetCard_univ.1 hs]
+  simp_rw [sum_congr rfl this, sum_const, card_powersetCard, card_univ]
   simp
   simp_rw [mul_div, mul_comm, ←mul_div]
   rw [←mul_sum, ←mul_inv_cancel (cast_ne_zero.mpr card_ne_zero : (card α : ℚ) ≠ 0), ←mul_add,
@@ -158,8 +153,7 @@ lemma map_truncatedSup (e : α ≃o β) (s : Finset α) (a : α) :
 
 variable [DecidableEq α]
 
-private lemma lower_aux : a ∈ lowerClosure ↑(s ∪ t) ↔ a ∈ lowerClosure s ∨ a ∈ lowerClosure t :=
-  by rw [coe_union, lowerClosure_union, LowerSet.mem_sup_iff]
+private lemma lower_aux : a ∈ lowerClosure ↑(s ∪ t) ↔ a ∈ lowerClosure s ∨ a ∈ lowerClosure t := by rw [coe_union, lowerClosure_union, LowerSet.mem_sup_iff]
 
 lemma truncatedSup_union (hs : a ∈ lowerClosure s) (ht : a ∈ lowerClosure t) :
     truncatedSup (s ∪ t) a = truncatedSup s a ⊔ truncatedSup t a := by
@@ -271,7 +265,7 @@ private lemma sups_aux : a ∈ upperClosure ↑(s ⊻ t) ↔ a ∈ upperClosure 
 
 lemma truncatedSup_infs (hs : a ∈ lowerClosure s) (ht : a ∈ lowerClosure t) :
     truncatedSup (s ⊼ t) a = truncatedSup s a ⊓ truncatedSup t a := by
-  simp only [truncatedSup_of_mem, hs, ht, infs_aux.2 ⟨hs, ht⟩, sup'_inf_sup', filter_infs_ge]
+  simp only [truncatedSup_of_mem, hs, ht, infs_aux.2 ⟨hs, ht⟩, sup'_inf_sup', filter_infs_le]
   simp_rw [←image_inf_product]
   rw [sup'_image]
   rfl
@@ -371,9 +365,9 @@ lemma IsAntichain.le_infSum (h𝒜 : IsAntichain (· ⊆ ·) (𝒜 : Set (Finset
     ∑ s in 𝒜, ((card α).choose s.card : ℚ)⁻¹ ≤ infSum 𝒜 := by
   calc
     _ = ∑ s in 𝒜, (truncatedInf 𝒜 s).card / (s.card * (card α).choose s.card : ℚ) := ?_
-    _ ≤ _ := sum_le_univ_sum_of_nonneg λ s ↦ by positivity
-  refine' sum_congr rfl λ s hs ↦ _
-  rw [truncatedInf_of_isAntichain h𝒜 hs, div_mul_cancel''₀]
+    _ ≤ _ := sum_le_univ_sum_of_nonneg fun s ↦ by positivity
+  refine' sum_congr rfl fun s hs ↦ _
+  rw [truncatedInf_of_isAntichain h𝒜 hs, div_mul_right, one_div]
   have := (nonempty_iff_ne_empty.2 $ ne_of_mem_of_not_mem hs h𝒜₀).card_pos
   positivity
 
@@ -393,7 +387,7 @@ variable [Nonempty α]
     sum_powerset, ←binomial_sum_eq ((card_lt_iff_ne_univ _).2 hs), eq_comm]
   refine' sum_congr rfl fun n _ ↦ _
   rw [mul_div_assoc, ←nsmul_eq_mul]
-  exact sum_powersetLen n s fun m ↦ (card α - s.card : ℚ) / ((card α - m) * (card α).choose m)
+  exact sum_powersetCard n s fun m ↦ (card α - s.card : ℚ) / ((card α - m) * (card α).choose m)
 
 /-- The **Ahlswede-Zhang Identity**. -/
 lemma infSum_compls_add_supSum (𝒜 : Finset (Finset α)) :

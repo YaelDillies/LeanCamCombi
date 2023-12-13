@@ -5,8 +5,9 @@ Authors: Yaël Dillies, Kexing Ying
 -/
 import Mathlib.Algebra.BigOperators.Basic
 import Mathlib.Probability.IdentDistrib
-import LeanCamCombi.Mathlib.Pmf
+import LeanCamCombi.Mathlib.MeasureTheory.Measure.Typeclasses
 import LeanCamCombi.Mathlib.Probability.Independence.Basic
+import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 
 /-!
 # Sequences of iid Bernoulli random variables
@@ -18,7 +19,8 @@ independent Bernoulli random variables.
 
 ## Main declarations
 
-* `ProbabilityTheory.IsBernoulliSeq`: Typeclass for a sequence of iid Bernoulli random variables with parameter
+* `ProbabilityTheory.IsBernoulliSeq`: Typeclass for a sequence of iid Bernoulli random variables
+  with parameter `p`
 -/
 
 open Fintype MeasureTheory Set
@@ -34,7 +36,7 @@ structure IsBernoulliSeq (X : Ω → Set α) (p : outParam ℝ≥0) (μ : Measur
     where
   protected le_one : p ≤ 1
   protected iIndepFun : iIndepFun inferInstance (fun a ω ↦ a ∈ X ω) μ
-  protected map : ∀ a, Measure.map (fun ω ↦ a ∈ X ω) μ = (Pmf.bernoulli' p le_one).toMeasure
+  protected map : ∀ a, Measure.map (fun ω ↦ a ∈ X ω) μ = (PMF.bernoulli' p le_one).toMeasure
 
 variable {X Y : Ω → Set α} {μ : Measure Ω} {p q : ℝ≥0} (hX : IsBernoulliSeq X p μ)
   (hY : IsBernoulliSeq Y q μ)
@@ -42,12 +44,12 @@ variable {X Y : Ω → Set α} {μ : Measure Ω} {p q : ℝ≥0} (hX : IsBernoul
 namespace IsBernoulliSeq
 
 protected lemma ne_zero [Nonempty α] : μ ≠ 0 :=
-  Nonempty.elim ‹_› fun a h ↦ (Pmf.bernoulli' p hX.le_one).toMeasure_ne_zero $ by
+  Nonempty.elim ‹_› fun a h ↦ (PMF.bernoulli' p hX.le_one).toMeasure_ne_zero $ by
     rw [←hX.map a, h, Measure.map_zero]
 
 protected lemma aemeasurable (a : α) : AEMeasurable (fun ω ↦ a ∈ X ω) μ := by
   classical
-  have : (Pmf.bernoulli' p hX.le_one).toMeasure ≠ 0 := NeZero.ne _
+  have : (PMF.bernoulli' p hX.le_one).toMeasure ≠ 0 := NeZero.ne _
   rw [←hX.map a, Measure.map] at this
   refine' (Ne.dite_ne_right_iff fun hX' ↦ _).1 this
   rw [Measure.mapₗ_ne_zero_iff hX'.measurable_mk]
@@ -96,11 +98,12 @@ independent `1 - p`-Bernoulli random variables. -/
 lemma compl : IsBernoulliSeq (fun ω ↦ (X ω)ᶜ) (1 - p) μ where
   le_one := tsub_le_self
   iIndepFun := by
-    simpa only [iIndepFun_iff, mem_compl_iff, MeasurableSpace.comap_not] using hX.iIndepFun
+    simp only [iIndepFun_iff, mem_compl_iff, MeasurableSpace.comap_not]
+    exact (iIndepFun_iff _ _ _).1 hX.iIndepFun
   map a := by
     have : Measurable Not := fun _ _ ↦ trivial
     refine' (this.aemeasurable.map_map_of_aemeasurable (hX.aemeasurable _)).symm.trans _
-    rw [hX.map, Pmf.map_toMeasure _ this, Pmf.map_not_bernoulli']
+    rw [hX.map, PMF.map_toMeasure _ this, PMF.map_not_bernoulli']
 
 /-- The intersection of a sequence of independent `p`-Bernoulli and `q`-Bernoulli random variables
 is a sequence of independent `p * q`-Bernoulli random variables. -/
@@ -136,8 +139,7 @@ protected lemma union (h : IndepFun X Y μ) :
       add_tsub_assoc_of_le (mul_le_of_le_one_left' $ hX.le_one)]
     · exact (add_le_add_left (mul_le_of_le_one_right' $ hY.le_one) _).trans_eq
         (add_tsub_cancel_of_le hX.le_one)
-  · have : Measurable (HasCompl.compl : Set α → Set α) := fun _ _ ↦ trivial
-    rwa [IndepFun_iff, MeasurableSpace.comap_compl this, MeasurableSpace.comap_compl this,
+  · rwa [IndepFun_iff, MeasurableSpace.comap_compl measurable_compl, MeasurableSpace.comap_compl measurable_compl,
       ←IndepFun_iff]
 
 end IsBernoulliSeq

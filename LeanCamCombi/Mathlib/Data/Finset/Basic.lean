@@ -1,28 +1,44 @@
 import Mathlib.Data.Finset.Basic
 
--- attribute [protected] Finset.sdiff_self
-
--- TODO: Fix implicitness of `Finset.inter_eq_left_iff_subset`
--- TODO: Rename `Finset.union_eq_empty_iff` → `Finset.union_eq_empty`
-
 namespace Finset
-variable {α : Type*} [DecidableEq α] {s t : Finset α} {a : α}
+variable {α : Type*} {s t : Finset α} {a b : α}
 
-instance instDecidableLE : @DecidableRel (Finset α) (· ≤ ·) := λ _ _ ↦ decidableSubsetFinset
-instance instDecidableLT : @DecidableRel (Finset α) (· < ·) := λ _ _ ↦ decidableSSubsetFinset
+lemma Nonempty.exists_cons_eq (hs : s.Nonempty) : ∃ t a ha, cons a t ha = s := by
+  classical
+  obtain ⟨a, ha⟩ := hs
+  exact ⟨s.erase a, a, not_mem_erase _ _, by simp [insert_erase ha]⟩
 
-lemma erase_eq_iff_eq_insert (hs : a ∈ s) (ht : a ∉ t) : erase s a = t ↔ s = insert a t := by
-  have := insert_erase hs; aesop
+lemma Nontrivial.exists_cons_eq (hs : s.Nontrivial) :
+    ∃ t a ha b hb hab, (cons b t hb).cons a (mem_cons.not.2 $ not_or_intro hab ha) = s := by
+  classical
+  obtain ⟨a, ha, b, hb, hab⟩ := hs
+  have : b ∈ s.erase a := mem_erase.2 ⟨hab.symm, hb⟩
+  refine ⟨(s.erase a).erase b, a, ?_, b, ?_, ?_, ?_⟩ <;>
+    simp [insert_erase this, insert_erase ha, *]
 
-lemma insert_erase_invOn :
-    Set.InvOn (insert a) (λ s ↦ erase s a) {s : Finset α | a ∈ s} {s : Finset α | a ∉ s} :=
-  ⟨λ _s ↦ insert_erase, λ _s ↦ erase_insert⟩
+variable [DecidableEq α]
 
-lemma insert_sdiff_cancel (ha : a ∉ s) : insert a s \ s = {a} := by
-  rw [insert_sdiff_of_not_mem _ ha, Finset.sdiff_self, insert_emptyc_eq]
+protected alias ⟨_, Nonempty.attach⟩ := attach_nonempty_iff
 
-@[simp] lemma symmDiff_eq_empty : s ∆ t = ∅ ↔ s = t := symmDiff_eq_bot
-@[simp] lemma symmDiff_nonempty : (s ∆ t).Nonempty ↔ s ≠ t :=
-  nonempty_iff_ne_empty.trans symmDiff_eq_empty.not
+lemma disjoint_insert_erase (ha : a ∉ t) : Disjoint (s.erase a) (insert a t) ↔ Disjoint s t := by
+  rw [disjoint_erase_comm, erase_insert ha]
+
+lemma disjoint_erase_insert (ha : a ∉ s) : Disjoint (insert a s) (t.erase a) ↔ Disjoint s t := by
+  rw [← disjoint_erase_comm, erase_insert ha]
+
+lemma insert_sdiff_insert' (hab : a ≠ b) (ha : a ∉ s) : insert a s \ insert b s = {a} := by
+  ext; aesop
+
+lemma erase_sdiff_erase (hab : a ≠ b) (hb : b ∈ s) : s.erase a \ s.erase b = {b} := by
+  ext; aesop
+
+lemma cons_sdiff_cons (hab : a ≠ b) (ha hb) : s.cons a ha \ s.cons b hb = {a} := by
+  rw [cons_eq_insert, cons_eq_insert, insert_sdiff_insert' hab ha]
+
+@[simp] lemma erase_nonempty (ha : a ∈ s) : (s.erase a).Nonempty ↔ s.Nontrivial := by
+  simp only [Finset.Nonempty, mem_erase, and_comm (b := _ ∈ _)]
+  refine ⟨?_, fun hs ↦ hs.exists_ne a⟩
+  rintro ⟨b, hb, hba⟩
+  exact ⟨_, hb, _, ha, hba⟩
 
 end Finset

@@ -5,8 +5,6 @@ Authors: Yaël Dillies
 -/
 import Mathlib.Algebra.BigOperators.Basic
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
-import LeanCamCombi.Mathlib.Data.Fintype.Basic
-import LeanCamCombi.Mathlib.Data.Sym.Sym2
 
 /-!
 # Containment of graphs
@@ -60,7 +58,7 @@ def IsContained (G : SimpleGraph α) (H : SimpleGraph β) : Prop :=
 
 scoped infixl:50 " ⊑ " => SimpleGraph.IsContained
 
-lemma isContained_of_le (h : G₁ ≤ G₂) : G₁ ⊑ G₂ := ⟨homOfLe h, injective_id⟩
+lemma isContained_of_le (h : G₁ ≤ G₂) : G₁ ⊑ G₂ := ⟨Hom.ofLe h, injective_id⟩
 
 protected lemma Iso.isContained (e : G ≃g H) : G ⊑ H := ⟨e, e.injective⟩
 protected lemma Iso.isContained' (e : G ≃g H) : H ⊑ G := e.symm.isContained
@@ -82,7 +80,7 @@ alias IsContained.trans_le := IsContained.mono_right
 
 lemma isContained_of_isEmpty [IsEmpty α] : G ⊑ H :=
   ⟨{  toFun := isEmptyElim
-      map_rel' := λ {a} ↦ isEmptyElim a }, isEmptyElim⟩
+      map_rel' := fun {a} ↦ isEmptyElim a }, isEmptyElim⟩
 
 lemma bot_isContained (f : α ↪ β) : (⊥ : SimpleGraph α) ⊑ H :=
   ⟨{  toFun := f
@@ -129,7 +127,7 @@ lemma IsIndContained.trans : G ⊴ H → H ⊴ I → G ⊴ I := fun ⟨f⟩ ⟨g
 lemma isIndContained_of_isEmpty [IsEmpty α] : G ⊴ H :=
   ⟨{  toFun := isEmptyElim
       inj' := isEmptyElim
-      map_rel_iff' := λ {a} ↦ isEmptyElim a }⟩
+      map_rel_iff' := fun {a} ↦ isEmptyElim a }⟩
 
 lemma isIndContained_iff_exists_subgraph :
     G ⊴ H ↔ ∃ (H' : H.Subgraph) (_e : G ≃g H'.coe), H'.IsInduced' := by
@@ -184,7 +182,7 @@ noncomputable def copyCount (G : SimpleGraph α) (H : SimpleGraph β) : ℕ :=
   simp only [eq_singleton_iff_unique_mem, mem_filter, mem_univ, Subgraph.coe_bot, true_and_iff,
     Nonempty.forall, Subsingleton.elim G ⊥]
   haveI : IsEmpty (⊥ : H.Subgraph).verts := by simp
-  refine' ⟨⟨⟨⟨isEmptyElim, isEmptyElim, isEmptyElim, isEmptyElim⟩, λ {a} ↦ isEmptyElim a⟩⟩,
+  refine' ⟨⟨⟨⟨isEmptyElim, isEmptyElim, isEmptyElim, isEmptyElim⟩, fun {a} ↦ isEmptyElim a⟩⟩,
     fun H' e ↦ Subgraph.ext _ _ _ $ funext₂ fun a b ↦ _⟩
   · simpa [Set.eq_empty_iff_forall_not_mem, filter_eq_empty_iff] using
       Fintype.card_congr e.toEquiv.symm
@@ -209,13 +207,8 @@ noncomputable def labelledCopyCount (G : SimpleGraph α) (H : SimpleGraph β) : 
 
 @[simp] lemma labelledCopyCount_of_isEmpty [IsEmpty α] (G : SimpleGraph α) (H : SimpleGraph β) :
     G.labelledCopyCount H = 1 := by
-  classical
-  have : Unique {f : G →g H // Injective f} :=
-    { default := ⟨default, isEmptyElim⟩
-      uniq := fun _ ↦ Subsingleton.elim _ _ }
-  rw [labelledCopyCount]
-  sorry
-  -- exact @Fintype.card_unique _ (this) _
+  convert Fintype.card_unique
+  exact { default := ⟨default, isEmptyElim⟩, uniq := fun _ ↦ Subsingleton.elim _ _ }
 
 @[simp] lemma labelledCopyCount_eq_zero : G.labelledCopyCount H = 0 ↔ ¬ G ⊑ H := by
   simp [labelledCopyCount, IsContained, Fintype.card_eq_zero_iff]
@@ -226,9 +219,10 @@ noncomputable def labelledCopyCount (G : SimpleGraph α) (H : SimpleGraph β) : 
 /-- There's more labelled copies of `H` of-`G` than unlabelled ones. -/
 lemma copyCount_le_labelledCopyCount : G.copyCount H ≤ G.labelledCopyCount H := by
   rw [copyCount, ←Fintype.card_coe]
-  refine' Fintype.card_le_of_injective (fun H' ↦
+  refine Fintype.card_le_of_injective (fun H' ↦
     ⟨H'.val.hom.comp (mem_filter.1 H'.2).2.some.toHom,
-      Subtype.coe_injective.comp (mem_filter.1 H'.2).2.some.injective⟩) _
+      Subtype.coe_injective.comp (mem_filter.1 H'.2).2.some.injective⟩) ?_
+
   sorry
 
 end LabelledCopyCount
@@ -245,7 +239,7 @@ to get a graph `H'` that doesn't contain `G`.
 
 private lemma aux (hG : G ≠ ⊥) {H' : H.Subgraph} :
     Nonempty (G ≃g H'.coe) → H'.edgeSet.Nonempty := by
-  obtain ⟨e, he⟩ := nonempty_edgeSet.2 hG
+  obtain ⟨e, he⟩ := edgeSet_nonempty.2 hG
   rw [←Subgraph.image_coe_edgeSet_coe]
   exact fun ⟨f⟩ ↦ Set.Nonempty.image _ ⟨_, f.map_mem_edgeSet_iff.2 he⟩
 
@@ -284,7 +278,7 @@ contain `G`. -/
 lemma not_isContained_kill (hG : G ≠ ⊥) : ¬ G ⊑ G.kill H := by
   rw [kill_of_ne_bot hG, deleteEdges_eq_sdiff_fromEdgeSet, isContained_iff_exists_subgraph]
   rintro ⟨H', hGH'⟩
-  have hH' : (H'.map $ homOfLe (sdiff_le : H \ _ ≤ H)).edgeSet.Nonempty := by
+  have hH' : (H'.map $ Hom.ofLe (sdiff_le : H \ _ ≤ H)).edgeSet.Nonempty := by
     rw [Subgraph.edgeSet_map]
     exact (aux hG hGH').image _
   set e := hH'.some with he
@@ -293,18 +287,17 @@ lemma not_isContained_kill (hG : G ≠ ⊥) : ¬ G ⊑ G.kill H := by
   rw [←Subgraph.image_coe_edgeSet_coe] at this
   subst he
   obtain ⟨e, he₀, he₁⟩ := this
-  let e' : Sym2 H'.verts := Sym2.map (Subgraph.isoMap (homOfLe _) injective_id _).symm e
+  let e' : Sym2 H'.verts := Sym2.map (Subgraph.isoMap (Hom.ofLe _) injective_id _).symm e
   have he' : e' ∈ H'.coe.edgeSet := (Iso.map_mem_edgeSet_iff _).2 he₀
   rw [Subgraph.edgeSet_coe] at he'
   have := Subgraph.edgeSet_subset _ he'
   simp only [edgeSet_sdiff,  edgeSet_fromEdgeSet,  edgeSet_sdiff_sdiff_isDiag, Set.mem_diff,
     Set.mem_iUnion, not_exists] at this
-  refine' this.2 (H'.map $ homOfLe sdiff_le)
-    ⟨(Subgraph.isoMap (homOfLe _) injective_id _).comp hGH'.some⟩ _
+  refine' this.2 (H'.map $ Hom.ofLe sdiff_le)
+    ⟨(Subgraph.isoMap (Hom.ofLe _) injective_id _).comp hGH'.some⟩ _
   rw [Sym2.map_map, Set.mem_singleton_iff, ←he₁]
   congr 1 with x
   refine' congr_arg (↑) (Equiv.Set.image_symm_apply _ _ injective_id _ _)
-  simpa using x.2
 
 variable [Fintype H.edgeSet]
 
