@@ -7,7 +7,6 @@ import Mathlib.Analysis.Convex.Topology
 import Mathlib.LinearAlgebra.FiniteDimensional
 import Mathlib.Order.Filter.Archimedean
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
-import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.Independent
 
 /-!
 # Definitions and lemmas about individual simplices

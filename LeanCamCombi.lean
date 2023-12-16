@@ -15,8 +15,8 @@ import LeanCamCombi.Kneser.Mathlib
 import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.KruskalKatona
 import LeanCamCombi.LittlewoodOfford
+import LeanCamCombi.Mathlib.Algebra.BigOperators.Basic
 import LeanCamCombi.Mathlib.Algebra.BigOperators.LocallyFinite
-import LeanCamCombi.Mathlib.Algebra.IndicatorFunction
 import LeanCamCombi.Mathlib.Algebra.Order.Ring.Canonical
 import LeanCamCombi.Mathlib.Algebra.Order.Ring.Defs
 import LeanCamCombi.Mathlib.Analysis.Convex.Combination
@@ -47,8 +47,6 @@ import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Stabilizer
-import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
-import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.Independent
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.Typeclasses
 import LeanCamCombi.Mathlib.Order.Category.BoolAlg

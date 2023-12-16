@@ -1,6 +1,5 @@
 import Mathlib.Analysis.Convex.Combination
 import Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
-import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.Independent
 
 open Finset
 open scoped BigOperators

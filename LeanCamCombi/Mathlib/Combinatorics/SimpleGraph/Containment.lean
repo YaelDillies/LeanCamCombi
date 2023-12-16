@@ -263,7 +263,7 @@ private lemma kill_of_ne_bot (hG : G ≠ ⊥) (H : SimpleGraph β) :
 
 lemma kill_eq_right (hG : G ≠ ⊥) : G.kill H = H ↔ ¬ G ⊑ H := by
   simp only [kill_of_ne_bot hG, Set.disjoint_left, isContained_iff_exists_subgraph,
-    @forall_swap _ H.Subgraph, Set.iUnion_singleton_eq_range, deleteEdges_eq, Set.mem_iUnion,
+    @forall_swap _ H.Subgraph, Set.iUnion_singleton_eq_range, deleteEdges_eq_self, Set.mem_iUnion,
     Set.mem_range, not_exists, not_nonempty_iff, Nonempty.forall]
   exact forall_congr' fun H' ↦ ⟨fun h ↦ ⟨fun f ↦ h _
     (Subgraph.edgeSet_subset _ $ (aux hG ⟨f⟩).choose_spec) f rfl⟩, fun h _ _ ↦ h.elim⟩

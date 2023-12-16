@@ -1,7 +1,6 @@
 import Mathlib.Analysis.Convex.SimplicialComplex.Basic
 import LeanCamCombi.Mathlib.Analysis.Convex.Combination
-import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.Independent
-import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
+import Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 
 open Finset Geometry
 open scoped Affine BigOperators Classical

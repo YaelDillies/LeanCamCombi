@@ -1,5 +1,5 @@
 import Mathlib.Combinatorics.SimpleGraph.Basic
-import LeanCamCombi.Mathlib.Algebra.IndicatorFunction
+import LeanCamCombi.Mathlib.Algebra.BigOperators.Basic
 
 open Finset Nat
 open scoped BigOperators
@@ -28,7 +28,7 @@ lemma degOn_union (h : Disjoint s t) (a) : G.degOn (s ∪ t) a = G.degOn s a + G
 
 -- edges from t to s\t equals edges from s\t to t
 lemma sum_degOn_comm (s t : Finset α) : ∑ a in s, G.degOn t a = ∑ a in t, G.degOn s a := by
-  simp_rw [degOn, card_eq_sum_ones, sum_inter_eq_sum_indicator]
+  simp_rw [degOn, card_eq_sum_ones, ← sum_indicator_eq_sum_inter]
   rw [sum_comm]
   simp [Set.indicator_apply, adj_comm]
 
