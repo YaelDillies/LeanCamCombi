@@ -12,28 +12,28 @@ open Finset
 open scoped Classical Pointwise
 
 noncomputable def countelements (A : Set ℕ) (n : ℕ) : ℕ := -- for teaching purposes,
-  Finset.card (Finset.filter (· ∈ A) (Finset.Icc 1 n))      -- writing this is better
+  Finset.card ((Icc 1 n).filter (· ∈ A))      -- writing this is better
 
 lemma countelements_nonneg (A : Set ℕ) (n : ℕ) : (0 ≤ countelements A n) := by positivity
   -- -- ∧ (countelements A n ≤ n) :=
-  -- -- have B := Finset.filter (· ∈ A) (Finset.Icc 1 n)
+  -- -- have B := (Icc 1 n).filter (· ∈ A)
   -- rw [countelements]
   -- rw [← card_empty]
   -- -- rw [← u]
   -- apply card_le_of_subset
-  -- exact empty_subset (Finset.filter (· ∈ A) (Finset.Icc 1 n))
+  -- exact empty_subset ((Icc 1 n).filter (· ∈ A))
 
-lemma card_Icc_one_n_n (n : ℕ) : card (Finset.Icc 1 n) = n := by
+lemma card_Icc_one_n_n (n : ℕ) : card (Icc 1 n) = n := by
   rw [Nat.card_Icc 1 n, add_tsub_cancel_right]
 
 lemma countelements_le_n  (A : Set ℕ) (n : ℕ) : countelements A n ≤ n := by
-  -- have u := filter_subset (· ∈ A) (Finset.Icc 1 n)
+  -- have u := filter_subset (· ∈ A) (Icc 1 n)
   rw [countelements]
   --have h := card_I
   rw [← card_Icc_one_n_n n]
   apply card_le_of_subset
   rw [card_Icc_one_n_n n]
-  exact filter_subset (· ∈ A) (Finset.Icc 1 n)
+  exact filter_subset (· ∈ A) (Icc 1 n)
 
 lemma sumset_contains_n (A B : Set ℕ) (n : ℕ) (ha : 0 ∈ A) (hb : 0 ∈ B)
     (hc : n ≤ countelements A n + countelements B n) : n ∈ A + B := by
@@ -110,14 +110,14 @@ lemma sumset_contains_n (A B : Set ℕ) (n : ℕ) (ha : 0 ∈ A) (hb : 0 ∈ B)
     rw [hn0] at hnb
     contradiction
   · have main : ∃ a b, a ∈ A ∧ b ∈ B ∧ (a : ℤ) = n - b := by
-      have lem1 : Finset.card (Finset.filter (· ∈ {n} - B) (Finset.Icc 1 (n-1))) = countelements B (n-1) := by
+      have lem1 : Finset.card (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1))) = countelements B (n-1) := by
         rw [countelements]
         apply le_antisymm
         · simp only [Set.singleton_sub, Set.mem_image, Nat.lt_one_iff, tsub_eq_zero_iff_le, mem_Icc, and_imp]
           sorry
         · sorry
-      have lem2 : (Finset.filter (· ∈ A) (Finset.Icc 1 (n-1))) ∪ (Finset.filter (· ∈ {n} - B) (Finset.Icc 1 (n-1))) ⊆ Finset.Icc 1 (n-1) := by sorry
-      have lem3 : (Finset.filter (· ∈ A) (Finset.Icc 1 (n-1))) ∩ (Finset.filter (· ∈ {n} - B) (Finset.Icc 1 (n-1))) ≠ ∅ := by sorry
+      have lem2 : (Icc 1 (n-1)).filter (· ∈ A) ∪ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1))) ⊆ Icc 1 (n-1) := by sorry
+      have lem3 : (Icc 1 (n-1)).filter (· ∈ A) ∩ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1))) ≠ ∅ := by sorry
       simp only [Nat.lt_one_iff, tsub_eq_zero_iff_le, mem_Icc, and_imp, Set.singleton_sub, Set.mem_image, ne_eq] at lem3  -- set is nonempty iff ?
       have lem31 : A ∩ ({n} - B) ∩ Icc 1 (n-1) ≠ ∅ := by sorry
       rw [← Set.nonempty_iff_ne_empty, Set.nonempty_def] at lem31
@@ -167,8 +167,7 @@ theorem sum_schnirelmannDensity_ge_one_sumset_nat (A B : Set ℕ) :
     have hsub : B ⊆ A + B := by
       intro b hb
       rw [Set.mem_add]
-      use 0
-      use b
+      use 0, b
       simp only [zero_add, and_true]
       constructor
       · exact hA
@@ -181,27 +180,39 @@ theorem sum_schnirelmannDensity_ge_one_sumset_nat (A B : Set ℕ) :
       rcases x.eq_zero_or_pos with rfl | hxek
       · intro hzero
         rw [Set.mem_add]
-        use 0
-        use 0
+        use 0, 0
       · intro hx
         exact hsub (hb $ Nat.pos_iff_ne_zero.1 hxek)
     · exact Set.subset_univ (A + B)
   · rw [Set.Subset.antisymm_iff]
     constructor
-    · have u : ∀ n : ℕ, countelements A n + countelements B n ≥ n := by
+    · have u : ∀ n : ℕ, n ≤ countelements A n + countelements B n := by
         intro n
         rcases n.eq_zero_or_pos with rfl | hnge₀
         · exact countelements_nonneg A 0
-        · repeat rw [schnirelmannDensity] at h
-          -- rw [div_self (n : ℝ)] at h
-          norm_cast at h
-          sorry
-      -- rw [u] at hs
+        · have ha : schnirelmannDensity A ≤ countelements A n / n := by
+            rw [countelements]
+            apply schnirelmannDensity_le_div
+            positivity
+          have hb : schnirelmannDensity B ≤ countelements B n / n := by
+            rw [countelements]
+            apply schnirelmannDensity_le_div
+            positivity
+          have hsum : schnirelmannDensity A + schnirelmannDensity B ≤ (countelements A n + countelements B n) / n := by
+            rw [add_div]
+            exact add_le_add ha hb
+          have hf : (1 : ℝ) ≤ (countelements A n + countelements B n) / n := le_trans h hsum
+          zify at hf
+          zify
+          rw [le_div_iff, one_mul] at hf
+          · norm_cast at hf
+            norm_cast
+          · positivity
       intro n hn
       refine sumset_contains_n _ _ _  hA hB $ u n
     · exact Set.subset_univ (A + B)
 
-noncomputable def next_elm (A : Set ℕ) (a : A) (n : ℕ) : WithTop ℕ :=
+noncomputable def next_elm (A : Set ℕ) (a : A) (n : ℕ) : ℕ :=
   if h : ((Ioc ↑a n).filter (· ∈ A)).Nonempty then ((Ioc ↑a n).filter (· ∈ A)).min' h else n
 
 /-- **Schnirelmann's theorem** -/
@@ -227,7 +238,7 @@ theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B)
   obtain rfl | n1 := n.eq_zero_or_pos
   · ring_nf
     positivity
-  · have lem : ⋃ a : A, {c ∈ A + B | 0 < c - a ∧ c ≤ next_elm A a n} ⊆ (A + B) ∩ Finset.Icc 1 n
+  · have lem : ⋃ a : A, {c ∈ A + B | 0 < c - a ∧ c ≤ next_elm A a n} ⊆ (A + B) ∩ Icc 1 n
     · simp only [tsub_pos_iff_lt, Set.sep_and, Set.iUnion_coe_set, Nat.lt_one_iff, coe_Icc, not_le,
         Set.subset_inter_iff, Set.iUnion_subset_iff]
       constructor
@@ -252,7 +263,8 @@ theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B)
       · norm_cast at hx3
         exact hx3.trans (mem_Ioc.1 (mem_filter.1 $ min'_mem _ _).1).2
       · simpa using hx3
-    have aux : countelements (⋃ a : A, {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)}) n ≤ countelements (A + B) n := by
+    have aux : countelements (⋃ a : A, {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)}) n ≤
+      countelements (A + B) n := by
       rw [countelements, countelements]
       apply card_le_of_subset
       intro y
@@ -261,7 +273,7 @@ theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B)
       constructor
       · exact hy.1
       · obtain ⟨hy1, hy2⟩ := hy
-        have hs : y ∈ (A + B) ∩ (Finset.Icc 1 n) := by aesop
+        have hs : y ∈ (A + B) ∩ (Icc 1 n) := by aesop
         rw [Set.mem_inter_iff] at hs
         exact hs.1
     have claim : countelements A n + β * (n - countelements A n) ≤ countelements (⋃ a : A, {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)}) n := by
@@ -315,4 +327,4 @@ lemma schnirelmannDensity_for_two (A B : Set ℕ) : (0 ∈ A) → (0 ∈ B) → 
     exact h0
   linarith
 
--- theorem MannTheorem (A B : Set ℕ) : schnirelmannDensity (A + B) ≥  Min 1 (schnirelmannDensity A + schnirelmannDensity B) := by sorry
+theorem mannTheorem (A B : Set ℕ) : min 1 (schnirelmannDensity A + schnirelmannDensity B) ≤ schnirelmannDensity (A + B) := by sorry
