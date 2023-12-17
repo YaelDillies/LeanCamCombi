@@ -140,6 +140,7 @@ lemma sumset_contains_n (A B : Set ℕ) (n : ℕ) (ha : 0 ∈ A) (hb : 0 ∈ B)
           obtain ⟨xx, yy, hxx, hyy, hxy⟩ := hx12
           rw [Set.mem_singleton_iff] at hxx
           rw [hxx] at hxy
+          zify at hxy
           sorry
           -- zify at hxy
           -- rw [Int.cast_eq_cast_iff_Nat] at hxy
