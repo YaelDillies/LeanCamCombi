@@ -11,8 +11,8 @@ import Mathlib.GroupTheory.Submonoid.Operations
 open Finset
 open scoped Classical Pointwise
 
-noncomputable def countelements (A : Set ℕ) (n : ℕ) : ℕ := -- for teaching purposes,
-  Finset.card ((Icc 1 n).filter (· ∈ A))      -- writing this is better
+noncomputable def countelements (A : Set ℕ) (n : ℕ) : ℕ :=  -- for teaching purposes,
+  Finset.card ((Icc 1 n).filter (· ∈ A))                    -- writing this is better
 
 lemma countelements_nonneg (A : Set ℕ) (n : ℕ) : (0 ≤ countelements A n) := by positivity
   -- -- ∧ (countelements A n ≤ n) :=
@@ -127,12 +127,11 @@ lemma sumset_contains_n (A B : Set ℕ) (n : ℕ) (ha : 0 ∈ A) (hb : 0 ∈ B)
       use x, n - x
       have hnx : x < n := by
         simp only [Nat.lt_one_iff, tsub_eq_zero_iff_le, coe_Icc, not_le, Set.mem_Icc] at hx2
-        -- rw [Nat.lt_iff_add_one_le]
-        -- zify at hx2
-        -- zify
-        -- rw [← le_sub_iff_add_le]
-        rw [lt_iff_not_le]
-        sorry
+        zify
+        zify at hx2
+        rw [Int.coe_pred_of_pos hn1] at hx2
+        rw [← @Int.le_sub_one_iff]
+        exact hx2.2
       constructor
       · simp_all only [Set.singleton_sub, Set.mem_image, Nat.lt_one_iff, tsub_eq_zero_iff_le, mem_Icc, and_imp, Set.mem_inter_iff, coe_Icc, not_le, Set.mem_Icc]
       · constructor
