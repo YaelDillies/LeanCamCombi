@@ -27,11 +27,11 @@ if the inequality is strict, then we in fact have `|s + H| + |t + H| ≤ |s + t|
 * Matt DeVos, *A short proof of Kneser's addition lemma*
 -/
 
-open Function MulAction
+open Function MulAction Subgroup
 
 open scoped Classical Pointwise
 
-variable {ι α : Type*} [CommGroup α] [DecidableEq α] {s s' t t' C : Finset α} {a b : α}
+variable {α : Type*} [CommGroup α] [DecidableEq α] {s t : Finset α}
 
 namespace Finset
 
@@ -46,17 +46,49 @@ lemma le_card_union_add_card_mulStab_union :
   -- TODO: `to_additive` chokes on `zero_le'`
   obtain rfl | ht := t.eq_empty_or_nonempty
   · simp [-zero_le']
-  obtain hst | hst := (subset_union_left s t).eq_or_ssubset
-  · simp [hst.symm]
-  obtain hts | hts := (subset_union_right s t).eq_or_ssubset
-  · simp [hts.symm]
   set Hs := s.mulStab with hHs
   set Ht := t.mulStab with hHt
   set H := Hs * Ht with hH
   have hHs : Hs.Nonempty := hs.mulStab
   have hHt : Ht.Nonempty := ht.mulStab
   have hH : H.Nonempty := hHs.mul hHt
-  have : Hs ∩ Ht = 1 := by sorry
+  wlog h1: Hs ∩ Ht = 1
+  · set N := stabilizer α s ⊓ stabilizer α t with hN
+    have hNmulstab : (N : Set α) = ↑(Hs ∩ Ht) := by aesop
+    replace h1 : mulStab (image (QuotientGroup.mk (s := N)) s) ∩
+      mulStab (image QuotientGroup.mk t) = 1 := by
+      ext x
+      constructor
+      · simp only [Nonempty.image_iff, mem_one, and_imp]
+        intro hx
+        replace hx := inter_mulStab_subset_mulStab_union hx
+        sorry
+      · aesop
+    specialize this (α := α ⧸ N) (s := s.image (↑)) (t := t.image (↑))
+    simp only [Nonempty.image_iff, mulStab_nonempty, mul_nonempty, ge_iff_le, and_imp,
+      forall_true_left, hs, ht, h1] at this
+    calc
+    min (card s + card Hs) (card t + card Ht) =
+      min (Nat.card N * card (s.image (QuotientGroup.mk (s := N))) + Nat.card N * card (Hs.image (QuotientGroup.mk (s := N))))
+      (Nat.card N * card (t.image (QuotientGroup.mk (s := N))) + Nat.card N * card (Ht.image (QuotientGroup.mk (s := N)))) := by
+        rw [← subgroup_mul_card_eq_mul_of_mul_stab_subset N s,
+        ← subgroup_mul_card_eq_mul_of_mul_stab_subset N t,
+        ← subgroup_mul_card_eq_mul_of_mul_stab_subset N Hs,
+        ← subgroup_mul_card_eq_mul_of_mul_stab_subset N Ht]
+        all_goals { aesop }
+    _ = Nat.card N * min (card (s.image (QuotientGroup.mk (s := N))) +
+      card (Hs.image (QuotientGroup.mk (s := N)))) (card (t.image (QuotientGroup.mk (s := N))) +
+      card (Ht.image (QuotientGroup.mk (s := N)))) := by
+      rw [← mul_add, ← mul_add, Nat.mul_min_mul_left]
+    _ ≤ Nat.card N * card (image (QuotientGroup.mk (s := N)) s ∪
+      image (QuotientGroup.mk (s := N)) t) +
+      card (mulStab (image (QuotientGroup.mk (s := N)) s ∪
+      image (QuotientGroup.mk (s := N)) t)) := by sorry
+    _ ≤ card (s ∪ t) + card (mulStab (s ∪ t)) := sorry
+  obtain hst | hst := (subset_union_left s t).eq_or_ssubset
+  · simp [hst.symm]
+  obtain hts | hts := (subset_union_right s t).eq_or_ssubset
+  · simp [hts.symm]
   have : H.card = Hs.card * Ht.card := by
     refine' card_mul_iff.2 fun a ha b hb hab => _
     sorry
@@ -104,7 +136,8 @@ lemma le_card_union_add_card_mulStab_union :
 
 -- Lemma 3.4 in Ruzsa's notes
 @[to_additive]
-lemma le_card_sup_add_card_mulStab_sup {s : Finset ι} {f : ι → Finset α} (hs : s.Nonempty) :
+lemma le_card_sup_add_card_mulStab_sup {s : Finset ι} {f : ι → Finset α}
+    (hs : s.Nonempty) :
     (s.inf' hs fun i => (f i).card + (f i).mulStab.card) ≤
       (s.sup f).card + (s.sup f).mulStab.card := by
   induction' s using Finset.cons_induction with i s hi ih

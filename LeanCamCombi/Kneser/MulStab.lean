@@ -373,4 +373,52 @@ lemma card_mul_card_image_coe (s t : Finset α) :
   -- simp only [h1, h3, Fintype.card_coe] at temp
   -- rw [temp]
 
+@[to_additive]
+lemma subgroup_mul_card_eq_mul_of_mul_stab_subset (s : Subgroup α) (t : Finset α)
+    (hst : (s : Set α) ⊆ t.mulStab) :
+    Nat.card s * card (t.image (↑) : Finset (α ⧸ s)) = card t := by
+  have h : (t : Set α) * s = t := by
+    apply Set.Subset.antisymm (Set.Subset.trans (Set.mul_subset_mul_left hst) _)
+    · intro x
+      rw [Set.mem_mul]
+      aesop
+    · rw [← coe_mul, mul_mulStab]
+  have := s.subgroup_mul_card_eq_mul t
+  rw [h] at this
+  simpa
+
+@[to_additive]
+lemma mul_stab_quotient_commute_subgroup (s : Subgroup α) (t : Finset α)
+    (hst : (s : Set α) ⊆ t.mulStab) :
+    (t.mulStab.image (↑) : Finset (α ⧸ s)) = (t.image (↑) : Finset (α ⧸ s)).mulStab := by
+  obtain rfl | ht := t.eq_empty_or_nonempty
+  · simp
+  have hti : (image (QuotientGroup.mk (s := s)) t).Nonempty := by aesop
+  ext x;
+  simp only [mem_image, Nonempty.image_iff, mem_mulStab hti]
+  constructor
+  · rintro ⟨a, hax⟩
+    rw [← hax.2]
+    ext z
+    simp only [mem_smul_finset, mem_image, smul_eq_mul, exists_exists_and_eq_and]
+    constructor
+    · rintro ⟨b, hbt, hbaz⟩
+      use (b * a)
+      rw [← mul_mulStab t]
+      refine ⟨mul_mem_mul hbt hax.1, ?_⟩
+      rw [← hbaz, QuotientGroup.mk_mul, mul_comm]
+    · rintro ⟨b, hbt, hbz⟩
+      rw [← hbz, ← mul_mulStab t, mul_comm]
+      use (a⁻¹ * b)
+      refine ⟨mul_mem_mul ?_ hbt, by simp⟩
+      rw [← mem_coe, coe_mulStab ht]
+      aesop
+  · intro hx
+    have : s ≤ stabilizer α t := by aesop
+    use ((Subgroup.quotientMapOfLE this) x).out'
+    aesop
+    sorry
+
+
+
 end Finset
