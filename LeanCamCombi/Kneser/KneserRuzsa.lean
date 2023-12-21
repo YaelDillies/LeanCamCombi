@@ -69,8 +69,10 @@ lemma le_card_union_add_card_mulStab_union :
       forall_true_left, hs, ht, h1] at this
     calc
     min (card s + card Hs) (card t + card Ht) =
-      min (Nat.card N * card (s.image (QuotientGroup.mk (s := N))) + Nat.card N * card (Hs.image (QuotientGroup.mk (s := N))))
-      (Nat.card N * card (t.image (QuotientGroup.mk (s := N))) + Nat.card N * card (Ht.image (QuotientGroup.mk (s := N)))) := by
+      min (Nat.card N * card (s.image (QuotientGroup.mk (s := N))) +
+      Nat.card N * card (Hs.image (QuotientGroup.mk (s := N))))
+      (Nat.card N * card (t.image (QuotientGroup.mk (s := N))) +
+      Nat.card N * card (Ht.image (QuotientGroup.mk (s := N)))) := by
         rw [← subgroup_mul_card_eq_mul_of_mul_stab_subset N s,
         ← subgroup_mul_card_eq_mul_of_mul_stab_subset N t,
         ← subgroup_mul_card_eq_mul_of_mul_stab_subset N Hs,

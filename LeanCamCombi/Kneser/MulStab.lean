@@ -415,10 +415,22 @@ lemma mul_stab_quotient_commute_subgroup (s : Subgroup α) (t : Finset α)
       aesop
   · intro hx
     have : s ≤ stabilizer α t := by aesop
-    use ((Subgroup.quotientMapOfLE this) x).out'
-    aesop
-    sorry
-
-
+    obtain ⟨y, hyx⟩ := Quotient.exists_rep x
+    refine ⟨y, (mem_mulStab_iff_subset_smul_finset ht).mpr ?_, by simpa⟩
+    intros z hzt
+    replace hx : image QuotientGroup.mk (y • t) = image (QuotientGroup.mk (s := s)) t := by
+      rw [← hx, ← hyx]
+      exact image_smul_comm QuotientGroup.mk y t (congrFun rfl)
+    have hyz : QuotientGroup.mk z ∈ image (QuotientGroup.mk (s := s)) (y • t) := by aesop
+    simp only [QuotientGroup.mk_mul, mem_image] at hyz
+    obtain ⟨a, ha, hayz⟩ := hyz
+    obtain ⟨b, hbt, haby⟩ := mem_smul_finset.mp ha
+    subst a
+    rw [QuotientGroup.eq, smul_eq_mul] at hayz
+    replace : ∃ c ∈ mulStab t, (y • b)⁻¹ * z = c := by aesop
+    obtain ⟨c, hct, hcbyz⟩ := this
+    rw [inv_mul_eq_iff_eq_mul] at hcbyz
+    rw [hcbyz, smul_mul_assoc, mul_comm, ← smul_eq_mul]
+    exact smul_mem_smul_finset ((mem_mulStab' ht).mp hct hbt)
 
 end Finset
