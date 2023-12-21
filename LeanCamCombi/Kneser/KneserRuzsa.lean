@@ -141,13 +141,15 @@ lemma le_card_union_add_card_mulStab_union :
                 Ht.card - (mulStab (s ∪ t)).card ≤ (t \ s).card
   · simp only [ge_iff_le, min_le_iff]
     cases' h2 with h2 h2
-    · right
-      sorry
     · left
       sorry
+    · right
+      sorry
   have Hst : (mulStab (s ∪ t)).Nonempty := Nonempty.mulStab (Nonempty.inr ht)
-  set k : α → ℕ := sorry
-  set l : α → ℕ := sorry
+  set k : α → ℕ := fun a =>
+    card ((a • H).image (QuotientGroup.mk (s := stabilizer α s)) ∩ s.image QuotientGroup.mk)
+  set l : α → ℕ := fun a =>
+   card ((a • H).image (QuotientGroup.mk (s := stabilizer α t)) ∩ t.image QuotientGroup.mk)
   have hkt : ∀ a, k a ≤ Ht.card := sorry
   have hls : ∀ a, l a ≤ Hs.card := sorry
   have hk : ∀ a, (s \ t ∩ a • H).card = k a * (Hs.card - l a) := by sorry
