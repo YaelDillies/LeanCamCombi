@@ -82,8 +82,8 @@ protected lemma meas [Fintype α] (s : Finset α) :
     Finset.prod_eq_pow_card, Finset.card_compl]
   · rintro a hi
     rw [Finset.mem_compl] at hi
-    simp only [hi, ←compl_setOf, NullMeasurableSet.prob_compl_eq_one_sub, mem_setOf_eq,
-      Finset.mem_coe, iff_false_iff, hX.nullMeasurableSet, hX.meas_apply]
+    simp only [hi, ←compl_setOf, prob_compl_eq_one_sub₀, mem_setOf_eq, Finset.mem_coe,
+      iff_false_iff, hX.nullMeasurableSet, hX.meas_apply]
   · rintro a hi
     simp only [hi, mem_setOf_eq, Finset.mem_coe, iff_true_iff, hX.meas_apply]
   rintro a

@@ -1,5 +1,4 @@
 import Mathlib.Probability.ProbabilityMassFunction.Constructions
-import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
 
 -- TODO: On a countable space, define one-to-one correspondance between `PMF` and probability
 -- measures

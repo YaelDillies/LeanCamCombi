@@ -184,8 +184,8 @@ noncomputable def copyCount (G : SimpleGraph α) (H : SimpleGraph β) : ℕ :=
   haveI : IsEmpty (⊥ : H.Subgraph).verts := by simp
   refine' ⟨⟨⟨⟨isEmptyElim, isEmptyElim, isEmptyElim, isEmptyElim⟩, fun {a} ↦ isEmptyElim a⟩⟩,
     fun H' e ↦ Subgraph.ext _ _ _ $ funext₂ fun a b ↦ _⟩
-  · simpa [Set.eq_empty_iff_forall_not_mem, filter_eq_empty_iff] using
-      Fintype.card_congr e.toEquiv.symm
+  · simpa [Set.eq_empty_iff_forall_not_mem, filter_eq_empty_iff, ‹IsEmpty α›] using
+      e.toEquiv.symm.isEmpty_congr
   · simp only [Subgraph.not_bot_adj, eq_iff_iff, iff_false_iff]
     exact fun hab ↦ e.symm.map_rel_iff.2 hab.coe
 

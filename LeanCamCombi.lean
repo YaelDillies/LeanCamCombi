@@ -47,7 +47,6 @@ import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Stabilizer
-import LeanCamCombi.Mathlib.MeasureTheory.Measure.MeasureSpace
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.Typeclasses
 import LeanCamCombi.Mathlib.Order.Category.BoolAlg
 import LeanCamCombi.Mathlib.Order.ConditionallyCompleteLattice.Basic
