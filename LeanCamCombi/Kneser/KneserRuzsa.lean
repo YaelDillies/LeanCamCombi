@@ -59,10 +59,26 @@ lemma le_card_union_add_card_mulStab_union :
       mulStab (image QuotientGroup.mk t) = 1 := by
       ext x
       constructor
-      · simp only [Nonempty.image_iff, mem_one, and_imp]
+      · simp only [Nonempty.image_iff, mem_one, and_imp, ← QuotientGroup.mk_one]
         intro hx
-        replace hx := inter_mulStab_subset_mulStab_union hx
-        sorry
+        rw [←  mul_stab_quotient_commute_subgroup N s,
+            ← mul_stab_quotient_commute_subgroup N t] at hx
+        simp only [mem_inter, mem_image] at hx
+        obtain ⟨⟨y, hy, hyx⟩, ⟨z, hz, hzx⟩⟩ := hx
+        obtain ⟨w, hwx⟩ := Quotient.exists_rep x
+        have : ⟦w⟧ = QuotientGroup.mk (s := N) w := by exact rfl
+        rw [← hwx, this, QuotientGroup.eq] at hyx hzx ⊢
+        simp only [mul_one, ge_iff_le, inv_mem_iff, mem_inf, mem_stabilizer_iff] at hyx hzx ⊢
+        constructor
+        · convert hyx.1 using 1
+          rw [mul_comm, mul_smul]
+          congr
+          simp only [← inv_smul_eq_iff, inv_inv, ← (mem_mulStab hs), hy]
+        · convert hzx.2 using 1
+          rw [mul_comm, mul_smul]
+          congr
+          simp only [← inv_smul_eq_iff, inv_inv, ← (mem_mulStab ht), hz]
+        all_goals { aesop }
       · aesop
     specialize this (α := α ⧸ N) (s := s.image (↑)) (t := t.image (↑))
     simp only [Nonempty.image_iff, mulStab_nonempty, mul_nonempty, ge_iff_le, and_imp,
@@ -81,20 +97,47 @@ lemma le_card_union_add_card_mulStab_union :
     _ = Nat.card N * min (card (s.image (QuotientGroup.mk (s := N))) +
       card (Hs.image (QuotientGroup.mk (s := N)))) (card (t.image (QuotientGroup.mk (s := N))) +
       card (Ht.image (QuotientGroup.mk (s := N)))) := by
-      rw [← mul_add, ← mul_add, Nat.mul_min_mul_left]
-    _ ≤ Nat.card N * card (image (QuotientGroup.mk (s := N)) s ∪
+        rw [← mul_add, ← mul_add, Nat.mul_min_mul_left]
+    _ = Nat.card N * min (card (image (QuotientGroup.mk (s := N)) s) +
+      card (mulStab (image (QuotientGroup.mk (s := N)) s)))
+      (card (image (QuotientGroup.mk (s := N)) t) +
+      card (mulStab (image (QuotientGroup.mk (s := N)) t))) := by
+        rw [mul_stab_quotient_commute_subgroup N t, mul_stab_quotient_commute_subgroup N s]
+        all_goals { aesop }
+    _ ≤ Nat.card N * (card (image (QuotientGroup.mk (s := N)) s ∪
       image (QuotientGroup.mk (s := N)) t) +
       card (mulStab (image (QuotientGroup.mk (s := N)) s ∪
-      image (QuotientGroup.mk (s := N)) t)) := by sorry
-    _ ≤ card (s ∪ t) + card (mulStab (s ∪ t)) := sorry
+      image (QuotientGroup.mk (s := N)) t))) := Nat.mul_le_mul_left _ this
+    _ ≤ card (s ∪ t) + card (mulStab (s ∪ t)) := by
+      rw [mul_add, ← image_union, subgroup_mul_card_eq_mul_of_mul_stab_subset N (s ∪ t),
+          ← mul_stab_quotient_commute_subgroup N (s ∪ t),
+          subgroup_mul_card_eq_mul_of_mul_stab_subset N (mulStab (s ∪ t))]
+      all_goals
+      { simp only [hNmulstab, mulStab_idem]; norm_cast; exact inter_mulStab_subset_mulStab_union }
   obtain hst | hst := (subset_union_left s t).eq_or_ssubset
   · simp [hst.symm]
   obtain hts | hts := (subset_union_right s t).eq_or_ssubset
   · simp [hts.symm]
   have : H.card = Hs.card * Ht.card := by
     refine' card_mul_iff.2 fun a ha b hb hab => _
-    sorry
-  suffices Hs.card - H.card ≤ (s \ t).card ∨ Ht.card - H.card ≤ (t \ s).card by sorry
+    replace hab : a.2 * b.2⁻¹ = a.1⁻¹ * b.1 := by
+      rw [mul_inv_eq_iff_eq_mul, mul_assoc, ← inv_mul_eq_iff_eq_mul, inv_inv]
+      exact hab
+    have : a.1⁻¹ * b.1 ∈ Hs ∩ Ht := by
+      simp only [mem_inter]
+      constructor
+      · rw [mem_mulStab hs, mul_smul, inv_smul_eq_iff,
+          (mem_mulStab hs).mp (show b.1 ∈ mulStab s by aesop),
+          (mem_mulStab hs).mp (show a.1 ∈ mulStab s by aesop)]
+      · rw [← hab, mem_mulStab ht, mul_comm, mul_smul, inv_smul_eq_iff,
+          (mem_mulStab ht).mp (show b.2 ∈ mulStab t by aesop),
+          (mem_mulStab ht).mp (show a.2 ∈ mulStab t by aesop)]
+    simp only [h1, mem_one] at this
+    ext
+    · rw [← inv_mul_eq_one, this]
+    · rw [← mul_inv_eq_one, hab, this]
+  suffices : Hs.card - H.card ≤ (s \ t).card ∨ Ht.card - H.card ≤ (t \ s).card
+  · sorry
   set k : α → ℕ := sorry
   set l : α → ℕ := sorry
   have hkt : ∀ a, k a ≤ Ht.card := sorry
@@ -138,7 +181,7 @@ lemma le_card_union_add_card_mulStab_union :
 
 -- Lemma 3.4 in Ruzsa's notes
 @[to_additive]
-lemma le_card_sup_add_card_mulStab_sup {s : Finset ι} {f : ι → Finset α}
+lemma le_card_sup_add_card_mulStab_sup {ι : Type*} {s : Finset ι} {f : ι → Finset α}
     (hs : s.Nonempty) :
     (s.inf' hs fun i => (f i).card + (f i).mulStab.card) ≤
       (s.sup f).card + (s.sup f).mulStab.card := by
