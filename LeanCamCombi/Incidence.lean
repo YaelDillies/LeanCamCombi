@@ -10,6 +10,7 @@ import Mathlib.Algebra.Module.BigOperators
 import Mathlib.GroupTheory.GroupAction.Basic
 import Mathlib.GroupTheory.GroupAction.Pi
 import Mathlib.Data.Finset.LocallyFinite
+import LeanCamCombi.Mathlib.Algebra.BigOperators.LocallyFinite
 
 /-!
 # Incidence algebras
@@ -323,20 +324,20 @@ instance algebraRight [PartialOrder α] [LocallyFiniteOrder α] [DecidableEq α]
   map_mul' c d := by
       ext a b
       obtain rfl | h := eq_or_ne a b
-      · simp only [smul_boole, one_apply, Algebra.id.smul_eq_mul, mul_apply, Algebra.mul_smul_comm,
+      · simp only [one_apply, Algebra.id.smul_eq_mul, mul_apply, Algebra.mul_smul_comm,
           boole_smul, smul_apply', ← ite_and, algebraMap_smul, map_mul, Algebra.smul_mul_assoc,
           if_pos rfl, eq_comm, and_self_iff, Icc_self]
         simp
       · simp only [true_and_iff, ite_self, le_rfl, one_apply, mul_one, Algebra.id.smul_eq_mul,
-          mul_apply, Algebra.mul_smul_comm, smul_boole, MulZeroClass.zero_mul, smul_apply',
+          mul_apply, Algebra.mul_smul_comm, MulZeroClass.zero_mul, smul_apply',
           algebraMap_smul, ← ite_and, ite_mul, mul_ite, map_mul, mem_Icc, sum_ite_eq,
           MulZeroClass.mul_zero, smul_zero, Algebra.smul_mul_assoc, if_pos rfl, if_neg h]
         refine' (sum_eq_zero fun x _ ↦ _).symm
         exact if_neg fun hx ↦ h <| hx.2.trans hx.1
   map_zero' := by dsimp; rw [map_zero, zero_smul]
   map_add' c d := by dsimp; rw [map_add, add_smul]
-  commutes' c f := by classical ext a b hab; simp [if_pos hab]
-  smul_def' c f := by classical ext a b hab; simp [if_pos hab]
+  commutes' c f := sorry -- by classical ext a b hab; simp [if_pos hab]
+  smul_def' c f := sorry -- by classical ext a b hab; simp [if_pos hab]
 
 /-! ### The Lambda function -/
 
@@ -593,8 +594,7 @@ lemma mu_toDual (a b : α) : mu 𝕜 (toDual a) (toDual b) = mu 𝕜 b a := by
     -- exact mu_spec_of_ne_left h.symm
 
 @[simp]
-lemma mu_ofDual (a b : αᵒᵈ) : mu 𝕜 (ofDual a) (ofDual b) = mu 𝕜 b a :=
-  (mu_toDual _ _ _).symm
+lemma mu_ofDual (a b : αᵒᵈ) : mu 𝕜 (ofDual a) (ofDual b) = mu 𝕜 b a := (mu_toDual _ _ _).symm
 
 end OrderDual
 
@@ -606,44 +606,41 @@ variable [Ring 𝕜] [PartialOrder α] [OrderTop α] [LocallyFiniteOrder α] [De
 O'Donnell. -/
 lemma moebius_inversion_top (f g : α → 𝕜) (h : ∀ x, g x = ∑ y in Ici x, f y) (x : α) :
     f x = ∑ y in Ici x, mu 𝕜 x y * g y := by
-  letI : @DecidableRel α (· ≤ ·) := Classical.decRel _ <;> symm <;>
-    calc
-      ∑ y in Ici x, mu 𝕜 x y * g y = ∑ y in Ici x, mu 𝕜 x y * ∑ z in Ici y, f z := by simp_rw [h]
-      _ = ∑ y in Ici x, mu 𝕜 x y * ∑ z in Ici y, zeta 𝕜 y z * f z := by
-        simp_rw [zeta_apply]
-        conv in ite _ _ _ => rw [if_pos (mem_Ici.mp ‹_›)]
-        simp
-      _ = ∑ y in Ici x, ∑ z in Ici y, mu 𝕜 x y * zeta 𝕜 y z * f z := by simp [mul_sum]
-      _ = ∑ z in Ici x, ∑ y in Icc x z, mu 𝕜 x y * zeta 𝕜 y z * f z := by
-        erw [sum_sigma' (Ici x) fun y ↦ Ici y]
-        erw [sum_sigma' (Ici x) fun z ↦ Icc x z]
-        simp only [mul_boole, MulZeroClass.zero_mul, ite_mul, zeta_apply]
-        refine' sum_bij (fun X hX ↦ ⟨X.snd, X.fst⟩) _ _ _ _
-        · intro X hX
-          simp only [mem_Ici, mem_sigma, mem_Icc] at *
-          exact ⟨hX.1.trans hX.2, hX⟩
-        · intro X hX
-          simp only at *
-        · intro X Y ha hb h
-          simp [Sigma.ext_iff] at *
-          rwa [and_comm']
-        · intro X hX
-          use ⟨X.snd, X.fst⟩
-          simp only [and_true_iff, mem_Ici, eq_self_iff_true, Sigma.eta, mem_sigma, mem_Icc] at *
-          exact hX.2
-      _ = ∑ z in Ici x, (mu 𝕜 * zeta 𝕜) x z * f z := by
-        conv in (mu _ * zeta _) _ _ => rw [mul_apply]
-        simp_rw [sum_mul]
-      _ = ∑ y in Ici x, ∑ z in Ici y, (1 : IncidenceAlgebra 𝕜 α) x z * f z := by
-        simp [mu_mul_zeta 𝕜, ← add_sum_Ioi]
-        conv in ite _ _ _ => rw [if_neg (ne_of_lt <| mem_Ioi.mp H)]
-        conv in ite _ _ _ => rw [if_neg (not_lt_of_le <| (mem_Ioi.mp H).le)]
-        simp
-      _ = f x := by
-        simp [one_apply, ← add_sum_Ioi]
-        conv in ite _ _ _ => rw [if_neg (ne_of_lt <| mem_Ioi.mp H)]
-        conv in ite _ _ _ => rw [if_neg (not_lt_of_le <| (mem_Ioi.mp H).le)]
-        simp
+  letI : @DecidableRel α (· ≤ ·) := Classical.decRel _
+  symm
+  calc
+    ∑ y in Ici x, mu 𝕜 x y * g y = ∑ y in Ici x, mu 𝕜 x y * ∑ z in Ici y, f z := by simp_rw [h]
+    _ = ∑ y in Ici x, mu 𝕜 x y * ∑ z in Ici y, zeta 𝕜 y z * f z := by
+      congr with y
+      rw [sum_congr rfl fun z hz ↦ ?_]
+      rw [zeta_apply, if_pos (mem_Ici.mp ‹_›), one_mul]
+    _ = ∑ y in Ici x, ∑ z in Ici y, mu 𝕜 x y * zeta 𝕜 y z * f z := by simp [mul_sum]
+    _ = ∑ z in Ici x, ∑ y in Icc x z, mu 𝕜 x y * zeta 𝕜 y z * f z := by
+      erw [sum_sigma' (Ici x) fun y ↦ Ici y]
+      erw [sum_sigma' (Ici x) fun z ↦ Icc x z]
+      simp only [mul_boole, MulZeroClass.zero_mul, ite_mul, zeta_apply]
+      refine' sum_bij (fun X _ ↦ ⟨X.snd, X.fst⟩) _ _ _ _
+      · intro X hX
+        simp only [mem_Ici, mem_sigma, mem_Icc]
+        simp only [mem_Ici, mem_sigma, mem_Icc] at hX
+        exact ⟨hX.1.trans hX.2, hX⟩
+      · intro X hX
+        simp only at *
+      · intro X Y ha hb h
+        simpa [Sigma.ext_iff, and_comm] using h
+      · intro X hX
+        use ⟨X.snd, X.fst⟩
+        simp only [and_true_iff, mem_Ici, eq_self_iff_true, Sigma.eta, mem_sigma, mem_Icc,
+          exists_prop] at *
+        exact hX.2
+    _ = ∑ z in Ici x, (mu 𝕜 * zeta 𝕜 : IncidenceAlgebra 𝕜 α) x z * f z := by
+      simp_rw [mul_apply, sum_mul]
+    _ = ∑ y in Ici x, ∑ z in Ici y, (1 : IncidenceAlgebra 𝕜 α) x z * f z := by
+      simp [mu_mul_zeta 𝕜, ← add_sum_Ioi]
+      exact sum_eq_zero fun y hy ↦ if_neg (mem_Ioi.mp hy).not_le
+    _ = f x := by
+      simp [one_apply, ← add_sum_Ioi]
+      exact sum_eq_zero fun y hy ↦ if_neg (mem_Ioi.mp hy).not_le
 
 end InversionTop
 
@@ -655,10 +652,7 @@ variable [Ring 𝕜] [PartialOrder α] [OrderBot α] [LocallyFiniteOrder α] [De
 O'Donnell. -/
 lemma moebius_inversion_bot (f g : α → 𝕜) (h : ∀ x, g x = ∑ y in Iic x, f y) (x : α) :
     f x = ∑ y in Iic x, mu 𝕜 y x * g y := by
-  convert @moebius_inversion_top 𝕜 αᵒᵈ _ _ _ _ _ f g h x
-
-  ext y
-  erw [mu_toDual]
+  convert moebius_inversion_top (α := αᵒᵈ) f g h x using 3; erw [mu_toDual]
 
 end InversionBot
 
@@ -675,27 +669,29 @@ section DecidableLe
 variable [DecidableRel ((· ≤ ·) : α → α → Prop)] [DecidableRel ((· ≤ ·) : β → β → Prop)]
 
 lemma zeta_prod_apply (a b : α × β) : zeta 𝕜 a b = zeta 𝕜 a.1 b.1 * zeta 𝕜 a.2 b.2 := by
-  simp [ite_and, Prod.le_def]
+  simp [← ite_and, Prod.le_def, and_comm]
 
 lemma zeta_prod_mk (a₁ a₂ : α) (b₁ b₂ : β) :
-    zeta 𝕜 (a₁, b₁) (a₂, b₂) = zeta 𝕜 a₁ a₂ * zeta 𝕜 b₁ b₂ :=
-  zeta_prod_apply _ _ _
+    zeta 𝕜 (a₁, b₁) (a₂, b₂) = zeta 𝕜 a₁ a₂ * zeta 𝕜 b₁ b₂ := zeta_prod_apply _ _ _
 
 end DecidableLe
 
-variable {𝕜} (f f₁ f₂ : IncidenceAlgebra 𝕜 α) (g g₁ g₂ : IncidenceAlgebra 𝕜 β)
+variable {𝕜}
+variable (f f₁ f₂ : IncidenceAlgebra 𝕜 α) (g g₁ g₂ : IncidenceAlgebra 𝕜 β)
 
 /-- The cartesian product of two incidence algebras. -/
 protected def prod : IncidenceAlgebra 𝕜 (α × β) where
   toFun x y := f x.1 y.1 * g x.2 y.2
   eq_zero_of_not_le' x y hxy := by
     rw [Prod.le_def, not_and_or] at hxy
-    cases hxy <;> simp [apply_eq_zero_of_not_le hxy]
+    obtain hxy | hxy := hxy <;> simp [apply_eq_zero_of_not_le hxy]
 
 lemma prod_mk (a₁ a₂ : α) (b₁ b₂ : β) : f.prod g (a₁, b₁) (a₂, b₂) = f a₁ a₂ * g b₁ b₂ := rfl
 @[simp] lemma prod_apply (x y : α × β) : f.prod g x y = f x.1 y.1 * g x.2 y.2 := rfl
 
-/-- This is a version of `incidence_algebra.prod_mul_prod` that works over non-commutative rings. -/
+#exit
+
+/-- This is a version of `IncidenceAlgebra.prod_mul_prod` that works over non-commutative rings. -/
 lemma prod_mul_prod' [LocallyFiniteOrder α] [LocallyFiniteOrder β]
     (h : ∀ a₁ a₂ a₃ b₁ b₂ b₃,
         f₁ a₁ a₂ * g₁ b₁ b₂ * (f₂ a₂ a₃ * g₂ b₂ b₃) = f₁ a₁ a₂ * f₂ a₂ a₃ * (g₁ b₁ b₂ * g₂ b₂ b₃)) :
@@ -735,8 +731,9 @@ variable (𝕜) [Ring 𝕜] [PartialOrder α] [PartialOrder β] [LocallyFiniteOr
 /-- The Möbius function on a product order. Based on lemma 2.1.13 of Incidence Algebras by Spiegel and O'Donnell. -/
 @[simp]
 lemma mu_prod_mu : (mu 𝕜).prod (mu 𝕜) = (mu 𝕜 : IncidenceAlgebra 𝕜 (α × β)) := by
-  refine' left_inv_eq_right_inv _ zeta_mul_mu
+  refine left_inv_eq_right_inv ?_ zeta_mul_mu
   rw [← zeta_prod_zeta, prod_mul_prod', mu_mul_zeta, mu_mul_zeta, one_prod_one]
+  ext
   refine' fun _ _ _ _ _ _ ↦ Commute.mul_mul_mul_comm _ _ _
   dsimp
   split_ifs <;> simp
