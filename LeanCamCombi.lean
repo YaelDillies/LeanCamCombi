@@ -40,13 +40,11 @@ import LeanCamCombi.Mathlib.Data.Finset.Pointwise
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.Fintype.Basic
 import LeanCamCombi.Mathlib.Data.List.Basic
-import LeanCamCombi.Mathlib.Data.Nat.Factorization.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Factors
 import LeanCamCombi.Mathlib.Data.Set.Finite
 import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
-import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Stabilizer
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.Typeclasses
 import LeanCamCombi.Mathlib.Order.Category.BoolAlg
 import LeanCamCombi.Mathlib.Order.ConditionallyCompleteLattice.Basic

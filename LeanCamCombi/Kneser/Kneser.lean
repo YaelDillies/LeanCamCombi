@@ -314,8 +314,8 @@ theorem mul_kneser :
     -- now to prove that `(s * (s * t).mulStab).card = (s * t).mulStab * (s.image (↑)).card` and
     -- the analogous statement for `s` and `t` interchanged
     -- this will conclude the proof of the first case immediately
-    · rw [mul_tsub, mul_one, mul_add, tsub_le_iff_left, card_mul_card_image_coe',
-        card_mul_card_image_coe'] at hineq
+    · rw [mul_tsub, mul_one, mul_add, tsub_le_iff_left, card_mulStab_mul_card_image_coe',
+        card_mulStab_mul_card_image_coe'] at hineq
       convert hineq using 1
       exact add_comm _ _
     refine le_of_le_of_eq (mul_le_mul_left' ?_ _) (card_mul_card_eq_mulStab_card_mul_coe s t).symm

@@ -62,14 +62,13 @@ lemma le_card_union_add_card_mulStab_union :
       constructor
       · simp only [Nonempty.image_iff, mem_one, and_imp, ← QuotientGroup.mk_one]
         intro hx
-        rw [←  mul_stab_quotient_commute_subgroup N s,
-            ← mul_stab_quotient_commute_subgroup N t] at hx
+        rw [← mulStab_quotient_commute_subgroup N s, ← mulStab_quotient_commute_subgroup N t] at hx
         simp only [mem_inter, mem_image] at hx
         obtain ⟨⟨y, hy, hyx⟩, ⟨z, hz, hzx⟩⟩ := hx
         obtain ⟨w, hwx⟩ := Quotient.exists_rep x
         have : ⟦w⟧ = QuotientGroup.mk (s := N) w := by exact rfl
         rw [← hwx, this, QuotientGroup.eq] at hyx hzx ⊢
-        simp only [mul_one, ge_iff_le, inv_mem_iff, mem_inf, mem_stabilizer_iff] at hyx hzx ⊢
+        simp only [mul_one, inv_mem_iff, mem_inf, mem_stabilizer_iff] at hyx hzx ⊢
         constructor
         · convert hyx.1 using 1
           rw [mul_comm, mul_smul]
@@ -82,7 +81,7 @@ lemma le_card_union_add_card_mulStab_union :
         all_goals { aesop }
       · aesop
     specialize this (α := α ⧸ N) (s := s.image (↑)) (t := t.image (↑))
-    simp only [Nonempty.image_iff, mulStab_nonempty, mul_nonempty, ge_iff_le, and_imp,
+    simp only [Nonempty.image_iff, mulStab_nonempty, mul_nonempty, and_imp,
       forall_true_left, hs, ht, h1] at this
     calc
     min (card s + card Hs) (card t + card Ht) =
@@ -103,7 +102,7 @@ lemma le_card_union_add_card_mulStab_union :
       card (mulStab (image (QuotientGroup.mk (s := N)) s)))
       (card (image (QuotientGroup.mk (s := N)) t) +
       card (mulStab (image (QuotientGroup.mk (s := N)) t))) := by
-        rw [mul_stab_quotient_commute_subgroup N t, mul_stab_quotient_commute_subgroup N s]
+        rw [mulStab_quotient_commute_subgroup N t, mulStab_quotient_commute_subgroup N s]
         all_goals { aesop }
     _ ≤ Nat.card N * (card (image (QuotientGroup.mk (s := N)) s ∪
       image (QuotientGroup.mk (s := N)) t) +
@@ -111,7 +110,7 @@ lemma le_card_union_add_card_mulStab_union :
       image (QuotientGroup.mk (s := N)) t))) := Nat.mul_le_mul_left _ this
     _ ≤ card (s ∪ t) + card (mulStab (s ∪ t)) := by
       rw [mul_add, ← image_union, subgroup_mul_card_eq_mul_of_mul_stab_subset N (s ∪ t),
-          ← mul_stab_quotient_commute_subgroup N (s ∪ t),
+          ← mulStab_quotient_commute_subgroup N (s ∪ t),
           subgroup_mul_card_eq_mul_of_mul_stab_subset N (mulStab (s ∪ t))]
       all_goals
       { simp only [hNmulstab, mulStab_idem]; norm_cast; exact inter_mulStab_subset_mulStab_union }
@@ -140,7 +139,7 @@ lemma le_card_union_add_card_mulStab_union :
   -- mistake in proof sketch, need to interchange `Hs` and `Ht`
   suffices h2 : Hs.card - (mulStab (s ∪ t)).card ≤ (s \ t).card ∨
                 Ht.card - (mulStab (s ∪ t)).card ≤ (t \ s).card
-  · simp only [ge_iff_le, min_le_iff]
+  · simp only [min_le_iff]
     cases' h2 with h2 h2
     · left
       sorry

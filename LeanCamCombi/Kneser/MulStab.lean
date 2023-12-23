@@ -3,9 +3,10 @@ Copyright (c) 2023 Mantas Bakšys, Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mantas Bakšys, Yaël Dillies
 -/
+import Mathlib.Algebra.Pointwise.Stabilizer
 import Mathlib.GroupTheory.Subgroup.Actions
-import LeanCamCombi.Mathlib.GroupTheory.Subgroup.Stabilizer
 import LeanCamCombi.Kneser.Mathlib
+import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 
 /-!
 # Stabilizer of a finset
@@ -14,7 +15,7 @@ This file defines the stabilizer of a finset of a group as a finset.
 
 ## Main declarations
 
-* `finset.mulStab`: The stabilizer of a **nonempty** finset as a finset.
+* `Finset.mulStab`: The stabilizer of a **nonempty** finset as a finset.
 -/
 
 open Function MulAction
@@ -23,25 +24,28 @@ open scoped Pointwise
 namespace Finset
 variable {ι α : Type*}
 
+local notation s " +ₛ " N => Finset.image ((↑) : α → α ⧸ N) s
+local notation s " +ˢ " N => Set.image ((↑) : α → α ⧸ N) s
+
 section Group
 variable [Group α] [DecidableEq α] {s t : Finset α} {a : α}
 
 /-- The stabilizer of `s` as a finset. As an exception, this sends `∅` to `∅`.-/
 @[to_additive "The stabilizer of `s` as a finset. As an exception, this sends `∅` to `∅`."]
-def mulStab (s : Finset α) : Finset α := (s / s).filter fun a => a • s = s
+def mulStab (s : Finset α) : Finset α := (s / s).filter fun a ↦ a • s = s
 
 @[to_additive (attr := simp)]
 lemma mem_mulStab (hs : s.Nonempty) : a ∈ s.mulStab ↔ a • s = s := by
   rw [mulStab, mem_filter, mem_div, and_iff_right_of_imp]
   obtain ⟨b, hb⟩ := hs
-  exact fun h => ⟨_, _, by rw [← h]; exact smul_mem_smul_finset hb, hb, mul_div_cancel'' _ _⟩
+  exact fun h ↦ ⟨_, _, by rw [← h]; exact smul_mem_smul_finset hb, hb, mul_div_cancel'' _ _⟩
 
 @[to_additive]
 lemma mulStab_subset_div : s.mulStab ⊆ s / s := filter_subset _ _
 
 @[to_additive]
 lemma mulStab_subset_div_right (ha : a ∈ s) : s.mulStab ⊆ s / {a} := by
-  refine' fun b hb => mem_div.2 ⟨_, _, _, mem_singleton_self _, mul_div_cancel'' _ _⟩
+  refine fun b hb ↦ mem_div.2 ⟨_, _, ?_, mem_singleton_self _, mul_div_cancel'' _ _⟩
   rw [mem_mulStab ⟨a, ha⟩] at hb
   rw [← hb]
   exact smul_mem_smul_finset ha
@@ -75,7 +79,7 @@ lemma Nonempty.of_mulStab : s.mulStab.Nonempty → s.Nonempty := by
 
 @[to_additive (attr := simp)]
 lemma one_mem_mulStab : (1 : α) ∈ s.mulStab ↔ s.Nonempty :=
-  ⟨fun h => Nonempty.of_mulStab ⟨_, h⟩, fun h => (mem_mulStab h).2 <| one_smul _ _⟩
+  ⟨fun h ↦ Nonempty.of_mulStab ⟨_, h⟩, fun h ↦ (mem_mulStab h).2 <| one_smul _ _⟩
 
 @[to_additive] protected alias ⟨_, Nonempty.one_mem_mulStab⟩ := one_mem_mulStab
 
@@ -87,12 +91,11 @@ lemma mulStab_nonempty : s.mulStab.Nonempty ↔ s.Nonempty := ⟨Nonempty.of_mul
 
 @[to_additive (attr := simp)]
 lemma card_mulStab_eq_one : s.mulStab.card = 1 ↔ s.mulStab = 1 := by
-  refine' ⟨fun h => _, fun h => _⟩
-  · obtain ⟨a, ha⟩ := card_eq_one.1 h
-    rw [ha]
-    rw [eq_singleton_iff_nonempty_unique_mem, mulStab_nonempty, ← one_mem_mulStab] at ha
-    rw [← ha.2 _ ha.1, singleton_one]
-  · rw [h, card_one]
+  refine ⟨fun h ↦ ?_, fun h ↦ by rw [h, card_one]⟩
+  obtain ⟨a, ha⟩ := card_eq_one.1 h
+  rw [ha]
+  rw [eq_singleton_iff_nonempty_unique_mem, mulStab_nonempty, ← one_mem_mulStab] at ha
+  rw [← ha.2 _ ha.1, singleton_one]
 
 @[to_additive]
 lemma Nonempty.mulStab_nontrivial (h : s.Nonempty) : s.mulStab.Nontrivial ↔ s.mulStab ≠ 1 :=
@@ -110,13 +113,12 @@ lemma subset_mulStab_mul_left (ht : t.Nonempty) : s.mulStab ⊆ (s * t).mulStab 
 lemma mulStab_mul (s : Finset α) : s.mulStab * s = s := by
   obtain rfl | hs := s.eq_empty_or_nonempty
   · exact mul_empty _
-  refine' coe_injective _
-  simp only [hs, coe_mul, coe_mulStab, ← stabilizer_coe_finset, stabilizer_mul]
+  · simp only [← coe_inj, hs, coe_mul, coe_mulStab, ← stabilizer_coe_finset, stabilizer_mul_self]
 
 @[to_additive]
 lemma mul_subset_right_iff (ht : t.Nonempty) : s * t ⊆ t ↔ s ⊆ t.mulStab := by
   simp_rw [← smul_eq_mul, ← biUnion_smul_finset, biUnion_subset,
-    ←mem_mulStab_iff_smul_finset_subset ht, subset_iff]
+    ← mem_mulStab_iff_smul_finset_subset ht, subset_iff]
 
 @[to_additive]
 lemma mul_subset_right : s ⊆ t.mulStab → s * t ⊆ t := by
@@ -135,7 +137,7 @@ lemma smul_mulStab (ha : a ∈ s.mulStab) : a • s.mulStab = s.mulStab := by
 lemma mulStab_mul_mulStab (s : Finset α) : s.mulStab * s.mulStab = s.mulStab := by
   obtain rfl | hs := s.eq_empty_or_nonempty
   · simp
-  · simp_rw [← smul_eq_mul, ← biUnion_smul_finset, biUnion_congr rfl fun _ => smul_mulStab,
+  · simp_rw [← smul_eq_mul, ← biUnion_smul_finset, biUnion_congr rfl fun _ ↦ smul_mulStab,
       ← sup_eq_biUnion, sup_const hs.mulStab]
 
 @[to_additive]
@@ -155,7 +157,7 @@ variable [CommGroup α] [DecidableEq α] {s t : Finset α} {a : α}
 
 @[to_additive]
 lemma mulStab_subset_div_left (ha : a ∈ s) : s.mulStab ⊆ {a} / s := by
-  refine' fun b hb => mem_div.2 ⟨_, _, mem_singleton_self _, _, div_div_cancel _ _⟩
+  refine fun b hb ↦ mem_div.2 ⟨_, _, mem_singleton_self _, ?_, div_div_cancel _ _⟩
   rw [mem_mulStab ⟨a, ha⟩] at hb
   rwa [← hb, ← inv_smul_mem_iff, smul_eq_mul, inv_mul_eq_div] at ha
 
@@ -186,51 +188,40 @@ lemma mul_subset_left : t ⊆ s.mulStab → s * t ⊆ s := by rw [mul_comm]; exa
 lemma mulStab_idem (s : Finset α) : s.mulStab.mulStab = s.mulStab := by
   obtain rfl | hs := s.eq_empty_or_nonempty
   · simp
-  refine' coe_injective _
-  rw [coe_mulStab hs, coe_mulStab hs.mulStab, ← stabilizer_coe_finset, coe_mulStab hs]
+  rw [← coe_inj, coe_mulStab hs, coe_mulStab hs.mulStab, ← stabilizer_coe_finset, coe_mulStab hs]
   simp
 
 @[to_additive (attr := simp)]
 lemma mulStab_smul (a : α) (s : Finset α) : (a • s).mulStab = s.mulStab := by
   obtain rfl | hs := s.eq_empty_or_nonempty
   · simp
-  refine' coe_injective _
-  rw [coe_mulStab hs, coe_mulStab hs.smul_finset, stabilizer_smul_eq_right]
+  · rw [← coe_inj, coe_mulStab hs, coe_mulStab hs.smul_finset, stabilizer_smul_eq_right]
 
 open scoped Classical
 
 @[to_additive]
 lemma mulStab_image_coe_quotient (hs : s.Nonempty) :
     (s.image (↑) : Finset (α ⧸ stabilizer α s)).mulStab = 1 := by
-  refine' coe_injective _
-  rw [coe_mulStab (hs.image _), ← stabilizer_coe_finset, ← stabilizer_coe_finset, coe_image,
-    coe_one, stabilizer_image_coe_quotient, Subgroup.coe_bot, Set.singleton_one]
+  rw [← coe_inj, coe_mulStab (hs.image _), ← stabilizer_coe_finset, ← stabilizer_coe_finset,
+    coe_image, coe_one, stabilizer_image_coe_quotient, Subgroup.coe_bot, Set.singleton_one]
 
 @[to_additive]
-lemma to_name_mul (s t : Finset α) (ht : t.Nonempty) :
-    QuotientGroup.mk ⁻¹' ((↑) '' (s : Set α) : Set (α ⧸ stabilizer α t)) = s * t.mulStab := by
-  convert (stabilizer α t).mul_alt_version s
-  refine' Eq.trans _ (Set.iUnion_subtype _ _).symm
+lemma preimage_image_quotientMk_stabilizer_eq_mul_mulStab (ht : t.Nonempty) (s : Finset α) :
+    QuotientGroup.mk ⁻¹' (s +ˢ stabilizer α t) = s * t.mulStab := by
+  rw [QuotientGroup.preimage_image_mk_eq_iUnion_smul, mul_comm, Set.iUnion_subtype]
   simp_rw [Subgroup.mk_smul, ← SetLike.mem_coe, ← coe_mulStab ht, ← coe_smul_finset, ← coe_biUnion,
-    biUnion_smul_finset, smul_eq_mul, coe_mul, mul_comm]
+    biUnion_smul_finset, smul_eq_mul, coe_mul]
 
 @[to_additive]
-lemma to_name_mul_also (s t : Finset α) :
-    QuotientGroup.mk ⁻¹' ((↑) '' ((s : Set α) * (t : Set α)) : Set (α ⧸ stabilizer α (s * t)))
-      = ↑s * ↑t := by
-  sorry
-  -- obtain rfl | hs := s.eq_empty_or_nonempty
-  -- · simp
-  -- obtain rfl | ht := t.eq_empty_or_nonempty
-  -- · simp
-  -- convert to_name_mul (s * t) (s * t) (hs.mul ht) using 1
-  -- · simp
-  -- · norm_cast
-  --   rw [mul_mulStab (s * t)]
+lemma preimage_image_quotientMk_mulStabilizer (s : Finset α) :
+    QuotientGroup.mk ⁻¹' (s +ˢ stabilizer α s) = s := by
+  obtain rfl | hs := s.eq_empty_or_nonempty
+  · simp
+  · rw [preimage_image_quotientMk_stabilizer_eq_mul_mulStab hs s, ← coe_mul, mul_mulStab]
 
 @[to_additive]
 lemma pairwiseDisjoint_smul_finset_mulStab (s : Finset α) :
-    (Set.range fun a : α => a • s.mulStab).PairwiseDisjoint id := by
+    (Set.range fun a : α ↦ a • s.mulStab).PairwiseDisjoint id := by
   obtain rfl | hs := s.eq_empty_or_nonempty
   · simp
   rintro _ ⟨a, rfl⟩ _ ⟨b, rfl⟩
@@ -248,8 +239,7 @@ lemma disjoint_smul_finset_mulStab_mul_mulStab :
   exact subset_biUnion_of_mem (· • mulStab s) hb
 
 @[to_additive]
-lemma card_mulStab_dvd_card_mul_mulStab (s t : Finset α) :
-    t.mulStab.card ∣ (s * t.mulStab).card :=
+lemma card_mulStab_dvd_card_mul_mulStab (s t : Finset α) : t.mulStab.card ∣ (s * t.mulStab).card :=
   card_dvd_card_smul_right <|
     t.pairwiseDisjoint_smul_finset_mulStab.subset <| Set.image_subset_range _ _
 
@@ -265,15 +255,12 @@ lemma card_mulStab_le_card : s.mulStab.card ≤ s.card := by
 
 /-- A fintype instance for the stabilizer of a nonempty finset `s` in terms of `s.mulStab`. -/
 @[to_additive
-      "A fintype instance for the stabilizer of a nonempty finset `s` in terms of\n`s.add_stab`."]
-private def fintype_stabilizer_of_mulStab (hs : s.Nonempty) : Fintype (stabilizer α s)
-    where
-  elems :=
-    s.mulStab.attach.map
-      ⟨Subtype.map id fun _ => (mem_mulStab hs).1, Subtype.map_injective _ injective_id⟩
-  complete a :=
-    mem_map.2
-      ⟨⟨_, (mem_mulStab hs).2 a.2⟩, mem_attach _ ⟨_, (mem_mulStab hs).2 a.2⟩, Subtype.ext rfl⟩
+"A fintype instance for the stabilizer of a nonempty finset `s` in terms of `s.addStab`."]
+private def fintypeStabilizerOfMulStab (hs : s.Nonempty) : Fintype (stabilizer α s) where
+  elems := s.mulStab.attach.map
+    ⟨Subtype.map id fun _ ↦ (mem_mulStab hs).1, Subtype.map_injective _ injective_id⟩
+  complete a := mem_map.2
+    ⟨⟨_, (mem_mulStab hs).2 a.2⟩, mem_attach _ ⟨_, (mem_mulStab hs).2 a.2⟩, Subtype.ext rfl⟩
 
 @[to_additive]
 lemma card_mulStab_dvd_card_mulStab (hs : s.Nonempty) (h : s.mulStab ⊆ t.mulStab) :
@@ -281,89 +268,66 @@ lemma card_mulStab_dvd_card_mulStab (hs : s.Nonempty) (h : s.mulStab ⊆ t.mulSt
   obtain rfl | ht := t.eq_empty_or_nonempty
   · simp
   rw [← coe_subset, coe_mulStab hs, coe_mulStab ht, SetLike.coe_subset_coe] at h
-  letI : Fintype (stabilizer α s) := fintype_stabilizer_of_mulStab hs
-  letI : Fintype (stabilizer α t) := fintype_stabilizer_of_mulStab ht
+  letI : Fintype (stabilizer α s) := fintypeStabilizerOfMulStab hs
+  letI : Fintype (stabilizer α t) := fintypeStabilizerOfMulStab ht
   convert Subgroup.card_dvd_of_le h using 1 <;> exact ((card_map _).trans card_attach).symm
 
-/-- A version of Lagrange's lemma. -/
-@[to_additive "A version of Lagrange's lemma."]
-lemma card_mul_card_image_coe' (s t : Finset α) :
-    t.mulStab.card * (s.image (↑) : Finset (α ⧸ stabilizer α t)).card = (s * t.mulStab).card := by
+/-- A version of Lagrange's theorem. -/
+@[to_additive "A version of Lagrange's theorem."]
+lemma card_mulStab_mul_card_image_coe' (s t : Finset α) :
+    t.mulStab.card * (s +ₛ stabilizer α t).card = (s * t.mulStab).card := by
   obtain rfl | ht := t.eq_empty_or_nonempty
   · simp
-  have :=
-    QuotientGroup.preimageMkEquivSubgroupProdSet (stabilizer α t)
-      ((↑) '' (s : Set α) : Set (α ⧸ stabilizer α t))
+  have := QuotientGroup.preimageMkEquivSubgroupProdSet _ (s +ˢ stabilizer α t)
   have that : ↥(stabilizer α t) = ↥t.mulStab := by
-    rw [←SetLike.coe_sort_coe, ← coe_mulStab ht, Finset.coe_sort_coe]
-  have temp := this.trans (Equiv.prodCongr (Equiv.cast that) (Equiv.refl _))
-  rw [to_name_mul s t ht] at temp
-  replace temp := Fintype.card_congr temp
-  simp only [← coe_mul, Fintype.card_prod, Fintype.card_coe, Fintype.card_ofFinset,
-    toFinset_coe] at temp
-  sorry
-  -- rw [← temp]
-  -- simp only [Fintype.card_ofFinset, mem_coe, iff_self_iff, forall_const]
-
--- TODO: Fix `Lean.Internal.coeM` leak
+    rw [← SetLike.coe_sort_coe, ← coe_mulStab ht, Finset.coe_sort_coe]
+  have temp := this.trans ((Equiv.cast that).prodCongr (Equiv.refl _))
+  rw [preimage_image_quotientMk_stabilizer_eq_mul_mulStab ht] at temp
+  simpa only [coe_sort_coe, ← coe_mul, Fintype.card_prod, Fintype.card_coe, Fintype.card_ofFinset,
+    toFinset_coe, mem_image, Set.mem_image, mem_coe, forall_const, eq_comm]
+    using Fintype.card_congr temp
 
 @[to_additive]
 lemma card_mul_card_eq_mulStab_card_mul_coe (s t : Finset α) :
-    (s * t).card =
-      (s * t).mulStab.card * ((s * t).image (↑) : Finset (α ⧸ stabilizer α (s * t))).card := by
+    (s * t).card = (s * t).mulStab.card * ((s * t) +ₛ stabilizer α (s * t)).card := by
   obtain rfl | hs := s.eq_empty_or_nonempty
   · simp
   obtain rfl | ht := t.eq_empty_or_nonempty
   · simp
-  have := QuotientGroup.preimageMkEquivSubgroupProdSet (stabilizer α (s * t)) $
-    (↑) '' (s * t : Set α)
+  have := QuotientGroup.preimageMkEquivSubgroupProdSet _ $ ↑(s * t) +ˢ stabilizer α (s * t)
   have that : ↥(stabilizer α (s * t)) = ↥(s * t).mulStab := by
-    rw [←SetLike.coe_sort_coe, ← coe_mulStab (hs.mul ht), Finset.coe_sort_coe]
-  have temp := this.trans (Equiv.prodCongr (Equiv.cast that) (Equiv.refl _))
-  sorry
-  -- rw [to_name_mul_also s t] at temp
-  -- replace temp := Fintype.card_congr temp
-  -- have h1 : Fintype.card ((s * t : Finset α) : Set α) = Fintype.card (s * t) := by congr
-  -- simp_rw [← coe_mul s t, h1, Fintype.card_coe, coe_mul, Fintype.card_prod, Fintype.card_ofFinset,
-  --   Fintype.card_coe, ← coe_mul s t, to_finset_coe] at temp
-  -- exact temp
+    rw [← SetLike.coe_sort_coe, ← coe_mulStab (hs.mul ht), Finset.coe_sort_coe]
+  have temp := this.trans $ (Equiv.cast that).prodCongr (Equiv.refl _)
+  rw [preimage_image_quotientMk_mulStabilizer] at temp
+  simpa [-coe_mul] using Fintype.card_congr temp
 
-/-- A version of Lagrange's lemma. -/
-@[to_additive "A version of Lagrange's lemma."]
-lemma card_mul_card_image_coe (s t : Finset α) :
-    (s * t).mulStab.card * (s.image (↑) * t.image (↑) : Finset (α ⧸ stabilizer α (s * t))).card =
+/-- A version of Lagrange's theorem. -/
+@[to_additive "A version of Lagrange's theorem."]
+lemma card_mulStab_mul_card_image_coe (s t : Finset α) :
+    (s * t).mulStab.card * ((s +ₛ stabilizer α (s * t)) * (t +ₛ stabilizer α (s * t))).card =
       (s * t).card := by
   obtain rfl | hs := s.eq_empty_or_nonempty
   · simp
   obtain rfl | ht := t.eq_empty_or_nonempty
   · simp
-  have :=
-    QuotientGroup.preimageMkEquivSubgroupProdSet (stabilizer α (s * t))
-      (((s : Set α).image (↑) : Set (α ⧸ stabilizer α (s * t))) *
-        ((t : Set α).image (↑) : Set (α ⧸ stabilizer α (s * t))))
+  have := QuotientGroup.preimageMkEquivSubgroupProdSet (stabilizer α (s * t))
+    ((s +ˢ stabilizer α (s * t)) * (t +ˢ stabilizer α (s * t)))
   have image_coe_mul :
-    (((s : Set α) * t).image (↑) : Set (α ⧸ stabilizer α (s * t))) =
-      (s : Set α).image (↑) * (t : Set α).image (↑) :=
-    sorry
-    -- Set.image_mul (QuotientGroup.mk' (stabilizer α (s * t)) : α →* α ⧸ stabilizer α (s * t))
-  rw [← image_coe_mul, to_name_mul_also, image_coe_mul] at this
+    ((s * t) +ˢ stabilizer α (s * t)) = (s +ˢ stabilizer α (s * t)) * (t +ˢ stabilizer α (s * t)) :=
+    Set.image_mul (QuotientGroup.mk' (stabilizer α (s * t)) : α →* α ⧸ stabilizer α (s * t))
+  rw [← image_coe_mul, ← coe_mul, preimage_image_quotientMk_mulStabilizer, coe_mul, image_coe_mul]
+    at this
   have that :
-    (stabilizer α (s * t) ×
-        ↥(((s : Set α).image (↑) : Set (α ⧸ stabilizer α (s * t))) *
-            ((t : Set α).image (↑) : Set (α ⧸ stabilizer α (s * t))))) =
-      ((s * t).mulStab ×
-        ↥(((s : Set α).image (↑) : Set (α ⧸ stabilizer α (s * t))) *
-            ((t : Set α).image (↑) : Set (α ⧸ stabilizer α (s * t))))) := by rw [←SetLike.coe_sort_coe, ← coe_mulStab (hs.mul ht), Finset.coe_sort_coe]
+    (stabilizer α (s * t) × ↥((s +ˢ stabilizer α (s * t)) * (t +ˢ stabilizer α (s * t)))) =
+      ((s * t).mulStab × ↥((s +ˢ stabilizer α (s * t)) * (t +ˢ stabilizer α (s * t)))) := by
+    rw [← SetLike.coe_sort_coe, ← coe_mulStab (hs.mul ht), Finset.coe_sort_coe]
   have temp := this.trans (Equiv.cast that)
   replace temp := Fintype.card_congr temp
   simp_rw [← Finset.coe_mul s t] at temp
   simp only [Fintype.card_prod, Fintype.card_coe] at temp
   have h1 : Fintype.card ((s * t : Finset α) : Set α) = Fintype.card (s * t) := by congr
-  have h2 :
-    ((s : Set α).image (↑) : Set (α ⧸ stabilizer α (s * t))) *
-      ((↑) '' (t : Set α) : Set (α ⧸ stabilizer α (s * t))) =
-        ((s.image (↑) : Finset (α ⧸ stabilizer α (s * t))) * t.image (↑) :
-          Finset (α ⧸ stabilizer α (s * t))) := by simp
+  have h2 : (s +ˢ stabilizer α (s * t)) * (t +ˢ stabilizer α (s * t)) =
+    ↑((s +ₛ stabilizer α (s * t)) * (t +ₛ stabilizer α (s * t))) := by simp
   sorry
   -- have h3 :
   --   Fintype.card (((s : Set α).image coe : Set (α ⧸ stabilizer α (s * t))) * coe '' (t : Set α)) =
@@ -375,8 +339,7 @@ lemma card_mul_card_image_coe (s t : Finset α) :
 
 @[to_additive]
 lemma subgroup_mul_card_eq_mul_of_mul_stab_subset (s : Subgroup α) (t : Finset α)
-    (hst : (s : Set α) ⊆ t.mulStab) :
-    Nat.card s * card (t.image (↑) : Finset (α ⧸ s)) = card t := by
+    (hst : (s : Set α) ⊆ t.mulStab) : Nat.card s * card (t +ₛ s) = card t := by
   have h : (t : Set α) * s = t := by
     apply Set.Subset.antisymm (Set.Subset.trans (Set.mul_subset_mul_left hst) _)
     · intro x
@@ -388,9 +351,8 @@ lemma subgroup_mul_card_eq_mul_of_mul_stab_subset (s : Subgroup α) (t : Finset 
   simpa
 
 @[to_additive]
-lemma mul_stab_quotient_commute_subgroup (s : Subgroup α) (t : Finset α)
-    (hst : (s : Set α) ⊆ t.mulStab) :
-    (t.mulStab.image (↑) : Finset (α ⧸ s)) = (t.image (↑) : Finset (α ⧸ s)).mulStab := by
+lemma mulStab_quotient_commute_subgroup (s : Subgroup α) (t : Finset α)
+    (hst : (s : Set α) ⊆ t.mulStab) : (t.mulStab +ₛ s) = (t +ₛ s).mulStab := by
   obtain rfl | ht := t.eq_empty_or_nonempty
   · simp
   have hti : (image (QuotientGroup.mk (s := s)) t).Nonempty := by aesop
