@@ -1,20 +1,13 @@
 import Mathlib.Data.Set.Finite
 
-open Set
+#align_import mathlib.data.set.finite
 
-namespace List
-variable (α : Type*) [Finite α] (n : ℕ)
+namespace Set
 
-lemma finite_length_eq : {l : List α | l.length = n}.Finite := by
-  induction n with
-  | zero => simp [List.length_eq_zero]
-  | succ n ih =>
-    suffices : {l : List α | l.length = n + 1} = Set.univ.image2 (· :: ·) {l | l.length = n}
-    · rw [this]; exact Set.finite_univ.image2 _ ih
-    ext (_ | _) <;> simp [n.succ_ne_zero.symm]
+variable {α : Type _} {s : Set α}
 
-lemma finite_length_lt : {l : List α | l.length < n}.Finite := by
-  convert (Finset.range n).finite_toSet.biUnion fun i _ ↦ finite_length_eq α i; ext; simp
+alias ⟨_, infinite.image⟩ := infinite_image_iff
 
-lemma finite_length_le : {l : List α | l.length ≤ n}.Finite := by
-  simpa [Nat.lt_succ_iff] using finite_length_lt α (n + 1)
+attribute [protected] infinite.image
+
+end Set
