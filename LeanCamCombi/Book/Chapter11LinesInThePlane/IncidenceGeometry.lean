@@ -4,8 +4,6 @@ import Mathlib.Data.Finset.Card
 import Mathlib.Combinatorics.SimpleGraph.Clique
 import Mathlib.Combinatorics.SimpleGraph.Subgraph
 
-#align_import book.FormalBook_Ch11_LinesInThePlane_IncidenceGeometry
-
 /-!
 # Lines in the plane and decompositions of graphs : 2 theorems and a graph decomposition
 
@@ -68,8 +66,7 @@ of `P`
 -/
 theorem list_set_lemma (P : Finset E) (u v : E) (hu : u ∈ P) (hv : v ∈ P) (unv : u ≠ v)
     (uv_prop : ∀ p : E, p ∈ P → p ≠ u → p ≠ v → p ∉ line u v) :
-    (lineSet (P.eraseₓ u)).card < (lineSet P).card :=
-  by
+    (lineSet (P.erase u)).card < (lineSet P).card := by
   apply Finset.card_lt_card
   -- We show that erasing `u` causes line `line u v`
   -- to be erased from the line-set
@@ -82,8 +79,7 @@ theorem list_set_lemma (P : Finset E) (u v : E) (hu : u ∈ P) (hv : v ∈ P) (u
     rw [lineSet, Finset.mem_image] at con
     rcases Con with ⟨pair, pair_def, eq⟩
     rw [Finset.mem_filter] at pair_def
-    have not_both_v : ↑pair.1 ≠ v ∨ ↑pair.2 ≠ v :=
-      by
+    have not_both_v : ↑pair.1 ≠ v ∨ ↑pair.2 ≠ v := by
       by_contra! K
       apply pair_def.2
       rw [Subtype.ext_iff]
@@ -180,8 +176,7 @@ theorem theorem_2 (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈ line a
     -- We consider the lines passing through `u`
     set L := Finset.image (fun p : E => line u p) T with Ldef
     -- The line all other points are on isn't part of it
-    have : line a b ∉ L :=
-      by
+    have : line a b ∉ L := by
       -- Otherwise, all points would be aligned
       by_contra K
       apply hSG_S
@@ -199,8 +194,7 @@ theorem theorem_2 (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈ line a
         apply left_mem_line
     -- The number of lines of the "pencil" lower-bounds the
     -- number of lines of the line set
-    have that : (insert (line a b) L).card ≤ (lineSet S).card :=
-      by
+    have that : (insert (line a b) L).card ≤ (lineSet S).card := by
       -- This due to them being a subset of the line set
       apply Finset.card_le_of_subset
       intro l ldef
@@ -248,8 +242,7 @@ theorem theorem_2 (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈ line a
           exact teq
     -- There are as many lines at the tip of the "pencil" as there
     -- are points alinged on `line a b`.
-    have thut : T.card = L.card :=
-      by
+    have thut : T.card = L.card := by
       -- We let points and lines correspond
       apply Finset.card_congr fun t => fun tdef : t ∈ T => line u t
       -- Mappping condition
@@ -266,8 +259,7 @@ theorem theorem_2 (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈ line a
         dsimp at st_eq
         by_contra K
         have problem_1 := line_rw_of_mem_of_mem K (ab_prop s sdef) (ab_prop t tdef)
-        have problem_2 : line u t = line s t :=
-          by
+        have problem_2 : line u t = line s t := by
           apply line_rw_of_mem_of_mem K
           rw [← st_eq]
           apply right_mem_line
@@ -310,7 +302,7 @@ open scoped Classical
 
 -- An alias/shortcut I'd like to see in mathlib
 theorem Fintype.univ_filter_eq_card_iff {α : Type} [Fintype α] {p : α → Prop} [DecidablePred p] :
-    (univ.filterₓ p).card = Fintype.card α ↔ ∀ x : α, p x := by
+    (univ.filter p).card = Fintype.card α ↔ ∀ x : α, p x := by
   simp [card_eq_iff_eq_univ, filter_eq_self]
 
 /-- In the context of `theorem_3`, we must have `r x < m`,
@@ -321,8 +313,7 @@ theorem theorem_3_ub {α : Type} [DecidableEq α] {X : Finset α} (hX : 3 ≤ X.
     (h : ∀ x y, x ∈ X → y ∈ X → x ≠ y → ∃ i, x ∈ A i ∧ y ∈ A i ∧ ∀ j, x ∈ A j ∧ y ∈ A j → j = i)
     (r : ∀ x : α, x ∈ X → ℕ)
     (rdef : r = fun (x : α) (xX : x ∈ X) => (Filter (fun i : Fin m => x ∈ A i) univ).card)
-    (hr : ∃ x, ∃ h : x ∈ X, r x h = m) : False :=
-  by
+    (hr : ∃ x, ∃ h : x ∈ X, r x h = m) : False := by
   -- This proof is best understood by consulting the figure
   -- in our thesis
   rcases hr with ⟨y, yX, rym⟩
@@ -368,8 +359,7 @@ theorem theorem_3_lb {α : Type} [DecidableEq α] {X : Finset α} (hX : 3 ≤ X.
     (h : ∀ x y, x ∈ X → y ∈ X → x ≠ y → ∃ i, x ∈ A i ∧ y ∈ A i ∧ ∀ j, x ∈ A j ∧ y ∈ A j → j = i)
     (r : ∀ x : α, x ∈ X → ℕ)
     (rdef : r = fun (x : α) (xX : x ∈ X) => (Filter (fun i : Fin m => x ∈ A i) univ).card) :
-    ∀ x ∈ X, ∀ i, x ∉ A i → (A i).card ≤ r x (by assumption) :=
-  by
+    ∀ x ∈ X, ∀ i, x ∉ A i → (A i).card ≤ r x (by assumption) := by
   intro x xX j xnA
   rw [rdef]
   -- We associate to each element of Aⱼ one of the Aₖ
@@ -377,8 +367,7 @@ theorem theorem_3_lb {α : Type} [DecidableEq α] {X : Finset α} (hX : 3 ≤ X.
   set f := fun y => fun hy : y ∈ A j =>
     Classical.choose
       (h x y xX
-        (--((subset_of_ssubset (hA j)) hy) --fails
-        by
+        (--((subset_of_ssubset (hA j)) hy) --fails by
           apply subset_of_ssubset (hA j)
           exact hy)
         (by
@@ -524,8 +513,7 @@ open scoped BigOperators
 
 /-- An algeraic rewrite-/
 theorem splitter {α : Type} [DecidableEq α] (X : Finset α) (hX : 0 < X.card) :
-    (1 : ℚ) = ∑ x in X, (1 / X.card : ℚ) :=
-  by
+    (1 : ℚ) = ∑ x in X, (1 / X.card : ℚ) := by
   have : (X.card : ℚ) ≠ 0 := by
     intro con
     rw [Nat.cast_eq_zero] at con
@@ -543,9 +531,8 @@ theorem splitter {α : Type} [DecidableEq α] (X : Finset α) (hX : 0 < X.card) 
 -- An alias/shortcut I'd like to see in mathlib
 theorem sum_rel {α β : Type} [DecidableEq α] [DecidableEq β] (X : Finset α) (U : Finset β)
     (r : α → β → Prop) {hr : ∀ x : α, ∀ y : β, Decidable (r x y)} (f : α → β → ℚ) :
-    ∑ x in X, ∑ i in U.filterₓ fun i => r x i, f x i =
-      ∑ i in U, ∑ x in X.filterₓ fun x => r x i, f x i :=
-  by
+    ∑ x in X, ∑ i in U.filter fun i => r x i, f x i =
+      ∑ i in U, ∑ x in X.filter fun x => r x i, f x i := by
   simp_rw [sum_filter]
   rw [sum_comm]
 
@@ -556,8 +543,7 @@ Generalises `theorem_2` to more abstract incidence geometries.
 theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.card) (m : ℕ) (hm : 0 < m)
     (A : Fin m → Finset α) (hA : ∀ i : Fin m, A i ⊂ X)
     (h : ∀ x y, x ∈ X → y ∈ X → x ≠ y → ∃ i, x ∈ A i ∧ y ∈ A i ∧ ∀ j, x ∈ A j ∧ y ∈ A j → j = i) :
-    X.card ≤ m :=
-  by
+    X.card ≤ m := by
   -- We deinie the number of appearance of an x in the sets Aᵢ
   set r := fun x : α => fun xX : x ∈ X => (univ.filter fun i => x ∈ A i).card with rdef
   -- We derive r x < m
@@ -566,8 +552,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
     apply theorem_3_ub hX hA h r rdef Q
   · push_neg at Q
     -- We have r x ≤ m via subsets, so that in our case:
-    replace Q : ∀ (x : α) (h : x ∈ X), r x h < m :=
-      by
+    replace Q : ∀ (x : α) (h : x ∈ X), r x h < m := by
       intro x xdef
       apply lt_of_le_of_ne _ (Q x xdef)
       rw [rdef]
@@ -586,8 +571,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
         ∀ i,
           x ∉ A i →
             (1 / (m * (X.card - (A i).card)) : ℚ) <
-              (1 / (X.card * (m - r x (by assumption))) : ℚ) :=
-      by
+              (1 / (X.card * (m - r x (by assumption))) : ℚ) := by
       intro x hx i xnA
       apply div_lt_div' (le_refl (1 : ℚ)) _ (by norm_num)
       · apply mul_pos
@@ -627,8 +611,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
       ∑ x in X, (1 / X.card : ℚ) =
         ∑ x in X.attach,
           ∑ i in univ.filter fun i => ↑x ∉ A i,
-            (1 / (X.card * (m - r (↑x) x.Prop)) : ℚ) :=-- Note: we need an `attach` to define r
-    by
+            (1 / (X.card * (m - r (↑x) x.Prop)) : ℚ) :=-- Note: we need an `attach` to define r by
       rw [← sum_attach]
       apply sum_congr
       rfl
@@ -638,8 +621,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
       nth_rw 1 [← mul_one (1 / X.card : ℚ)]
       rw [mul_eq_mul_left_iff]
       left
-      have : 0 < (univ.filter fun i => ↑x ∉ A i).card :=
-        by
+      have : 0 < (univ.filter fun i => ↑x ∉ A i).card := by
         rw [card_pos]
         by_contra! K
         rw [Finset.Nonempty] at K
@@ -649,8 +631,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
         rw [rdef]
         dsimp
         --rw ← (fintype.card_fin m), --fails
-        have : (univ.filter fun i => ↑x ∈ A i) = univ :=
-          by
+        have : (univ.filter fun i => ↑x ∈ A i) = univ := by
           rw [filter_eq_self]
           intro y yu
           by_contra! ycon
@@ -663,8 +644,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
         rw [card_univ, Fintype.card_fin]
       nth_rw 1 [splitter (univ.filter fun i => ↑x ∉ A i) this]
       clear this
-      have : (univ.filter fun i => ↑x ∉ A i).card = m - r (↑x) x.prop :=
-        by
+      have : (univ.filter fun i => ↑x ∉ A i).card = m - r (↑x) x.prop := by
         rw [← compl_filter]
         rw [card_compl]
         rw [rdef, Fintype.card_fin]
@@ -676,8 +656,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
     have rw_right :
       ∑ i : Fin m, 1 / ((univ : Finset (Fin m)).card : ℚ) =
         ∑ i : Fin m,
-          ∑ x in X.attach.filter fun x => ↑x ∉ A i, (1 / (m * (X.card - (A i).card)) : ℚ) :=
-      by
+          ∑ x in X.attach.filter fun x => ↑x ∉ A i, (1 / (m * (X.card - (A i).card)) : ℚ) := by
       apply sum_congr
       rfl
       intro i iu
@@ -687,8 +666,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
       rw [card_univ, Fintype.card_fin]
       rw [mul_eq_mul_left_iff]
       left
-      have : 0 < (X.attach.filter fun x => ↑x ∉ A i).card :=
-        by
+      have : 0 < (X.attach.filter fun x => ↑x ∉ A i).card := by
         rw [card_pos]
         obtain ⟨y, ynA, ymem⟩ := ssubset_iff.mp (hA i)
         use⟨y, ymem (mem_insert_self y (A i))⟩
@@ -699,8 +677,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
         exact ynA
       nth_rw 1 [splitter (X.attach.filter fun x => ↑x ∉ A i) this]
       clear this
-      have : (X.attach.filter fun x => ↑x ∉ A i).card = X.card - (A i).card :=
-        by
+      have : (X.attach.filter fun x => ↑x ∉ A i).card = X.card - (A i).card := by
         rw [filter_not]
         rw [← card_sdiff (subset_of_ssubset (hA i))]
         nth_rw 1 [←
@@ -733,8 +710,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
         -- surj
         · intro b bdef
           use↑b
-          have : ↑b ∈ X \ Filter (fun j : α => j ∈ A i) X :=
-            by
+          have : ↑b ∈ X \ Filter (fun j : α => j ∈ A i) X := by
             rw [mem_sdiff]
             rw [mem_sdiff] at bdef
             constructor

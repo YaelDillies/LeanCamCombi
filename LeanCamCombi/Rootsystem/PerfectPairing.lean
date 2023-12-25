@@ -1,8 +1,6 @@
 import LinearAlgebra.Dual
 import Rootsystem.LinearAlgebraAux
 
-#align_import rootsystem.perfect_pairing
-
 noncomputable section
 
 open Set Function
@@ -12,8 +10,7 @@ namespace Module
 variable (R M : Type _) [CommRing R] [AddCommGroup M] [Module R M]
 
 @[simp]
-theorem flip_dual_eval : (Dual.eval R M).flip = LinearMap.id :=
-  by
+theorem flip_dual_eval : (Dual.eval R M).flip = LinearMap.id := by
   ext
   simp only [LinearMap.flip_apply, LinearEquiv.coe_coe, LinearEquiv.ofBijective_apply,
     dual.eval_apply, LinearMap.id_coe, id.def]
@@ -39,16 +36,14 @@ def evalEquiv' [IsReflexive R M] : M ≃ₗ[R] Dual R (Dual R M) :=
 
 @[simp]
 theorem apply_evalEquiv'_symm_apply [IsReflexive R M] (f : Module.Dual R M)
-    (g : Module.Dual R <| Module.Dual R M) : f ((evalEquiv' R M).symm g) = g f :=
-  by
+    (g : Module.Dual R <| Module.Dual R M) : f ((evalEquiv' R M).symm g) = g f := by
   set n := (eval_equiv' R M).symm g
   have hn : g = eval_equiv' R M n := (LinearEquiv.apply_symm_apply _ _).symm
   rw [hn]
   rfl
 
 theorem symm_dualMap_evalEquiv' [IsReflexive R M] :
-    ↑(evalEquiv' R M).dualMap.symm = Dual.eval R (Dual R M) :=
-  by
+    ↑(evalEquiv' R M).dualMap.symm = Dual.eval R (Dual R M) := by
   ext f g
   simp only [LinearEquiv.dualMap_symm, LinearEquiv.coe_coe, LinearEquiv.dualMap_apply,
     apply_eval_equiv'_symm_apply, dual.eval_apply]
@@ -100,8 +95,7 @@ protected def toEquiv' : N ≃ₗ[R] Dual R M :=
 
 theorem dualMap_flip_toEquiv_trans_toEquiv_symm :
     (p.toEquiv.trans q.toEquiv.symm.dualMap : M →ₗ[R] Dual R (Dual R P)).flip =
-      (q.toEquiv.symm.trans p.toEquiv' : Dual R P →ₗ[R] Dual R M) :=
-  by
+      (q.toEquiv.symm.trans p.toEquiv' : Dual R P →ₗ[R] Dual R M) := by
   ext f m
   simp only [perfect_pairing.to_equiv, perfect_pairing.to_equiv', LinearMap.flip_apply,
     LinearEquiv.coe_coe, LinearEquiv.trans_apply, LinearEquiv.ofBijective_apply,
@@ -114,8 +108,7 @@ protected def trans : PerfectPairing R M (Dual R P)
   bijective_flip_toLin := by rw [dual_map_flip_to_equiv_trans_to_equiv_symm];
     exact LinearEquiv.bijective _
 
-theorem trans_symm_toLin : (p.trans p.symm).toLin = Dual.eval R M :=
-  by
+theorem trans_symm_toLin : (p.trans p.symm).toLin = Dual.eval R M := by
   -- TODO Fix this proof (mostly by adding missing API for `symm` and `trans`)
   ext m f
   simp only [perfect_pairing.to_equiv, perfect_pairing.symm, perfect_pairing.trans,
@@ -175,4 +168,3 @@ class IsRootDatum : Prop where
 end IsRootDatum
 
 end Module
-

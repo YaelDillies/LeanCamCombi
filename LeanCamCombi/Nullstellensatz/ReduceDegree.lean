@@ -6,8 +6,6 @@ Author: Ivan Sadofschi Costa.
 import Nullstellensatz.DegreeNew
 import Nullstellensatz.LemmasGS
 
-#align_import nullstellensatz.reduce_degree
-
 /-
 # Reduce degree
 
@@ -87,12 +85,11 @@ def IsReduced {R σ : Type _} [CommRing R] (f : MvPolynomial σ R) (m : σ →�
 
 -- would ∀ m', m ≤ m' → m ∉ f.support be better?
 theorem isReducedAdd {R σ : Type _} [CommRing R] {f g : MvPolynomial σ R} {m : σ →₀ ℕ}
-    (hf : IsReduced f m) (hg : IsReduced g m) : IsReduced (f + g) m :=
-  by
+    (hf : IsReduced f m) (hg : IsReduced g m) : IsReduced (f + g) m := by
   rw [IsReduced]
   intro m' hm'
   have t := support_add hm'
-  simp only [Finset.mem_union] at t 
+  simp only [Finset.mem_union] at t
   cases t
   · exact hf m' t
   · exact hg m' t
@@ -110,8 +107,7 @@ private theorem h_add_weak_aux_comp {R σ τ : Type _} [CommRing R] [Fintype τ]
     p + q - ∑ i : τ, (h1 + h2) i * g i = p - ∑ i : τ, h1 i * g i + (q - ∑ i : τ, h2 i * g i) :=
   calc
     p + q - ∑ i : τ, (h1 + h2) i * g i = p + q - ∑ i : τ, (h1 i + h2 i) * g i := by simp
-    _ = p + q - ∑ i : τ, (h1 i * g i + h2 i * g i) :=
-      by
+    _ = p + q - ∑ i : τ, (h1 i * g i + h2 i * g i) := by
       simp only [sub_right_inj]
       congr
       ext
@@ -126,8 +122,7 @@ private theorem reduce_degree_h_add_weak {R σ τ : Type _} [CommRing R] [IsDoma
     {g : τ → MvPolynomial σ R} {m : τ → σ →₀ ℕ} (hm : ∀ i : τ, DominantMonomial (m i) (g i))
     (h0 : ∀ i : τ, 0 < totalDegree (g i)) (hmonic : ∀ i : τ, coeff (m i) (g i) = 1) (a : σ →₀ ℕ)
     (b : R) (f : MvPolynomial σ R) (ha : a ∉ f.support) (hb : b ≠ 0) (Mf : M hm h0 hmonic f)
-    (Mab : M hm h0 hmonic (monomial a b)) : M hm h0 hmonic (monomial a b + f) :=
-  by
+    (Mab : M hm h0 hmonic (monomial a b)) : M hm h0 hmonic (monomial a b + f) := by
   cases' Mf with hf h_hf
   cases' Mab with hab h_hab
   use hab + hf
@@ -164,18 +159,16 @@ private theorem total_degree_p_aux {σ : Type _} {m m' a : σ →₀ ℕ} (h_m_l
     (t :
       monomialDegree (m' - (a - m)) ≤ monomialDegree m ∧
         (monomialDegree (m' - (a - m)) = monomialDegree m → m = m' - (a - m))) :
-    a = m' :=
-  by
+    a = m' := by
   have h' : m' - (a - m) = m + m' - a := by
     rw [add_comm]
     exact monomial_lemma_1 h_m_le_a c
-  rw [h'] at t 
+  rw [h'] at t
   clear h'
   suffices h1 : monomial_degree (m + m' - a) = monomial_degree m
   · ext i
     zify
-    have t'' : (m i : ℤ) = m i + m' i - a i :=
-      by
+    have t'' : (m i : ℤ) = m i + m' i - a i := by
       conv =>
         lhs
         rw [t.2 h1]
@@ -184,7 +177,7 @@ private theorem total_degree_p_aux {σ : Type _} {m m' a : σ →₀ ℕ} (h_m_l
       · rw [Int.ofNat_add]
       · rw [add_comm]
         exact monomial_lemma_2 c i
-    rw [← add_sub, self_eq_add_right, sub_eq_zero] at t'' 
+    rw [← add_sub, self_eq_add_right, sub_eq_zero] at t''
     symm
     exact t''
   apply le_antisymm
@@ -200,14 +193,13 @@ private theorem total_degree_p_aux {σ : Type _} {m m' a : σ →₀ ℕ} (h_m_l
 private theorem total_degree_p {R σ : Type _} [CommRing R] [IsDomain R] {g : MvPolynomial σ R}
     {m a : σ →₀ ℕ} (hm : DominantMonomial m g) (h_monic : coeff m g = 1) {b : R} (hb : b ≠ 0)
     (ha : a ≠ 0) (h_m_le_a : m ≤ a) :
-    totalDegree (monomial a b - monomial (a - m) b * g) < monomialDegree a :=
-  by
+    totalDegree (monomial a b - monomial (a - m) b * g) < monomialDegree a := by
   apply total_degree_sub_lt
   · by_contra
     simpa [monomial_degree_zero_iff.1 (le_zero_iff.1 (not_lt.1 h))] using ha
   · intro m' hm' h'
     simp only [exists_prop, mem_support_iff, coeff_monomial, ite_eq_right_iff, Ne.def,
-      Classical.not_forall] at hm' 
+      Classical.not_forall] at hm'
     simp only [← hm'.1, coeff_monomial, if_true, eq_self_iff_true]
     rw [coeff_monomial_mul', if_pos]
     · suffices h : coeff (a - (a - m)) g = 1
@@ -218,7 +210,7 @@ private theorem total_degree_p {R σ : Type _} [CommRing R] [IsDomain R] {g : Mv
       simp only [coe_tsub, Pi.sub_apply, Nat.sub_sub_self (h_m_le_a x)]
     · simp
   · intro m' hm' h
-    simp only [mem_support_iff, Ne.def, coeff_monomial_mul'] at hm' 
+    simp only [mem_support_iff, Ne.def, coeff_monomial_mul'] at hm'
     rw [coeff_monomial_mul']
     by_cases c : a - m ≤ m'
     · suffices c_m_m' : a = m'
@@ -229,7 +221,7 @@ private theorem total_degree_p {R σ : Type _} [CommRing R] [IsDomain R] {g : Mv
         · simp [h, h_monic]
         ext x
         simp only [coe_tsub, Pi.sub_apply, Nat.sub_sub_self (h_m_le_a x)]
-      simp only [c, if_true, mul_eq_zero, Decidable.not_or_iff_and_not] at hm' 
+      simp only [c, if_true, mul_eq_zero, Decidable.not_or_iff_and_not] at hm'
       have t1 := (dominant_monomial_iff hm) (m' - (a - m)) (mem_support_iff.2 hm'.2)
       apply total_degree_p_aux h_m_le_a h c
       constructor
@@ -237,14 +229,13 @@ private theorem total_degree_p {R σ : Type _} [CommRing R] [IsDomain R] {g : Mv
       · intro h
         symm
         exact t1.2 h
-    · simp only [c, eq_self_iff_true, not_true, if_false] at hm' 
+    · simp only [c, eq_self_iff_true, not_true, if_false] at hm'
       simpa using hm'
 
 private theorem reduce_degree_h_monomial_a_eq_zero {R σ τ : Type _} [CommRing R] [IsDomain R]
     [Fintype τ] {g : τ → MvPolynomial σ R} {m : τ → σ →₀ ℕ}
     (hm : ∀ i : τ, DominantMonomial (m i) (g i)) (h0 : ∀ i : τ, 0 < totalDegree (g i))
-    (hmonic : ∀ i : τ, coeff (m i) (g i) = 1) (b : R) : M hm h0 hmonic (monomial 0 b) :=
-  by
+    (hmonic : ∀ i : τ, coeff (m i) (g i) = 1) (b : R) : M hm h0 hmonic (monomial 0 b) := by
   use fun i => 0
   constructor
   · intro i
@@ -255,18 +246,17 @@ private theorem reduce_degree_h_monomial_a_eq_zero {R σ τ : Type _} [CommRing 
     simp only [monomial_zero', sub_zero, Finset.sum_const_zero, IsReduced]
     intro m' hm'
     simp only [exists_prop, coeff_C, mem_support_iff, ite_eq_right_iff, Ne.def,
-      Classical.not_forall] at hm' 
+      Classical.not_forall] at hm'
     simp only [← hm'.1, nonpos_iff_eq_zero]
     have hmi := (hm i).1
     by_contra
-    simp only [max_degree_monomial, h] at hmi 
+    simp only [max_degree_monomial, h] at hmi
     simpa [← hmi.2, monomial_degree] using h0 i
 
 private theorem reduce_degree_h_monomial_comp {R σ τ : Type _} [CommRing R] [IsDomain R] [Fintype τ]
     {g h0 : τ → MvPolynomial σ R} {m : σ →₀ ℕ} (a : σ →₀ ℕ) (b : R) (i : τ) :
     monomial a b - ∑ j : τ, (h0 + single i (monomial (a - m) b)) j * g j =
-      (monomial a) b - monomial (a - m) b * g i - ∑ j : τ, h0 j * g j :=
-  by
+      (monomial a) b - monomial (a - m) b * g i - ∑ j : τ, h0 j * g j := by
   simp only [Pi.add_apply, sub_sub]
   congr
   rw [← sum_univ_single i (monomial (a - m) b * g i), ← Finset.sum_add_distrib]
@@ -281,8 +271,7 @@ private theorem reduce_degree_h_monomial {R σ τ : Type _} [CommRing R] [IsDoma
     {g : τ → MvPolynomial σ R} {m : τ → σ →₀ ℕ} (hm : ∀ i : τ, DominantMonomial (m i) (g i))
     (h0 : ∀ i : τ, 0 < totalDegree (g i)) (hmonic : ∀ i : τ, coeff (m i) (g i) = 1) (a : σ →₀ ℕ)
     (b : R) (hp : ∀ p : MvPolynomial σ R, p.totalDegree < monomialDegree a → M hm h0 hmonic p) :
-    M hm h0 hmonic (monomial a b) :=
-  by
+    M hm h0 hmonic (monomial a b) := by
   by_cases c : ∀ i, IsReduced (monomial a b) (m i)
   · use fun i => 0
     simp only [true_and_iff, MulZeroClass.zero_mul, imp_true_iff, true_or_iff, eq_self_iff_true,
@@ -296,13 +285,13 @@ private theorem reduce_degree_h_monomial {R σ τ : Type _} [CommRing R] [IsDoma
   by_cases a_eq_zero : a = 0
   · rw [a_eq_zero]
     apply reduce_degree_h_monomial_a_eq_zero
-  simp only [Classical.not_forall] at c 
+  simp only [Classical.not_forall] at c
   cases' c with i hi
   simp only [IsReduced, Classical.not_forall, exists_prop, Classical.not_not, support_monomial,
-    b_eq_zero, if_false, Finset.mem_singleton] at hi 
+    b_eq_zero, if_false, Finset.mem_singleton] at hi
   cases' hi with a' ha'
   have ha := ha'.2
-  rw [ha'.1] at ha 
+  rw [ha'.1] at ha
   clear ha' a'
   let p := monomial a b - monomial (a - m i) b * g i
   have h_total_degree_p : p.total_degree < monomial_degree a :=
@@ -318,7 +307,7 @@ private theorem reduce_degree_h_monomial {R σ τ : Type _} [CommRing R] [IsDoma
       simp only [h, total_degree_monomial_eq_monomial_degree b_eq_zero, single_eq_same,
         Pi.add_apply]
       have t := hm i
-      simp only [dominant_monomial, max_degree_monomial] at t 
+      simp only [dominant_monomial, max_degree_monomial] at t
       rw [← t.1.2]
       clear c j h
       cases' h_h0.1 i with hl hr
@@ -360,8 +349,7 @@ theorem reduce_degree {R σ τ : Type _} [CommRing R] [IsDomain R] [Fintype τ] 
     (h0 : ∀ i : τ, 0 < totalDegree (g i)) (hmonic : ∀ i : τ, coeff (m i) (g i) = 1) :
     ∃ h : τ → MvPolynomial σ R,
       (∀ i : τ, h i = 0 ∨ totalDegree (h i) + totalDegree (g i) ≤ totalDegree f) ∧
-        ∀ i : τ, IsReduced (f - ∑ j : τ, h j * g j) (m i) :=
-  by
+        ∀ i : τ, IsReduced (f - ∑ j : τ, h j * g j) (m i) := by
   apply induction_on_new f
   · apply reduce_degree_h_add_weak hm h0 hmonic
   · apply reduce_degree_h_monomial hm h0 hmonic
@@ -372,10 +360,8 @@ theorem reduce_degree' {R σ : Type _} [CommRing R] [IsDomain R] [Fintype σ] (f
     (hm : ∀ i : σ, coeff (single i (g i).totalDegree) (g i) = 1) :
     ∃ h : σ → MvPolynomial σ R,
       (∀ i : σ, h i = 0 ∨ totalDegree (h i) + totalDegree (g i) ≤ totalDegree f) ∧
-        ∀ i : σ, degreeOf i (f - ∑ j : σ, h j * g j) < totalDegree (g i) :=
-  by
-  have hm' : ∀ i : σ, dominant_monomial (single i (g i).totalDegree) (g i) :=
-    by
+        ∀ i : σ, degreeOf i (f - ∑ j : σ, h j * g j) < totalDegree (g i) := by
+  have hm' : ∀ i : σ, dominant_monomial (single i (g i).totalDegree) (g i) := by
     intro i
     apply dominant_monomial_single_of_supported_singleton _ (hg i)
     by_contra
@@ -393,16 +379,14 @@ theorem reduce_degree_special_case {R σ : Type _} [CommRing R] [IsDomain R] [Fi
     [DecidableEq σ] (S : σ → Finset R) (hS : ∀ i : σ, 0 < (S i).card) (f : MvPolynomial σ R) :
     ∃ h : σ → MvPolynomial σ R,
       (∀ i : σ, h i = 0 ∨ totalDegree (h i) + (S i).card ≤ totalDegree f) ∧
-        ∀ j : σ, degreeOf j (f - ∑ i : σ, h i * ∏ s in S i, (X i - C s)) < (S j).card :=
-  by
+        ∀ j : σ, degreeOf j (f - ∑ i : σ, h i * ∏ s in S i, (X i - C s)) < (S j).card := by
   let g : σ → MvPolynomial σ R := fun i => ∏ s in S i, (X i - C s)
   let hg : ∀ i : σ, g i ∈ supported R ({i} : Set σ) := fun i => g_S_mem_supported (S i) i
   have h0 : ∀ i : σ, 0 < total_degree (g i) := by
     intro i
     rw [total_degree_g_S]
     exact hS i
-  have hm : ∀ i : σ, coeff (single i (g i).totalDegree) (g i) = 1 :=
-    by
+  have hm : ∀ i : σ, coeff (single i (g i).totalDegree) (g i) = 1 := by
     intro i
     simpa only [g, total_degree_g_S] using g_S_monic (S i) i
   cases' reduce_degree' f g hg h0 hm with h hh
@@ -416,4 +400,3 @@ theorem reduce_degree_special_case {R σ : Type _} [CommRing R] [IsDomain R] [Fi
     exact hh.2 i
 
 end MvPolynomial
-

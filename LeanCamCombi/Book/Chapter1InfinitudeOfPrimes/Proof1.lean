@@ -5,8 +5,7 @@ Author: Yves Jäckle.
 -/
 import Mathlib.Algebra.BigOperators.Order
 import Mathlib.Data.Nat.Prime
-
-#align_import book.FormalBook_Ch1_InfinitudeOfPrimes_Proof1
+import Mathlib.Data.Set.Finite
 
 /-!
 # Six proofs of the inﬁnity of primes : Euclid's proof (first proof)
@@ -50,32 +49,25 @@ Take the sucessor of the product of all primes in `s`:
 
 We just found a prime that divides 1: a contradiction.
 -/
-theorem Euclid_proof : ∀ s : Finset ℕ, ∃ p, Nat.Prime p ∧ p ∉ s :=
-  by
+theorem Euclid_proof : ∀ s : Finset ℕ, ∃ p, Nat.Prime p ∧ p ∉ s := by
   intro s
   by_contra! h
   set s_primes := s.filter Nat.Prime with s_primes_def
   -- Let's add a membership definition lemma to ease exposition
-  have mem_s_primes : ∀ {n : ℕ}, n ∈ s_primes ↔ n.Prime :=
-    by
+  have mem_s_primes : ∀ {n : ℕ}, n ∈ s_primes ↔ n.Prime := by
     intro n
     rw [s_primes_def, mem_filter, and_iff_right_iff_imp]
     --simp [s_primes_def],
     --alternative to the previous line
     exact h n
   -- In order to get a prime factor from `nat.exists_prime_and_dvd`, we need:
-  have condition : ∏ i in s_primes, i + 1 ≠ 1 :=
-    by
+  have condition : ∏ i in s_primes, i + 1 ≠ 1 := by
     intro con
     rw [add_left_eq_self] at con
     have however : 0 < ∏ i in s_primes, i :=
-      by
-      apply prod_pos
-      intro n ns_primes
-      apply prime.pos
-      exact mem_s_primes.mp ns_primes
+      prod_pos fun n ns_primes ↦ (mem_s_primes.1 ns_primes).pos
     apply lt_irrefl 0
-    nth_rw 2 [← Con]
+    nth_rw 2 [← con]
     exact however
   obtain ⟨p, pp, pdvd⟩ := exists_prime_and_dvd condition
   -- The factor also divides the product:
@@ -92,12 +84,11 @@ theorem Euclid_proof : ∀ s : Finset ℕ, ∃ p, Nat.Prime p ∧ p ∉ s :=
 
 -- #check Euclid_proof
 /-- The standardised statement proven through Euclids proof-/
-theorem Euclid_proof_standardised : {n : ℕ | n.Prime}.Infinite :=
-  by
+theorem Euclid_proof_standardised : {n : ℕ | n.Prime}.Infinite := by
   rw [Set.Infinite]
   intro con
-  obtain ⟨p, ⟨p_prop, p_mem⟩⟩ := Euclid_proof (Set.Finite.toFinset Con)
+  obtain ⟨p, ⟨p_prop, p_mem⟩⟩ := Euclid_proof (Set.Finite.toFinset con)
   apply p_mem
-  rw [Set.Finite.mem_toFinset Con]
+  rw [Set.Finite.mem_toFinset con]
   rw [Set.mem_setOf_eq]
   exact p_prop

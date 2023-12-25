@@ -1,7 +1,5 @@
 import MeasureTheory.Measure.OpenPos
 
-#align_import mathlib.measure_theory.measure.open_pos
-
 open scoped Topology ENNReal MeasureTheory
 
 open Set Function Filter
@@ -20,4 +18,3 @@ instance IsOpenPosMeasure.to_ae_neBot [Nonempty X] : μ.ae.ne_bot :=
 end Measure
 
 end MeasureTheory
-

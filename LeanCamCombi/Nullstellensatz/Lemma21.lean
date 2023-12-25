@@ -6,8 +6,6 @@ Author: Ivan Sadofschi Costa.
 import Mathlib.Data.MvPolynomial.Equiv
 import Mathlib.Data.Polynomial.RingDivision
 
-#align_import nullstellensatz.lemma_2_1
-
 /-
 # Lemma 2.1
 
@@ -39,8 +37,7 @@ namespace MvPolynomial
 private theorem lemma_2_1_fin_n {n : ℕ} {R : Type _} [CommRing R] [IsDomain R]
     (f : MvPolynomial (Fin n) R) (S : Fin n → Finset R)
     (hS : ∀ i : Fin n, degreeOf i f < (S i).card)
-    (hz : ∀ s : Fin n → R, (∀ i : Fin n, s i ∈ S i) → eval s f = 0) : f = 0 :=
-  by
+    (hz : ∀ s : Fin n → R, (∀ i : Fin n, s i ∈ S i) → eval s f = 0) : f = 0 := by
   induction' n with n hn
   simp only [forall_const] at hz
   apply (RingEquiv.map_eq_zero_iff (is_empty_ring_equiv R (Fin 0))).1
@@ -81,8 +78,7 @@ private theorem lemma_2_1_fin_n {n : ℕ} {R : Type _} [CommRing R] [IsDomain R]
 /-- Lemma 2.1 in Alon's "Combinatorial Nullstellensatz" paper. -/
 theorem lemma_2_1 {R σ : Type _} [CommRing R] [IsDomain R] [Fintype σ] (f : MvPolynomial σ R)
     (S : σ → Finset R) (hS : ∀ i : σ, degreeOf i f < (S i).card)
-    (hz : ∀ s : σ → R, (∀ i : σ, s i ∈ S i) → eval s f = 0) : f = 0 :=
-  by
+    (hz : ∀ s : σ → R, (∀ i : σ, s i ∈ S i) → eval s f = 0) : f = 0 := by
   rcases exists_fin_rename f with ⟨n, ⟨ψ, ⟨hψ, ⟨g, hg⟩⟩⟩⟩
   rw [hg]
   rw [hg] at hS
@@ -95,8 +91,7 @@ theorem lemma_2_1 {R σ : Type _} [CommRing R] [IsDomain R] [Fintype σ] (f : Mv
   have hs0 : ∃ s0 : σ → R, ∀ i : σ, s0 i ∈ S i := by apply Classical.skolem.1 h_S_nonempty
   cases' hs0 with s0 hs0
   by_cases c : Nonempty (Fin n)
-  · have hS' : ∀ i : Fin n, degree_of i g < ((S ∘ ψ) i).card :=
-      by
+  · have hS' : ∀ i : Fin n, degree_of i g < ((S ∘ ψ) i).card := by
       intro i
       convert hS (ψ i)
       rw [degree_of_rename_of_injective hψ i]

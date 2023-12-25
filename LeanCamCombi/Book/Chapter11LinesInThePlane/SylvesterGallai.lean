@@ -1,7 +1,11 @@
+/-
+Copyright (c) 2023 Yves Jäckle. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Yves Jäckle.
+-/
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.InnerProductSpace.Projection
-
-#align_import book.FormalBook_Ch11_LinesInThePlane_SylvesterGallai
+import Mathlib.Tactic.NthRewrite
 
 /-!
 # Lines in the plane and decompositions of graphs : Sylvester-Gallai
@@ -50,14 +54,10 @@ In this file, we formalize the Sylvester-Gallai theorem.
 
 -/
 
+open Finset
 
-/-
-Copyright (c) 2023 Yves Jäckle. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Author: Yves Jäckle.
--/
 -- We'll work in a real Hilbert space (complete inner product space with dot-product in ℝ)
--- As you may check from the docstring of `inner_product_space`, we require `normed_add_comm_group`.
+-- As you may check from the docstring of `InnerProductSpace`, we require `NormedAddCommGroup`.
 variable {E : Type} [_inst_1 : NormedAddCommGroup E] [_inst_2 : InnerProductSpace ℝ E]
   [_inst_3 : CompleteSpace E]
 
@@ -67,28 +67,13 @@ Note: when `a=b` this is a point.
 def line (a b : E) : Set E :=
   {x : E | ∃ t : ℝ, x = a + t • (b - a)}
 
-/-- Lines are non-empty.
-We need this to define projections in `point_line_proj`.
--/
-theorem line_nonempty {a b : E} : (line a b).Nonempty :=
-  by
-  use a
-  rw [line]
-  simp only [Set.mem_setOf_eq, exists_or_eq_left]
-  use 0
-  simp only [add_zero, eq_self_iff_true, zero_smul]
+@[simp] lemma left_mem_line (a b : E) : a ∈ line a b := ⟨0, by simp⟩
+@[simp] lemma right_mem_line (a b : E) : b ∈ line a b := ⟨1, by simp⟩
 
-/-- A membership lemma -/
-theorem left_mem_line {a b : E} : a ∈ line a b :=
-  by
-  rw [line]
-  use 0
-  rw [zero_smul]
-  rw [add_zero]
+lemma line_nonempty (a b : E) : (line a b).Nonempty := ⟨a, left_mem_line _ _⟩
 
 /-- A rewrite lemma -/
-theorem line_comm {a b : E} : line a b = line b a :=
-  by
+theorem line_comm (a b : E) : line a b = line b a := by
   rw [line, line]
   ext x
   constructor
@@ -111,52 +96,26 @@ theorem line_comm {a b : E} : line a b = line b a :=
     rw [smul_neg]
     rwa [sub_neg_eq_add]
 
-/-- A membership lemma -/
-theorem right_mem_line {a b : E} : b ∈ line a b :=
-  by
-  rw [line_comm]
-  apply left_mem_line
-
 /-- Lines are complete.
 We need this to define projections in `point_line_proj`.
 -/
-theorem line_complete {a b : E} : IsComplete (line a b) :=
-  by
-  apply IsClosed.isComplete
-  apply IsSeqClosed.isClosed
-  intro seq lim seq_mem lim_statement
-  simp [line] at seq_mem
-  replace seq_mem := Classical.axiom_of_choice seq_mem
-  dsimp at seq_mem
-  cases' seq_mem with seq_l seq_l_def
+theorem line_complete {a b : E} : IsComplete (line a b) := by
+  apply (IsSeqClosed.isClosed _).isComplete
+  intro x y hx hy
+  choose t ht using hx
   -- This is how far I'll go.
   sorry
 
 /-- Lines are convex.
 We need this to define projections in `point_line_proj`.
 -/
-theorem line_convex {a b : E} : Convex ℝ (line a b) :=
-  by
-  rw [convex_iff_forall_pos]
-  intro x xl y yl s t sp tp st
-  simp [line] at *
-  cases' xl with tx tx_def
-  cases' yl with ty ty_def
-  use s * tx + t * ty
-  rw [tx_def, ty_def]
-  rw [smul_add, smul_add]
-  rw [← add_assoc]
-  nth_rw_lhs 2 [add_comm]
-  nth_rw_lhs 1 [← add_assoc]
-  rw [show t • a + s • a = a by rw [← add_smul]; rw [add_comm] at st ; rw [st]; rw [one_smul]]
-  rw [add_assoc]
-  rw [add_left_cancel_iff]
-  rw [smul_smul, smul_smul]
-  rw [← add_smul]
+theorem line_convex {x y : E} : Convex ℝ (line x y) := by
+  rintro _ ⟨t, rfl⟩ _ ⟨u, rfl⟩ a b _ _ hab
+  refine ⟨a * t + b * u, ?_⟩
+  simp_rw [smul_add, add_add_add_comm, Convex.combo_self hab, ← mul_smul, ← add_smul]
 
 /-- A rewrite lemma -/
-theorem line_rw_of_mem {a b c : E} (h : c ∈ line a b) : line a b = line c (c + (b - a)) :=
-  by
+theorem line_rw_of_mem {a b c : E} (h : c ∈ line a b) : line a b = line c (c + (b - a)) := by
   rw [line, line]
   rw [line] at h
   cases' h with tc cdef
@@ -176,7 +135,6 @@ theorem line_rw_of_mem {a b c : E} (h : c ∈ line a b) : line a b = line c (c +
     rw [cdef] at xdef
     rw [add_assoc, ← add_smul] at xdef
     use tc + tx
-    exact xdef
 
 /-- A rewrite lemma -/
 theorem line_rw_of_mem_of_mem {a b c d : E} (hcd : c ≠ d) (hc : c ∈ line a b) (hd : d ∈ line a b) :
@@ -192,7 +150,7 @@ theorem line_rw_of_mem_of_mem {a b c d : E} (hcd : c ≠ d) (hc : c ∈ line a b
       by_contra con
       rw [sub_eq_zero] at con
       apply hcd
-      rw [cdef, ddef, Con]
+      rw [cdef, ddef, con]
     use(tx - tc) / (td - tc)
     rw [cdef, ddef]
     simp only [add_sub_add_left_eq_sub]
@@ -212,7 +170,6 @@ theorem line_rw_of_mem_of_mem {a b c d : E} (hcd : c ≠ d) (hc : c ∈ line a b
     rw [add_assoc] at xdef
     rw [← add_smul] at xdef
     use tc + tx * (td - tc)
-    exact xdef
 
 /-- For 3 distinct points `a,b,c` on a line, and a 4th point `p`
 on the line, we may find 2 distinct points `x,y` among `a,b,c`,
@@ -223,12 +180,11 @@ theorem pigeons_on_a_line {a b c p : E} (hc : c ∈ line a b) (hp : p ∈ line a
     (hac : a ≠ c) (hcb : c ≠ b) :
     ∃ x,
       (x = a ∨ x = b ∨ x = c) ∧
-        ∃ y, (y = a ∨ y = b ∨ y = c) ∧ y ≠ x ∧ ∃ t : ℝ, (0 < t ∧ t ≤ 1) ∧ y = x + t • (p - x) :=
-  by
-  have ha := @left_mem_line _ _ _ _ a b
-  have hb := @right_mem_line _ _ _ _ a b
+        ∃ y, (y = a ∨ y = b ∨ y = c) ∧ y ≠ x ∧ ∃ t : ℝ, (0 < t ∧ t ≤ 1) ∧ y = x + t • (p - x) := by
+  have ha := left_mem_line a b
+  have hb := right_mem_line a b
   -- We "center" the line at `p`
-  rw [line_rw_of_mem hp] at *
+  rw [line_rw_of_mem hp] at ha hb hc
   cases' ha with ta adef
   cases' hb with tb bdef
   cases' hc with tc cdef
@@ -241,38 +197,31 @@ theorem pigeons_on_a_line {a b c p : E} (hc : c ∈ line a b) (hp : p ∈ line a
   -- The pigeonhole map
   let f := fun t : ℝ => if ht : 0 ≤ t then 1 else 0
   -- The size condition
-  have cond_1 : ({0, 1} : Finset ℕ).card < ({ta, tb, tc} : Finset ℝ).card :=
-    by
+  have cond_1 : ({0, 1} : Finset ℕ).card < ({ta, tb, tc} : Finset ℝ).card := by
     have : ta ∉ ({tb, tc} : Finset ℝ) := by
-      intro con
-      rw [Finset.mem_insert] at con
-      cases Con
-      rw [Con] at adef
-      apply hab
-      rw [adef]
-      nth_rw 2 [bdef]
-      rw [Finset.mem_singleton] at con
-      rw [Con] at adef
+      rw [mem_insert, mem_singleton]
+      rintro (rfl | rfl)
+      · apply hab
+        rw [adef]
+        nth_rw 2 [bdef]
       apply hac
       rw [adef, cdef]
-    nth_rw_rhs 1 [Finset.card_insert_of_not_mem this]
+    nth_rw 1 [card_insert_of_not_mem this]
     clear this
     have : tb ∉ ({tc} : Finset ℝ) := by
-      intro con
-      rw [Finset.mem_singleton] at con
-      rw [Con] at bdef
+      rw [mem_singleton]
+      rintro rfl
       apply hcb
       rw [bdef, cdef]
-    nth_rw_rhs 1 [Finset.card_insert_of_not_mem this]
-    simp only [Finset.card_doubleton, lt_add_iff_pos_right, eq_self_iff_true, Nat.lt_one_iff,
-      Finset.card_singleton]
+    nth_rw 1 [card_insert_of_not_mem this]
+    simp only [card_doubleton, lt_add_iff_pos_right, eq_self_iff_true, Nat.lt_one_iff,
+      card_singleton]
     decide
   --The mapping condition
-  have cond_2 : ∀ x, x ∈ ({ta, tb, tc} : Finset ℝ) → f x ∈ ({0, 1} : Finset ℕ) :=
-    by
-    intro x xdef
-    rw [Finset.mem_insert]
-    rw [Finset.mem_singleton]
+  have cond_2 : ∀ x, x ∈ ({ta, tb, tc} : Finset ℝ) → f x ∈ ({0, 1} : Finset ℕ) := by
+    intro x _
+    rw [mem_insert]
+    rw [mem_singleton]
     dsimp [f]
     by_cases q : 0 ≤ x
     rw [if_pos q]
@@ -283,13 +232,12 @@ theorem pigeons_on_a_line {a b c p : E} (hc : c ∈ line a b) (hp : p ∈ line a
     rfl
   -- We apply the pigeonhole principle
   obtain ⟨u, udef, v, vdef, unv, same⟩ :=
-    Finset.exists_ne_map_eq_of_card_lt_of_maps_to cond_1 cond_2
+    exists_ne_map_eq_of_card_lt_of_maps_to cond_1 cond_2
   clear cond_1 cond_2
   dsimp [f] at same
   -- We simplify "same"
-  have signz : 0 ≤ u ∧ 0 ≤ v ∨ u < 0 ∧ v < 0 :=
-    by
-    cases le_or_lt 0 u
+  have signz : 0 ≤ u ∧ 0 ≤ v ∨ u < 0 ∧ v < 0 := by
+    obtain h | h := le_or_lt 0 u
     rw [if_pos h] at same
     rw [eq_comm] at same
     rw [Ne.ite_eq_left_iff Nat.one_ne_zero] at same
@@ -306,21 +254,17 @@ theorem pigeons_on_a_line {a b c p : E} (hc : c ∈ line a b) (hp : p ∈ line a
   have tec :
     ∀ x,
       x ∈ ({ta, tb, tc} : Finset ℝ) →
-        p + x • (b - a) = a ∨ p + x • (b - a) = b ∨ p + x • (b - a) = c :=
-    by
+        p + x • (b - a) = a ∨ p + x • (b - a) = b ∨ p + x • (b - a) = c := by
     intro x xdef
-    rw [Finset.mem_insert] at xdef
-    cases xdef
-    rw [xdef, ← adef]
+    rw [mem_insert, mem_insert, mem_singleton] at xdef
+    obtain rfl | rfl | rfl := xdef
+    rw [← adef]
     left; rfl
-    rw [Finset.mem_insert] at xdef
-    cases xdef
-    rw [xdef, ← bdef]
+    rw [← bdef]
     right; left; rfl
-    rw [Finset.mem_singleton] at xdef
-    rw [xdef, ← cdef]
+    rw [← cdef]
     right; right; rfl
-  cases signz
+  obtain signz | signz := signz
   · --wlog H : v < u with Sym, --fails
     apply ltByCases v u
     · intro vltu
@@ -336,18 +280,16 @@ theorem pigeons_on_a_line {a b c p : E} (hc : c ∈ line a b) (hp : p ∈ line a
         rw [← sub_eq_zero] at con
         rw [← sub_smul] at con
         rw [smul_eq_zero] at con
-        cases Con
+        obtain con | con := con
         rw [sub_eq_zero] at con
-        rw [Con] at vltu
+        rw [con] at vltu
         exact (lt_irrefl u) vltu
         rw [sub_eq_zero] at con
-        exact hab Con.symm
-      · use(u - v) / u
+        exact hab con.symm
+      · use (u - v) / u
         have : u ≠ 0 := by
-          intro con
-          apply lt_irrefl (0 : ℝ)
-          rw [Con] at vltu
-          exact lt_of_le_of_lt signz.2 vltu
+          rintro rfl
+          exact signz.2.not_lt vltu
         constructor
         · constructor
           rw [div_pos_iff]
@@ -387,17 +329,17 @@ theorem pigeons_on_a_line {a b c p : E} (hc : c ∈ line a b) (hp : p ∈ line a
         rw [← sub_eq_zero] at con
         rw [← sub_smul] at con
         rw [smul_eq_zero] at con
-        cases Con
+        obtain con | con := con
         rw [sub_eq_zero] at con
-        rw [Con] at vltu
+        rw [con] at vltu
         exact (lt_irrefl v) vltu
         rw [sub_eq_zero] at con
-        exact hab Con.symm
+        exact hab con.symm
       · use(v - u) / v
         have : v ≠ 0 := by
           intro con
           apply lt_irrefl (0 : ℝ)
-          rw [Con] at vltu
+          rw [con] at vltu
           exact lt_of_le_of_lt signz.1 vltu
         constructor
         · constructor
@@ -437,12 +379,12 @@ theorem pigeons_on_a_line {a b c p : E} (hc : c ∈ line a b) (hp : p ∈ line a
         rw [← sub_eq_zero] at con
         rw [← sub_smul] at con
         rw [smul_eq_zero] at con
-        cases Con
+        obtain con | con := con
         rw [sub_eq_zero] at con
-        rw [Con] at vltu
+        rw [con] at vltu
         exact (lt_irrefl v) vltu
         rw [sub_eq_zero] at con
-        exact hab Con.symm
+        exact hab con.symm
       · use(v - u) / v
         have : v ≠ 0 := ne_of_lt signz.2
         constructor
@@ -484,12 +426,12 @@ theorem pigeons_on_a_line {a b c p : E} (hc : c ∈ line a b) (hp : p ∈ line a
         rw [← sub_eq_zero] at con
         rw [← sub_smul] at con
         rw [smul_eq_zero] at con
-        cases Con
+        obtain con | con := con
         rw [sub_eq_zero] at con
-        rw [Con] at vltu
+        rw [con] at vltu
         exact (lt_irrefl u) vltu
         rw [sub_eq_zero] at con
-        exact hab Con.symm
+        exact hab con.symm
       · use(u - v) / u
         have : u ≠ 0 := ne_of_lt signz.1
         constructor
@@ -527,77 +469,72 @@ asking fro this triple of points to be distinct and finally asking
 the first point to not be on the line spanned by the two others.
 -/
 noncomputable def pointLineFinset (P : Finset E) :=
-  (Finset.univ : Finset (↥P × ↥P × ↥P)).filterₓ fun t =>
-    t.1 ≠ t.2.1 ∧ t.1 ≠ t.2.2 ∧ t.2.1 ≠ t.2.2 ∧ t.1.val ∉ line t.2.1.val t.2.2.val
+  (univ : Finset (↥P × ↥P × ↥P)).filter fun (a, b, c) ↦
+    a ≠ b ∧ a ≠ c ∧ b ≠ c ∧ a.val ∉ line b.val c.val
 
 /-- We obtain two distinct points from a set of size at least 2.
 Compare to `finset.card_eq_two` for sets of size 2.
 -/
 theorem pair_of_2_le_card {α : Type} {s : Finset α} (h : 2 ≤ s.card) :
-    ∃ a b, a ∈ s ∧ b ∈ s ∧ a ≠ b :=
-  by
+    ∃ a b, a ∈ s ∧ b ∈ s ∧ a ≠ b := by
   have first : 0 < s.card := by linarith
-  rw [Finset.card_pos] at first
+  rw [card_pos] at first
   obtain ⟨fst, fst_def⟩ := first
   use fst
-  have second : 0 < (s.erase fst).card :=
-    by
-    have := Finset.card_erase_add_one fst_def
+  have second : 0 < (s.erase fst).card := by
+    have := card_erase_add_one fst_def
     rw [← this] at h
     linarith
-  rw [Finset.card_pos] at second
+  rw [card_pos] at second
   obtain ⟨snd, snd_def⟩ := second
   use snd
   constructor; exact fst_def
-  constructor; apply (Finset.erase_subset fst s) snd_def
+  constructor; apply (erase_subset fst s) snd_def
   intro con
-  rw [← Con] at snd_def
-  exact (Finset.not_mem_erase fst s) snd_def
+  rw [← con] at snd_def
+  exact (not_mem_erase fst s) snd_def
 
 -- I initially proved this, but it turns out that the pair was fine,
 -- I'm keeping it here as it may be mathlib material.
 theorem triple_of_3_le_card {α : Type} {s : Finset α} (h : 3 ≤ s.card) :
-    ∃ a b c, a ∈ s ∧ b ∈ s ∧ c ∈ s ∧ a ≠ b ∧ a ≠ c ∧ c ≠ b :=
-  by
+    ∃ a b c, a ∈ s ∧ b ∈ s ∧ c ∈ s ∧ a ≠ b ∧ a ≠ c ∧ c ≠ b := by
   have first : 0 < s.card := by linarith
-  rw [Finset.card_pos] at first
+  rw [card_pos] at first
   obtain ⟨fst, fst_def⟩ := first
   use fst
-  have second : 0 < (s.erase fst).card :=
-    by
-    have := Finset.card_erase_add_one fst_def
+  have second : 0 < (s.erase fst).card := by
+    have := card_erase_add_one fst_def
     rw [← this] at h
     linarith
-  rw [Finset.card_pos] at second
+  rw [card_pos] at second
   obtain ⟨snd, snd_def⟩ := second
   use snd
-  have third : 0 < ((s.erase fst).eraseₓ snd).card :=
-    by
-    have := Finset.card_erase_add_one fst_def
-    have that := @Finset.card_erase_add_one _ (s.erase fst) snd _ snd_def
+  have third : 0 < ((s.erase fst).erase snd).card := by
+    have := card_erase_add_one fst_def
+    have that := @card_erase_add_one _ (s.erase fst) snd _ snd_def
     rw [← this] at h
     linarith
-  rw [Finset.card_pos] at third
+  rw [card_pos] at third
   obtain ⟨thr, thr_def⟩ : _ := third
   use thr
   constructor; exact fst_def
-  constructor; apply (Finset.erase_subset fst s) snd_def
+  constructor; apply (erase_subset fst s) snd_def
   constructor;
   apply
-    (Finset.Subset.trans (Finset.erase_subset snd (s.erase fst)) (Finset.erase_subset fst s))
+    (Subset.trans (erase_subset snd (s.erase fst)) (erase_subset fst s))
       thr_def
   constructor
   intro con
-  rw [← Con] at snd_def
-  apply (Finset.not_mem_erase fst s) snd_def
+  rw [← con] at snd_def
+  apply (not_mem_erase fst s) snd_def
   constructor
   intro con
-  rw [← Con] at thr_def
-  rw [Finset.mem_erase] at thr_def
-  apply (Finset.not_mem_erase fst s) thr_def.2
+  rw [← con] at thr_def
+  rw [mem_erase] at thr_def
+  apply (not_mem_erase fst s) thr_def.2
   intro con
-  rw [← Con] at thr_def
-  apply (Finset.not_mem_erase thr (s.erase fst)) thr_def
+  rw [← con] at thr_def
+  apply (not_mem_erase thr (s.erase fst)) thr_def
 
 /-- I turns out that the condition that the points of `P`
 aren't aligned implies that `P` has at least 3 points.
@@ -607,37 +544,29 @@ theorem Sylvester_Gallai_condition_fact (P : Finset E) (hSG : ¬∃ a b : E, ∀
   by_contra! con
   interval_cases hP : P.card
   -- If there are no points, the ∀ statement of `hSG` is true.
-  · rw [Finset.card_eq_zero] at hP
+  · rw [card_eq_zero] at hP
     apply hSG
     use 0; use 0
     intro p problem
     exfalso
     rw [hP] at problem
-    exact (Finset.not_mem_empty p) problem
+    exact (not_mem_empty p) problem
   -- If there's one point, all points are on any line containing that point
-  · rw [Finset.card_eq_one] at hP
+  · rw [card_eq_one] at hP
     cases' hP with e hP
     apply hSG
     use e; use e
     intro p pdef
     rw [hP] at pdef
-    rw [Finset.mem_singleton] at pdef
+    rw [mem_singleton] at pdef
     rw [pdef]
     apply left_mem_line
   -- If there are two points, all points are on the line they span
-  · rw [Finset.card_eq_two] at hP
-    rcases hP with ⟨a, b, anb, hP⟩
+  · rw [card_eq_two] at hP
+    rcases hP with ⟨a, b, -, hP⟩
     apply hSG
     use a; use b
-    intro p pdef
-    rw [hP] at pdef
-    rw [Finset.mem_insert] at pdef
-    cases pdef
-    rw [pdef]
-    apply left_mem_line
-    rw [Finset.mem_singleton] at pdef
-    rw [pdef]
-    apply right_mem_line
+    simp [hP]
 
 /-- Seeing as the "general position" implies that we have 3 points,
 it also implies that the point-line-pairs set is non-empty.
@@ -646,13 +575,12 @@ We need this to define the minimum distance of points to lines
 in `min_dist`.
 -/
 theorem pointLineFinset_nonempty (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈ line a b) :
-    (pointLineFinset P).Nonempty :=
-  by
+    (pointLineFinset P).Nonempty := by
   have hP := Sylvester_Gallai_condition_fact P hSG
   by_contra! con
-  simp only [Finset.not_nonempty_iff_eq_empty, pointLineFinset.equations._eqn_1] at con
+  simp only [not_nonempty_iff_eq_empty, pointLineFinset] at con
   obtain ⟨a, b, aP, bP, anb⟩ := pair_of_2_le_card (show 2 ≤ P.card by linarith)
-  rw [Finset.filter_eq_empty_iff] at con
+  rw [filter_eq_empty_iff] at con
   specialize con
   simp at con
   apply hSG
@@ -664,7 +592,7 @@ theorem pointLineFinset_nonempty (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ 
   by_cases q2 : p = b
   · rw [q2]; apply right_mem_line
   · rw [Ne.def] at anb
-    exact Con q1 q2 anb
+    exact con q1 q2 anb
 
 /-- For a triple of points, we define the projection of the first
 on the line spanned by the two others.
@@ -685,9 +613,8 @@ among points on the line.
 -/
 theorem point_line_dist_def (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈ line a b)
     (t : ↥P × ↥P × ↥P) :
-    ∃ H : pointLineProj P hSG t ∈ line t.2.1.val t.2.2.val,
-      ‖t.1.val - pointLineProj P hSG t‖ = ⨅ w : ↥(line t.2.1.val t.2.2.val), ‖t.1.val - ↑w‖ :=
-  by
+    pointLineProj P hSG t ∈ line t.2.1.val t.2.2.val ∧
+      ‖t.1.val - pointLineProj P hSG t‖ = ⨅ w : ↥(line t.2.1.val t.2.2.val), ‖t.1.val - ↑w‖ := by
   rw [pointLineProj]
   exact
     Classical.choose_spec
@@ -699,21 +626,20 @@ where the point and the line form a triple of the
 point-line-pair set `point_line_finset` we defined.
 -/
 noncomputable def minDist (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈ line a b) :=
-  Finset.min'
-    (Finset.image (fun t : ↥P × ↥P × ↥P => ‖↑t.1 - pointLineProj P hSG t‖)
+  min'
+    (image (fun t : ↥P × ↥P × ↥P => ‖↑t.1 - pointLineProj P hSG t‖)
       (-- `.val` raises an error.
         pointLineFinset
         P))
     (by
-      apply Finset.Nonempty.image
+      apply Nonempty.image
       exact pointLineFinset_nonempty P hSG)
 
 /-- A geometric lemma to handle a case of the
 the proof-by-picture of `Sylvester_Gallai`.
 -/
 theorem SG_Thales_like (x y z r t : E) (s : ℝ) (hs : 0 < s ∧ s < 1) (hy : y = x + s • (z - x))
-    (hr : r = x + s • (t - x)) (htz : z ≠ t) : ‖y - r‖ < ‖z - t‖ :=
-  by
+    (hr : r = x + s • (t - x)) (htz : z ≠ t) : ‖y - r‖ < ‖z - t‖ := by
   rw [hy, hr]
   simp only [add_sub_add_left_eq_sub]
   rw [← smul_sub]
@@ -733,10 +659,9 @@ the proof-by-picture of `Sylvester_Gallai`.
 -/
 theorem SG_Pythagoras_workaround (x y z p t : E) (hyz : y = z) (htz : t ≠ z)
     (izptp : inner (z - p) (t - p) ≤ (0 : ℝ)) (iypxp : inner (y - p) (x - p) ≤ (0 : ℝ))
-    (itzxz : inner (t - z) (x - z) ≤ (0 : ℝ)) : ‖y - p‖ < ‖z - t‖ :=
-  by
-  have : ‖z - p‖ * ‖z - p‖ + ‖t - p‖ * ‖t - p‖ ≤ ‖z - t‖ * ‖z - t‖ :=
-    by
+    (itzxz : inner (t - z) (x - z) ≤ (0 : ℝ)) : ‖y - p‖ < ‖z - t‖ := by
+  subst y
+  have : ‖z - p‖ * ‖z - p‖ + ‖t - p‖ * ‖t - p‖ ≤ ‖z - t‖ * ‖z - t‖ := by
     rw [← zero_add (‖z - t‖ * ‖z - t‖)]
     rw [← sub_le_iff_le_add]
     rw [show z - t = z - p - (t - p) by
@@ -746,64 +671,39 @@ theorem SG_Pythagoras_workaround (x y z p t : E) (hyz : y = z) (htz : t ≠ z)
     rw [← real_inner_eq_norm_mul_self_add_norm_mul_self_sub_norm_sub_mul_self_div_two]
     exact izptp
     norm_num
-  by_contra con
-  push_neg at con
-  replace con :=
-    show ‖z - t‖ * ‖z - t‖ ≤ ‖y - p‖ * ‖y - p‖
-      by
-      apply mul_le_mul
-      exact Con
-      exact Con
-      apply norm_nonneg
-      apply norm_nonneg
-  rw [hyz] at con
-  have eq : t = p := by
-    rw [← sub_eq_zero]
-    rw [← norm_eq_zero]
-    rw [← sq_eq_zero_iff]
-    rw [pow_two]
-    apply eq_of_le_of_not_lt
-    swap
-    · rw [not_lt]
-      apply mul_nonneg
-      apply norm_nonneg
-      apply norm_nonneg
-    replace this := le_trans this Con
-    nth_rw_rhs 1 [← add_zero (‖z - p‖ * ‖z - p‖)] at this
-    apply @le_of_add_le_add_left _ _ _ _ (‖z - p‖ * ‖z - p‖) _ _ this
-  rw [hyz] at iypxp
-  rw [Eq] at itzxz
-  rw [← neg_sub] at itzxz
-  nth_rw 2 [← neg_sub] at itzxz
-  rw [inner_neg_left, inner_neg_right, neg_neg] at itzxz
-  have problem : z = p := by
-    rw [← sub_eq_zero]
-    rw [← norm_eq_zero]
-    rw [← sq_eq_zero_iff]
-    apply le_antisymm
-    swap
-    apply sq_nonneg
-    rw [show ‖z - p‖ ^ 2 = ↑(‖z - p‖ ^ 2 : ℝ) by
-        simp only [IsROrC.ofReal_real_eq_id, id.def, eq_self_iff_true, sq_eq_sq]]
-    push_cast
-    rw [← @inner_self_eq_norm_sq_to_K ℝ _ _ _ _ (z - p)]
-    nth_rw 2 [show z - p = z - x + (x - p) by
-        simp only [eq_self_iff_true, sub_add_sub_cancel, sub_left_inj]]
-    rw [inner_add_right]
-    exact add_nonpos itzxz iypxp
-  rw [← problem] at eq
-  exact htz Eq
+  by_contra! con
+  obtain rfl : t = p := by simpa [← sq, (sq_nonneg _).le_iff_eq, sub_eq_zero]
+    using this.trans $ mul_self_le_mul_self (norm_nonneg _) con
+  have := this.trans $ mul_self_le_mul_self (norm_nonneg _) con
+  rw [← inner_neg_neg, neg_sub, neg_sub] at itzxz
+  have := add_nonpos itzxz iypxp
+  -- have problem : z = p := by
+  --   rw [← sub_eq_zero]
+  --   rw [← norm_eq_zero]
+  --   rw [← sq_eq_zero_iff]
+  --   apply le_antisymm
+  --   swap
+  --   apply sq_nonneg
+  --   rw [show ‖z - p‖ ^ 2 = ↑(‖z - p‖ ^ 2 : ℝ) by
+  --       simp only [IsROrC.ofReal_real_eq_id, id.def, eq_self_iff_true, sq_eq_sq]]
+  --   push_cast
+  --   rw [← @inner_self_eq_norm_sq_to_K ℝ _ _ _ _ (z - p)]
+  --   nth_rw 2 [show z - p = z - x + (x - p) by
+  --       simp only [eq_self_iff_true, sub_add_sub_cancel, sub_left_inj]]
+  --   rw [inner_add_right]
+  --   exact add_nonpos itzxz iypxp
+  -- rw [← problem] at eq
+  -- exact htz Eq
 
-/- ./././Mathport/Syntax/Translate/Basic.lean:641:2: warning: expanding binder collection (a b «expr ∈ » P) -/
 /-- ### The Sylvester-Gallai theorem:
 
 Among any finite set of points not all on a line,
 we may find 2 of them such that no other point of
 the set is on the line they span.
 -/
+
 theorem Sylvester_Gallai (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈ line a b) :
-    ∃ (a : _) (_ : a ∈ P) (b : _) (_ : b ∈ P), a ≠ b ∧ ∀ p ∈ P, p ≠ a → p ≠ b → p ∉ line a b :=
-  by
+    ∃ a ∈ P, ∃ ∈ P, a ≠ b ∧ ∀ p ∈ P, p ≠ a → p ≠ b → p ∉ line a b := by
   /-
     We consider the minimum distance of the first of a triple of points
     to the line spanned by the other two, where the points are distinct,
@@ -812,13 +712,13 @@ theorem Sylvester_Gallai (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈
   set d := minDist P hSG with d_def
   rw [minDist] at d_def
   have d_prop :=
-    Finset.min'_mem
-      (Finset.image (fun t : ↥P × ↥P × ↥P => ‖↑t.1 - pointLineProj P hSG t‖) (pointLineFinset P))
+    min'_mem
+      (image (fun t : ↥P × ↥P × ↥P => ‖↑t.1 - pointLineProj P hSG t‖) (pointLineFinset P))
       (by
-        apply Finset.Nonempty.image
+        apply Nonempty.image
         exact pointLineFinset_nonempty P hSG)
   rw [← d_def] at d_prop
-  rw [Finset.mem_image] at d_prop
+  rw [mem_image] at d_prop
   rcases d_prop with ⟨t, tdef, tdist⟩
   -- The two points from this minimum achieving line satisfy the result
   use t.2.1.val
@@ -828,17 +728,17 @@ theorem Sylvester_Gallai (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈
   -- We prove this by contradiction
   by_contra! con
   rw [pointLineFinset] at tdef
-  rw [Finset.mem_filter] at tdef
+  rw [mem_filter] at tdef
   specialize con _
   · intro K
     apply tdef.2.2.2.1
     exact Subtype.eq K
   -- Hence, we assume there's a third point `q` on the line
-  rcases Con with ⟨q, qP, qnt21, qnt22, qline⟩
+  rcases con with ⟨q, qP, qnt21, qnt22, qline⟩
   obtain ⟨proj_mem, proj_prop⟩ := point_line_dist_def P hSG t
   -- We locate the projection wrt. the three points on the line
   obtain ⟨x, xdef, y, ydef, ynx, s, s_prop, yxs⟩ :=
-    pigeons_on_a_line qline proj_mem (by intro con; apply tdef.2.2.2.1; exact Subtype.eq Con)
+    pigeons_on_a_line qline proj_mem (by intro con; apply tdef.2.2.2.1; exact Subtype.eq con)
       (Ne.symm qnt21) qnt22
   /-
     We consider the point-line-pair made of the point bewteen
@@ -863,20 +763,17 @@ theorem Sylvester_Gallai (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈
   obtain ⟨proj_mem', proj_prop'⟩ := point_line_dist_def P hSG t'
   simp_rw [t'_def] at proj_prop'
   simp_rw [t'_def] at proj_mem'
-  have yline : y ∉ line x t.fst.val :=
-    by
+  have yline : y ∉ line x t.fst.val := by
     have : x ∈ line t.2.1.val t.2.2.val := by
       cases xdef; rw [xdef]; apply left_mem_line
       cases xdef; rw [xdef]; apply right_mem_line
       rw [xdef]; exact qline
-    have that : y ∈ line t.2.1.val t.2.2.val :=
-      by
+    have that : y ∈ line t.2.1.val t.2.2.val := by
       cases ydef; rw [ydef]; apply left_mem_line
       cases ydef; rw [ydef]; apply right_mem_line
       rw [ydef]; exact qline
     intro thot
-    have line_eq : line t.2.1.val t.2.2.val = line x t.1.val :=
-      by
+    have line_eq : line t.2.1.val t.2.2.val = line x t.1.val := by
       have := line_rw_of_mem_of_mem (Ne.symm ynx) this that
       rw [this]; clear this
       have := line_rw_of_mem_of_mem (Ne.symm ynx) (@left_mem_line _ _ _ _ x t.1.val) thot
@@ -895,12 +792,12 @@ theorem Sylvester_Gallai (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈
       SG_Pythagoras_workaround x y (pointLineProj P hSG t) (pointLineProj P hSG t') t.1.val yxs
         (by
           rw [← yxs]
-          cases ydef; rw [ydef]; intro con; apply tdef.2.1; exact Subtype.eq Con
-          cases ydef; rw [ydef]; intro con; apply tdef.2.2.1; exact Subtype.eq Con
+          cases ydef; rw [ydef]; intro con; apply tdef.2.1; exact Subtype.eq con
+          cases ydef; rw [ydef]; intro con; apply tdef.2.2.1; exact Subtype.eq con
           rw [yxs]
           intro con
           apply tdef.2.2.2.2
-          rw [Con]
+          rw [con]
           exact proj_mem)
         (by
           have :=
@@ -927,27 +824,27 @@ theorem Sylvester_Gallai (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈
     -- We'll derive the contradiction from minimality
     apply not_le_of_lt this
     rw [d_def]
-    apply Finset.min'_le
+    apply min'_le
     -- From here on, we need to do some justifications for why
     -- the supposed smaller distance is part of the set of distances
-    rw [Finset.mem_image]
+    rw [mem_image]
     use t'
     constructor
     · rw [t'_def, pointLineFinset]
-      simp only [true_and_iff, Finset.mem_univ, Subtype.mk_eq_mk, Finset.mem_filter, Subtype.coe_mk]
+      simp only [true_and_iff, mem_univ, Subtype.mk_eq_mk, mem_filter, Subtype.coe_mk]
       constructor
-      intro con; apply ynx; simpa using Con
+      intro con; apply ynx; simpa using con
       constructor
       intro con
-      replace con : y = t.1.val := by rw [← Con]
-      rw [Con] at ydef
+      replace con : y = t.1.val := by rw [← con]
+      rw [con] at ydef
       cases' ydef with cy cy; apply tdef.2.1; exact Subtype.eq cy
       cases' cy with cy cy; apply tdef.2.2.1; exact Subtype.eq cy
       rw [← cy] at qline ; exact tdef.2.2.2.2 qline
       constructor
       intro con
-      replace con : x = t.1.val := by rw [← Con]
-      rw [Con] at xdef
+      replace con : x = t.1.val := by rw [← con]
+      rw [con] at xdef
       cases' xdef with cy cy; apply tdef.2.1; exact Subtype.eq cy
       cases' cy with cy cy; apply tdef.2.2.1; exact Subtype.eq cy
       rw [← cy] at qline ; exact tdef.2.2.2.2 qline
@@ -960,19 +857,17 @@ theorem Sylvester_Gallai (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈
         (by
           intro con
           apply tdef.2.2.2.2
-          rw [← Con]
+          rw [← con]
           exact proj_mem)
     -- We've again found a smaller distance
     nth_rw 2 [norm_sub_rev] at this
     rw [Subtype.val_eq_coe] at this
     rw [tdist] at this
     -- We must relate it to distance from the set
-    have transition : ‖y - pointLineProj P hSG t'‖ ≤ ‖y - r‖ :=
-      by
+    have transition : ‖y - pointLineProj P hSG t'‖ ≤ ‖y - r‖ := by
       rw [t'_def]
       rw [proj_prop']
-      have r_mem : r ∈ line t'.2.1.val t'.2.2.val :=
-        by
+      have r_mem : r ∈ line t'.2.1.val t'.2.2.val := by
         simp [t'_def]
         use s
         rw [← Subtype.val_eq_coe]
@@ -988,28 +883,27 @@ theorem Sylvester_Gallai (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈
       rw [← pointdist]
       apply norm_nonneg
     -- Minimality requires:
-    have problem : d ≤ ‖y - pointLineProj P hSG t'‖ :=
-      by
+    have problem : d ≤ ‖y - pointLineProj P hSG t'‖ := by
       rw [d_def]
-      apply Finset.min'_le
-      rw [Finset.mem_image]
+      apply min'_le
+      rw [mem_image]
       use t'
       constructor
-      · simp only [true_and_iff, pointLineFinset.equations._eqn_1, Finset.mem_univ,
-          Subtype.mk_eq_mk, Finset.mem_filter, Subtype.coe_mk]
+      · simp only [true_and_iff, pointLineFinset.equations._eqn_1, mem_univ,
+          Subtype.mk_eq_mk, mem_filter, Subtype.coe_mk]
         constructor
-        intro con; apply ynx; simpa using Con
+        intro con; apply ynx; simpa using con
         constructor
         intro con
-        replace con : y = t.1.val := by rw [← Con]
-        rw [Con] at ydef
+        replace con : y = t.1.val := by rw [← con]
+        rw [con] at ydef
         cases' ydef with cy cy; apply tdef.2.1; exact Subtype.eq cy
         cases' cy with cy cy; apply tdef.2.2.1; exact Subtype.eq cy
         rw [← cy] at qline ; exact tdef.2.2.2.2 qline
         constructor
         intro con
-        replace con : x = t.1.val := by rw [← Con]
-        rw [Con] at xdef
+        replace con : x = t.1.val := by rw [← con]
+        rw [con] at xdef
         cases' xdef with cy cy; apply tdef.2.1; exact Subtype.eq cy
         cases' cy with cy cy; apply tdef.2.2.1; exact Subtype.eq cy
         rw [← cy] at qline ; exact tdef.2.2.2.2 qline

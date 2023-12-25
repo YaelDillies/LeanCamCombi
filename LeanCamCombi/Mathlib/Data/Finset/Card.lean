@@ -1,7 +1,5 @@
 import Mathlib.Data.Finset.Card
 
-#align_import mathlib.data.finset.card
-
 namespace Finset
 
 variable {α : Type _} {s : Finset α} {a : α}

@@ -1,8 +1,6 @@
 import Mathlib.Combinatorics.Additive.SalemSpencer
-import Mathlib.Data.Zmod.Basic
+import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.CharP.Basic
-
-#align_import mathlib.combinatorics.additive.salem_spencer
 
 open Finset
 

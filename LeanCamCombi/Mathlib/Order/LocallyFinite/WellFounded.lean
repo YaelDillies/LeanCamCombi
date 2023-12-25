@@ -6,8 +6,6 @@ Authors: Yaël Dillies
 import Order.LocallyFinite
 import Order.WellFoundedSet
 
-#align_import mathlib.order.locally_finite.well_founded
-
 /-! # Thoughts on where to put this? -/
 
 
@@ -15,8 +13,7 @@ variable {α : Type _} {s : Set α} [Preorder α] [LocallyFiniteOrder α]
 
 open Set
 
-theorem BddBelow.wellFoundedOn_lt : BddBelow s → s.WellFoundedOn (· < ·) :=
-  by
+theorem BddBelow.wellFoundedOn_lt : BddBelow s → s.WellFoundedOn (· < ·) := by
   rw [well_founded_on_iff_no_descending_seq]
   rintro ⟨a, ha⟩ f hf
   exact
@@ -28,4 +25,3 @@ theorem BddBelow.wellFoundedOn_lt : BddBelow s → s.WellFoundedOn (· < ·) :=
 
 theorem BddAbove.wellFoundedOn_gt (hs : BddAbove s) : s.WellFoundedOn (· > ·) :=
   hs.dual.wellFoundedOn_lt
-

@@ -1,7 +1,5 @@
 import Mathlib.Analysis.Convex.Basic
 
-#align_import mathlib.analysis.convex.basic
-
 open scoped BigOperators
 
 open Finset

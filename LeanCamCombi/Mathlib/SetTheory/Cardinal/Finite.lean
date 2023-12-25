@@ -1,8 +1,6 @@
 import SetTheory.Cardinal.Finite
 import Mathlib.SetTheory.Cardinal.Basic
 
-#align_import mathlib.set_theory.cardinal.finite
-
 open Cardinal
 
 namespace Nat
@@ -49,4 +47,3 @@ theorem Infinite.card_eq_zero (hs : s.Infinite) : Nat.card s = 0 :=
 -/
 
 end Set
-

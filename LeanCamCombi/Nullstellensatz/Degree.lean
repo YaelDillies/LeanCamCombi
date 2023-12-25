@@ -5,8 +5,6 @@ Author: Ivan Sadofschi Costa.
 -/
 import Nullstellensatz.Homogenization
 
-#align_import nullstellensatz.degree
-
 /-!
 # Total_degree, etc
 -/
@@ -30,8 +28,7 @@ theorem x_ne_zero [CommSemiring R] [Nontrivial R] (j : σ) : (X j : MvPolynomial
   ne_zero_iff.2 ⟨single j 1, by simp⟩
 
 theorem totalDegree_sum [CommSemiring R] (s : Finset α) (p : α → MvPolynomial σ R) :
-    totalDegree (∑ i : α in s, p i) ≤ s.sup fun i => totalDegree (p i) :=
-  by
+    totalDegree (∑ i : α in s, p i) ≤ s.sup fun i => totalDegree (p i) := by
   apply Finset.cons_induction_on s
   simp
   clear s
@@ -41,8 +38,7 @@ theorem totalDegree_sum [CommSemiring R] (s : Finset α) (p : α → MvPolynomia
   simp [h_ind]
 
 theorem totalDegree_hMul_x_le [CommSemiring R] [Nontrivial R] (f : MvPolynomial σ R) (j : σ) :
-    totalDegree (f * X j) ≤ totalDegree f + 1 :=
-  by
+    totalDegree (f * X j) ≤ totalDegree f + 1 := by
   apply (total_degree_mul f (X j)).trans
   simp only [total_degree_X]
 
@@ -53,15 +49,13 @@ theorem support_add_disjoint [CommSemiring R] {f g : MvPolynomial σ R}
   Finsupp.support_add_eq h
 
 theorem totalDegree_add_eq_of_disjoint_support [CommSemiring R] {f g : MvPolynomial σ R}
-    (h : Disjoint f.support g.support) : totalDegree (f + g) = max f.totalDegree g.totalDegree :=
-  by
+    (h : Disjoint f.support g.support) : totalDegree (f + g) = max f.totalDegree g.totalDegree := by
   simp only [total_degree, support_add_disjoint h]
   apply Finset.sup_union
 
 theorem totalDegree_add_monomial [CommSemiring R] (f : MvPolynomial σ R) (a : σ →₀ ℕ) (b : R)
     (h : a ∉ f.support) (h_b : b ≠ 0) :
-    totalDegree (monomial a b + f) = LinearOrder.max (totalDegree (monomial a b)) (totalDegree f) :=
-  by
+    totalDegree (monomial a b + f) = LinearOrder.max (totalDegree (monomial a b)) (totalDegree f) := by
   apply total_degree_add_eq_of_disjoint_support
   simp [support_monomial, h_b, h]
 
@@ -84,4 +78,3 @@ theorem totalDegree_hMul_x [CommRing R] [IsDomain R] {f : MvPolynomial σ R} (h 
     totalDegree (f * X j) = totalDegree f + 1 := by simp [total_degree_mul' h (X_ne_zero j)]
 
 end MvPolynomial
-

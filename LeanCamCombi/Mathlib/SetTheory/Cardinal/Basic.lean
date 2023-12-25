@@ -1,7 +1,5 @@
 import SetTheory.Cardinal.Basic
 
-#align_import mathlib.set_theory.cardinal.basic
-
 open Function Set Order
 
 open scoped BigOperators Cardinal Classical
@@ -12,8 +10,7 @@ variable {α : Type _} {c : Cardinal}
 
 #print Cardinal.toNat_eq_zero /-
 @[simp]
-theorem toNat_eq_zero : toNat c = 0 ↔ c = 0 ∨ ℵ₀ ≤ c :=
-  by
+theorem toNat_eq_zero : toNat c = 0 ↔ c = 0 ∨ ℵ₀ ≤ c := by
   simp only [toNat, ZeroHom.coe_mk, dite_eq_right_iff, Classical.or_iff_not_imp_right, not_le]
   refine' forall_congr' fun h => _
   rw [← @Nat.cast_eq_zero Cardinal, ← Classical.choose_spec (to_nat._proof_1 _ h)]
@@ -39,4 +36,3 @@ theorem mk_lt_aleph0_iff : mk α < aleph0 ↔ Finite α := by simp [← not_le, 
 -/
 
 end Cardinal
-

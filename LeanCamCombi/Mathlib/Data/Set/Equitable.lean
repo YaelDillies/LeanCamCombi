@@ -1,7 +1,5 @@
 import Mathlib.Data.Set.Equitable
 
-#align_import mathlib.data.set.equitable
-
 namespace Set
 
 variable {α β : Type _} [LinearOrder β] [Add β] [One β] {s : Set α} {f : α → β}

@@ -8,8 +8,6 @@ import Mathlib.Data.Finset.Card
 import Mathlib.Data.Nat.Gcd.Basic
 import Mathlib.Data.Nat.Parity
 
-#align_import book.FormalBook_Ch27_PigeonholeDoublecounting_numbers
-
 /-!
 # Pigeon-hole and double counting : Numbers
 
@@ -42,8 +40,7 @@ of `claim_1`.
 Library search didn't point me to a possible
 mathlib version of this result.
 -/
-theorem succ_coprime (n m : Nat) (h : n = m + 1) : Nat.Coprime n m :=
-  by
+theorem succ_coprime (n m : Nat) (h : n = m + 1) : Nat.Coprime n m := by
   rw [h]
   rw [Nat.coprime_self_add_left]
   exact Nat.coprime_one_left m
@@ -54,8 +51,7 @@ In any `A ⊆ {1, 2, . . . , 2n}` of size `n+1`,
 we may find two distinct coprime numbers.
 -/
 theorem claim_1 (n : Nat) (h : 1 ≤ n) (A : Finset ℕ)
-    (Adef : A ∈ powersetCard (n + 1) (Icc 1 (2 * n))) : ∃ a ∈ A, ∃ b ∈ A, a ≠ b ∧ Nat.Coprime a b :=
-  by
+    (Adef : A ∈ powersetCard (n + 1) (Icc 1 (2 * n))) : ∃ a ∈ A, ∃ b ∈ A, a ≠ b ∧ Nat.Coprime a b := by
   rw [mem_powerset_len] at Adef
   /-
     This will follow from `succ_coprime` once we find
@@ -64,12 +60,10 @@ theorem claim_1 (n : Nat) (h : 1 ≤ n) (A : Finset ℕ)
     A function achieving this grouping is `(λ (x : ℕ), (x+1) / 2)`
     -/
   have Lem1 :
-    ∃ a ∈ A, ∃ b ∈ A, a ≠ b ∧ (fun x : ℕ => (x + 1) / 2) a = (fun x : ℕ => (x + 1) / 2) b :=
-    by
+    ∃ a ∈ A, ∃ b ∈ A, a ≠ b ∧ (fun x : ℕ => (x + 1) / 2) a = (fun x : ℕ => (x + 1) / 2) b := by
     let group_fn x := (x + 1) / 2
     -- A condition to apply `exists_ne_map_eq_of_card_lt_of_maps_to`
-    have map_condition : ∀ a, a ∈ A → group_fn a ∈ Icc 1 n :=
-      by
+    have map_condition : ∀ a, a ∈ A → group_fn a ∈ Icc 1 n := by
       intro x xdef
       dsimp [group_fn]
       replace xdef := Adef.1 xdef
@@ -134,8 +128,7 @@ theorem claim_1 (n : Nat) (h : 1 ≤ n) (A : Finset ℕ)
 
 -- ### Claim 2
 /-- A technical calculation showing `2*n < 2^(n+1)` -/
-theorem ineq_tec (n : ℕ) : 2 * n < 2 ^ (n + 1) :=
-  by
+theorem ineq_tec (n : ℕ) : 2 * n < 2 ^ (n + 1) := by
   induction' n with n ih
   ·
     simp only [Nat.zero_eq, eq_self_iff_true, pow_one, zero_lt_bit0, zero_add, Nat.lt_one_iff,
@@ -154,8 +147,7 @@ theorem ineq_tec (n : ℕ) : 2 * n < 2 ^ (n + 1) :=
 for an *odd* `m` in `{1, 2, . . . , 2n}`.
 -/
 theorem decompo_lemma (n a : ℕ) (aR : a ∈ Icc 1 (2 * n)) :
-    ∃ m k : ℕ, a = 2 ^ k * m ∧ m ∈ (Icc 1 (2 * n)).filterₓ fun x => x % 2 = 1 :=
-  by
+    ∃ m k : ℕ, a = 2 ^ k * m ∧ m ∈ (Icc 1 (2 * n)).filter fun x => x % 2 = 1 := by
   /-
     The basic idea would be to use the prime factorisation of `a`,
     so that `k` would be its valuation for `2`.
@@ -164,9 +156,8 @@ theorem decompo_lemma (n a : ℕ) (aR : a ∈ Icc 1 (2 * n)) :
     turned out to be well suited to show tha `m` is odd.
     -/
   -- We define the powers of `2` that divide `a`
-  let facSet := (range (n + 1)).filterₓ fun q => ∃ p, a = 2 ^ q * p
-  have facSet_nonempty : facSet.nonempty :=
-    by
+  let facSet := (range (n + 1)).filter fun q => ∃ p, a = 2 ^ q * p
+  have facSet_nonempty : facSet.nonempty := by
     dsimp [facSet]
     rw [filter_nonempty_iff]
     use 0
@@ -242,8 +233,7 @@ theorem decompo_lemma (n a : ℕ) (aR : a ∈ Icc 1 (2 * n)) :
     apply (Nat.not_succ_le_self _) this
 
 /-- There are `n` odd numbers in `{1, 2, . . . , 2n}`-/
-theorem size_lemma (n : Nat) : ((Icc 1 (2 * n)).filterₓ fun x => x % 2 = 1).card = n :=
-  by
+theorem size_lemma (n : Nat) : ((Icc 1 (2 * n)).filter fun x => x % 2 = 1).card = n := by
   -- We use a bijection from 0,...,n-1 to the set: `(λ x xn, (2*x)+1)`.
   apply card_eq_of_bijective fun x xn => 2 * x + 1
   -- surjectivity
@@ -290,19 +280,16 @@ we may find two distinct numbers so that
 one divides the other.
 -/
 theorem claim_2 (n : Nat) (hn : 1 ≤ n) (A : Finset ℕ)
-    (Adef : A ∈ powersetCard (n + 1) (Icc 1 (2 * n))) : ∃ a ∈ A, ∃ b ∈ A, a ≠ b ∧ a ∣ b :=
-  by
+    (Adef : A ∈ powersetCard (n + 1) (Icc 1 (2 * n))) : ∃ a ∈ A, ∃ b ∈ A, a ≠ b ∧ a ∣ b := by
   rw [mem_powerset_len] at Adef
   -- The pigeon-map returns the `m` of the decomposition for numbers
   -- in the domain set, and 0 otherwise
   let f := fun x : Nat => if h : x ∈ Icc 1 (2 * n) then Nat.find (decompo_lemma n x h) else 0
-  have cond_size : ((Icc 1 (2 * n)).filterₓ fun x => x % 2 = 1).card < A.card :=
-    by
+  have cond_size : ((Icc 1 (2 * n)).filter fun x => x % 2 = 1).card < A.card := by
     rw [size_lemma]
     rw [Adef.2]
     exact lt_add_one n
-  have cond_map : ∀ a, a ∈ A → f a ∈ (Icc 1 (2 * n)).filterₓ fun x => x % 2 = 1 :=
-    by
+  have cond_map : ∀ a, a ∈ A → f a ∈ (Icc 1 (2 * n)).filter fun x => x % 2 = 1 := by
     intro a aA
     dsimp [f]
     rw [dif_pos _]

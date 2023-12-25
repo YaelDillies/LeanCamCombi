@@ -3,8 +3,6 @@ import Mathlib.Tactic.Linarith.Default
 import Mathlib.Data.Set.Equitable
 import Mathlib.Order.Partition.Equipartition
 
-#align_import turan.number
-
 /-!
 # Turan numbers
 
@@ -41,15 +39,13 @@ def turanNum' : ℕ → ℕ → ℕ := by
   exact (t - b) * a ^ 2 + b * (a + 1) ^ 2
 
 -- choose two simplification
-theorem two (a : ℕ) : 2 * Nat.choose a 2 = a * (a - 1) :=
-  by
+theorem two (a : ℕ) : 2 * Nat.choose a 2 = a * (a - 1) := by
   induction' a with a ha; · dsimp; rwa [MulZeroClass.zero_mul, MulZeroClass.mul_zero]
   · rw [Nat.choose, choose_one_right, succ_sub_succ_eq_sub, tsub_zero, mul_add]; norm_num; rw [ha]
     cases eq_zero_or_eq_succ_pred a <;> · rw [h]; ring
 
 -- this is a mess but it works
-theorem tn_turanNum' (t n : ℕ) : turanNum' t n + 2 * turanNum t n = n ^ 2 :=
-  by
+theorem tn_turanNum' (t n : ℕ) : turanNum' t n + 2 * turanNum t n = n ^ 2 := by
   obtain rfl | ht := @eq_zero_or_pos _ _ t
   · simp only [turan_num, turan_num']
     simp only [zero_add, mod_zero, Nat.div_zero, zero_pow two_pos, sub_zero, MulZeroClass.mul_zero,
@@ -84,8 +80,7 @@ theorem tn_turanNum' (t n : ℕ) : turanNum' t n + 2 * turanNum t n = n ^ 2 :=
     ring_nf; rw [hc2, hb2]; nth_rw 4 [← mul_one 2]; rw [← mul_add 2, hb2]; ring_nf
 
 --sum of degrees in a turan graph
-theorem tn_turanNum'_2 (t n : ℕ) : 2 * turanNum t n = n ^ 2 - turanNum' t n :=
-  by
+theorem tn_turanNum'_2 (t n : ℕ) : 2 * turanNum t n = n ^ 2 - turanNum' t n := by
   rw [← tn_turan_num' t n]
   exact (add_tsub_cancel_left _ _).symm
 
@@ -100,8 +95,7 @@ def sumSq (t : ℕ) (P : ℕ → ℕ) : ℕ :=
   ∑ i in range t, P i ^ 2
 
 theorem mod_tplus1 {a b c d t : ℕ} (hc : c < t) (hd : d < t) (h : t * a + c = t * b + d) :
-    a = b ∧ c = d :=
-  by
+    a = b ∧ c = d := by
   have : c = d := by simpa [mul_comm, mul_add_mod, mod_eq_of_lt, hc, hd] using congr_arg (· % t) h
   simp_all [(zero_le'.trans_lt hc).ne']
 

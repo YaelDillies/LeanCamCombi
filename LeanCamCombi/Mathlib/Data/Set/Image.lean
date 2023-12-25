@@ -1,7 +1,5 @@
 import Mathlib.Data.Set.Image
 
-#align_import mathlib.data.set.image
-
 open Function
 
 namespace Set

@@ -1,8 +1,6 @@
 import Order.Zorn
 import Mathlib.Order.Chain
 
-#align_import mathlib.order.zorn
-
 variable {α : Type _}
 
 /-! ### Flags -/
@@ -27,4 +25,3 @@ instance : Nonempty (Flag α) :=
   ⟨maxChain_spec.Flag⟩
 
 end Flag
-

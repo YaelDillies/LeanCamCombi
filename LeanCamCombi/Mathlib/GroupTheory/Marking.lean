@@ -6,8 +6,6 @@ Authors: Yaël Dillies
 import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.GroupTheory.FreeGroup
 
-#align_import mathlib.group_theory.marking
-
 /-!
 # Marked groups
 
@@ -182,18 +180,15 @@ noncomputable instance : NormedGroup (MarkedGroup m) :=
         refine' find_le ⟨a * b, map_mul _ _ _, (a.to_word_mul_sublist _).length_le.trans _⟩
         rw [length_append]
         exact add_le_add ha hb
-      inv' :=
-        by
-        suffices ∀ {x : MarkedGroup m}, Nat.find (mul_aux x⁻¹) ≤ Nat.find (mul_aux x)
-          by
+      inv' := by
+        suffices ∀ {x : MarkedGroup m}, Nat.find (mul_aux x⁻¹) ≤ Nat.find (mul_aux x) by
           refine' fun _ => congr_arg coe (this.antisymm _)
           convert this
           simp_rw [inv_inv]
         refine' fun x => find_mono fun nI => _
         rintro ⟨l, hl, h⟩
         exact ⟨l⁻¹, by simp [hl], h.trans_eq' <| by simp⟩
-      eq_one_of_map_eq_zero' := fun x hx =>
-        by
+      eq_one_of_map_eq_zero' := fun x hx => by
         obtain ⟨l, rfl, hl⟩ := (find_eq_zero <| mul_aux _).1 (cast_eq_zero.1 hx)
         rw [le_zero_iff, length_eq_zero, ← FreeGroup.toWord_one] at hl
         rw [FreeGroup.toWord_injective hl, map_one, map_one] }
@@ -210,8 +205,7 @@ theorem norm_def (x : MarkedGroup m) : ‖x‖ = Nat.find (mul_aux' x) :=
 
 @[simp, to_additive]
 theorem norm_eq_one (x : MarkedGroup m) :
-    ‖x‖ = 1 ↔ ∃ s, toMarkedGroup (m <| FreeGroup.mk [s]) = x :=
-  by
+    ‖x‖ = 1 ↔ ∃ s, toMarkedGroup (m <| FreeGroup.mk [s]) = x := by
   simp_rw [norm_def, Nat.cast_eq_one, Nat.find_eq_iff, length_eq_one]
   constructor
   · rintro ⟨⟨l, rfl, s, hl⟩, hn⟩

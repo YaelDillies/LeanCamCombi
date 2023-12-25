@@ -5,8 +5,6 @@ Authors: Yaël Dillies, Bhavik Mehta
 -/
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Basic
 
-#align_import mathlib.combinatorics.simple_graph.triangle.tripartite
-
 /-!
 # Construct a tripartite graph from its triangles
 
@@ -191,8 +189,7 @@ theorem graph_triple ⦃x y z⦄ :
           ∃ a b c,
             ({in₀ a, in₁ b, in₂ c} : Finset (Sum α (Sum β γ))) = {x, y, z} ∧
               (graph t).Adj (in₀ a) (in₁ b) ∧
-                (graph t).Adj (in₀ a) (in₂ c) ∧ (graph t).Adj (in₁ b) (in₂ c) :=
-  by
+                (graph t).Adj (in₀ a) (in₂ c) ∧ (graph t).Adj (in₁ b) (in₂ c) := by
   rintro (_ | _ | _) (_ | _ | _) (_ | _ | _) <;>
         refine'
           ⟨_, _, _, by ext <;> simp only [Finset.mem_insert, Finset.mem_singleton] <;> try tauto, _,
@@ -210,8 +207,7 @@ def toTriangle : α × β × γ ↪ Finset (Sum α (Sum β γ))
       forall_eq_or_imp, forall_eq, Prod.mk.inj_iff, or_false_iff, false_or_iff, in₀, in₁, in₂,
       Sum.inl.inj_eq, Sum.inr.inj_eq] using And.left
 
-theorem toTriangle_is_3_clique (hx : x ∈ t) : (graph t).IsNClique 3 (toTriangle x) :=
-  by
+theorem toTriangle_is_3_clique (hx : x ∈ t) : (graph t).IsNClique 3 (toTriangle x) := by
   rcases x with ⟨a, b, c⟩
   simp only [to_triangle_apply, is_3_clique_triple_iff, in₀₁_iff, in₀₂_iff, in₁₂_iff]
   exact ⟨⟨_, hx⟩, ⟨_, hx⟩, _, hx⟩
@@ -220,10 +216,9 @@ theorem exists_mem_toTriangle {x y : Sum α (Sum β γ)} (hxy : (graph t).Adj x 
     ∃ z ∈ t, x ∈ toTriangle z ∧ y ∈ toTriangle z := by cases hxy <;> exact ⟨_, ‹_›, by simp⟩
 
 theorem is_3_clique_iff [NoAccidental t] {s : Finset (Sum α (Sum β γ))} :
-    (graph t).IsNClique 3 s ↔ ∃ x, x ∈ t ∧ toTriangle x = s :=
-  by
+    (graph t).IsNClique 3 s ↔ ∃ x, x ∈ t ∧ toTriangle x = s := by
   refine' ⟨fun h => _, _⟩
-  · rw [is_3_clique_iff] at h 
+  · rw [is_3_clique_iff] at h
     obtain ⟨x, y, z, hxy, hxz, hyz, rfl⟩ := h
     obtain ⟨a, b, c, habc, hab, hac, hbc⟩ := graph_triple hxy hxz hyz
     refine' ⟨(a, b, c), _, habc⟩
@@ -241,14 +236,13 @@ variable (t)
 
 theorem map_toTriangle_disjoint [ExplicitDisjoint t] :
     (t.map toTriangle : Set (Finset (Sum α (Sum β γ)))).Pairwise fun x y =>
-      (x ∩ y : Set (Sum α (Sum β γ))).Subsingleton :=
-  by
+      (x ∩ y : Set (Sum α (Sum β γ))).Subsingleton := by
   intro
   simp only [Finset.coe_map, Set.mem_image, Finset.mem_coe, Prod.exists, Ne.def,
     forall_exists_index, and_imp]
   rintro a b c habc rfl e x y z hxyz rfl h'
   have := ne_of_apply_ne _ h'
-  simp only [Ne.def, Prod.mk.inj_iff, not_and] at this 
+  simp only [Ne.def, Prod.mk.inj_iff, not_and] at this
   simp only [to_triangle_apply, in₀, in₁, in₂, Set.mem_inter_iff, mem_insert, mem_singleton,
     mem_coe, and_imp, Sum.forall, or_false_iff, forall_eq, false_or_iff, eq_self_iff_true,
     imp_true_iff, true_and_iff, and_true_iff, Set.Subsingleton]
@@ -304,4 +298,3 @@ theorem locallyLinear [ExplicitDisjoint t] [NoAccidental t] : (graph t).LocallyL
 end TripartiteFromTriangles
 
 end SimpleGraph
-

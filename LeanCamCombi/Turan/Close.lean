@@ -1,8 +1,6 @@
 import Mathlib.Combinatorics.SimpleGraph.Clique
 import Mathlib.Combinatorics.SimpleGraph.Basic
 
-#align_import turan.close
-
 open Finset Nat
 
 namespace SimpleGraph

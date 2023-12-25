@@ -1,7 +1,5 @@
 import Turan.Counting
 
-#align_import turan.theorems
-
 /-!
 # Füredi stability result (no counting)
 
@@ -118,4 +116,3 @@ variable {α : Type _} (G H : SimpleGraph α) [Fintype α] [Nonempty α] {s : Fi
 --     exact G.is_close_trivial (mp M) s (this)},
 -- end
 end SimpleGraph
-

@@ -8,8 +8,6 @@ import MeasureTheory.Integral.Average
 import Order.UpperLower.LocallyFinite
 import Mathlib.Data.Set.Image
 
-#align_import mathlib.measure_theory.function.intersectivity
-
 /-!
 # Bergelson's intersectivity lemma
 
@@ -62,8 +60,7 @@ measure at least `r` has an infinite subset whose finite intersections all have 
 TODO: The infinity of `t` should be strengthened to `t` having positive natural density. -/
 theorem strong_bergelson {s : ℕ → Set α} (hs : ∀ n, MeasurableSet (s n)) (hr₀ : r ≠ 0)
     (hr : ∀ n, r ≤ μ (s n)) :
-    ∃ t : Set ℕ, t.Infinite ∧ ∀ ⦃u⦄, u ⊆ t → u.Finite → 0 < μ (⋂ n ∈ u, s n) :=
-  by
+    ∃ t : Set ℕ, t.Infinite ∧ ∀ ⦃u⦄, u ⊆ t → u.Finite → 0 < μ (⋂ n ∈ u, s n) := by
   -- We let `M f` be the set on which the norm of `f` exceeds its essential supremum, and `N` be the
   -- union of `M` of the finite products of the indicators of the `s n`.
   let M : (α → ℝ) → Set α := fun f => {x | snorm_ess_sup f μ < ‖f x‖₊}
@@ -72,8 +69,7 @@ theorem strong_bergelson {s : ℕ → Set α} (hs : ∀ n, MeasurableSet (s n)) 
   have hN₀ : μ N = 0 := measure_Union_null fun u => meas_snorm_ess_sup_lt
   -- The important thing about `N` is that if we remove `N` from our space, then finite unions of
   -- the `s n` are null iff they are empty.
-  have hN₁ : ∀ u : Finset ℕ, ((⋂ n ∈ u, s n) \ N).Nonempty → 0 < μ (⋂ n ∈ u, s n) :=
-    by
+  have hN₁ : ∀ u : Finset ℕ, ((⋂ n ∈ u, s n) \ N).Nonempty → 0 < μ (⋂ n ∈ u, s n) := by
     simp_rw [pos_iff_ne_zero]
     rintro u ⟨x, hx⟩ hu
     refine' hx.2 (mem_Union.2 ⟨u, (_ : _ < _)⟩)
@@ -84,8 +80,7 @@ theorem strong_bergelson {s : ℕ → Set α} (hs : ∀ n, MeasurableSet (s n)) 
   let f : ℕ → α → ℝ≥0∞ := fun n =>
     (↑(n + 1) : ℝ≥0∞)⁻¹ • ∑ k in Finset.range (n + 1), (s k).indicator 1
   -- We gather a few simple properties of `f`.
-  have hfapply : ∀ n a, f n a = (↑(n + 1))⁻¹ * ∑ k in Finset.range (n + 1), (s k).indicator 1 a :=
-    by
+  have hfapply : ∀ n a, f n a = (↑(n + 1))⁻¹ * ∑ k in Finset.range (n + 1), (s k).indicator 1 a := by
     simp only [f, Pi.coe_nat, Pi.smul_apply, Pi.inv_apply, Finset.sum_apply, eq_self_iff_true,
       forall_const, imp_true_iff, smul_eq_mul]
   have hf₀ : 0 ≤ f := zero_le _
@@ -122,7 +117,7 @@ theorem strong_bergelson {s : ℕ → Set α} (hs : ∀ n, MeasurableSet (s n)) 
   -- By the first moment method, there exists some `x ∉ N` such that `limsup f n x` is at least `r`.
   obtain ⟨x, hxN, hx⟩ :=
     exists_not_mem_null_laverage_le hμ (ne_top_of_le_ne_top (measure_ne_top μ univ) _) hN₀
-  rw [laverage_eq] at hx 
+  rw [laverage_eq] at hx
   replace hx :=
     (ENNReal.div_le_div_right
           ((le_limsup_of_le ⟨μ univ, eventually_map.2 _⟩ fun b hb => _).trans <|
@@ -167,8 +162,7 @@ theorem strong_bergelson {s : ℕ → Set α} (hs : ∀ n, MeasurableSet (s n)) 
 measure at least `r` has an infinite subset whose finite intersections all have positive volume. -/
 theorem weak_bergelson [Infinite ι] {s : ι → Set α} (hs : ∀ i, MeasurableSet (s i)) (hr₀ : r ≠ 0)
     (hr : ∀ i, r ≤ μ (s i)) :
-    ∃ t : Set ι, t.Infinite ∧ ∀ ⦃u⦄, u ⊆ t → u.Finite → 0 < μ (⋂ i ∈ u, s i) :=
-  by
+    ∃ t : Set ι, t.Infinite ∧ ∀ ⦃u⦄, u ⊆ t → u.Finite → 0 < μ (⋂ i ∈ u, s i) := by
   obtain ⟨t, ht, h⟩ := strong_bergelson (fun n => hs <| Infinite.natEmbedding _ n) hr₀ fun n => hr _
   refine'
     ⟨_, ht.image <| (Infinite.natEmbedding _).Injective.InjOn _, fun u hut hu =>
@@ -177,4 +171,3 @@ theorem weak_bergelson [Infinite ι] {s : ι → Set α} (hs : ∀ i, Measurable
         measure_mono <| subset_Inter₂ fun i hi => _⟩
   obtain ⟨n, hn, rfl⟩ := hut hi
   exact Inter₂_subset _ hi
-

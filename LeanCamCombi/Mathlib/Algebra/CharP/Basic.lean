@@ -1,7 +1,5 @@
 import Mathlib.Algebra.CharP.Basic
 
-#align_import mathlib.algebra.char_p.basic
-
 variable (R : Type _)
 
 theorem CharP.nat_cast_injOn_Iio [AddGroupWithOne R] (p : ℕ) [CharP R p] :

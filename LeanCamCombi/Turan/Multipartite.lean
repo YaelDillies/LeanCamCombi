@@ -4,8 +4,6 @@ import Mathlib.Combinatorics.SimpleGraph.Multipartite
 import Mathlib.Data.Set.Equitable
 import Mathlib.Order.Partition.Equipartition
 
-#align_import turan.multipartite
-
 open Finset Nat
 
 open scoped BigOperators

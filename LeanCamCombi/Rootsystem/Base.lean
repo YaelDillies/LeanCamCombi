@@ -1,7 +1,5 @@
 import Rootsystem.Basic
 
-#align_import rootsystem.base
-
 open Set Function
 
 namespace IsRootSystem
@@ -38,4 +36,3 @@ def IsIndecomposable (Φ : Set V) (v : Module.Dual k V) (h : IsRegular Φ v) (α
 --   sorry,
 -- end
 end IsRootSystem
-

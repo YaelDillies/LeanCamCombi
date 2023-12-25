@@ -7,8 +7,6 @@ import Mathlib.Data.Sym.Card
 import Mathlib.Combinatorics.SimpleGraph.Acyclic
 import Mathlib.Combinatorics.SimpleGraph.DegreeSum
 
-#align_import book.FormalBook_Ch27_PigeonholeDoublecounting_graphs
-
 /-!
 # Pigeon-hole and double counting : Graphs
 
@@ -93,8 +91,7 @@ open scoped Classical
 Otherwise, we get decidability issues for `u ∈ (G.common_neighbors v w)`,
 even with `[decidable_eq V]`.
 -/
-noncomputable instance tec (G : SimpleGraph V) (v w : V) : Fintype ↥(G.commonNeighbors v w) :=
-  by
+noncomputable instance tec (G : SimpleGraph V) (v w : V) : Fintype ↥(G.commonNeighbors v w) := by
   by_cases q : (G.common_neighbors v w).Nonempty
   · dsimp [Set.Nonempty] at q
     --cases q with x xprop, --fails
@@ -126,14 +123,12 @@ a finset of size ≥ 2. Comapre to mathlib's `finset.card_eq_two`.
 Unfortunately, `finset.two_le_card` doesn't exist.
 -/
 theorem pair_of_two_le_card {α : Type} {s : Finset α} (h : 2 ≤ s.card) :
-    ∃ a, ∃ b, a ∈ s ∧ b ∈ s ∧ a ≠ b :=
-  by
+    ∃ a, ∃ b, a ∈ s ∧ b ∈ s ∧ a ≠ b := by
   have first : 0 < s.card := by linarith
   rw [Finset.card_pos] at first
   obtain ⟨fst, fst_def⟩ := first
   use fst
-  have second : 0 < (s.erase fst).card :=
-    by
+  have second : 0 < (s.erase fst).card := by
     have := Finset.card_erase_add_one fst_def
     rw [← this] at h
     linarith
@@ -152,8 +147,7 @@ theorem pair_of_two_le_card {α : Type} {s : Finset α} (h : 2 ≤ s.card) :
 two vertices have at most one common neighbour.
 -/
 theorem c4Free_common_neighbours (G : SimpleGraph V) (h : C4Free G) :
-    ∀ v w, v ≠ w → (commonNeighbors G v w).toFinset.card ≤ 1 :=
-  by
+    ∀ v w, v ≠ w → (commonNeighbors G v w).toFinset.card ≤ 1 := by
   intro v w vnw
   -- We proceed by contradiction
   by_contra! con
@@ -278,8 +272,7 @@ def DoubleCountingRel (G : SimpleGraph V) (u : V) (e : Sym2 V) :=
 two pairs, as finsets, are equal.
 -/
 theorem Finset.pair_eq {α : Type} {a b c d : α} :
-    ({a, b} : Finset α) = {c, d} ↔ a = c ∧ b = d ∨ a = d ∧ b = c :=
-  by
+    ({a, b} : Finset α) = {c, d} ↔ a = c ∧ b = d ∨ a = d ∧ b = c := by
   constructor
   intro eq
   by_cases q : c = d
@@ -335,8 +328,7 @@ in the form of `finset.card_powerset_len 2`.
 -/
 theorem double_count_above (G : SimpleGraph V) (u : V) :
     ((Finset.bipartiteAbove (DoubleCountingRel G) {e : Sym2 V | ¬e.IsDiag}.toFinset) u).card =
-      (G.degree u).choose 2 :=
-  by
+      (G.degree u).choose 2 := by
   simp only [Finset.bipartiteAbove, SimpleGraph.degree, Set.toFinset_setOf]
   -- We will put the pair of the relation in bijection
   -- with pairs of neighbours of `u`
@@ -390,8 +382,7 @@ theorem double_count_above (G : SimpleGraph V) (u : V) :
     rw [mem_powerset_len] at pdef
     obtain ⟨x, ⟨y, ⟨xny, xydef⟩⟩⟩ := card_eq_two.mp pdef.2
     use⟦(x, y)⟧
-    have : ⟦(x, y)⟧ ∈ Filter (fun a : Sym2 V => ¬a.IsDiag ∧ DoubleCountingRel G u a) univ :=
-      by
+    have : ⟦(x, y)⟧ ∈ Filter (fun a : Sym2 V => ¬a.IsDiag ∧ DoubleCountingRel G u a) univ := by
       rw [mem_filter]
       simp only [true_and_iff, Finset.mem_univ, Sym2.isDiag_iff_proj_eq]
       constructor
@@ -429,8 +420,7 @@ in the form of `sym2.card_image_off_diag`.
 -/
 theorem double_count_above' (G : SimpleGraph V) (u : V) :
     ((Finset.bipartiteAbove (DoubleCountingRel G) {e : Sym2 V | ¬e.IsDiag}.toFinset) u).card =
-      (G.degree u).choose 2 :=
-  by
+      (G.degree u).choose 2 := by
   simp [Finset.bipartiteAbove, degree]
   rw [← Sym2.card_image_offDiag]
   congr
@@ -479,8 +469,7 @@ the number of vertices in relation with
 the pair they make up, is at most 1.
 -/
 theorem double_count_below (G : SimpleGraph V) (hG : C4Free G) (v w : V) (vnw : v ≠ w) :
-    ((Finset.bipartiteBelow (DoubleCountingRel G) univ) ⟦(v, w)⟧).card ≤ 1 :=
-  by
+    ((Finset.bipartiteBelow (DoubleCountingRel G) univ) ⟦(v, w)⟧).card ≤ 1 := by
   have := c4Free_common_neighbours G hG v w vnw
   simp [Finset.bipartiteBelow, DoubleCountingRel]
   dsimp [common_neighbors, neighbor_set] at this
@@ -500,8 +489,7 @@ taken over all pairs of distinct vertices, is less then
 theorem double_count_below_bound (G : SimpleGraph V) (hG : C4Free G) :
     ∑ e in {e : Sym2 V | ¬e.IsDiag}.toFinset,
         ((Finset.bipartiteBelow (DoubleCountingRel G) univ) e).card ≤
-      (Fintype.card V).choose 2 :=
-  by
+      (Fintype.card V).choose 2 := by
   rw [← Sym2.card_subtype_not_diag]
   rw [← Finset.card_univ]
   rw [card_eq_sum_ones]
@@ -524,8 +512,7 @@ theorem double_count_below_bound (G : SimpleGraph V) (hG : C4Free G) :
 to get a relation linking degrees and the graph's order
 -/
 theorem first_ineq (G : SimpleGraph V) (hG : C4Free G) :
-    ∑ u in (univ : Finset V), (G.degree u).choose 2 ≤ (Fintype.card V).choose 2 :=
-  by
+    ∑ u in (univ : Finset V), (G.degree u).choose 2 ≤ (Fintype.card V).choose 2 := by
   simp_rw [← double_count_above']
   rw [@sum_card_bipartite_above_eq_sum_card_bipartite_below _ _ (DoubleCountingRel G)
       (univ : Finset V) {e : Sym2 V | ¬e.IsDiag}.toFinset _]
@@ -540,8 +527,7 @@ doesn't exists in mathlib.
 theorem Nat.sum_sub_distrib {α : Type} (s : Finset α) (f g : α → ℕ)
     (h : ∀ i, g i ≤ f i) :-- i∈s would be better but then a different induction is necessary
       ∑ i in s, (f i - g i) =
-      ∑ i in s, f i - ∑ i in s, g i :=
-  by
+      ∑ i in s, f i - ∑ i in s, g i := by
   apply Finset.induction_on s
   simp
   intro a s ans ih
@@ -554,8 +540,7 @@ theorem Nat.sum_sub_distrib {α : Type} (s : Finset α) (f g : α → ℕ)
   intro i is; exact h i
 
 /-- A technical rewrite we separated from `first_ineq_rw` -/
-theorem tec_stuff (n : ℕ) : 2 * (n * (n - 1) / 2) = n * (n - 1) :=
-  by
+theorem tec_stuff (n : ℕ) : 2 * (n * (n - 1) / 2) = n * (n - 1) := by
   nth_rw 2 [← Nat.mod_add_div (n * (n - 1)) 2]
   rw [self_eq_add_left]
   rw [Nat.mul_mod]
@@ -582,8 +567,7 @@ theorem tec_stuff (n : ℕ) : 2 * (n * (n - 1) / 2) = n * (n - 1) :=
   rw [this]
   decide
 
-theorem mathlib_is_a_desert (n m k : ℕ) : n ≤ m → (m - n ≤ k ↔ m ≤ k + n) :=
-  by
+theorem mathlib_is_a_desert (n m k : ℕ) : n ≤ m → (m - n ≤ k ↔ m ≤ k + n) := by
   --library_search,
   intro h
   nth_rw 2 [← Nat.sub_add_cancel h]
@@ -596,8 +580,7 @@ equalities.
 -/
 theorem first_ineq_rw (G : SimpleGraph V) (hG : C4Free G) :
     ∑ u in (univ : Finset V), G.degree u ^ 2 ≤
-      Fintype.card V * (Fintype.card V - 1) + ∑ u in (univ : Finset V), G.degree u :=
-  by
+      Fintype.card V * (Fintype.card V - 1) + ∑ u in (univ : Finset V), G.degree u := by
   have := first_ineq G hG
   rw [Nat.choose_two_right] at this
   simp_rw [Nat.choose_two_right] at this
@@ -609,8 +592,7 @@ theorem first_ineq_rw (G : SimpleGraph V) (hG : C4Free G) :
   rw [Nat.mul_sub_left_distrib] at this
   simp_rw [Nat.mul_sub_left_distrib] at this
   simp_rw [← pow_two, mul_one] at this
-  have tec : ∀ i : V, G.degree i ≤ G.degree i ^ 2 :=
-    by
+  have tec : ∀ i : V, G.degree i ≤ G.degree i ^ 2 := by
     intro i
     by_cases q : G.degree i = 0
     rw [q]
@@ -643,11 +625,9 @@ via instance `[_inst_1 : is_R_or_C 𝕜] `.
 Therefore, we give a self contained proof.
 -/
 theorem Cauchy_Schwartz_int (v w : V → ℤ) (s : Finset V) :
-    (∑ i in s, v i * w i) ^ 2 ≤ (∑ i in s, v i ^ 2) * ∑ i in s, w i ^ 2 :=
-  by
+    (∑ i in s, v i * w i) ^ 2 ≤ (∑ i in s, v i ^ 2) * ∑ i in s, w i ^ 2 := by
   -- We start with this positive sum of squares
-  have start : 0 ≤ ∑ i in s, ∑ j in s, (v i * w j - v j * w i) ^ 2 :=
-    by
+  have start : 0 ≤ ∑ i in s, ∑ j in s, (v i * w j - v j * w i) ^ 2 := by
     apply sum_nonneg
     intro i idef
     apply sum_nonneg
@@ -659,8 +639,7 @@ theorem Cauchy_Schwartz_int (v w : V → ℤ) (s : Finset V) :
     ∀ i,
       ∑ j in s, ((v i * w j) ^ 2 - 2 * (v i * w j) * (v j * w i) + (v j * w i) ^ 2) =
         v i ^ 2 * ∑ j in s, w j ^ 2 - 2 * (v i * w i) * ∑ j in s, v j * w j +
-          w i ^ 2 * ∑ j in s, v j ^ 2 :=
-    by
+          w i ^ 2 * ∑ j in s, v j ^ 2 := by
     intro i
     rw [sum_add_distrib]
     rw [sum_sub_distrib]
@@ -668,8 +647,7 @@ theorem Cauchy_Schwartz_int (v w : V → ℤ) (s : Finset V) :
     rw [← mul_sum]
     rw [← sum_mul]
     nth_rw 2 [mul_comm]
-    have micro : ∀ j, 2 * (v i * w j) * (v j * w i) = 2 * (v i * w i) * (v j * w j) :=
-      by
+    have micro : ∀ j, 2 * (v i * w j) * (v j * w i) = 2 * (v i * w i) * (v j * w j) := by
       intro j
       ring
     simp_rw [micro]
@@ -687,8 +665,7 @@ with the all 1 vector to get a fruther inequality in our context.
 -/
 theorem Cauchy_Schwartz_in_action (G : SimpleGraph V) :
     ((∑ u in (univ : Finset V), G.degree u) ^ 2 : ℤ) ≤
-      Fintype.card V * ∑ u in (univ : Finset V), G.degree u ^ 2 :=
-  by
+      Fintype.card V * ∑ u in (univ : Finset V), G.degree u ^ 2 := by
   have := Cauchy_Schwartz_int (fun u => G.degree u) (fun u => (1 : ℤ)) (univ : Finset V)
   simp_rw [mul_pow, one_pow, mul_one] at this
   rw [← Finset.card_univ]
@@ -702,8 +679,7 @@ theorem Cauchy_Schwartz_in_action (G : SimpleGraph V) :
 theorem second_ineq (G : SimpleGraph V) (hG : C4Free G) :
     ((∑ u in (univ : Finset V), G.degree u) ^ 2 : ℤ) ≤
       Fintype.card V ^ 2 * (Fintype.card V - 1) +
-        Fintype.card V * ∑ u in (univ : Finset V), G.degree u :=
-  by
+        Fintype.card V * ∑ u in (univ : Finset V), G.degree u := by
   apply le_trans (Cauchy_Schwartz_in_action G)
   rw [pow_two]
   rw [mul_assoc]
@@ -723,8 +699,7 @@ theorem second_ineq (G : SimpleGraph V) (hG : C4Free G) :
 
 theorem third_ineq (G : SimpleGraph V) (hG : C4Free G) :
     (4 * G.edgeFinset.card ^ 2 : ℝ) ≤
-      Fintype.card V ^ 2 * (Fintype.card V - 1) + Fintype.card V * 2 * G.edgeFinset.card :=
-  by
+      Fintype.card V ^ 2 * (Fintype.card V - 1) + Fintype.card V * 2 * G.edgeFinset.card := by
   rw [show (4 : ℝ) = 2 ^ 2 by norm_num1]
   rw [← mul_pow]
   rw [mul_assoc]
@@ -747,16 +722,14 @@ inequality, to ease noatation.
 -/
 theorem max_edges_of_c4_free_Istvan_Reiman_pre (a b : ℕ)
     (ineq : (4 * a ^ 2 : ℝ) ≤ b ^ 2 * (b - 1) + b * 2 * a) :
-    (a : ℤ) ≤ ⌊(b / 4 : ℝ) * (1 + Real.sqrt (4 * b - 3))⌋ :=
-  by
+    (a : ℤ) ≤ ⌊(b / 4 : ℝ) * (1 + Real.sqrt (4 * b - 3))⌋ := by
   rw [Int.le_floor]
   simp only [Int.cast_ofNat]
   rw [mul_add]
   rw [mul_one]
   apply le_add_of_sub_left_le
   -- We make use of the canoncic/normal form of 2nd degree equations
-  have canonic : (4 : ℝ) * (a - b / 4) ^ 2 ≤ b ^ 2 / 4 * (1 + (4 * b - 4)) :=
-    by
+  have canonic : (4 : ℝ) * (a - b / 4) ^ 2 ≤ b ^ 2 / 4 * (1 + (4 * b - 4)) := by
     rw [pow_two, sub_mul, mul_sub, mul_sub, ← pow_two]
     cancel_denoms
     simp_rw [mul_assoc]
@@ -783,8 +756,7 @@ theorem max_edges_of_c4_free_Istvan_Reiman_pre (a b : ℕ)
   replace canonic := Real.le_sqrt_of_sq_le canonic
   rw [Real.sqrt_mul] at canonic
   rw [← mul_assoc]
-  have one : 2 * (↑b / 4) = Real.sqrt (↑b ^ 2 / 4) :=
-    by
+  have one : 2 * (↑b / 4) = Real.sqrt (↑b ^ 2 / 4) := by
     rw [Real.sqrt_div]
     rw [Real.sqrt_sq _]
     rw [mul_div_left_comm]
@@ -814,8 +786,7 @@ by the following expression in the number of vertices |V|:
 -/
 theorem max_edges_of_c4Free_Istvan_Reiman (G : SimpleGraph V) (hG : C4Free G) :
     (G.edgeFinset.card : ℤ) ≤
-      ⌊(Fintype.card V / 4 : ℝ) * (1 + Real.sqrt (4 * Fintype.card V - 3))⌋ :=
-  by
+      ⌊(Fintype.card V / 4 : ℝ) * (1 + Real.sqrt (4 * Fintype.card V - 3))⌋ := by
   apply max_edges_of_c4_free_Istvan_Reiman_pre G.edge_finset.card (Fintype.card V)
   exact third_ineq G hG
 
@@ -824,8 +795,7 @@ If any two vertices have at most one common neighbour,
 then the graph is 4-cycle-free.
 -/
 theorem commonNeighbors_c4Free (G : SimpleGraph V)
-    (h : ∀ v w, v ≠ w → (commonNeighbors G v w).toFinset.card ≤ 1) : C4Free G :=
-  by
+    (h : ∀ v w, v ≠ w → (commonNeighbors G v w).toFinset.card ≤ 1) : C4Free G := by
   revert h
   rw [C4Free]
   contrapose!
@@ -860,8 +830,7 @@ theorem commonNeighbors_c4Free (G : SimpleGraph V)
   push_neg at cyc_cycle
   constructor
   exact cyc_cycle.1.2.1.2
-  have that : {a, c} ⊆ (G.common_neighbors v b).toFinset :=
-    by
+  have that : {a, c} ⊆ (G.common_neighbors v b).toFinset := by
     intro x xdef
     rw [mem_insert] at xdef
     cases xdef
@@ -874,8 +843,7 @@ theorem commonNeighbors_c4Free (G : SimpleGraph V)
     rw [this] at dc
     exact ⟨G.adj_symm dc, bc⟩
   --apply_fun finset.card at that using finset.card_mono, --fails
-  have thot : ({a, c} : Finset V).card = 2 :=
-    by
+  have thot : ({a, c} : Finset V).card = 2 := by
     rw [card_insert_of_not_mem]
     rw [card_singleton]
     intro con
@@ -923,8 +891,7 @@ def extremalGraph : SimpleGraph (Projectivization (ZMod p) (Fin 3 → ZMod p))
 /-- A rewrite lemma characterizing neighbours in terms of orthogonality
 -/
 theorem neighbor_extremalGraph (v w : Projectivization (ZMod p) (Fin 3 → ZMod p)) :
-    v ∈ (extremalGraph p).neighborSet w ↔ v ≠ w ∧ Matrix.dotProduct v.rep w.rep = 0 :=
-  by
+    v ∈ (extremalGraph p).neighborSet w ↔ v ≠ w ∧ Matrix.dotProduct v.rep w.rep = 0 := by
   rw [mem_neighbor_set]
   dsimp only [extremalGraph, EdgeRelation]
   rw [Matrix.dotProduct_comm, ne_comm]
@@ -962,8 +929,7 @@ orthogonal to `v` and `w`.
 -/
 theorem ortho_span_pair_iff (v w u : Fin 3 → ZMod p) (h : LinearIndependent (ZMod p) ![v, w]) :
     u ∈ BilinForm.orthogonal (dotp p) (Submodule.span (ZMod p) {v, w}) ↔
-      (dotp p).bilin v u = 0 ∧ (dotp p).bilin w u = 0 :=
-  by
+      (dotp p).bilin v u = 0 ∧ (dotp p).bilin w u = 0 := by
   constructor
   · intro susp
     rw [BilinForm.mem_orthogonal_iff] at susp
@@ -1010,8 +976,7 @@ theorem ortho_span_pair_iff (v w u : Fin 3 → ZMod p) (h : LinearIndependent (Z
       right; exact yprop
 
 /-- The dot product is reflexive (crtl-click to see what it means)--/
-theorem dotp_isRefl : (dotp p).IsRefl :=
-  by
+theorem dotp_isRefl : (dotp p).IsRefl := by
   apply BilinForm.IsSymm.isRefl
   intro x y
   dsimp [dotp]
@@ -1020,8 +985,7 @@ theorem dotp_isRefl : (dotp p).IsRefl :=
 /-- The dot product is nondegenerate
 (there is no vector orthogonal to all vectors)
 -/
-theorem dotp_nondegenerate : (dotp p).orthogonal ⊤ = ⊥ :=
-  by
+theorem dotp_nondegenerate : (dotp p).orthogonal ⊤ = ⊥ := by
   ext x
   simp only [BilinForm.mem_orthogonal_iff, Submodule.mem_bot]
   dsimp [BilinForm.isOrtho_def]
@@ -1046,8 +1010,7 @@ to the span of 2 linearly independent vectors is 1.
 theorem dim_of_ortho (v w : Fin 3 → ZMod p) (h : LinearIndependent (ZMod p) ![v, w]) :
     FiniteDimensional.finrank (ZMod p)
         ↥(BilinForm.orthogonal (dotp p) (Submodule.span (ZMod p) {v, w})) =
-      1 :=
-  by
+      1 := by
   have main_id :=
     @BilinForm.finrank_add_finrank_orthogonal _ _ _ _ _ _ _ (Submodule.span (ZMod p) {v, w})
       (dotp_isRefl p)
@@ -1068,10 +1031,8 @@ theorem dim_of_ortho (v w : Fin 3 → ZMod p) (h : LinearIndependent (ZMod p) ![
 via linear independence of representatives.
 -/
 theorem rw_tec (v w : ℙ (ZMod p) (Fin 3 → ZMod p)) :
-    v ≠ w ↔ LinearIndependent (ZMod p) ![v.rep, w.rep] :=
-  by
-  have : Projectivization.rep ∘ ![v, w] = ![v.rep, w.rep] :=
-    by
+    v ≠ w ↔ LinearIndependent (ZMod p) ![v.rep, w.rep] := by
+  have : Projectivization.rep ∘ ![v, w] = ![v.rep, w.rep] := by
     ext i y
     fin_cases i
     dsimp; rfl
@@ -1082,8 +1043,7 @@ theorem rw_tec (v w : ℙ (ZMod p) (Fin 3 → ZMod p)) :
 
 /-- The extremal graph we built is 4-cycle-free !
 -/
-theorem extremalGraph_c4Free : C4Free (extremalGraph p) :=
-  by
+theorem extremalGraph_c4Free : C4Free (extremalGraph p) := by
   -- We use the charcterization in terms of common neighbours
   apply commonNeighbors_c4Free (extremalGraph p)
   intro v w vnw
@@ -1101,8 +1061,7 @@ theorem extremalGraph_c4Free : C4Free (extremalGraph p) :=
   simp_rw [neighbor_extremalGraph] at adef bdef
   have bo :
     (b : ℙ (ZMod p) (Fin 3 → ZMod p)).rep ∈
-      BilinForm.orthogonal (dotp p) (Submodule.span (ZMod p) {v.rep, w.rep}) :=
-    by
+      BilinForm.orthogonal (dotp p) (Submodule.span (ZMod p) {v.rep, w.rep}) := by
     rw [ortho_span_pair_iff]
     dsimp [dotp]
     nth_rw 1 [Matrix.dotProduct_comm]
@@ -1111,8 +1070,7 @@ theorem extremalGraph_c4Free : C4Free (extremalGraph p) :=
     exact (rw_tec p v w).mp vnw
   have ao :
     (a : ℙ (ZMod p) (Fin 3 → ZMod p)).rep ∈
-      BilinForm.orthogonal (dotp p) (Submodule.span (ZMod p) {v.rep, w.rep}) :=
-    by
+      BilinForm.orthogonal (dotp p) (Submodule.span (ZMod p) {v.rep, w.rep}) := by
     rw [ortho_span_pair_iff]
     dsimp [dotp]
     nth_rw 1 [Matrix.dotProduct_comm]

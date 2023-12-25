@@ -1,7 +1,5 @@
 import Mathlib.Data.Finset.Slice
 
-#align_import mathlib.data.finset.slice
-
 variable {α : Type _}
 
 namespace Set

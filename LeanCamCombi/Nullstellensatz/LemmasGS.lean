@@ -6,8 +6,6 @@ Author: Ivan Sadofschi Costa.
 import Mathlib.Data.MvPolynomial.Supported
 import Nullstellensatz.DegreeNew
 
-#align_import nullstellensatz.lemmas_g_S
-
 open Set Function Finsupp AddMonoidAlgebra
 
 open scoped BigOperators
@@ -21,8 +19,7 @@ theorem c_mem_supported {R σ : Type _} [CommSemiring R] (s : Set σ) (a : R) : 
 
 theorem support_monomial_of_mem_support_of_supported {R σ : Type _} [CommSemiring R]
     {p : MvPolynomial σ R} {i : σ} {s : Set σ} {m : σ →₀ ℕ} (hm : m ∈ p.support)
-    (hp : p ∈ supported R s) : ∀ i ∈ m.support, i ∈ s :=
-  by
+    (hp : p ∈ supported R s) : ∀ i ∈ m.support, i ∈ s := by
   intro i h
   simp only [Finsupp.mem_support_iff, Ne.def] at h
   by_contra c
@@ -33,8 +30,7 @@ theorem support_monomial_of_mem_support_of_supported {R σ : Type _} [CommSemiri
 
 theorem support_monomial_of_mem_support_of_supported' {R σ : Type _} [CommSemiring R]
     {p : MvPolynomial σ R} {i : σ} {s : Set σ} {m : σ →₀ ℕ} (hm : m ∈ p.support)
-    (hp : p ∈ supported R s) (hi : i ∉ s) : m i = 0 :=
-  by
+    (hp : p ∈ supported R s) (hi : i ∉ s) : m i = 0 := by
   by_contra c
   exact
     hi
@@ -43,8 +39,7 @@ theorem support_monomial_of_mem_support_of_supported' {R σ : Type _} [CommSemir
 
 theorem eq_single_of_mem_support_of_supported_singleton {R σ : Type _} [CommSemiring R]
     {p : MvPolynomial σ R} {i : σ} {m : σ →₀ ℕ} (hm : m ∈ p.support)
-    (hp : p ∈ supported R ({i} : Set σ)) : m = single i (m i) :=
-  by
+    (hp : p ∈ supported R ({i} : Set σ)) : m = single i (m i) := by
   ext j
   by_cases c : i = j
   · simp [c]
@@ -56,8 +51,7 @@ theorem eq_single_of_mem_support_of_supported_singleton {R σ : Type _} [CommSem
 
 theorem single_totalDegree_mem_support_of_supported_singleton {R σ : Type _} [CommSemiring R]
     {p : MvPolynomial σ R} {i : σ} (h : p ≠ 0) (hp : p ∈ supported R ({i} : Set σ)) :
-    Finsupp.single i p.totalDegree ∈ p.support :=
-  by
+    Finsupp.single i p.totalDegree ∈ p.support := by
   rcases exists_max_degree_monomial h with ⟨m, ⟨h, h'⟩⟩
   convert h
   rw [eq_single_of_mem_support_of_supported_singleton h hp]
@@ -67,8 +61,7 @@ theorem single_totalDegree_mem_support_of_supported_singleton {R σ : Type _} [C
 
 theorem dominantMonomialSingleOfSupportedSingleton {R σ : Type _} [CommSemiring R]
     {p : MvPolynomial σ R} {i : σ} (h : p ≠ 0) (hp : p ∈ supported R ({i} : Set σ)) :
-    DominantMonomial (Finsupp.single i p.totalDegree) p :=
-  by
+    DominantMonomial (Finsupp.single i p.totalDegree) p := by
   rw [dominant_monomial]
   constructor
   · rw [max_degree_monomial]
@@ -87,8 +80,7 @@ theorem x_sub_c_ne_0 {R σ : Type _} [CommRing R] [DecidableEq σ] [Nontrivial R
     X i - C a ≠ 0 := by
   rw [nonzero_iff_exists]
   use single i 1
-  have h' : ¬0 = single i 1 :=
-    by
+  have h' : ¬0 = single i 1 := by
     -- is this on mathlib?
     suffices t : single i 1 i = 1
     · by_contra h
@@ -99,8 +91,7 @@ theorem x_sub_c_ne_0 {R σ : Type _} [CommRing R] [DecidableEq σ] [Nontrivial R
   simp [c]
 
 theorem totalDegree_x_sub_c {R σ : Type _} [CommRing R] [DecidableEq σ] [Nontrivial R] (i : σ)
-    (a : R) : totalDegree (X i - C a) = 1 :=
-  by
+    (a : R) : totalDegree (X i - C a) = 1 := by
   -- this could be a separate lemma called `total_degree_sub_eq_left_of_total_degree_lt`
   rw [sub_eq_add_neg, total_degree_add_eq_left_of_total_degree_lt]
   · simp
@@ -108,8 +99,7 @@ theorem totalDegree_x_sub_c {R σ : Type _} [CommRing R] [DecidableEq σ] [Nontr
 
 -- lemmas for g_S
 theorem g_S_mem_supported {R σ : Type _} [CommRing R] [Nontrivial R] (S : Finset R) (i : σ) :
-    ∏ s in S, (X i - C s) ∈ supported R ({i} : Set σ) :=
-  by
+    ∏ s in S, (X i - C s) ∈ supported R ({i} : Set σ) := by
   apply (supported R {i}).prod_mem
   intro s hs
   apply (supported R ({i} : Set σ)).sub_mem
@@ -129,8 +119,7 @@ theorem g_S_ne_0 {R σ : Type _} [CommRing R] [IsDomain R] [DecidableEq σ] (S :
   apply X_sub_C_ne_0
 
 theorem totalDegree_g_S {R σ : Type _} [CommRing R] [IsDomain R] [DecidableEq σ] (S : Finset R)
-    (i : σ) : totalDegree (∏ s in S, (X i - C s)) = S.card :=
-  by
+    (i : σ) : totalDegree (∏ s in S, (X i - C s)) = S.card := by
   apply Finset.cons_induction_on S
   · simp
   · clear S
@@ -142,8 +131,7 @@ theorem totalDegree_g_S {R σ : Type _} [CommRing R] [IsDomain R] [DecidableEq �
     · apply g_S_ne_0
 
 theorem g_S_monic {R σ : Type _} [CommRing R] [IsDomain R] [DecidableEq σ] (S : Finset R) (i : σ) :
-    coeff (single i S.card) (∏ s in S, (X i - C s)) = 1 :=
-  by
+    coeff (single i S.card) (∏ s in S, (X i - C s)) = 1 := by
   apply Finset.cons_induction_on S
   · simp
   · clear S
@@ -158,8 +146,7 @@ theorem g_S_monic {R σ : Type _} [CommRing R] [IsDomain R] [DecidableEq σ] (S 
     simp
 
 theorem dominantMonomialGS {R σ : Type _} [CommRing R] [IsDomain R] [DecidableEq σ] (S : Finset R)
-    (i : σ) : DominantMonomial (Finsupp.single i S.card) (∏ s in S, (X i - C s)) :=
-  by
+    (i : σ) : DominantMonomial (Finsupp.single i S.card) (∏ s in S, (X i - C s)) := by
   rw [← total_degree_g_S S i]
   apply dominant_monomial_single_of_supported_singleton
   · apply g_S_ne_0

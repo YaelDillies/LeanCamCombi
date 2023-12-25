@@ -2,8 +2,6 @@ import Mathlib.Combinatorics.SimpleGraph.Degree
 import Turan.Number
 import Turan.Induced
 
-#align_import turan.counting
-
 open Finset Nat Turan
 
 open scoped BigOperators
@@ -90,4 +88,3 @@ variable {α : Type _} (G H : SimpleGraph α) [Fintype α] [Nonempty α] [Decida
 --   rw ←  mpc, rw ← G.internal_count dAB, linarith},},
 -- end
 end SimpleGraph
-

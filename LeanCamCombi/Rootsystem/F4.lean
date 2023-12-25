@@ -3,8 +3,6 @@ import Mathlib.Analysis.NormedSpace.Pointwise
 import Mathlib.Analysis.Quaternion
 import Rootsystem.Basic
 
-#align_import rootsystem.f4
-
 noncomputable section
 
 variable {V : Type _} [AddCommGroup V] [Module ℝ V]
@@ -34,8 +32,7 @@ def quatInt : AddSubgroup ℍ[ℝ] :=
 def f4Lattice : AddSubgroup ℍ[ℝ] :=
   AddSubgroup.closure {s, e₂, e₃, e₄}
 
-theorem mem_f4Lattice_iff (q : ℍ[ℝ]) : q ∈ f4Lattice ↔ q ∈ quatInt ∨ q + s ∈ quatInt :=
-  by
+theorem mem_f4Lattice_iff (q : ℍ[ℝ]) : q ∈ f4Lattice ↔ q ∈ quatInt ∨ q + s ∈ quatInt := by
   constructor
   intro h
   left

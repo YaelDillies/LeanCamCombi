@@ -1,8 +1,6 @@
 import Order.Partition.Equipartition
 import Mathlib.Data.Set.Equitable
 
-#align_import mathlib.order.partition.equipartition
-
 namespace Finpartition
 
 variable {α : Type _} [DecidableEq α] {s : Finset α} {P : Finpartition s}
@@ -15,4 +13,3 @@ theorem not_isEquipartition :
 -/
 
 end Finpartition
-

@@ -10,8 +10,6 @@ import Tactic.LinearCombination
 import Mathlib.Combinatorics.Additive.SalemSpencer
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Tripartite
 
-#align_import mathlib.combinatorics.additive.ruzsa_szemeredi
-
 /-!
 # The Ruzsa-Szemerédi problem
 
@@ -80,8 +78,7 @@ theorem LocallyLinear.le_ruzsaSzemerediNumber [DecidableRel G.Adj] (hG : G.Local
     (G.cliqueFinset 3).card ≤ ruzsaSzemerediNumber α :=
   le_findGreatest card_cliqueFinset_le ⟨G, by congr, hG⟩
 
-theorem ruzsaSzemerediNumber_mono (f : α ↪ β) : ruzsaSzemerediNumber α ≤ ruzsaSzemerediNumber β :=
-  by
+theorem ruzsaSzemerediNumber_mono (f : α ↪ β) : ruzsaSzemerediNumber α ≤ ruzsaSzemerediNumber β := by
   refine' find_greatest_mono _ (choose_mono _ <| Fintype.card_le_of_embedding f)
   rintro n ⟨G, rfl, hG⟩
   refine' ⟨G.map f, _, hG.map _⟩
@@ -132,8 +129,7 @@ variable [Fintype α] [CommRing α] {s : Finset α} {x : α × α × α}
 /-- The triangle indices for the Ruzsa-Szemerédi construction. -/
 private def triangle_indices (s : Finset α) : Finset (α × α × α) :=
   (univ ×ˢ s).map
-    ⟨fun xa => (xa.1, xa.1 + xa.2, xa.1 + 2 * xa.2),
-      by
+    ⟨fun xa => (xa.1, xa.1 + xa.2, xa.1 + 2 * xa.2), by
       rintro ⟨x, a⟩ ⟨y, b⟩ h
       simp only [Prod.ext_iff] at h
       obtain rfl := h.1
@@ -161,18 +157,15 @@ variable [Fact <| IsUnit (2 : α)]
 
 instance : ExplicitDisjoint (triangleIndices s : Finset (α × α × α))
     where
-  inj₀ :=
-    by
+  inj₀ := by
     simp only [mem_triangle_indices, Prod.mk.inj_iff, exists_prop, forall_exists_index, and_imp]
     rintro _ _ _ _ x a ha rfl rfl rfl y b hb rfl h₁ h₂
     linear_combination 2 * h₁.symm - h₂.symm
-  inj₁ :=
-    by
+  inj₁ := by
     simp only [mem_triangle_indices, Prod.mk.inj_iff, exists_prop, forall_exists_index, and_imp]
     rintro _ _ _ _ x a ha rfl rfl rfl y b hb rfl rfl h
     simpa [(Fact.out <| IsUnit (2 : α)).mul_right_inj, eq_comm] using h
-  inj₂ :=
-    by
+  inj₂ := by
     simp only [mem_triangle_indices, Prod.mk.inj_iff, exists_prop, forall_exists_index, and_imp]
     rintro _ _ _ _ x a ha rfl rfl rfl y b hb rfl h rfl
     simpa [(Fact.out <| IsUnit (2 : α)).mul_right_inj, eq_comm] using h
@@ -183,8 +176,7 @@ theorem locallyLinear (hs : AddSalemSpencer (s : Set α)) :
   tripartite_from_triangles.locally_linear _
 
 theorem card_edgeFinset (hs : AddSalemSpencer (s : Set α)) [DecidableEq α] :
-    (graph <| (triangleIndices s : Finset (α × α × α))).edgeFinset.card = 3 * card α * s.card :=
-  by
+    (graph <| (triangleIndices s : Finset (α × α × α))).edgeFinset.card = 3 * card α * s.card := by
   haveI := no_accidental hs
   rw [(locally_linear hs).card_edgeFinset, card_triangles, card_triangle_indices, mul_assoc]
 
@@ -195,16 +187,14 @@ open RuzsaSzemeredi
 variable (α) [Fintype α] [DecidableEq α] [CommRing α] [Fact <| IsUnit (2 : α)]
 
 theorem addRothNumber_le_ruzsaSzemerediNumber :
-    card α * addRothNumber (univ : Finset α) ≤ ruzsaSzemerediNumber (Sum α (Sum α α)) :=
-  by
+    card α * addRothNumber (univ : Finset α) ≤ ruzsaSzemerediNumber (Sum α (Sum α α)) := by
   obtain ⟨s, -, hscard, hs⟩ := addRothNumber_spec (univ : Finset α)
   haveI := no_accidental hs
   rw [← hscard, ← card_triangle_indices, ← card_triangles]
   exact (locally_linear hs).le_ruzsaSzemerediNumber
 
 theorem rothNumberNat_le_ruzsaSzemerediNumberNat (n : ℕ) :
-    (2 * n + 1) * rothNumberNat n ≤ ruzsaSzemerediNumberNat (6 * n + 3) :=
-  by
+    (2 * n + 1) * rothNumberNat n ≤ ruzsaSzemerediNumberNat (6 * n + 3) := by
   refine'
     (mul_le_mul_left'
           ((Fin.rothNumberNat_le_addRothNumber le_rfl).trans <|
@@ -223,8 +213,7 @@ theorem rothNumberNat_le_ruzsa_szemeredi_number_nat' :
   | 0 => by simp
   | 1 => by simp
   | 2 => by simp
-  | n + 3 =>
-    by
+  | n + 3 => by
     calc
       _ ≤ (↑(2 * (n / 6) + 1) : ℝ) * rothNumberNat (n / 6) :=
         mul_le_mul_of_nonneg_right _ (Nat.cast_nonneg _)
@@ -242,8 +231,7 @@ theorem rothNumberNat_le_ruzsa_szemeredi_number_nat' :
 
 theorem ruzsaSzemerediNumberNat_lower_bound (n : ℕ) :
     (n / 3 - 2 : ℝ) * ↑((n - 3) / 6) * exp (-4 * sqrt (log ↑((n - 3) / 6))) ≤
-      ruzsaSzemerediNumberNat n :=
-  by
+      ruzsaSzemerediNumberNat n := by
   rw [mul_assoc]
   obtain hn | hn := le_total (n / 3 - 2 : ℝ) 0
   · exact (mul_nonpos_of_nonpos_of_nonneg hn <| by positivity).trans (Nat.cast_nonneg _)
@@ -255,14 +243,12 @@ open Asymptotics Filter
 
 theorem ruzsaSzemerediNumberNat_asymptotic :
     IsBigO atTop (fun n => n ^ 2 * exp (-4 * sqrt (log n)) : ℕ → ℝ) fun n =>
-      (ruzsaSzemerediNumberNat n : ℝ) :=
-  by
+      (ruzsaSzemerediNumberNat n : ℝ) := by
   have :
     is_O at_top
       (fun n => (n / 3 - 2) * ↑((n - 3) / 6) * NormedSpace.exp (-4 * sqrt (log ↑((n - 3) / 6))) :
         ℕ → ℝ)
-      fun n => (ruzsa_szemeredi_number_nat n : ℝ) :=
-    by
+      fun n => (ruzsa_szemeredi_number_nat n : ℝ) := by
     refine' is_O.of_bound 1 _
     simp only [neg_mul, norm_eq_abs, norm_coe_nat, one_mul, eventually_at_top, ge_iff_le]
     refine' ⟨6, fun n hn => _⟩

@@ -1,7 +1,5 @@
 import Rootsystem.Basic
 
-#align_import rootsystem.reduced
-
 open Set Function
 
 /-- A reduced, crystallographic root system. -/
@@ -25,8 +23,7 @@ theorem foo {k : Type _} {V : Type _} (n m : ℤ) [Field k] [CharZero k] [AddCom
     (hn' : n ≠ -1) :
     let α : ↥Φ := ⟨x, hx⟩
     let β : ↥Φ := ⟨t • x, ht⟩
-    t⁻¹ • (β : V) = α → (hr.coroot β) ↑α = ↑n → (hr.coroot α) ↑β = ↑m → m ≠ 1 :=
-  by
+    t⁻¹ • (β : V) = α → (hr.coroot β) ↑α = ↑n → (hr.coroot α) ↑β = ↑m → m ≠ 1 := by
   intro α β hαβ hn_1 hm
   have := hr.two_smul_not_mem β β.property
   contrapose! this
@@ -41,8 +38,7 @@ theorem m_not_neg_1 {k : Type _} {V : Type _} (n m : ℤ) [Field k] [CharZero k]
     (hmn : n * m = 4) (hn : n ≠ 1) (hn' : n ≠ -1) :
     let α : ↥Φ := ⟨x, hx⟩
     let β : ↥Φ := ⟨t • x, ht⟩
-    t⁻¹ • (β : V) = α → (h.coroot β) ↑α = ↑n → (h.coroot α) ↑β = ↑m → m ≠ -1 :=
-  by
+    t⁻¹ • (β : V) = α → (h.coroot β) ↑α = ↑n → (h.coroot α) ↑β = ↑m → m ≠ -1 := by
   intro α β hαβ hn_1 hm
   have := hr.two_smul_not_mem (-β) (h.neg_mem β)
   contrapose! this
@@ -53,41 +49,37 @@ theorem m_not_neg_1 {k : Type _} {V : Type _} (n m : ℤ) [Field k] [CharZero k]
 -- rw htm,
 -- simpa [← neg_inv],
 theorem is_reduced_iff (h : IsRootSystem k Φ) :
-    IsReducedRootSystem k Φ ↔ ∀ α ∈ Φ, ∀ (t : k), t • α ∈ Φ → t = 1 ∨ t = -1 :=
-  by
+    IsReducedRootSystem k Φ ↔ ∀ α ∈ Φ, ∀ (t : k), t • α ∈ Φ → t = 1 ∨ t = -1 := by
   refine' ⟨fun hr x hx t ht => _, fun hr => ⟨h, fun α hα contra => _⟩⟩
   · let α : Φ := ⟨x, hx⟩
     let β : Φ := ⟨t • x, ht⟩
-    have ht₀ : t ≠ 0 := by have := h.zero_not_mem; contrapose! this; rwa [this, zero_smul] at ht 
+    have ht₀ : t ≠ 0 := by have := h.zero_not_mem; contrapose! this; rwa [this, zero_smul] at ht
     have hαβ : t⁻¹ • (β : V) = α := by
       rw [Subtype.coe_mk, Subtype.coe_mk, smul_smul, inv_mul_cancel ht₀, one_smul]
     obtain ⟨n, hn⟩ := h.exists_int_coroot_apply_eq β α
-    have htn : t * n = 2 :=
-      by
+    have htn : t * n = 2 := by
       have : (βᘁ) (t • α) = 2 := h.coroot_apply_self_eq_two β
       simpa only [LinearMap.map_smulₛₗ, RingHom.id_apply, Algebra.id.smul_eq_mul, hn] using this
     obtain ⟨m, hm⟩ := h.exists_int_coroot_apply_eq α β
-    have htm : t⁻¹ * m = 2 :=
-      by
+    have htm : t⁻¹ * m = 2 := by
       have : (αᘁ) (t⁻¹ • β) = 2 := by rw [hαβ]; exact h.coroot_apply_self_eq_two α
       simpa only [LinearMap.map_smulₛₗ, RingHom.id_apply, Algebra.id.smul_eq_mul, hm] using this
-    have hmn : n * m = 4 :=
-      by
+    have hmn : n * m = 4 := by
       have := congr_arg₂ ((· * ·) : k → k → k) htn htm
-      rw [mul_mul_mul_comm, mul_inv_cancel ht₀, one_mul] at this 
-      norm_cast at this 
+      rw [mul_mul_mul_comm, mul_inv_cancel ht₀, one_mul] at this
+      norm_cast at this
       exact this
     have hn1 : n ≠ 1 := by
       have := hr.two_smul_not_mem α α.property
       contrapose! this
       simp only [nsmul_eq_smul_cast k 2, Nat.cast_two, Subtype.coe_mk]
-      rw [this, algebraMap.coe_one, mul_one] at htn 
-      rwa [htn] at ht 
+      rw [this, algebraMap.coe_one, mul_one] at htn
+      rwa [htn] at ht
     have hnm1 : n ≠ -1 := by
       have := hr.two_smul_not_mem (-α) (h.neg_mem α)
       contrapose! this
       simp only [nsmul_eq_smul_cast k 2, Nat.cast_two, Subtype.coe_mk, smul_neg]
-      rw [this, Int.cast_neg, algebraMap.coe_one, mul_neg, mul_one, neg_eq_iff_eq_neg] at htn 
+      rw [this, Int.cast_neg, algebraMap.coe_one, mul_neg, mul_one, neg_eq_iff_eq_neg] at htn
       sorry
     -- rwa [← htn, neg_smul] at ht,
     -- Similarly `m ≠ ± 1`. Using `hmn : n * m = 4` this means `n`, `m` both `± 2`, thus `t = ± 1`.
@@ -97,7 +89,7 @@ theorem is_reduced_iff (h : IsRootSystem k Φ) :
       rcases this with (rfl | rfl)
       · left
         rwa [Int.cast_two, ← eq_mul_inv_iff_mul_eq₀ (NeZero.ne (2 : k)),
-          mul_inv_cancel (NeZero.ne (2 : k))] at htn 
+          mul_inv_cancel (NeZero.ne (2 : k))] at htn
       · right
         sorry
     -- rwa [int.cast_neg, int.cast_two, mul_neg, neg_eq_iff_eq_neg,
@@ -115,25 +107,24 @@ theorem is_reduced_iff (h : IsRootSystem k Φ) :
       refine' neg_eq_iff_eq_neg.1 _
       simpa [hmn1, mul_right_eq_self₀, ← mul_neg] using hmn
     replace hmn := congr_arg Int.natAbs hmn
-    rw [Int.natAbs_mul, (by norm_num : (4 : ℤ).natAbs = 4)] at hmn 
+    rw [Int.natAbs_mul, (by norm_num : (4 : ℤ).natAbs = 4)] at hmn
     replace hmn : n.nat_abs ∣ 4 := ⟨m.nat_abs, hmn.symm⟩
     rcases Nat.eq_one_or_two_or_four_of_div_four hmn with (h | h | h)
     · exfalso
       cases Int.natAbs_eq n
-      · rw [h, Nat.cast_one] at h_1 
+      · rw [h, Nat.cast_one] at h_1
         exact hn1 h_1
-      · rw [h, Nat.cast_one] at h_1 
+      · rw [h, Nat.cast_one] at h_1
         contradiction
     · assumption
     · cases Int.natAbs_eq n
       exfalso
-      · rw [h] at h_1 
-        norm_cast at h_1 
-      · rw [h] at h_1 
-        norm_cast at h_1 
-  · replace contra : (2 : k) • α ∈ Φ; · rwa [nsmul_eq_smul_cast k 2 α, Nat.cast_two] at contra 
+      · rw [h] at h_1
+        norm_cast at h_1
+      · rw [h] at h_1
+        norm_cast at h_1
+  · replace contra : (2 : k) • α ∈ Φ; · rwa [nsmul_eq_smul_cast k 2 α, Nat.cast_two] at contra
     have h2 := hr α hα (2 : k) contra
-    norm_num at h2 
+    norm_num at h2
 
 end IsRootSystem
-

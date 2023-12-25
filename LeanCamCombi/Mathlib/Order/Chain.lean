@@ -1,7 +1,5 @@
 import Order.Chain
 
-#align_import mathlib.order.chain
-
 open Set
 
 variable {α β : Type _}
@@ -67,4 +65,3 @@ theorem symm_map (e : α ≃o β) : (map e).symm = map e.symm :=
 end Preorder
 
 end Flag
-

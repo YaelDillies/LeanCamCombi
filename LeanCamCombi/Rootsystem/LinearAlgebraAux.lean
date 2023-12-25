@@ -3,8 +3,6 @@ import LinearAlgebra.Contraction
 import LinearAlgebra.BilinearForm
 import LinearAlgebra.QuadraticForm.Basic
 
-#align_import rootsystem.linear_algebra_aux
-
 noncomputable section
 
 open scoped TensorProduct BigOperators Classical Pointwise
@@ -15,8 +13,7 @@ open Set Function
 @[simp]
 theorem Module.apply_evalEquiv_symm_apply {k V : Type _} [Field k] [AddCommGroup V] [Module k V]
     [FiniteDimensional k V] (f : Module.Dual k V) (v : Module.Dual k <| Module.Dual k V) :
-    f ((Module.evalEquiv k V).symm v) = v f :=
-  by
+    f ((Module.evalEquiv k V).symm v) = v f := by
   set w := (Module.evalEquiv k V).symm v
   have hw : v = Module.evalEquiv k V w := (LinearEquiv.apply_symm_apply _ _).symm
   rw [hw]
@@ -82,8 +79,7 @@ def toSymmetry {x : V} {f : Dual k V} (h : f x = 2) : V ≃ₗ[k] V :=
 
 @[simp]
 theorem eq_zero_or_zero_of_dualTensorHom_tmul_eq_zero {f : Dual k V} {x : V}
-    [NoZeroSMulDivisors k V] : dualTensorHom k V V (f ⊗ₜ x) = 0 ↔ f = 0 ∨ x = 0 :=
-  by
+    [NoZeroSMulDivisors k V] : dualTensorHom k V V (f ⊗ₜ x) = 0 ↔ f = 0 ∨ x = 0 := by
   refine' ⟨fun h => _, fun h => _⟩
   · rcases eq_or_ne x 0 with (rfl | hx); · simp
     left
@@ -91,7 +87,7 @@ theorem eq_zero_or_zero_of_dualTensorHom_tmul_eq_zero {f : Dual k V} {x : V}
     simp only [LinearMap.zero_apply]
     replace h : f v • x = 0 := by
       simpa only [dualTensorHom_apply, LinearMap.zero_apply] using LinearMap.congr_fun h v
-    rw [smul_eq_zero] at h 
+    rw [smul_eq_zero] at h
     tauto
   · rcases h with (rfl | rfl) <;> simp
 
@@ -100,8 +96,8 @@ theorem Unit.apply_root_mem {Φ : Set V} (u : MulAction.stabilizer (V ≃ₗ[k] 
   obtain ⟨u, hu⟩ := u
   obtain ⟨x, hx⟩ := x
   change u x ∈ Φ
-  rw [MulAction.mem_stabilizer_iff] at hu 
-  replace hu : u '' Φ = Φ := by rwa [← image_smul] at hu 
+  rw [MulAction.mem_stabilizer_iff] at hu
+  replace hu : u '' Φ = Φ := by rwa [← image_smul] at hu
   rw [← hu]
   exact mem_image_of_mem u hx
 
@@ -138,27 +134,26 @@ def Unit.toPerm' {Φ : Set V} : MulAction.stabilizer (V ≃ₗ[k] V) Φ →* Equ
     rfl
 
 theorem Unit.injective_toPerm' {Φ : Set V} (hΦ : Submodule.span k Φ = ⊤) :
-    Injective (Unit.toPerm' : MulAction.stabilizer (V ≃ₗ[k] V) Φ → Equiv.Perm Φ) :=
-  by
+    Injective (Unit.toPerm' : MulAction.stabilizer (V ≃ₗ[k] V) Φ → Equiv.Perm Φ) := by
   rw [← MonoidHom.ker_eq_bot_iff]
   rw [eq_bot_iff]
   intro u hu
   rw [Subgroup.mem_bot]
-  rw [MonoidHom.mem_ker] at hu 
+  rw [MonoidHom.mem_ker] at hu
   have hu' := FunLike.congr_fun hu
-  change ∀ x, _ = x at hu' 
+  change ∀ x, _ = x at hu'
   ext v
   change u v = v
   have := FunLike.congr_fun hu
-  simp only [unit.to_perm'_apply, Equiv.Perm.coe_one, id.def, SetCoe.forall] at this 
+  simp only [unit.to_perm'_apply, Equiv.Perm.coe_one, id.def, SetCoe.forall] at this
   have mem1 : v ∈ Submodule.span k Φ := by
     rw [hΦ]
     exact Submodule.mem_top
   apply Submodule.span_induction mem1
   · intro x hx
     specialize hu' ⟨x, hx⟩
-    dsimp [unit.to_perm] at hu' 
-    simp at hu' 
+    dsimp [unit.to_perm] at hu'
+    simp at hu'
     exact hu'
   · exact LinearEquiv.map_zero _
   · intro x y hx hy
@@ -176,15 +171,13 @@ theorem finite_stabilizer_of_finite_of_span_eq_top {Φ : Set V} (hΦ₁ : Φ.Fin
   _root_.finite.of_injective unit.to_perm' (unit.injective_to_perm' hΦ₂)
 
 theorem isOfFinOrder_of_finite_of_span_eq_top_of_image_subseteq {Φ : Set V} (hΦ₁ : Φ.Finite)
-    (hΦ₂ : Submodule.span k Φ = ⊤) {u : V ≃ₗ[k] V} (hu : u '' Φ ⊆ Φ) : IsOfFinOrder u :=
-  by
+    (hΦ₂ : Submodule.span k Φ = ⊤) {u : V ≃ₗ[k] V} (hu : u '' Φ ⊆ Φ) : IsOfFinOrder u := by
   replace hu : u '' Φ = Φ
   · haveI : Fintype Φ := finite.fintype hΦ₁
     apply Set.eq_of_subset_of_card_le hu
     rw [Set.card_image_of_injective Φ u.injective]
   let u' : MulAction.stabilizer (V ≃ₗ[k] V) Φ := ⟨u, hu⟩
-  have hu' : IsOfFinOrder u ↔ IsOfFinOrder u' :=
-    by
+  have hu' : IsOfFinOrder u ↔ IsOfFinOrder u' := by
     suffices orderOf u = orderOf u' by
       rw [← orderOf_pos_iff]
       have hord : 0 < orderOf u ↔ 0 < orderOf u' := iff_of_eq (congr_arg (LT.lt 0) this)
@@ -199,13 +192,10 @@ theorem isOfFinOrder_of_finite_of_span_eq_top_of_image_subseteq {Φ : Set V} (h�
 theorem eq_dual_of_toPreSymmetry_image_subseteq [CharZero k] [NoZeroSMulDivisors k V] {x : V}
     (hx : x ≠ 0) {Φ : Set V} (hΦ₁ : Φ.Finite) (hΦ₂ : Submodule.span k Φ = ⊤) {f g : Dual k V}
     (hf₁ : f x = 2) (hf₂ : toPreSymmetry x f '' Φ ⊆ Φ) (hg₁ : g x = 2)
-    (hg₂ : toPreSymmetry x g '' Φ ⊆ Φ) : f = g :=
-  by
+    (hg₂ : toPreSymmetry x g '' Φ ⊆ Φ) : f = g := by
   let u := to_symmetry hg₁ * to_symmetry hf₁
-  suffices IsOfFinOrder u
-    by
-    have hu : ↑u = LinearMap.id + dualTensorHom k V V ((f - g) ⊗ₜ x) :=
-      by
+  suffices IsOfFinOrder u by
+    have hu : ↑u = LinearMap.id + dualTensorHom k V V ((f - g) ⊗ₜ x) := by
       ext y
       simp only [to_symmetry, hg₁, LinearMap.toFun_eq_coe, LinearEquiv.coe_hMul,
         LinearMap.mul_apply, LinearEquiv.coe_coe, LinearEquiv.coe_mk, to_pre_symmetry_apply,
@@ -239,8 +229,7 @@ theorem eq_dual_of_toPreSymmetry_image_subseteq [CharZero k] [NoZeroSMulDivisors
 -- V dual is zero if and only if V is zero --
 @[simp]
 theorem subsingleton_dual_iff {k V : Type _} [Field k] [AddCommGroup V] [Module k V] :
-    Subsingleton (Dual k V) ↔ Subsingleton V :=
-  by
+    Subsingleton (Dual k V) ↔ Subsingleton V := by
   refine' ⟨fun h => ⟨fun v w => _⟩, fun h => ⟨fun f g => _⟩⟩
   · rw [← sub_eq_zero, ← forall_dual_apply_eq_zero_iff k (v - w)]
     intro f
@@ -267,8 +256,7 @@ theorem QuadraticForm.toQuadraticForm_polarBilin (Q : QuadraticForm k V) :
 -- May or may not need this.
 @[simp]
 theorem BilinForm.toQuadraticForm.polarBilin {B : BilinForm k V} (h : B.IsSymm) :
-    B.toQuadraticForm.polarBilin = (2 : k) • B :=
-  by
+    B.toQuadraticForm.polarBilin = (2 : k) • B := by
   ext v w
   erw [QuadraticForm.polarBilin_apply, BilinForm.smul_apply, BilinForm.polar_toQuadraticForm,
     h.eq w v, two_smul]
@@ -296,8 +284,7 @@ def averageBilinear {G : Type _} [Group G] [Finite G] (ρ : G →* V ≃ₗ[k] V
       LinearEquiv.map_smulₛₗ, RingHom.id_apply]
 
 theorem averageBilinear_apply_apply {G : Type _} [Group G] [Finite G] (ρ : G →* V ≃ₗ[k] V)
-    (B : V →ₗ[k] Dual k V) (v w : V) : averageBilinear ρ B v w = ∑ᶠ g, B (ρ g • v) (ρ g • w) :=
-  by
+    (B : V →ₗ[k] Dual k V) (v w : V) : averageBilinear ρ B v w = ∑ᶠ g, B (ρ g • v) (ρ g • w) := by
   haveI : Fintype G := Fintype.ofFinite G
   simpa only [average_bilinear, LinearMap.coe_mk, finsum_eq_sum_of_fintype, LinearMap.coeFn_sum,
     LinearMap.coe_comp, Finset.sum_apply, comp_app]
@@ -305,10 +292,8 @@ theorem averageBilinear_apply_apply {G : Type _} [Group G] [Finite G] (ρ : G �
 @[simp]
 theorem QuadraticForm.comp_posDef_iff {k V : Type _} [LinearOrderedField k] [AddCommGroup V]
     [Module k V] (Q : QuadraticForm k V) (g : V ≃ₗ[k] V) :
-    (Q.comp (g : V →ₗ[k] V)).PosDef ↔ Q.PosDef :=
-  by
-  suffices ∀ (Q : QuadraticForm k V) (g : V ≃ₗ[k] V), Q.PosDef → (Q.comp (g : V →ₗ[k] V)).PosDef
-    by
+    (Q.comp (g : V →ₗ[k] V)).PosDef ↔ Q.PosDef := by
+  suffices ∀ (Q : QuadraticForm k V) (g : V ≃ₗ[k] V), Q.PosDef → (Q.comp (g : V →ₗ[k] V)).PosDef by
     refine' ⟨fun hQ => _, this Q g⟩
     convert this (Q.comp (g : V →ₗ[k] V)) g⁻¹ hQ
     ext v
@@ -329,8 +314,7 @@ theorem QuadraticForm.comp_posDef_iff {k V : Type _} [LinearOrderedField k] [Add
 theorem averageBilinear_eq_sum {G : Type _} [Group G] [Finite G] (ρ : G →* V ≃ₗ[k] V)
     (B : V →ₗ[k] Dual k V) :
     (averageBilinear ρ B).toBilin.toQuadraticForm =
-      ∑ᶠ g, B.toBilin.toQuadraticForm.comp (ρ g : V →ₗ[k] V) :=
-  by
+      ∑ᶠ g, B.toBilin.toQuadraticForm.comp (ρ g : V →ₗ[k] V) := by
   ext v
   haveI : Fintype G := Fintype.ofFinite G
   simp only [average_bilinear, LinearMap.coe_mk, finsum_eq_sum_of_fintype, LinearMap.coeFn_sum,
@@ -345,8 +329,7 @@ theorem averageBilinear_eq_sum {G : Type _} [Group G] [Finite G] (ρ : G →* V 
 @[simp]
 theorem averageBilinear_smul_smul {G : Type _} [Group G] [Finite G] (ρ : G →* V ≃ₗ[k] V)
     (B : V →ₗ[k] Dual k V) (v w : V) (g : G) :
-    averageBilinear ρ B (ρ g • v) (ρ g • w) = averageBilinear ρ B v w :=
-  by
+    averageBilinear ρ B (ρ g • v) (ρ g • w) = averageBilinear ρ B v w := by
   simp only [average_bilinear_apply_apply, smul_smul, ← map_mul]
   let b : G → k := fun g' => B (ρ g' • v) (ρ g' • w)
   let e : G ≃ G := Equiv.mulRight g
@@ -360,8 +343,7 @@ theorem Basis.toDual_total_left' {R M ι : Type _} [CommSemiring R] [AddCommMono
   by ext i; simp only [Function.comp_apply]; simp
 
 theorem Basis.toDual_posDef {k V ι : Type _} [LinearOrderedField k] [AddCommGroup V] [Module k V]
-    (b : Basis ι k V) : b.toDual.toBilin.toQuadraticForm.PosDef :=
-  by
+    (b : Basis ι k V) : b.toDual.toBilin.toQuadraticForm.PosDef := by
   intro v hv
   simp only [BilinForm.toQuadraticForm_apply]
   change 0 < b.to_dual v v
@@ -371,7 +353,7 @@ theorem Basis.toDual_posDef {k V ι : Type _} [LinearOrderedField k] [AddCommGro
   rw [← b.total_repr v, Finsupp.apply_total, b.to_dual_total_left', Finsupp.total_apply]
   apply Finset.sum_pos
   rintro i hi
-  simp only [Finsupp.mem_support_iff] at hi 
+  simp only [Finsupp.mem_support_iff] at hi
   simp only [Algebra.id.smul_eq_mul, mul_self_pos, Ne.def]
   exact hi
   exact hv
@@ -386,8 +368,7 @@ theorem QuadraticForm.PosDef.sum {k V ι : Type _} [Finite ι] [Nonempty ι] [Li
       Finset.univ_nonempty fun i hi => hq _
 
 theorem LinearMap.toBilin.PosDef.ker_eq_bot {k V : Type _} [LinearOrderedField k] [AddCommGroup V]
-    [Module k V] (b : V →ₗ[k] Dual k V) (hb : b.toBilin.toQuadraticForm.PosDef) : b.ker = ⊥ :=
-  by
+    [Module k V] (b : V →ₗ[k] Dual k V) (hb : b.toBilin.toQuadraticForm.PosDef) : b.ker = ⊥ := by
   ext v
   simp only [LinearMap.mem_ker, Submodule.mem_bot]
   refine' ⟨fun hv => _, fun hv => _⟩
@@ -404,8 +385,7 @@ theorem LinearMap.toBilin.PosDef.ker_eq_bot {k V : Type _} [LinearOrderedField k
 by just taking the average of a positive definite bilinear form. -/
 theorem exists_to_dual_ker_eq_bot {k V G : Type _} [LinearOrderedField k] [AddCommGroup V]
     [Module k V] [FiniteDimensional k V] [Group G] [Finite G] (ρ : G →* V ≃ₗ[k] V) :
-    ∃ B : V →ₗ[k] Dual k V, B.ker = ⊥ ∧ ∀ (v w) (g : G), B (ρ g • v) (ρ g • w) = B v w :=
-  by
+    ∃ B : V →ₗ[k] Dual k V, B.ker = ⊥ ∧ ∀ (v w) (g : G), B (ρ g • v) (ρ g • w) = B v w := by
   obtain ⟨s, ⟨b⟩⟩ := Basis.exists_basis k V
   refine' ⟨average_bilinear ρ b.to_dual, _, fun v w g => by simp only [average_bilinear_smul_smul]⟩
   apply LinearMap.toBilin.PosDef.ker_eq_bot
@@ -438,8 +418,7 @@ variable {k V : Type _} [Field k] [AddCommGroup V] [Module k V] {p : Submodule k
 #print Submodule.exists_dual_map_eq_bot_of_lt_top /-
 -- For any proper submodule there exists a non-zero linear form vanishing on it
 theorem exists_dual_map_eq_bot_of_lt_top (hp : p < ⊤) :
-    ∃ f : Module.Dual k V, f ≠ 0 ∧ p.map f = ⊥ :=
-  by
+    ∃ f : Module.Dual k V, f ≠ 0 ∧ p.map f = ⊥ := by
   replace hp : Nontrivial (Module.Dual k <| V ⧸ p) :=
     module.nontrivial_dual_iff.mpr (quotient.nontrivial_of_lt_top p hp)
   obtain ⟨f, g, h⟩ := hp
@@ -452,4 +431,3 @@ theorem exists_dual_map_eq_bot_of_lt_top (hp : p < ⊤) :
 -/
 
 end Submodule
-

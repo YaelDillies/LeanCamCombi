@@ -1,7 +1,5 @@
 import Mathlib.Algebra.IndicatorFunction
 
-#align_import mathlib.algebra.indicator_function
-
 open scoped BigOperators
 
 namespace Finset

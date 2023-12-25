@@ -6,9 +6,7 @@ Authors: Yaël Dillies
 import Mathlib.Data.Finset.Image
 import Mathlib.Data.Fintype.Pi
 import Mathlib.Data.List.Rdrop
-import FieldTheory.ChevalleyWarning
-
-#align_import mathlib.combinatorics.additive.erdos_ginzburg_ziv
+import Mathlib.FieldTheory.ChevalleyWarning
 
 /-!
 # The Erdős–Ginzburg–Ziv theorem
@@ -51,8 +49,7 @@ variable {α : Type _} {l l' l₀ l₁ l₂ : List α} {a b : α} {m n : ℕ}
 /- ./././Mathport/Syntax/Translate/Expr.lean:177:8: unsupported: ambiguous notation -/
 /- ./././Mathport/Syntax/Translate/Expr.lean:177:8: unsupported: ambiguous notation -/
 /- ./././Mathport/Syntax/Translate/Expr.lean:177:8: unsupported: ambiguous notation -/
-theorem cons_sublist_cons_iff' : ((a::l₁) <+ b::l₂) ↔ (a::l₁) <+ l₂ ∨ a = b ∧ l₁ <+ l₂ :=
-  by
+theorem cons_sublist_cons_iff' : ((a::l₁) <+ b::l₂) ↔ (a::l₁) <+ l₂ ∨ a = b ∧ l₁ <+ l₂ := by
   constructor
   · rintro (_ | _)
     · exact Or.inl ‹_›
@@ -157,8 +154,7 @@ namespace Nat
 
 variable {a b : ℕ}
 
-theorem eq_of_dvd_of_lt_two_hMul (ha : a ≠ 0) (hdvd : b ∣ a) (hlt : a < 2 * b) : a = b :=
-  by
+theorem eq_of_dvd_of_lt_two_hMul (ha : a ≠ 0) (hdvd : b ∣ a) (hlt : a < 2 * b) : a = b := by
   obtain ⟨_ | _ | c, rfl⟩ := hdvd
   · simpa using ha
   · exact mul_one _
@@ -170,8 +166,7 @@ namespace ZMod
 
 variable {p : ℕ} [Fact (Nat.Prime p)]
 
-theorem pow_card_sub_one (x : ZMod p) : x ^ (p - 1) = if x ≠ 0 then 1 else 0 :=
-  by
+theorem pow_card_sub_one (x : ZMod p) : x ^ (p - 1) = if x ≠ 0 then 1 else 0 := by
   split_ifs with hx
   · exact pow_card_sub_one_eq_one hx
   · simp [of_not_not hx, (Fact.out p.prime).one_lt]
@@ -197,8 +192,7 @@ private noncomputable def f₂ (f : ι → ZMod p) (s : Finset ι) : MvPolynomia
 variable {ι} [Fact p.Prime]
 
 theorem totalDegree_f₁_add_totalDegree_f₂ :
-    (f₁ p s).totalDegree + (f₂ f s).totalDegree < 2 * p - 1 :=
-  by
+    (f₁ p s).totalDegree + (f₂ f s).totalDegree < 2 * p - 1 := by
   refine'
     (add_le_add (total_degree_finset_sum _ _) <|
           (total_degree_finset_sum _ _).trans <| Finset.sup_mono_fun _).trans_lt
@@ -264,8 +258,7 @@ private theorem aux (hs : s.card = 2 * p - 1) (f : ι → ZMod p) :
 /-- The **Erdős–Ginzburg–Ziv theorem**: Any (not necessarily distinct) `2 * n - 1` elements of
 `zmod n` contain `n` elements whose sum is zero. -/
 theorem exists_subset_sum_eq_zero (f : ι → ZMod n) (hs : 2 * n - 1 ≤ s.card) :
-    ∃ t ≤ s, t.card = n ∧ ∑ i in t, f i = 0 :=
-  by
+    ∃ t ≤ s, t.card = n ∧ ∑ i in t, f i = 0 := by
   induction' n using Nat.prime_composite_induction with p hp
   case zero => exact ⟨∅, empty_subset _, card_empty, sum_empty⟩
   case one => obtain ⟨t, ht, hn⟩ := exists_smaller_set _ _ hs;
@@ -283,8 +276,7 @@ theorem exists_subset_sum_eq_zero (f : ι → ZMod n) (hs : 2 * n - 1 ≤ s.card
           m.card = n ∧
             m.Pairwise _root_.disjoint ∧
               ∀ ⦃u : Multiset <| ZMod <| a * b⦄,
-                u ∈ m → u.card = 2 * a + 1 ∧ u.Sum ∈ AddSubgroup.zmultiples (a : ZMod <| a * b)
-      by
+                u ∈ m → u.card = 2 * a + 1 ∧ u.Sum ∈ AddSubgroup.zmultiples (a : ZMod <| a * b) by
       obtain ⟨m, hm⟩ := this _ le_rfl
       sorry
     rintro n hn

@@ -7,8 +7,6 @@ import Mathlib.Analysis.PSeries
 import RingTheory.Int.Basic
 import Topology.Basic
 
-#align_import book.FormalBook_Ch1_InfinitudeOfPrimes_5thProof
-
 /-!
 # Six proofs of the inﬁnity of primes : 5th proof
 
@@ -50,8 +48,7 @@ instance bonaFideTopology : TopologicalSpace ℤ
   -- First, we define the property of a set being open in the topology
   IsOpen O := O = ∅ ∨ ∀ a ∈ O, ∃ b : ℤ, ∃ b_tec : 0 < b, n a b ⊆ O
   -- The universal set should be open
-  isOpen_univ :=
-    by
+  isOpen_univ := by
     --simp, use 1, exact zero_lt_one, -- the power of simp
     right
     intro a auniv
@@ -109,8 +106,7 @@ as a finite union of two-way arithmetic progressions.
 
 This allows us to show that N is closed, in the next lemma.
 -/
-theorem n_as_a_comlpement (a b : ℤ) (b_tec : 0 < b) : n a bᶜ = ⋃ i ∈ Finset.Ico 1 b, n (a + i) b :=
-  by
+theorem n_as_a_comlpement (a b : ℤ) (b_tec : 0 < b) : n a bᶜ = ⋃ i ∈ Finset.Ico 1 b, n (a + i) b := by
   ext x
   simp
   -- the suggested "simp only" is not enough to get the same result.
@@ -164,8 +160,7 @@ theorem n_as_a_comlpement (a b : ℤ) (b_tec : 0 < b) : n a bᶜ = ⋃ i ∈ Fin
           apply le_refl; exact q; exact zero_le_one; exact le_of_lt b_tec]
 
 /-- The N sets are closed in our topology -/
-theorem n_closed (a b : ℤ) (b_tec : 0 < b) : IsClosed (n a b) :=
-  by
+theorem n_closed (a b : ℤ) (b_tec : 0 < b) : IsClosed (n a b) := by
   rw [← isOpen_compl_iff]
   rw [n_as_a_comlpement a b b_tec]
   apply isOpen_biUnion
@@ -185,8 +180,7 @@ theorem n_closed (a b : ℤ) (b_tec : 0 < b) : IsClosed (n a b) :=
   exact yeq
 
 /-- We show that the pathological set {-1,1} isn't open-/
-theorem two_units_not_open : ¬bonaFideTopology.IsOpen {(-1 : ℤ), 1} :=
-  by
+theorem two_units_not_open : ¬bonaFideTopology.IsOpen {(-1 : ℤ), 1} := by
   intro con
   simp [TopologicalSpace.IsOpen] at con
   cases Con
@@ -206,8 +200,7 @@ theorem two_units_not_open : ¬bonaFideTopology.IsOpen {(-1 : ℤ), 1} :=
 /-- The pathological set {-1,1} complement is the union of
 arithmetic progressions with primes as steps.
 -/
-theorem univ_sdiff_units_as_prime_union : {(-1 : ℤ), (1 : ℤ)}ᶜ = ⋃ p ∈ {x : ℕ | x.Prime}, n 0 p :=
-  by
+theorem univ_sdiff_units_as_prime_union : {(-1 : ℤ), (1 : ℤ)}ᶜ = ⋃ p ∈ {x : ℕ | x.Prime}, n 0 p := by
   -- Note : {(-1 : ℤ),1} worked in the previous lemma, and fails here
   ext x;
   constructor
@@ -258,13 +251,11 @@ Hence, if there were finitely many primes, {-1,1}ᶜ would be closed,
 contradicting the fact that {-1,1} isn't open.
 
 -/
-theorem fifth_proof : {x : ℕ | x.Prime}.Infinite :=
-  by
+theorem fifth_proof : {x : ℕ | x.Prime}.Infinite := by
   rw [Set.Infinite]
   intro con
   have pair_as_union := univ_sdiff_units_as_prime_union
-  have union_closed : IsClosed (⋃ p ∈ {x : ℕ | x.Prime}, n 0 p) :=
-    by
+  have union_closed : IsClosed (⋃ p ∈ {x : ℕ | x.Prime}, n 0 p) := by
     apply Set.Finite.isClosed_biUnion
     exact Con
     intro p pdef

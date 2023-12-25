@@ -1,8 +1,6 @@
 import Rootsystem.LinearAlgebraAux
 import Rootsystem.Misc
 
-#align_import rootsystem.basic
-
 noncomputable section
 
 open Set Function
@@ -46,13 +44,12 @@ theorem coroot_toPreSymmetry_subset (α : Φ) : Module.toPreSymmetry (α : V) (�
 
 -- lemma root_ne_zero (α : Φ) : (α : V) ≠ 0 :=
 -- λ contra, by simpa [contra] using h.coroot_apply_self_eq_two α
-theorem root_ne_zero (α : Φ) : (α : V) ≠ 0 :=
-  by
+theorem root_ne_zero (α : Φ) : (α : V) ≠ 0 := by
   intro contra
   have := h.coroot_apply_self_eq_two α
   -- simp only [coroot_apply_self_eq_two, eq_self_iff_true] at this,
-  rw [contra, LinearMap.map_zero] at this 
-  norm_num at this 
+  rw [contra, LinearMap.map_zero] at this
+  norm_num at this
 
 theorem zero_not_mem : (0 : V) ∉ Φ := fun contra => h.root_ne_zero ⟨0, contra⟩ rfl
 
@@ -70,8 +67,7 @@ theorem symmetryOfRoot_apply_self_neg (α : Φ) : ട α α = -α :=
   Module.toPreSymmetry_apply_self <| h.coroot_apply_self_eq_two α
 
 @[simp]
-theorem symmetryOfRoot_sq (α : Φ) : ട α ^ 2 = 1 :=
-  by
+theorem symmetryOfRoot_sq (α : Φ) : ട α ^ 2 = 1 := by
   ext v
   have := Module.toPreSymmetry_sq (coroot_apply_self_eq_two h α)
   exact LinearMap.congr_fun this v
@@ -82,8 +78,7 @@ theorem symmetryOfRoot_image_subset (α : Φ) : ട α '' Φ ⊆ Φ :=
   (Classical.choose_spec (h.exists_dual _ α.property)).2
 
 @[simp]
-theorem symmetryOfRoot_image_eq (α : Φ) : ട α '' Φ = Φ :=
-  by
+theorem symmetryOfRoot_image_eq (α : Φ) : ട α '' Φ = Φ := by
   refine' subset_antisymm (h.symmetry_of_root_image_subset α) _
   have : Φ = ട α ∘ ട α '' Φ := by change Φ = ⇑(ട α ^ 2) '' Φ; simp
   conv_lhs => rw [this, image_comp]
@@ -91,15 +86,13 @@ theorem symmetryOfRoot_image_eq (α : Φ) : ട α '' Φ = Φ :=
   exact h.symmetry_of_root_image_subset α
 
 @[simp]
-theorem symmetryOfRoot_apply_mem (α β : Φ) : ട α β ∈ Φ :=
-  by
+theorem symmetryOfRoot_apply_mem (α β : Φ) : ട α β ∈ Φ := by
   apply h.symmetry_of_root_image_subset α
   simp only [mem_image]
   exact ⟨β, β.property, rfl⟩
 
 @[simp]
-theorem neg_mem (α : Φ) : -(α : V) ∈ Φ :=
-  by
+theorem neg_mem (α : Φ) : -(α : V) ∈ Φ := by
   have := (image_subset_iff.mp <| h.symmetry_of_root_image_subset α) α.property
   simpa only [Subtype.val_eq_coe, mem_preimage, symmetry_of_root_apply_self_neg] using this
 
@@ -109,22 +102,19 @@ theorem coroot_image_subset_zmultiples (α : Φ) : αᘁ '' Φ ⊆ AddSubgroup.z
     ⟨h.coroot_apply_self_eq_two α, h.symmetryOfRoot_image_subset α⟩
 
 @[simp]
-theorem coroot_apply_mem_zmultiples (α β : Φ) : (αᘁ) β ∈ AddSubgroup.zmultiples (1 : k) :=
-  by
+theorem coroot_apply_mem_zmultiples (α β : Φ) : (αᘁ) β ∈ AddSubgroup.zmultiples (1 : k) := by
   have := (image_subset_iff.mp <| h.coroot_image_subset_zmultiples α) β.property
   simpa using this
 
 @[simp]
-theorem coroot_apply_mem_zmultiples_2 (α β : Φ) : ∃ a : ℤ, (αᘁ) β = a :=
-  by
+theorem coroot_apply_mem_zmultiples_2 (α β : Φ) : ∃ a : ℤ, (αᘁ) β = a := by
   have hr := h.coroot_apply_mem_zmultiples α β
-  rw [AddSubgroup.mem_zmultiples_iff] at hr 
-  simp only [Int.smul_one_eq_coe] at hr 
+  rw [AddSubgroup.mem_zmultiples_iff] at hr
+  simp only [Int.smul_one_eq_coe] at hr
   obtain ⟨a, ha⟩ := hr
   exact ⟨a, ha.symm⟩
 
-theorem exists_int_coroot_apply_eq (α β : Φ) : ∃ n : ℤ, (αᘁ) β = n :=
-  by
+theorem exists_int_coroot_apply_eq (α β : Φ) : ∃ n : ℤ, (αᘁ) β = n := by
   obtain ⟨n, hn⟩ := add_subgroup.mem_zmultiples_iff.mp (h.coroot_apply_mem_zmultiples α β)
   rw [← hn]
   exact ⟨n, by simp⟩
@@ -152,16 +142,14 @@ theorem symm_equiv {α β : Type _} (f : α ≃ β) (s : Set α) (d : Set β) (h
 
 theorem symm_root_system_equiv {V₂ : Type _} [AddCommGroup V₂] [Module k V₂]
     [NoZeroSMulDivisors k V₂] {Φ₂ : Set V₂} (h₂ : IsRootSystem k Φ₂) (e : V ≃ₗ[k] V₂)
-    (he : e ∈ h.isRootSystemEquiv h₂) : e.symm ∈ h₂.isRootSystemEquiv h :=
-  by
+    (he : e ∈ h.isRootSystemEquiv h₂) : e.symm ∈ h₂.isRootSystemEquiv h := by
   -- rw set.mem_iff at he,
   suffices e.symm '' Φ₂ = Φ by refine' this
   exact symm_equiv e.to_equiv _ _ he
 
 -- prove symm
 def isRootSystemEquivSymm {V₂ : Type _} [AddCommGroup V₂] [Module k V₂] [NoZeroSMulDivisors k V₂]
-    {Φ₂ : Set V₂} (h₂ : IsRootSystem k Φ₂) : isRootSystemEquiv h h₂ → isRootSystemEquiv h₂ h :=
-  by
+    {Φ₂ : Set V₂} (h₂ : IsRootSystem k Φ₂) : isRootSystemEquiv h h₂ → isRootSystemEquiv h₂ h := by
   rintro ⟨e, he⟩
   refine' ⟨e.symm, _⟩
   exact symm_root_system_equiv h h₂ e he
@@ -180,8 +168,7 @@ theorem finite_symmetries : Finite h.symmetries :=
 def weylGroup : Subgroup (V ≃ₗ[k] V) :=
   Subgroup.closure <| range h.symmetryOfRoot
 
-theorem weylGroup_le_symmetries : h.weylGroup ≤ h.symmetries :=
-  by
+theorem weylGroup_le_symmetries : h.weylGroup ≤ h.symmetries := by
   -- Should be easy via `subgroup.closure_le`
   unfold weyl_group
   rw [Subgroup.closure_le h.symmetries]
@@ -194,8 +181,7 @@ theorem symmetry_mem_weylGroup (α : Φ) : ട α ∈ h.weylGroup :=
 
 -- w acts on α and sends roots to roots (acts on roots)
 -- w acting on α gives a root, not a random vector
-theorem weylGroup_apply_root_mem (w : h.weylGroup) (α : Φ) : w • (α : V) ∈ Φ :=
-  by
+theorem weylGroup_apply_root_mem (w : h.weylGroup) (α : Φ) : w • (α : V) ∈ Φ := by
   obtain ⟨w, hw⟩ := w
   change w • (α : V) ∈ Φ
   revert α
@@ -245,8 +231,7 @@ theorem injective_weylGroup_to_perm' : Injective h.weylGroupToPerm'' :=
 
 /-- TODO (optional) If we redefine `weyl_group_to_perm'` above then this should be easy using
 `module.unit.injective_to_perm'` and `weyl_group_le_symmetries`. -/
-theorem injective_weylGroup_to_perm : Injective h.weylGroupToPerm' :=
-  by
+theorem injective_weylGroup_to_perm : Injective h.weylGroupToPerm' := by
   rw [← MonoidHom.ker_eq_bot_iff]
   -- Injective is the same as ker = ⊥
   rw [eq_bot_iff]
@@ -254,23 +239,23 @@ theorem injective_weylGroup_to_perm : Injective h.weylGroupToPerm' :=
   -- Let w ∈ ker f
   rw [Subgroup.mem_bot]
   -- w ∈ ⊥ ↔ w = 1
-  rw [MonoidHom.mem_ker] at hw 
+  rw [MonoidHom.mem_ker] at hw
   -- x ∈ ker f ↔ f x = 1
   have hw' := FunLike.congr_fun hw
   --Functions are equal if that agree for all values
-  change ∀ x, _ = x at hw' 
+  change ∀ x, _ = x at hw'
   ext v
   change w v = v
   have := FunLike.congr_fun hw
-  simp only [weyl_group_to_perm'_apply, Equiv.Perm.coe_one, id.def, SetCoe.forall] at this 
+  simp only [weyl_group_to_perm'_apply, Equiv.Perm.coe_one, id.def, SetCoe.forall] at this
   have mem1 : v ∈ Submodule.span k Φ := by
     rw [h.span_eq_top]
     trivial
   apply Submodule.span_induction mem1
   · intro x hx
     specialize hw' ⟨x, hx⟩
-    dsimp [weyl_group_to_perm, (· • ·)] at hw' 
-    simp at hw' 
+    dsimp [weyl_group_to_perm, (· • ·)] at hw'
+    simp at hw'
     exact hw'
   · exact LinearEquiv.map_zero _
   · intro x y hx hy
@@ -291,10 +276,8 @@ example (G : Type _) [Group G] (H : Subgroup G) [Finite G] : Finite H := by
 /-- TODO Consider reproving this using just `weyl_group_le_symmetries` and `finite_symmetries`
 above (i.e., the Weyl group is contained in the subgroup of symmetries which is finite and so it
 must be finite). -/
-theorem finite_weylGroup : Finite h.weylGroup :=
-  by
-  suffices Finite h.symmetries
-    by
+theorem finite_weylGroup : Finite h.weylGroup := by
+  suffices Finite h.symmetries by
     let f : h.weyl_group → h.symmetries := fun x => ⟨x, h.weyl_group_le_symmetries x.property⟩
     have hf : injective f := by rintro ⟨x, hx⟩ ⟨y, hy⟩ hxy; simpa using hxy
     haveI := this
@@ -308,8 +291,7 @@ theorem finite_weylGroup : Finite h.weylGroup :=
 -- exact equiv.finite_left,
 /-- TODO (optional): use this to golf `is_root_system.coroot_symmetry_apply_eq`. -/
 theorem coroot_apply_of_mem_symmetries (u : V ≃ₗ[k] V) (hu : u ∈ h.symmetries) (α : Φ) (h') :
-    ⟨u α, h'⟩ᘁ = u.symm.dualMap (αᘁ) :=
-  by
+    ⟨u α, h'⟩ᘁ = u.symm.dualMap (αᘁ) := by
   have h₀ : u '' Φ = Φ := hu
   have h₁ : u.symm '' Φ = Φ := by conv_lhs => rw [← h₀, ← image_comp]; simp
   refine' (h.eq_coroot_of_to_pre_symmetry_image_subseteq ⟨u α, h'⟩ _ _ _).symm
@@ -333,4 +315,3 @@ theorem symmetryOfRoot_apply_of_mem_symmetries (u : V ≃ₗ[k] V) (hu : u ∈ h
   exact hu
 
 end IsRootSystem
-

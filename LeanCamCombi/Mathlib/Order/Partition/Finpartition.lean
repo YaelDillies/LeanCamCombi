@@ -1,7 +1,5 @@
 import Order.Partition.Finpartition
 
-#align_import mathlib.order.partition.finpartition
-
 open Finset
 
 namespace Finpartition
@@ -14,4 +12,3 @@ theorem eq_of_mem_parts (ht : t ∈ P.parts) (hu : u ∈ P.parts) (hat : a ∈ t
 -/
 
 end Finpartition
-

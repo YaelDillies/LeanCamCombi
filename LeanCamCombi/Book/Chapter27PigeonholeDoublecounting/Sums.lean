@@ -7,8 +7,6 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
 import Mathbin.Tactic.Default
 
-#align_import book.FormalBook_Ch27_PigeonholeDoublecounting_sums
-
 /-!
 # Pigeon-hole and double counting : Sums
 
@@ -36,12 +34,10 @@ open Finset
 /-- A technical lemma for algebraic manipulations with `int.nat_mod`.
 -/
 theorem tec_mod (n : ℕ) (hn : n ≠ 0) (a b : ℤ) (H : Int.natMod a n = Int.natMod b n) :
-    (Int.natMod (a - b) n : ℤ) = 0 :=
-  by
+    (Int.natMod (a - b) n : ℤ) = 0 := by
   simp only [Int.natMod] at *
   apply_fun fun x => (x : ℤ) at H
-  have rw_main : ∀ c : ℤ, ↑(c % ↑n).toNat = c % ↑n :=
-    by
+  have rw_main : ∀ c : ℤ, ↑(c % ↑n).toNat = c % ↑n := by
     intro c
     apply Int.toNat_of_nonneg
     apply Int.emod_nonneg
@@ -61,8 +57,7 @@ open scoped BigOperators
 indexed by `Icc`, all interms of `Icc`.
 -/
 theorem tec_sum (a : ℕ → ℤ) (b c : ℕ) (h : b < c) :
-    ∑ i : ℕ in Icc 1 c, a i - ∑ i : ℕ in Icc 1 b, a i = ∑ i : ℕ in Icc (b + 1) c, a i :=
-  by
+    ∑ i : ℕ in Icc 1 c, a i - ∑ i : ℕ in Icc 1 b, a i = ∑ i : ℕ in Icc (b + 1) c, a i := by
   have decompo :
     Icc 1 c =
       disj_union (Icc (b + 1) c) (Icc 1 b)
@@ -72,8 +67,7 @@ theorem tec_sum (a : ℕ → ℤ) (b c : ℕ) (h : b < c) :
           simp only [and_imp, Finset.not_mem_empty, Finset.mem_Icc, not_and, iff_false_iff,
             Finset.mem_inter]
           intro yes no nope
-          linarith) :=
-    by
+          linarith) := by
     simp only [Finset.disjUnion_eq_union]
     --library_search, --fails
     ext x
@@ -109,18 +103,15 @@ k+1,k+2,...,l in [0,n], whose sum of the corresponding
 terms of `a` is a multiple of n.
 -/
 theorem exists_subseq_sum_eq_zero (n : ℕ) (hn : n ≠ 0) (a : ℕ → ℤ) :
-    ∃ k l, k ∈ range (n + 1) ∧ l ∈ range (n + 1) ∧ k < l ∧ (n : ℤ) ∣ ∑ i in Icc (k + 1) l, a i :=
-  by
+    ∃ k l, k ∈ range (n + 1) ∧ l ∈ range (n + 1) ∧ k < l ∧ (n : ℤ) ∣ ∑ i in Icc (k + 1) l, a i := by
   -- The pigeonhole map and the conditions
   let f m := Int.natMod (∑ i in Icc 1 m, a i) n
-  have map_cond : ∀ s, s ∈ range (n + 1) → f s ∈ range n :=
-    by
+  have map_cond : ∀ s, s ∈ range (n + 1) → f s ∈ range n := by
     intro m mdef
     simp only [f, Finset.mem_range]
     apply Int.natMod_lt
     exact hn
-  have card_cond : (range n).card < (range (n + 1)).card :=
-    by
+  have card_cond : (range n).card < (range (n + 1)).card := by
     rw [card_range, card_range]
     linarith
   -- We apply the principle
@@ -137,15 +128,13 @@ theorem exists_subseq_sum_eq_zero (n : ℕ) (hn : n ≠ 0) (a : ℕ → ℤ) :
     constructor
     exact blc
     -- Some rewrites
-    have to_dvd : (((Icc 1 c).Sum a - (Icc 1 b).Sum a).natMod ↑n : ℤ) = 0 :=
-      by
+    have to_dvd : (((Icc 1 c).Sum a - (Icc 1 b).Sum a).natMod ↑n : ℤ) = 0 := by
       apply tec_mod n hn
       exact fbfc.symm
     simp only [Int.natMod] at to_dvd
     have :
       ↑(((Icc 1 c).Sum a - (Icc 1 b).Sum a) % ↑n).toNat =
-        ((Icc 1 c).Sum a - (Icc 1 b).Sum a) % ↑n :=
-      by
+        ((Icc 1 c).Sum a - (Icc 1 b).Sum a) % ↑n := by
       apply Int.toNat_of_nonneg
       apply Int.emod_nonneg
       simp only [Ne.def, Nat.cast_eq_zero]
@@ -168,15 +157,13 @@ theorem exists_subseq_sum_eq_zero (n : ℕ) (hn : n ≠ 0) (a : ℕ → ℤ) :
     constructor
     exact blc
     -- Some rewrites
-    have to_dvd : (((Icc 1 b).Sum a - (Icc 1 c).Sum a).natMod ↑n : ℤ) = 0 :=
-      by
+    have to_dvd : (((Icc 1 b).Sum a - (Icc 1 c).Sum a).natMod ↑n : ℤ) = 0 := by
       apply tec_mod n hn
       exact fbfc
     simp only [Int.natMod] at to_dvd
     have :
       ↑(((Icc 1 b).Sum a - (Icc 1 c).Sum a) % ↑n).toNat =
-        ((Icc 1 b).Sum a - (Icc 1 c).Sum a) % ↑n :=
-      by
+        ((Icc 1 b).Sum a - (Icc 1 c).Sum a) % ↑n := by
       apply Int.toNat_of_nonneg
       apply Int.emod_nonneg
       simp only [Ne.def, Nat.cast_eq_zero]

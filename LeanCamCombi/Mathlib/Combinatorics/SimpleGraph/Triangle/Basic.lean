@@ -5,8 +5,6 @@ import Mathlib.Data.Sym.Card
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Data.Finset.Basic
 
-#align_import mathlib.combinatorics.simple_graph.triangle.basic
-
 /-!
 
 ## Main declarations
@@ -52,8 +50,7 @@ theorem edgeDisjointTriangles_bot : (⊥ : SimpleGraph α).EdgeDisjointTriangles
 theorem locallyLinear_bot : (⊥ : SimpleGraph α).LocallyLinear := by simp [locally_linear]
 
 theorem EdgeDisjointTriangles.map (f : α ↪ β) (hG : G.EdgeDisjointTriangles) :
-    (G.map f).EdgeDisjointTriangles :=
-  by
+    (G.map f).EdgeDisjointTriangles := by
   rw [edge_disjoint_triangles, clique_set_map (by norm_num : 3 ≠ 1),
     ((Finset.map_injective f).InjOn _).pairwise_image]
   classical
@@ -62,8 +59,7 @@ theorem EdgeDisjointTriangles.map (f : α ↪ β) (hG : G.EdgeDisjointTriangles)
   rw [← coe_inter, ← map_inter, coe_map, coe_inter]
   exact (hG hs ht hst).image _
 
-theorem LocallyLinear.map (f : α ↪ β) (hG : G.LocallyLinear) : (G.map f).LocallyLinear :=
-  by
+theorem LocallyLinear.map (f : α ↪ β) (hG : G.LocallyLinear) : (G.map f).LocallyLinear := by
   refine' ⟨hG.1.map _, _⟩
   rintro _ _ ⟨a, b, h, rfl, rfl⟩
   obtain ⟨s, hs, ha, hb⟩ := hG.2 h
@@ -71,8 +67,7 @@ theorem LocallyLinear.map (f : α ↪ β) (hG : G.LocallyLinear) : (G.map f).Loc
 
 @[simp]
 theorem locallyLinear_comap {G : SimpleGraph β} {e : α ≃ β} :
-    (G.comap e).LocallyLinear ↔ G.LocallyLinear :=
-  by
+    (G.comap e).LocallyLinear ↔ G.LocallyLinear := by
   refine' ⟨fun h => _, _⟩
   · rw [← comap_map_eq e.symm.to_embedding G, comap_symm, map_symm]
     exact h.map _
@@ -83,14 +78,12 @@ variable [DecidableEq α]
 
 theorem edgeDisjointTriangles_iff_mem_sym2_subsingleton :
     G.EdgeDisjointTriangles ↔
-      ∀ ⦃e : Sym2 α⦄, ¬e.IsDiag → {s ∈ G.cliqueSet 3 | e ∈ (s : Finset α).Sym2}.Subsingleton :=
-  by
+      ∀ ⦃e : Sym2 α⦄, ¬e.IsDiag → {s ∈ G.cliqueSet 3 | e ∈ (s : Finset α).Sym2}.Subsingleton := by
   have :
     ∀ a b,
       a ≠ b →
         {s ∈ (G.clique_set 3 : Set (Finset α)) | ⟦(a, b)⟧ ∈ (s : Finset α).Sym2} =
-          {s | G.adj a b ∧ ∃ c, G.adj a c ∧ G.adj b c ∧ s = {a, b, c}} :=
-    by
+          {s | G.adj a b ∧ ∃ c, G.adj a c ∧ G.adj b c ∧ s = {a, b, c}} := by
     rintro a b hab
     ext s
     simp only [mem_sym2_iff, Sym2.mem_iff, forall_eq_or_imp, forall_eq, Set.sep_and,
@@ -135,8 +128,7 @@ instance : Decidable G.LocallyLinear :=
   And.decidable
 
 theorem EdgeDisjointTriangles.card_edgeFinset_le (hG : G.EdgeDisjointTriangles) :
-    3 * (G.cliqueFinset 3).card ≤ G.edgeFinset.card :=
-  by
+    3 * (G.cliqueFinset 3).card ≤ G.edgeFinset.card := by
   rw [mul_comm, ← mul_one G.edge_finset.card]
   refine' card_mul_le_card_mul (fun s e => e ∈ s.Sym2) _ fun e he => _
   · simp only [is_3_clique_iff, mem_clique_finset_iff, mem_sym2_iff, forall_exists_index, and_imp]
@@ -152,8 +144,7 @@ theorem EdgeDisjointTriangles.card_edgeFinset_le (hG : G.EdgeDisjointTriangles) 
       hG.mem_sym2_subsingleton (G.not_is_diag_of_mem_edge_set <| mem_edge_finset.1 he)
 
 theorem LocallyLinear.card_edgeFinset (hG : G.LocallyLinear) :
-    G.edgeFinset.card = 3 * (G.cliqueFinset 3).card :=
-  by
+    G.edgeFinset.card = 3 * (G.cliqueFinset 3).card := by
   refine' hG.edge_disjoint_triangles.card_edge_finset_le.antisymm' _
   rw [← mul_comm, ← mul_one (Finset.card _)]
   refine' card_mul_le_card_mul (fun e s => e ∈ s.Sym2) _ _
@@ -182,13 +173,11 @@ theorem farFromTriangleFree_of_nonpos (hε : ε ≤ 0) : G.FarFromTriangleFree �
 private theorem far_from_triangle_free_of_disjoint_triangles_aux {tris : Finset (Finset α)}
     (htris : tris ⊆ G.cliqueFinset 3)
     (pd : (tris : Set (Finset α)).Pairwise fun x y => (x ∩ y : Set α).Subsingleton) (hHG : H ≤ G)
-    (hH : H.CliqueFree 3) : tris.card ≤ G.edgeFinset.card - H.edgeFinset.card :=
-  by
+    (hH : H.CliqueFree 3) : tris.card ≤ G.edgeFinset.card - H.edgeFinset.card := by
   rw [← card_sdiff (edge_finset_mono hHG), ← card_attach]
   by_contra! hG
   have :
-    ∀ ⦃t⦄, t ∈ tris → ∃ x y, x ∈ t ∧ y ∈ t ∧ x ≠ y ∧ ⟦(x, y)⟧ ∈ G.edge_finset \ H.edge_finset :=
-    by
+    ∀ ⦃t⦄, t ∈ tris → ∃ x y, x ∈ t ∧ y ∈ t ∧ x ≠ y ∧ ⟦(x, y)⟧ ∈ G.edge_finset \ H.edge_finset := by
     intro t ht
     by_contra! h
     refine' hH t _
@@ -213,8 +202,7 @@ triangle-free. -/
 theorem farFromTriangleFree_of_disjoint_triangles (tris : Finset (Finset α))
     (htris : tris ⊆ G.cliqueFinset 3)
     (pd : (tris : Set (Finset α)).Pairwise fun x y => (x ∩ y : Set α).Subsingleton)
-    (tris_big : ε * (card α ^ 2 : ℕ) ≤ tris.card) : G.FarFromTriangleFree ε :=
-  by
+    (tris_big : ε * (card α ^ 2 : ℕ) ≤ tris.card) : G.FarFromTriangleFree ε := by
   rw [far_from_triangle_free_iff]
   intro H _ hG hH
   sorry
@@ -228,8 +216,7 @@ protected theorem EdgeDisjointTriangles.farFromTriangleFree (hG : G.EdgeDisjoint
 
 variable [Nonempty α]
 
-theorem FarFromTriangleFree.lt_half (hG : G.FarFromTriangleFree ε) : ε < 2⁻¹ :=
-  by
+theorem FarFromTriangleFree.lt_half (hG : G.FarFromTriangleFree ε) : ε < 2⁻¹ := by
   by_contra! hε
   have := hG.le_card_sub_card bot_le (clique_free_bot <| by norm_num)
   simp only [Set.toFinset_card (edge_set ⊥), Fintype.card_ofFinset, edge_set_bot, cast_zero,

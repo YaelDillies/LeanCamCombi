@@ -8,8 +8,6 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
 
-#align_import book.FormalBook_Ch27_PigeonholeDoublecounting_sequences
-
 /-!
 # Pigeon-hole and double counting : Sequences
 
@@ -59,9 +57,8 @@ open scoped Classical
 subsequences starting at `i` is nonempty.
 -/
 theorem lengths_nonempty (I : Finset ℕ) (a : ℕ → ℝ) (i : ℕ) (i_I : i ∈ I) :
-    ((range (I.card + 1)).filterₓ fun t =>
-        ∃ (J : _) (_ : J ⊆ I), J.card = t ∧ IsIncreasingSubseq J a i).Nonempty :=
-  by
+    ((range (I.card + 1)).filter fun t =>
+        ∃ (J : _) (_ : J ⊆ I), J.card = t ∧ IsIncreasingSubseq J a i).Nonempty := by
   use 1
   rw [mem_filter, mem_range]
   constructor
@@ -96,7 +93,7 @@ subsequence starting at `i`, made of indeces of `I` only.
 -/
 noncomputable def longestIncrSubseqLen (I : Finset ℕ) (a : ℕ → ℝ) (i : ℕ) (i_I : i ∈ I) : ℕ :=
   Finset.max'
-    ((range (I.card + 1)).filterₓ fun t =>
+    ((range (I.card + 1)).filter fun t =>
       ∃ (J : _) (_ : J ⊆ I), J.card = t ∧ IsIncreasingSubseq J a i)
     (-- Lengths range from 0 to |I|, and we keep those that correspond
       -- to increasing subsequences
@@ -124,9 +121,8 @@ theorem lisl_non_extendable (I : Finset ℕ) (a : ℕ → ℝ) (i j : ℕ) (i_I 
   -- We find a longest increasing subsequence satrting at i
   have tec1 :
     longestIncrSubseqLen I a i i_I ∈
-      (range (I.card + 1)).filterₓ fun t =>
-        ∃ (J : _) (_ : J ⊆ I), J.card = t ∧ IsIncreasingSubseq J a i :=
-    by
+      (range (I.card + 1)).filter fun t =>
+        ∃ (J : _) (_ : J ⊆ I), J.card = t ∧ IsIncreasingSubseq J a i := by
     rw [longestIncrSubseqLen]
     apply max'_mem
   rw [mem_filter] at tec1
@@ -134,8 +130,7 @@ theorem lisl_non_extendable (I : Finset ℕ) (a : ℕ → ℝ) (i j : ℕ) (i_I 
   rw [IsIncreasingSubseq] at *
   rcases last with ⟨index_seq_inc, index_seq_imin, index_seq_iin⟩
   -- Extending it by pre-pending j results in an increasing subsequence starting at j
-  have extend : IsIncreasingSubseq (insert j index_seq) a j :=
-    by
+  have extend : IsIncreasingSubseq (insert j index_seq) a j := by
     constructor
     -- It's increasing:
     · intro x xdef y ydef xly
@@ -177,9 +172,8 @@ theorem lisl_non_extendable (I : Finset ℕ) (a : ℕ → ℝ) (i j : ℕ) (i_I 
   -- took a maximum over.
   have contra_pre :
     (insert j index_seq).card ∈
-      (range (I.card + 1)).filterₓ fun t =>
-        ∃ (J : _) (_ : J ⊆ I), J.card = t ∧ IsIncreasingSubseq J a j :=
-    by
+      (range (I.card + 1)).filter fun t =>
+        ∃ (J : _) (_ : J ⊆ I), J.card = t ∧ IsIncreasingSubseq J a j := by
     rw [mem_filter]
     constructor
     · rw [mem_range]
@@ -201,8 +195,7 @@ theorem lisl_non_extendable (I : Finset ℕ) (a : ℕ → ℝ) (i j : ℕ) (i_I 
     rfl
     exact extend
   -- We may now use the maximum to derive the non-sensical bound:
-  have contra_pre_2 : (insert j index_seq).card ≤ longestIncrSubseqLen I a j j_I :=
-    by
+  have contra_pre_2 : (insert j index_seq).card ≤ longestIncrSubseqLen I a j j_I := by
     rw [longestIncrSubseqLen]
     apply le_max'
     exact contra_pre
@@ -221,8 +214,7 @@ theorem lisl_non_extendable (I : Finset ℕ) (a : ℕ → ℝ) (i j : ℕ) (i_I 
 A (longest) increasing subsequence staring at i has at least length 1.
 -/
 theorem lisl_pos (I : Finset ℕ) (a : ℕ → ℝ) (i : ℕ) (i_I : i ∈ I) :
-    1 ≤ longestIncrSubseqLen I a i i_I :=
-  by
+    1 ≤ longestIncrSubseqLen I a i i_I := by
   rw [longestIncrSubseqLen]
   apply le_max'
   rw [mem_filter, mem_range]
@@ -264,8 +256,7 @@ theorem erdos_szekeres (n m : ℕ) (n_pos : 0 < n) (m_pos : 0 < m) (a : ℕ → 
     (∃ i ∈ range (m * n + 1),
         ∃ (I : _) (_ : I ⊆ range (m * n + 1)), IsIncreasingSubseq I a i ∧ I.card ≥ m + 1) ∨
       ∃ i ∈ range (m * n + 1),
-        ∃ (I : _) (_ : I ⊆ range (m * n + 1)), IsDecreasingSubseq I a i ∧ I.card ≥ n + 1 :=
-  by
+        ∃ (I : _) (_ : I ⊆ range (m * n + 1)), IsDecreasingSubseq I a i ∧ I.card ≥ n + 1 := by
   -- If one weren't the case, we must get the other
   rw [Classical.or_iff_not_imp_left]
   intro d
@@ -275,8 +266,7 @@ theorem erdos_szekeres (n m : ℕ) (n_pos : 0 < n) (m_pos : 0 < m) (a : ℕ → 
   -- outside of `range (m * n + 1)`.
   set f := fun i =>
     if h : i ∈ range (m * n + 1) then longestIncrSubseqLen (range (m * n + 1)) a i h else 0
-  have map_cond : ∀ a, a ∈ range (m * n + 1) → f a ∈ Icc 1 m :=
-    by
+  have map_cond : ∀ a, a ∈ range (m * n + 1) → f a ∈ Icc 1 m := by
     intro s s_range
     rw [mem_Icc]
     dsimp [f]
@@ -291,8 +281,7 @@ theorem erdos_szekeres (n m : ℕ) (n_pos : 0 < n) (m_pos : 0 < m) (a : ℕ → 
     obtain ⟨I, Idef, Icard, Iinc⟩ := ydef.2
     rw [← Nat.lt_add_one_iff, ← Icard]
     exact d I Idef Iinc
-  have size_cond : (Icc 1 m).card * n < (range (m * n + 1)).card :=
-    by
+  have size_cond : (Icc 1 m).card * n < (range (m * n + 1)).card := by
     rw [Nat.card_Icc, card_range]
     rw [Nat.add_sub_cancel]
     simp only [lt_add_iff_pos_right, eq_self_iff_true, Nat.lt_one_iff]
@@ -300,7 +289,7 @@ theorem erdos_szekeres (n m : ℕ) (n_pos : 0 < n) (m_pos : 0 < m) (a : ℕ → 
     Finset.exists_lt_card_fiber_of_mul_lt_card_of_maps_to map_cond size_cond
   -- a generalized version of the pigeonhole principle
   -- Our candidate for the subsequence
-  set I := (range (m * n + 1)).filterₓ fun x => f x = j with Idef
+  set I := (range (m * n + 1)).filter fun x => f x = j with Idef
   -- More notation and quick facts
   have tec_1 : I.nonempty := by
     rw [← card_pos]
@@ -334,13 +323,11 @@ theorem erdos_szekeres (n m : ℕ) (n_pos : 0 < n) (m_pos : 0 < m) (a : ℕ → 
       dsimp [f] at x_I
       dsimp [f] at y_I
       --rw (dif_pos x_I_1.1) at x_I_1, --plausible but makes 4 goals...
-      rw [show longestIncrSubseqLen (range (m * n + 1)) a y (tec_2 y_I) = j
-          by
+      rw [show longestIncrSubseqLen (range (m * n + 1)) a y (tec_2 y_I) = j by
           cases' y_I_1 with yIl yIr
           rw [dif_pos yIl] at yIr
           exact yIr]
-      rw [show longestIncrSubseqLen (range (m * n + 1)) a x (tec_2 x_I) = j
-          by
+      rw [show longestIncrSubseqLen (range (m * n + 1)) a x (tec_2 x_I) = j by
           cases' x_I_1 with xIl xIr
           rw [dif_pos xIl] at xIr
           exact xIr]

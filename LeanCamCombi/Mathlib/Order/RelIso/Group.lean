@@ -2,8 +2,6 @@ import Mathlib.Algebra.Group.Opposite
 import GroupTheory.GroupAction.Defs
 import Order.RelIso.Group
 
-#align_import mathlib.order.rel_iso.group
-
 namespace RelIso
 
 variable {α : Type _} {r : α → α → Prop}

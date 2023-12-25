@@ -1,8 +1,6 @@
 import Order.Monotone.Monovary
 import SetTheory.Ordinal.Basic
 
-#align_import mathlib.order.monotone.monovary
-
 open Function Set
 
 variable {ι ι' α β γ : Type _}
@@ -66,8 +64,7 @@ def MonovaryOrder (i j : ι) : Prop :=
 
 instance : IsStrictTotalOrder ι (MonovaryOrder f g)
     where
-  trichotomous i j :=
-    by
+  trichotomous i j := by
     convert trichotomous_of (Prod.Lex (· < ·) <| Prod.Lex (· < ·) WellOrderingRel) _ _
     · simp only [Prod.ext_iff, ← and_assoc', imp_and, eq_iff_iff, iff_and_self]
       exact ⟨congr_arg _, congr_arg _⟩
@@ -139,4 +136,3 @@ alias ⟨Monovary.exists_antitone, _⟩ := monovary_iff_exists_antitone
 alias ⟨Antivary.exists_antitone_monotone, _⟩ := antivary_iff_exists_antitone_monotone
 
 end
-

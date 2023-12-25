@@ -9,8 +9,6 @@ import RingTheory.MvPolynomial.Homogeneous
 import RingTheory.Polynomial.Basic
 import Order.SymmDiff
 
-#align_import nullstellensatz.homogenization
-
 /-!
 # Homogenization
 
@@ -89,8 +87,7 @@ theorem mapDomain_apply' {α β M : Type _} [AddCommMonoid M] (S : Set α) {f : 
   simp_rw [Finsupp.single_apply]
   have :
     ∀ (a_1 : α) (ha1 : a_1 ∈ x.support),
-      (if f a_1 = f a then x a_1 else 0) = if f a_1 = f a then x a else 0 :=
-    by
+      (if f a_1 = f a then x a_1 else 0) = if f a_1 = f a then x a else 0 := by
     intro a_1 ha_1
     split_ifs with hh
     rw [hf _ ha hh]
@@ -101,8 +98,7 @@ theorem mapDomain_apply' {α β M : Type _} [AddCommMonoid M] (S : Set α) {f : 
   rw [← Finset.add_sum_erase _ _ ha]
   simp only [if_true, eq_self_iff_true]
   convert add_zero _
-  have : ∀ i ∈ x.support.erase a, f i ≠ f a :=
-    by
+  have : ∀ i ∈ x.support.erase a, f i ≠ f a := by
     intro i hi
     have hix : i ∈ x.support := Finset.mem_of_mem_erase hi
     have hia : i ≠ a := Finset.ne_of_mem_erase hi
@@ -114,8 +110,7 @@ theorem mapDomain_apply' {α β M : Type _} [AddCommMonoid M] (S : Set α) {f : 
 
 theorem mapDomain_injOn {α β M : Type _} [AddCommMonoid M] (S : Set α) {f : α → β}
     (hf : Set.InjOn f S) :
-    Set.InjOn (Finsupp.mapDomain f : (α →₀ M) → β →₀ M) {w | (w.support : Set α) ⊆ S} :=
-  by
+    Set.InjOn (Finsupp.mapDomain f : (α →₀ M) → β →₀ M) {w | (w.support : Set α) ⊆ S} := by
   intro v₁ hv₁ v₂ hv₂ eq
   ext a
   have : Finsupp.mapDomain f v₁ (f a) = Finsupp.mapDomain f v₂ (f a) := by rw [Eq]
@@ -153,16 +148,14 @@ theorem homogenization_zero (i : ι) : (0 : MvPolynomial ι R).homogenization i 
 -- by simp [hf]
 -- TODO maybe instead prove this via is_homogeneous_one
 @[simp]
-theorem homogenization_one (i : ι) : (1 : MvPolynomial ι R).homogenization i = 1 :=
-  by
+theorem homogenization_one (i : ι) : (1 : MvPolynomial ι R).homogenization i = 1 := by
   simp only [homogenization, total_degree_one, zero_tsub, add_zero, Finsupp.single_zero]
   erw [Finsupp.mapDomain_single]
   -- erw map_domain_one,
   rfl
 
 @[simp]
-theorem homogenization_c (i : ι) (c : R) : (C c : MvPolynomial ι R).homogenization i = C c :=
-  by
+theorem homogenization_c (i : ι) (c : R) : (C c : MvPolynomial ι R).homogenization i = C c := by
   simp only [homogenization, total_degree_C, zero_tsub]
   convert Finsupp.mapDomain_single
   rw [single_eq_monomial]
@@ -172,8 +165,7 @@ theorem homogenization_c (i : ι) (c : R) : (C c : MvPolynomial ι R).homogeniza
 
 @[simp]
 theorem homogenization_monomial (i : ι) (s : ι →₀ ℕ) (r : R) :
-    (monomial s r : MvPolynomial ι R).homogenization i = monomial s r :=
-  by
+    (monomial s r : MvPolynomial ι R).homogenization i = monomial s r := by
   by_cases hr : r = 0
   · simp [hr]
   erw [homogenization, Finsupp.mapDomain_single, single_eq_monomial, total_degree_monomial _ hr,
@@ -183,8 +175,7 @@ theorem homogenization_monomial (i : ι) (s : ι →₀ ℕ) (r : R) :
 -- TODO name this
 theorem aux {i : ι} {p : MvPolynomial ι R} {x : ι →₀ ℕ} (hp : x ∈ p.support) :
     ((x + Finsupp.single i (p.totalDegree - x.Sum fun _ m => m)).Sum fun _ m => m) =
-      p.totalDegree :=
-  by
+      p.totalDegree := by
   classical
   rw [Finsupp.sum_add_index]
   rw [Finsupp.sum_single_index]
@@ -197,8 +188,7 @@ theorem aux {i : ι} {p : MvPolynomial ι R} {x : ι →₀ ℕ} (hp : x ∈ p.s
   rfl
 
 theorem isHomogeneous_homogenization (i : ι) (p : MvPolynomial ι R) :
-    (p.homogenization i).Homogeneous p.totalDegree :=
-  by
+    (p.homogenization i).Homogeneous p.totalDegree := by
   letI := Classical.decEq ι
   rw [homogenization]
   intro d hd
@@ -207,8 +197,7 @@ theorem isHomogeneous_homogenization (i : ι) (p : MvPolynomial ι R) :
   contrapose! hd
   have :
     ∀ (x : ι →₀ ℕ) (hx : x ∈ p.support),
-      ¬x + Finsupp.single i (p.total_degree - x.Sum fun (_x : ι) (m : ℕ) => m) = d :=
-    by
+      ¬x + Finsupp.single i (p.total_degree - x.Sum fun (_x : ι) (m : ℕ) => m) = d := by
     intro x hx hh
     apply hd
     rw [← hh]
@@ -218,8 +207,7 @@ theorem isHomogeneous_homogenization (i : ι) (p : MvPolynomial ι R) :
   simp
 
 theorem homogenization_of_isHomogeneous (n : ℕ) (i : ι) (p : MvPolynomial ι R)
-    (hp : p.Homogeneous n) : p.homogenization i = p :=
-  by
+    (hp : p.Homogeneous n) : p.homogenization i = p := by
   by_cases hpn : p = 0
   · simp [hpn]
   rw [homogenization]
@@ -230,8 +218,7 @@ theorem homogenization_of_isHomogeneous (n : ℕ) (i : ι) (p : MvPolynomial ι 
     ∀ (x) (hx : x ∈ p.support),
       (fun j : ι →₀ ℕ => j + Finsupp.single i (p.total_degree - j.Sum fun (_x : ι) (m : ℕ) => m))
           x =
-        x :=
-    by
+        x := by
     intro x hx
     simp only [add_right_eq_self, Finsupp.single_eq_same, tsub_eq_zero_iff_le, Finsupp.single_tsub,
       Finsupp.single_le_iff]
@@ -250,14 +237,12 @@ theorem homogenization_idempotent (i : ι) (p : MvPolynomial ι R) :
 
 -- TODO should these hjp assumptions be phrased using `degree_of` or `vars`?
 theorem homogenization_ne_zero_of_ne_zero (i : ι) {p : MvPolynomial ι R} (hp : p ≠ 0)
-    (hjp : ∀ j ∈ p.support, (j : ι → ℕ) i = 0) : p.homogenization i ≠ 0 :=
-  by
+    (hjp : ∀ j ∈ p.support, (j : ι → ℕ) i = 0) : p.homogenization i ≠ 0 := by
   intro h
   apply hp
   have :
     Set.InjOn (fun j : ι →₀ ℕ => j + Finsupp.single i (p.total_degree - j.Sum fun _ m => m))
-      {w | w i = 0} :=
-    by
+      {w | w i = 0} := by
     intro t ht y hy hh
     simp only [Set.mem_setOf_eq] at hh hy ht
     ext a
@@ -282,8 +267,7 @@ theorem homogenization_ne_zero_of_ne_zero (i : ι) {p : MvPolynomial ι R} (hp :
 -- admit,
 -- TODO this can follow from previous
 theorem totalDegree_homogenization (i : ι) (p : MvPolynomial ι R)
-    (h : ∀ j ∈ p.support, (j : ι → ℕ) i = 0) : (p.homogenization i).totalDegree = p.totalDegree :=
-  by
+    (h : ∀ j ∈ p.support, (j : ι → ℕ) i = 0) : (p.homogenization i).totalDegree = p.totalDegree := by
   classical
   by_cases hp : p = 0
   · simp [hp]
@@ -314,7 +298,7 @@ def leadingTerms (p : MvPolynomial ι R) : MvPolynomial ι R :=
 
 theorem leadingTerms_apply (p : MvPolynomial ι R) :
     p.leadingTerms =
-      ∑ d in p.support.filterₓ fun d => ∑ i in d.support, d i = p.totalDegree,
+      ∑ d in p.support.filter fun d => ∑ i in d.support, d i = p.totalDegree,
         monomial d (coeff d p) :=
   homogeneousComponent_apply _ _
 
@@ -323,8 +307,7 @@ theorem leadingTerms_apply (p : MvPolynomial ι R) :
 -- TODO for non-zero polys this is true that p.lead = p iff p.is_homogenous n for a fixed n
 -- TODO generalize to p.homog comp = n
 theorem leadingTerms_eq_self_iff_isHomogeneous (p : MvPolynomial ι R) :
-    p.leadingTerms = p ↔ p.Homogeneous p.totalDegree :=
-  by
+    p.leadingTerms = p ↔ p.Homogeneous p.totalDegree := by
   constructor <;> intro h
   · rw [is_homogeneous]
     contrapose! h
@@ -348,8 +331,7 @@ theorem leadingTerms_eq_self_iff_isHomogeneous (p : MvPolynomial ι R) :
       rw [← h hs]
 
 @[simp]
-theorem leadingTerms_c (r : R) : (C r : MvPolynomial ι R).leadingTerms = C r :=
-  by
+theorem leadingTerms_c (r : R) : (C r : MvPolynomial ι R).leadingTerms = C r := by
   rw [leading_terms_eq_self_iff_is_homogeneous]
   convert is_homogeneous_C _ _
   simp
@@ -361,8 +343,7 @@ theorem leadingTerms_zero : (0 : MvPolynomial ι R).leadingTerms = 0 := by simp 
 theorem leadingTerms_one : (1 : MvPolynomial ι R).leadingTerms = 1 := by simp [leading_terms]
 
 @[simp]
-theorem leadingTerms_monomial (s : ι →₀ ℕ) (r : R) : (monomial s r).leadingTerms = monomial s r :=
-  by
+theorem leadingTerms_monomial (s : ι →₀ ℕ) (r : R) : (monomial s r).leadingTerms = monomial s r := by
   by_cases hr : r = 0
   · simp [hr]
   rw [leading_terms_eq_self_iff_is_homogeneous]
@@ -374,8 +355,7 @@ section DangerousInstance
 attribute [local instance] MvPolynomial.unique
 
 @[simp]
-theorem leadingTerms_x (s : ι) : (X s : MvPolynomial ι R).leadingTerms = X s :=
-  by
+theorem leadingTerms_x (s : ι) : (X s : MvPolynomial ι R).leadingTerms = X s := by
   nontriviality R
   rw [leading_terms_eq_self_iff_is_homogeneous]
   convert is_homogeneous_X _ _
@@ -388,8 +368,7 @@ theorem isHomogeneous_leadingTerms (p : MvPolynomial ι R) :
   homogeneousComponent_isHomogeneous (totalDegree p) p
 
 theorem exists_coeff_ne_zero_totalDegree {p : MvPolynomial ι R} (hp : p ≠ 0) :
-    ∃ v : ι →₀ ℕ, (v.Sum fun _ e => e) = p.totalDegree ∧ p.coeff v ≠ 0 :=
-  by
+    ∃ v : ι →₀ ℕ, (v.Sum fun _ e => e) = p.totalDegree ∧ p.coeff v ≠ 0 := by
   obtain ⟨b, hb₁, hb₂⟩ :=
     p.support.exists_mem_eq_sup (finsupp.support_nonempty_iff.mpr hp) fun m : ι →₀ ℕ =>
       m.to_multiset.card
@@ -419,8 +398,7 @@ theorem add_ne_zero_of_ne_zero_of_support_disjoint (p q : MvPolynomial ι R) (hp
   exact this.left
 
 theorem support_sum_monomial_eq [DecidableEq R] (S : Finset (ι →₀ ℕ)) (f : (ι →₀ ℕ) → R) :
-    support (∑ v in S, monomial v (f v)) = S.filterₓ fun v => f v ≠ 0 :=
-  by
+    support (∑ v in S, monomial v (f v)) = S.filter fun v => f v ≠ 0 := by
   letI := Classical.decEq ι
   induction' S using Finset.induction with s S hs hsi
   · simp
@@ -460,16 +438,14 @@ theorem totalDegree_homogenous_component_of_ne_zero {n : ℕ} {p : MvPolynomial 
 
 @[simp]
 theorem totalDegree_leadingTerms (p : MvPolynomial ι R) :
-    p.leadingTerms.totalDegree = p.totalDegree :=
-  by
+    p.leadingTerms.totalDegree = p.totalDegree := by
   by_cases hp : p = 0
   · simp [hp]
   exact total_degree_homogenous_component_of_ne_zero (leading_terms_ne_zero hp)
 
 -- TODO generalize this to homogeneous component idempotent?
 theorem leadingTerms_idempotent (p : MvPolynomial ι R) :
-    p.leadingTerms.leadingTerms = p.leadingTerms :=
-  by
+    p.leadingTerms.leadingTerms = p.leadingTerms := by
   rw [leading_terms_eq_self_iff_is_homogeneous, total_degree_leading_terms]
   exact is_homogeneous_leading_terms p
 
@@ -484,8 +460,7 @@ theorem coeff_leadingTerms (p : MvPolynomial ι R) (d : ι →₀ ℕ) :
   coeff_homogeneousComponent _ _ _
 
 theorem support_homogeneousComponent (n : ℕ) (p : MvPolynomial ι R) :
-    (homogeneousComponent n p).support = p.support.filterₓ fun d => (d.Sum fun _ m => m) = n :=
-  by
+    (homogeneousComponent n p).support = p.support.filter fun d => (d.Sum fun _ m => m) = n := by
   rw [homogeneous_component]
   simp only [Finsupp.restrictDom_apply, Submodule.subtype_apply, Function.comp_apply,
     LinearMap.coe_comp, Set.mem_setOf_eq]
@@ -493,27 +468,24 @@ theorem support_homogeneousComponent (n : ℕ) (p : MvPolynomial ι R) :
   rfl
 
 theorem support_homogeneousComponent_subset (n : ℕ) (p : MvPolynomial ι R) :
-    (homogeneousComponent n p).support ⊆ p.support :=
-  by
+    (homogeneousComponent n p).support ⊆ p.support := by
   rw [support_homogeneous_component]
   exact Finset.filter_subset _ _
 
 theorem support_leadingTerms (p : MvPolynomial ι R) :
-    p.leadingTerms.support = p.support.filterₓ fun d => (d.Sum fun _ m => m) = p.totalDegree :=
+    p.leadingTerms.support = p.support.filter fun d => (d.Sum fun _ m => m) = p.totalDegree :=
   support_homogeneousComponent _ _
 
 theorem support_leadingTerms_subset (p : MvPolynomial ι R) : p.leadingTerms.support ⊆ p.support :=
   support_homogeneousComponent_subset _ _
 
 theorem eq_leadingTerms_add (p : MvPolynomial ι R) (hp : p.totalDegree ≠ 0) :
-    ∃ p_rest : MvPolynomial ι R, p = p.leadingTerms + p_rest ∧ p_rest.totalDegree < p.totalDegree :=
-  by
+    ∃ p_rest : MvPolynomial ι R, p = p.leadingTerms + p_rest ∧ p_rest.totalDegree < p.totalDegree := by
   letI := Classical.decEq ι
   exists ∑ v : ι →₀ ℕ in p.support \ p.leading_terms.support, (monomial v) (coeff v p)
   constructor
   · nth_rw 1 [p.leading_terms.as_sum]
-    have : ∀ (x : ι →₀ ℕ) (hx : x ∈ p.leading_terms.support), x.support.sum x = p.total_degree :=
-      by
+    have : ∀ (x : ι →₀ ℕ) (hx : x ∈ p.leading_terms.support), x.support.sum x = p.total_degree := by
       intro x hx
       rw [support_leading_terms] at hx
       simp at hx
@@ -521,8 +493,7 @@ theorem eq_leadingTerms_add (p : MvPolynomial ι R) (hp : p.totalDegree ≠ 0) :
     simp_rw [coeff_leading_terms]
     conv in ite _ _ _ => rw [if_pos (this x H)]
     have : p.leading_terms.support ⊆ p.support := support_leading_terms_subset _
-    have : p.leading_terms.support ∩ p.support = p.leading_terms.support :=
-      by
+    have : p.leading_terms.support ∩ p.support = p.leading_terms.support := by
       rw [Finset.inter_eq_left_iff_subset]
       exact this
     nth_rw 1 [← this]
@@ -549,8 +520,7 @@ theorem leadingTerms_add_of_totalDegree_lt (p q : MvPolynomial ι R)
 -- lemma C_mul_eq_smul {r : R} (p : mv_polynomial ι R) : C r * p = r • p :=
 -- by rw [C_eq_smul_one, algebra.smul_mul_assoc, one_mul]
 theorem NoZeroSmulDivisors.smul_eq_zero_iff_eq_zero_or_eq_zero (R M : Type _) [Zero R] [Zero M]
-    [SMulWithZero R M] [NoZeroSMulDivisors R M] {c : R} {x : M} : c • x = 0 ↔ c = 0 ∨ x = 0 :=
-  by
+    [SMulWithZero R M] [NoZeroSMulDivisors R M] {c : R} {x : M} : c • x = 0 ↔ c = 0 ∨ x = 0 := by
   constructor <;> intro h
   exact eq_zero_or_eq_zero_of_smul_eq_zero h
   cases h <;> simp [h]
@@ -572,8 +542,7 @@ theorem NoZeroSmulDivisors.smul_eq_zero_iff_eq_zero_or_eq_zero (R M : Type _) [Z
 --TODO also maybe an smul version
 @[simp]
 theorem leadingTerms_c_hMul [NoZeroSMulDivisors R R] (p : MvPolynomial ι R) (r : R) :
-    (C r * p).leadingTerms = C r * p.leadingTerms :=
-  by
+    (C r * p).leadingTerms = C r * p.leadingTerms := by
   by_cases hr : r = 0
   · simp [hr]
   have : (C r * p).support = p.support := by
@@ -605,14 +574,12 @@ theorem eq_c_of_totalDegree_zero {p : MvPolynomial ι R} (hp : p.totalDegree = 0
 -- sadly this adds some imports and requirements not needed in rest of file
 @[simp]
 theorem leadingTerms_hMul {S : Type _} [CommRing S] [IsDomain S] (p q : MvPolynomial ι S) :
-    (p * q).leadingTerms = p.leadingTerms * q.leadingTerms :=
-  by
+    (p * q).leadingTerms = p.leadingTerms * q.leadingTerms := by
   by_cases hp : p.total_degree = 0
   · rw [eq_C_of_total_degree_zero hp, leading_terms_C_mul, leading_terms_C]
   by_cases hq : q.total_degree = 0
   · rw [eq_C_of_total_degree_zero hq, mul_comm, leading_terms_C_mul, leading_terms_C, mul_comm]
-  have : (p.leading_terms * q.leading_terms).totalDegree = p.total_degree + q.total_degree :=
-    by
+  have : (p.leading_terms * q.leading_terms).totalDegree = p.total_degree + q.total_degree := by
     rw [is_homogeneous.total_degree]
     apply is_homogeneous.mul (is_homogeneous_leading_terms p) (is_homogeneous_leading_terms q)
     apply mul_ne_zero <;>
@@ -652,8 +619,7 @@ theorem leadingTerms_hMul {S : Type _} [CommRing S] [IsDomain S] (p q : MvPolyno
 
 --TODO reinterpret this as a hom in this case
 theorem totalDegree_hMul_eq {S : Type _} [CommRing S] [IsDomain S] {p q : MvPolynomial ι S}
-    (hp : p ≠ 0) (hq : q ≠ 0) : (p * q).totalDegree = p.totalDegree + q.totalDegree :=
-  by
+    (hp : p ≠ 0) (hq : q ≠ 0) : (p * q).totalDegree = p.totalDegree + q.totalDegree := by
   rw [← total_degree_leading_terms, ← total_degree_leading_terms p, ← total_degree_leading_terms q,
     leading_terms_mul, is_homogeneous.total_degree]
   apply is_homogeneous.mul <;> simp [is_homogeneous_leading_terms]
@@ -673,8 +639,7 @@ theorem homogenization_hMul {S : Type _} [CommRing S] [IsDomain S] (i : ι)
             p *
             q).homogenization
         i =
-      p.homogenization i * q.homogenization i :=
-  by
+      p.homogenization i * q.homogenization i := by
   classical
   by_cases hp : p = 0
   · simp [hp]
@@ -700,8 +665,7 @@ theorem homogenization_hMul {S : Type _} [CommRing S] [IsDomain S] (i : ι)
   classical
   have :
     ∀ {f s p q fs ss : ℕ} (hP : fs ≤ p) (hQ : ss ≤ q),
-      f + s + (p + q - (fs + ss)) = f + (p - fs) + (s + (q - ss)) :=
-    by
+      f + s + (p + q - (fs + ss)) = f + (p - fs) + (s + (q - ss)) := by
     intros
     zify [add_le_add hP hQ]
     ring
@@ -723,11 +687,9 @@ attribute [local instance] MvPolynomial.unique
 
 @[simp]
 theorem homogenization_x_add_c {i j : ι} (r : R) :
-    (X j + C r : MvPolynomial ι R).homogenization i = X j + C r * X i :=
-  by
+    (X j + C r : MvPolynomial ι R).homogenization i = X j + C r * X i := by
   nontriviality R
-  have : (X j + C r).totalDegree = 1 :=
-    by
+  have : (X j + C r).totalDegree = 1 := by
     rw [total_degree_add_eq_left_of_total_degree_lt]
     · exact total_degree_X _
     · simp only [total_degree_C, total_degree_X, Nat.lt_one_iff]
@@ -746,11 +708,9 @@ theorem homogenization_x_sub_c {R : Type _} [CommRing R] {i j : ι} (r : R) :
 
 @[simp]
 theorem homogenization_x_pow_add_c {i j : ι} {n : ℕ} (hn : 0 < n) (r : R) :
-    (X j ^ n + C r : MvPolynomial ι R).homogenization i = X j ^ n + C r * X i ^ n :=
-  by
+    (X j ^ n + C r : MvPolynomial ι R).homogenization i = X j ^ n + C r * X i ^ n := by
   nontriviality R
-  have : (X j ^ n + C r).totalDegree = n :=
-    by
+  have : (X j ^ n + C r).totalDegree = n := by
     rw [total_degree_add_eq_left_of_total_degree_lt]
     · exact total_degree_X_pow _ _
     · simp only [total_degree_C, total_degree_X_pow, hn]
@@ -774,15 +734,13 @@ theorem homogenization_x_pow_sub_c {R : Type _} [CommRing R] {i j : ι} {n : ℕ
 
 @[simp]
 theorem homogenization_x_pow_sub_one {R : Type _} [CommRing R] {i j : ι} {n : ℕ} (hn : 0 < n) :
-    (X j ^ n - 1 : MvPolynomial ι R).homogenization i = X j ^ n - X i ^ n :=
-  by
+    (X j ^ n - 1 : MvPolynomial ι R).homogenization i = X j ^ n - X i ^ n := by
   convert homogenization_X_pow_sub_C hn _
   simp
 
 @[simp]
 theorem homogenization_x_pow_add_one {i j : ι} {n : ℕ} (hn : 0 < n) :
-    (X j ^ n + 1 : MvPolynomial ι R).homogenization i = X j ^ n + X i ^ n :=
-  by
+    (X j ^ n + 1 : MvPolynomial ι R).homogenization i = X j ^ n + X i ^ n := by
   convert homogenization_X_pow_add_C hn _
   simp
 
@@ -796,8 +754,7 @@ section
 
 -- generalized version of the unprimed version
 theorem support_sum_monomial_subset' [DecidableEq ι] {α : Type _} (S : Finset α) (g : α → ι →₀ ℕ)
-    (f : α → R) : support (∑ v in S, monomial (g v) (f v)) ⊆ S.image g :=
-  by
+    (f : α → R) : support (∑ v in S, monomial (g v) (f v)) ⊆ S.image g := by
   letI := Classical.decEq α
   induction' S using Finset.induction with s S hs hsi
   · simp
@@ -815,8 +772,7 @@ theorem support_sum_monomial_subset' [DecidableEq ι] {α : Type _} (S : Finset 
 open scoped Pointwise
 
 theorem support_mul' [DecidableEq ι] (p q : MvPolynomial ι R) :
-    (p * q).support ⊆ p.support + q.support :=
-  by
+    (p * q).support ⊆ p.support + q.support := by
   -- TODO this was really hard to find, maybe needs a docstring or alias?
   rw [p.as_sum, q.as_sum, Finset.sum_mul_sum]
   simp_rw [monomial_mul]
@@ -850,8 +806,7 @@ theorem support_prod (P : Finset (MvPolynomial ι R)) : (P.Prod id).support ⊆ 
 end
 
 theorem degreeOf_eq_zero_iff (i : ι) (p : MvPolynomial ι R) :
-    degreeOf i p = 0 ↔ ∀ j : ι →₀ ℕ, j ∈ p.support → j i = 0 :=
-  by
+    degreeOf i p = 0 ↔ ∀ j : ι →₀ ℕ, j ∈ p.support → j i = 0 := by
   rw [degree_of_eq_sup]
   apply Iff.intro
   · intro h j hj
@@ -866,8 +821,7 @@ theorem degreeOf_eq_zero_iff (i : ι) (p : MvPolynomial ι R) :
 
 theorem prod_contains_no (i : ι) (P : Finset (MvPolynomial ι R))
     (hp : ∀ (p : MvPolynomial ι R) (hp : p ∈ P) (j) (hjp : j ∈ p.support), (j : ι → ℕ) i = 0) (j)
-    (hjp : j ∈ (P.Prod id).support) : (j : ι → ℕ) i = 0 :=
-  by
+    (hjp : j ∈ (P.Prod id).support) : (j : ι → ℕ) i = 0 := by
   apply (degree_of_eq_zero_iff i (P.prod id)).1 _ j hjp
   revert hp
   apply Finset.cons_induction_on P

@@ -8,8 +8,6 @@ import Order.Grade
 import Mathlib.Order.Chain
 import Mathlib.Order.RelIso.Group
 
-#align_import mathlib.order.flag
-
 /-!
 # Additional constructions about flags
 
@@ -63,8 +61,7 @@ section PartialOrder
 variable [PartialOrder α] {s : Flag α}
 
 @[simp]
-theorem coe_covby_coe {a b : s} : (a : α) ⋖ b ↔ a ⋖ b :=
-  by
+theorem coe_covby_coe {a b : s} : (a : α) ⋖ b ↔ a ⋖ b := by
   refine'
     and_congr_right'
       ⟨fun h c hac => h hac, fun h c hac hcb =>

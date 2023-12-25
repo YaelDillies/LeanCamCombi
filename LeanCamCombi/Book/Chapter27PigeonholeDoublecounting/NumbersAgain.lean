@@ -9,8 +9,6 @@ import Mathlib.Combinatorics.DoubleCounting
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
 
-#align_import book.FormalBook_Ch27_PigeonholeDoublecounting_numbers_again
-
 /-!
 # Pigeon-hole and double counting : Numbers again
 
@@ -51,12 +49,10 @@ Recall that `n/m` is the quotient of natural numbers,
 which coincides with the floor of the fraction n/m.
 -/
 theorem num_of_mult_le (n m : ℕ) (hn : n ≠ 0) (hm : m ≠ 0) :
-    ((Icc 1 n).filterₓ fun x => ∃ q, x = m * q).card = n / m :=
-  by
+    ((Icc 1 n).filter fun x => ∃ q, x = m * q).card = n / m := by
   -- We rewrite it as an image so as to use `card_image_of_injective`.
   let S := (Icc 1 (n / m)).image fun x => m * x
-  have RW : ((Icc 1 n).filterₓ fun x => ∃ q, x = m * q) = S :=
-    by
+  have RW : ((Icc 1 n).filter fun x => ∃ q, x = m * q) = S := by
     ext x
     constructor
     · intro xfil
@@ -111,8 +107,7 @@ theorem num_of_mult_le (n m : ℕ) (hn : n ≠ 0) (hm : m ≠ 0) :
 `finset.bipartite_above`, for double counting.
 -/
 theorem mult_rel (n m : ℕ) (hn : n ≠ 0) (hm : m ≠ 0) :
-    bipartiteAbove (fun a b => a ∣ b) (Icc 1 n) m = (Icc 1 n).filterₓ fun x => ∃ q, x = m * q :=
-  by
+    bipartiteAbove (fun a b => a ∣ b) (Icc 1 n) m = (Icc 1 n).filter fun x => ∃ q, x = m * q := by
   simp only [Finset.bipartiteAbove]
   congr
 
@@ -120,8 +115,7 @@ theorem mult_rel (n m : ℕ) (hn : n ≠ 0) (hm : m ≠ 0) :
 `finset.bipartite_below`, for double counting.
 -/
 theorem dvd_rel (n m : ℕ) (hn : n ≠ 0) (hm : m ≠ 0) :
-    bipartiteBelow (fun a b => a ∣ b) (Icc 1 n) m = (Icc 1 n).filterₓ fun x => ∃ q, m = x * q :=
-  by
+    bipartiteBelow (fun a b => a ∣ b) (Icc 1 n) m = (Icc 1 n).filter fun x => ∃ q, m = x * q := by
   simp only [Finset.bipartiteBelow]
   congr
 
@@ -132,8 +126,8 @@ the number of divisors. The double counting principle is implemented as
 `sum_card_bipartite_above_eq_sum_card_bipartite_below`.
 -/
 theorem main_result_pre (n : ℕ) (hn : n ≠ 0) :
-    ∑ m in Icc 1 n, ((Icc 1 n).filterₓ fun x => ∃ q, x = m * q).card =
-      ∑ m in Icc 1 n, ((Icc 1 n).filterₓ fun x => ∃ q, m = x * q).card :=
+    ∑ m in Icc 1 n, ((Icc 1 n).filter fun x => ∃ q, x = m * q).card =
+      ∑ m in Icc 1 n, ((Icc 1 n).filter fun x => ∃ q, m = x * q).card :=
   by apply sum_card_bipartite_above_eq_sum_card_bipartite_below
 
 -- Note: there was no use of `mult_rel` and `dvd_rel`.
@@ -142,8 +136,7 @@ theorem main_result_pre (n : ℕ) (hn : n ≠ 0) :
 the sum of the number of divisors.
 -/
 theorem main_result_pre_rw (n : ℕ) (hn : n ≠ 0) :
-    ∑ m in Icc 1 n, ((Icc 1 n).filterₓ fun x => ∃ q, m = x * q).card = ∑ m in Icc 1 n, n / m :=
-  by
+    ∑ m in Icc 1 n, ((Icc 1 n).filter fun x => ∃ q, m = x * q).card = ∑ m in Icc 1 n, n / m := by
   rw [(main_result_pre n hn).symm]
   apply sum_congr
   rfl
@@ -160,8 +153,7 @@ fractions.
 -/
 theorem main_result_pre_cast (n : ℕ) (hn : n ≠ 0) :
     ∑ m in Icc 1 n, ((n / m : ℕ) : ℚ) =
-      (∑ m in Icc 1 n, ((Icc 1 n).filterₓ fun x => ∃ q, m = x * q).card : ℚ) :=
-  by
+      (∑ m in Icc 1 n, ((Icc 1 n).filter fun x => ∃ q, m = x * q).card : ℚ) := by
   have := main_result_pre_rw n hn
   rw [← @Nat.cast_inj ℚ _ _] at this
   push_cast at this
@@ -175,8 +167,7 @@ theorem upperbound (n : ℕ)
         -- we use `((n/m : ℕ): ℚ))`
         (1 / n : ℚ) *
         ∑ m in Icc 1 n, ((n / m : ℕ) : ℚ) ≤
-      ∑ m in Icc 1 n, (1 / m : ℚ) :=
-  by
+      ∑ m in Icc 1 n, (1 / m : ℚ) := by
   -- Here, `(1/m : ℚ)` is interpreted as a fraction
   rw [mul_sum]
   apply sum_le_sum
@@ -190,8 +181,7 @@ theorem upperbound (n : ℕ)
   apply le_of_mul_le_mul_left _ this
   clear this
   rw [← mul_assoc]
-  rw [show (n : ℚ) * (1 / n : ℚ) = (1 : ℚ)
-      by
+  rw [show (n : ℚ) * (1 / n : ℚ) = (1 : ℚ) by
       apply mul_one_div_cancel
       rw [Nat.cast_ne_zero]
       exact hn]
@@ -201,16 +191,14 @@ theorem upperbound (n : ℕ)
 
 /-- This is the inequality `x-1 ≤ ⌊x⌋` in our context.
 -/
-theorem lb_pre (n m : ℕ) (hm : m ≠ 0) : (n / m : ℚ) - 1 ≤ ((n / m : ℕ) : ℚ) :=
-  by
+theorem lb_pre (n m : ℕ) (hm : m ≠ 0) : (n / m : ℚ) - 1 ≤ ((n / m : ℕ) : ℚ) := by
   have : 0 < (m : ℚ) := by
     rw [Nat.cast_pos]
     exact Nat.pos_of_ne_zero hm
   apply le_of_mul_le_mul_left _ this
   clear this
   rw [mul_sub, mul_one]
-  rw [show (m : ℚ) * (n / m : ℚ) = (n : ℚ)
-      by
+  rw [show (m : ℚ) * (n / m : ℚ) = (n : ℚ) by
       apply mul_div_cancel'
       intro con
       rw [show (0 : ℚ) = ↑(0 : ℕ) by simp only [algebraMap.coe_zero, eq_self_iff_true]] at con
@@ -235,8 +223,7 @@ theorem lb_pre (n m : ℕ) (hm : m ≠ 0) : (n / m : ℚ) - 1 ≤ ((n / m : ℕ)
 
 /-- A rewrite we singled out to shorten the proof of `lowerbound`
 -/
-theorem last_rw (n x : ℕ) (hn : n ≠ 0) : (1 / n : ℚ) * (↑n / ↑x - 1) = 1 / ↑x - 1 / ↑n :=
-  by
+theorem last_rw (n x : ℕ) (hn : n ≠ 0) : (1 / n : ℚ) * (↑n / ↑x - 1) = 1 / ↑x - 1 / ↑n := by
   --note : x≠0 not needed ; consider the check and eval that follow
   rw [mul_sub, mul_one]
   simp only [one_div, sub_left_inj]
@@ -254,11 +241,9 @@ theorem last_rw (n x : ℕ) (hn : n ≠ 0) : (1 / n : ℚ) * (↑n / ↑x - 1) =
 /-- We lower bound the average by the harmonic series
 -/
 theorem lowerbound (n : ℕ) (hn : n ≠ 0) :
-    ∑ m in Icc 1 n, (1 / m : ℚ) - 1 ≤ (1 / n : ℚ) * ∑ m in Icc 1 n, ((n / m : ℕ) : ℚ) :=
-  by
+    ∑ m in Icc 1 n, (1 / m : ℚ) - 1 ≤ (1 / n : ℚ) * ∑ m in Icc 1 n, ((n / m : ℕ) : ℚ) := by
   -- We use `x-1 ≤ ⌊x⌋` in the terms of the sum
-  have pre : ∑ m in Icc 1 n, ((n / m : ℚ) - 1) ≤ ∑ m in Icc 1 n, ((n / m : ℕ) : ℚ) :=
-    by
+  have pre : ∑ m in Icc 1 n, ((n / m : ℚ) - 1) ≤ ∑ m in Icc 1 n, ((n / m : ℕ) : ℚ) := by
     apply sum_le_sum
     intro i idef
     have : i ≠ 0 := by
@@ -266,8 +251,7 @@ theorem lowerbound (n : ℕ) (hn : n ≠ 0) :
       linarith
     exact lb_pre n i this
   -- We take the average as follows:
-  have tec : Monotone fun x => (1 / n : ℚ) * x :=
-    by
+  have tec : Monotone fun x => (1 / n : ℚ) * x := by
     dsimp [Monotone]
     intro a b ineq
     apply mul_le_mul_of_nonneg_left ineq
@@ -296,10 +280,9 @@ by its predecessor.
 -/
 theorem claim (n : ℕ) (hn : n ≠ 0) :
     ∑ m in Icc 1 n, (1 / m : ℚ) - 1 ≤
-        (1 / n : ℚ) * (∑ m in Icc 1 n, ((Icc 1 n).filterₓ fun x => ∃ q, m = x * q).card : ℚ) ∧
-      (1 / n : ℚ) * (∑ m in Icc 1 n, ((Icc 1 n).filterₓ fun x => ∃ q, m = x * q).card : ℚ) ≤
-        ∑ m in Icc 1 n, (1 / m : ℚ) :=
-  by
+        (1 / n : ℚ) * (∑ m in Icc 1 n, ((Icc 1 n).filter fun x => ∃ q, m = x * q).card : ℚ) ∧
+      (1 / n : ℚ) * (∑ m in Icc 1 n, ((Icc 1 n).filter fun x => ∃ q, m = x * q).card : ℚ) ≤
+        ∑ m in Icc 1 n, (1 / m : ℚ) := by
   rw [← main_result_pre_cast n hn]
   constructor
   exact lowerbound n hn

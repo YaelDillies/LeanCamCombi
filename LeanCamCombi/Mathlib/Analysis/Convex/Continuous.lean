@@ -7,8 +7,6 @@ import Mathlib.Analysis.Convex.Intrinsic
 import Mathlib.Analysis.Convex.Topology
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
-#align_import mathlib.analysis.convex.continuous
-
 /-!
 # Convex functions are continuous
 
@@ -65,8 +63,7 @@ namely a small enough cube. -/
 theorem IsOpen.exists_mem_intrinsicInterior_convexHull_finset
     (hs : IsOpen (coe ⁻¹' s : Set <| affineSpan ℝ s)) (hx : x ∈ s) :
     ∃ t : Finset E,
-      x ∈ intrinsicInterior ℝ (convexHull ℝ (t : Set E)) ∧ convexHull ℝ (t : Set E) ⊆ s :=
-  by
+      x ∈ intrinsicInterior ℝ (convexHull ℝ (t : Set E)) ∧ convexHull ℝ (t : Set E) ⊆ s := by
   classical
   lift x to affineSpan ℝ s using subset_affineSpan _ _ hx
   set x : affineSpan ℝ s := x with hx

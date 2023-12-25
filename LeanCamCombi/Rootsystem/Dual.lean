@@ -1,8 +1,6 @@
 import LinearAlgebra.Finsupp
 import Rootsystem.Basic
 
-#align_import rootsystem.dual
-
 open Set Function
 
 namespace IsRootSystem
@@ -19,11 +17,9 @@ protected theorem finiteDimensional : FiniteDimensional k V :=
   ⟨⟨h.Finite.toFinset, by simpa only [finite.coe_to_finset] using h.span_eq_top⟩⟩
 
 @[simp]
-theorem coroot_symmetry_apply_eq (α β : Φ) (h') : ⟨ട α β, h'⟩ᘁ = βᘁ - (βᘁ) α • αᘁ :=
-  by
+theorem coroot_symmetry_apply_eq (α β : Φ) (h') : ⟨ട α β, h'⟩ᘁ = βᘁ - (βᘁ) α • αᘁ := by
   set γ : Φ := ⟨ട α β, h'⟩
-  have hγ : Module.toPreSymmetry (γ : V) (βᘁ - (βᘁ) α • αᘁ) = ട α * ട β * ട α :=
-    by
+  have hγ : Module.toPreSymmetry (γ : V) (βᘁ - (βᘁ) α • αᘁ) = ട α * ട β * ട α := by
     ext v
     simp only [Subtype.coe_mk, Module.toPreSymmetry_apply, LinearMap.sub_apply,
       LinearMap.smul_apply, LinearMap.mul_apply]
@@ -59,27 +55,25 @@ Note that `is_root_system.to_dual` shows that any root system carries a _canonic
 invariant bilinear form. This lemma only exists because we need it to prove the coroots span the
 dual space which we use to show `is_root_system.to_dual` is non-singular. -/
 theorem exists_to_dual_ker_eq_bot_forall :
-    ∃ B : V →ₗ[k] V →ₗ[k] k, B.ker = ⊥ ∧ ∀ (v w) (α : Φ), B (ട α v) (ട α w) = B v w :=
-  by
+    ∃ B : V →ₗ[k] V →ₗ[k] k, B.ker = ⊥ ∧ ∀ (v w) (α : Φ), B (ട α v) (ട α w) = B v w := by
   haveI := h.finite_dimensional
   haveI : Finite h.weyl_group := h.finite_weyl_group
   obtain ⟨B, hB₁, hB₂⟩ := Module.exists_to_dual_ker_eq_bot h.weyl_group.subtype
   exact ⟨B, hB₁, fun v w α => hB₂ v w ⟨ട α, h.symmetry_mem_weyl_group α⟩⟩
 
-theorem coroot_eq_zero_only_if_v_eq_zero : ∀ (v : V) (h' : ∀ α : Φ, h.coroot α v = 0), v = 0 :=
-  by
+theorem coroot_eq_zero_only_if_v_eq_zero : ∀ (v : V) (h' : ∀ α : Φ, h.coroot α v = 0), v = 0 := by
   intro v hv
   obtain ⟨B, h1, h2⟩ := h.exists_to_dual_ker_eq_bot_forall
   replace hv : ∀ α, ട α v = v
   · intro α
     rw [h.symmetry_of_root_apply, hv, zero_smul, sub_zero]
   specialize h2 v
-  simp_rw [hv] at h2 
+  simp_rw [hv] at h2
   replace h2 : ∀ α : Φ, (B v) ((h.symmetry_of_root α) α) = (B v) α
   · intro α
     rw [h2]
   simp only [symmetry_of_root_apply_self_neg, map_neg, SetCoe.forall, Subtype.coe_mk,
-    neg_eq_self_iff] at h2 
+    neg_eq_self_iff] at h2
   have h3 : ∀ α : Φ, (B v) α = 0 := fun x => h2 x.1 x.2
   have h4 : B v = 0 := by
     ext α
@@ -87,7 +81,7 @@ theorem coroot_eq_zero_only_if_v_eq_zero : ∀ (v : V) (h' : ∀ α : Φ, h.coro
     have h5 : α ∈ Submodule.span k Φ := by
       rw [h.span_eq_top]
       exact Submodule.mem_top
-    rw [mem_span_set] at h5 
+    rw [mem_span_set] at h5
     rcases h5 with ⟨c, hc, rfl⟩
     simp only [map_finsupp_sum, LinearMap.map_smulₛₗ, RingHom.id_apply, Algebra.id.smul_eq_mul]
     refine' Finset.sum_eq_zero fun p hp => _
@@ -95,17 +89,15 @@ theorem coroot_eq_zero_only_if_v_eq_zero : ∀ (v : V) (h' : ∀ α : Φ, h.coro
     specialize h3 ⟨p, hc (finset.mem_coe.mp hp)⟩
     simp only [mul_eq_zero]
     exact Or.intro_right _ h3
-  rw [LinearMap.ker_eq_bot] at h1 
+  rw [LinearMap.ker_eq_bot] at h1
   refine' h1 _
   rw [LinearMap.map_zero]
   exact h4
 
-theorem coroot_span_eq_top : Submodule.span k (range h.coroot) = ⊤ :=
-  by
-  suffices ∀ (v : V) (h' : ∀ α : Φ, h.coroot α v = 0), v = 0
-    by
+theorem coroot_span_eq_top : Submodule.span k (range h.coroot) = ⊤ := by
+  suffices ∀ (v : V) (h' : ∀ α : Φ, h.coroot α v = 0), v = 0 by
     contrapose! this
-    rw [← lt_top_iff_ne_top] at this 
+    rw [← lt_top_iff_ne_top] at this
     obtain ⟨f, hf, hf'⟩ := Submodule.exists_dual_map_eq_bot_of_lt_top this
     haveI := h.finite_dimensional
     refine'
@@ -120,8 +112,7 @@ theorem coroot_span_eq_top : Submodule.span k (range h.coroot) = ⊤ :=
 theorem fd {k V : Type _} [LinearOrderedField k] [CharZero k] [AddCommGroup V] [Module k V]
     {Φ : Set V} (h : IsRootSystem k Φ) (α : ↥Φ) [_inst : FiniteDimensional k V] :
     ⇑(Module.toPreSymmetry (h.coroot α) ((Module.evalEquiv k V) ↑α)) '' range h.coroot ⊆
-      range h.coroot :=
-  by
+      range h.coroot := by
   simp only [Module.toPreSymmetry_apply, image_subset_iff]
   rintro y ⟨β, rfl⟩
   simp
@@ -142,8 +133,8 @@ theorem isRootSystemCoroots : IsRootSystem k <| range h.coroot :=
       rintro aux ⟨α, rfl⟩ α' ⟨h₁, h₂⟩ - ⟨-, ⟨β, rfl⟩, rfl⟩
       have hα : h.coroot α ≠ 0 := by
         intro h
-        simp only [h, LinearMap.map_zero] at h₁ 
-        norm_num at h₁ 
+        simp only [h, LinearMap.map_zero] at h₁
+        norm_num at h₁
       haveI := h.finite_dimensional
       rw [Module.eq_dual_of_toPreSymmetry_image_subseteq hα h.finite_coroots h.coroot_span_eq_top h₁
           h₂ (_ : Module.evalEquiv k V α (h.coroot α) = 2) _]
@@ -155,4 +146,3 @@ theorem isRootSystemCoroots : IsRootSystem k <| range h.coroot :=
       · apply fd }
 
 end IsRootSystem
-

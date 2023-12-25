@@ -2,8 +2,6 @@ import Mathlib.Algebra.SmulWithZero
 import Order.Partition.Finpartition
 import Turan.Close
 
-#align_import turan.induced
-
 open Nat Set
 
 open scoped BigOperators

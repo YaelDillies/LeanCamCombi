@@ -6,8 +6,6 @@ Author: Ivan Sadofschi Costa.
 import Nullstellensatz.Lemma21
 import Nullstellensatz.ReduceDegree
 
-#align_import nullstellensatz.combinatorial_nullstellensatz
-
 /-!
 # Combinatorial Nullstellensatz
 
@@ -32,8 +30,7 @@ theorem combinatorial_nullstellensatz' {R σ : Type _} [CommRing R] [IsDomain R]
     (hz : ∀ s : σ → R, (∀ i : σ, s i ∈ S i) → eval s f = 0) :
     ∃ h : σ → MvPolynomial σ R,
       (∀ i : σ, h i = 0 ∨ totalDegree (h i) + (S i).card ≤ totalDegree f) ∧
-        f = ∑ i : σ, h i * ∏ s in S i, (X i - C s) :=
-  by
+        f = ∑ i : σ, h i * ∏ s in S i, (X i - C s) := by
   cases' reduce_degree_special_case S hS f with h h_h
   use h
   constructor
@@ -49,8 +46,7 @@ theorem combinatorial_nullstellensatz' {R σ : Type _} [CommRing R] [IsDomain R]
 theorem combinatorial_nullstellensatz'' {R σ : Type _} [CommRing R] [IsDomain R] [Fintype σ]
     [DecidableEq σ] (f : MvPolynomial σ R) (t : σ →₀ ℕ) (h_max : MaxDegreeMonomial t f)
     (S : σ → Finset R) (h_card_S : ∀ i : σ, t i + 1 = (S i).card) :
-    ∃ s : σ → R, (∀ i : σ, s i ∈ S i) ∧ eval s f ≠ 0 :=
-  by
+    ∃ s : σ → R, (∀ i : σ, s i ∈ S i) ∧ eval s f ≠ 0 := by
   by_contra hc
   cases'
     combinatorial_nullstellensatz' f S
@@ -81,8 +77,7 @@ theorem combinatorial_nullstellensatz'' {R σ : Type _} [CommRing R] [IsDomain R
 
 private theorem choose_smaller_sets {R σ : Type _} (S : σ → Finset R) (t : σ →₀ ℕ)
     (h_card_S : ∀ i : σ, t i < (S i).card) :
-    ∃ S' : σ → Finset R, (∀ i : σ, S' i ⊆ S i) ∧ ∀ i : σ, (S' i).card = t i + 1 :=
-  by
+    ∃ S' : σ → Finset R, (∀ i : σ, S' i ⊆ S i) ∧ ∀ i : σ, (S' i).card = t i + 1 := by
   have t := fun i => Finset.exists_smaller_set (S i) (t i + 1) (h_card_S i)
   convert Classical.skolem.1 t
   ext S'
@@ -93,11 +88,9 @@ private theorem choose_smaller_sets {R σ : Type _} (S : σ → Finset R) (t : �
 theorem combinatorial_nullstellensatz {R σ : Type _} [CommRing R] [IsDomain R] [Fintype σ]
     [DecidableEq σ] (f : MvPolynomial σ R) (t : σ →₀ ℕ) (h_max : MaxDegreeMonomial t f)
     (S : σ → Finset R) (h_card_S : ∀ i : σ, t i < (S i).card) :
-    ∃ s : σ → R, (∀ i : σ, s i ∈ S i) ∧ eval s f ≠ 0 :=
-  by
+    ∃ s : σ → R, (∀ i : σ, s i ∈ S i) ∧ eval s f ≠ 0 := by
   cases' choose_smaller_sets S t h_card_S with S' hS'
   cases' combinatorial_nullstellensatz'' f t h_max S' fun i => (hS'.2 i).symm with s h_s'
   exact ⟨s, ⟨fun i => Finset.mem_of_subset (hS'.1 i) (h_s'.1 i), h_s'.2⟩⟩
 
 end MvPolynomial
-

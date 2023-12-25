@@ -2,8 +2,6 @@ import Mathlib.Data.Set.Function
 import LinearAlgebra.BilinearForm
 import Rootsystem.Dual
 
-#align_import rootsystem.bilinear_form
-
 noncomputable section
 
 open scoped TensorProduct BigOperators Classical
@@ -44,8 +42,7 @@ def toDual : V →ₗ[k] Module.Dual k V
     rw [← smul_finsum]
     simp only [LinearMap.smul_apply, Algebra.id.smul_eq_mul]
 
-theorem toDual_apply_apply (x y : V) : h.toDual x y = ∑ᶠ α, (αᘁ) x • (αᘁ) y :=
-  by
+theorem toDual_apply_apply (x y : V) : h.toDual x y = ∑ᶠ α, (αᘁ) x • (αᘁ) y := by
   haveI h2 : Finite Φ := finite_coe_iff.mpr h.finite
   have h3 : (support fun α : ↥Φ => (αᘁ) x • αᘁ).Finite := by apply Set.toFinite
   change (∑ᶠ α : Φ, (αᘁ) x • αᘁ) y = _
@@ -68,8 +65,7 @@ def toBilinForm : BilinForm k V :=
   h.toBilinearMap.toBilin
 
 -- Don't have any zeros or -1s in the matrix only over the real numbers
-theorem toBilinForm_anisotropic : h.toBilinForm.toQuadraticForm.Anisotropic :=
-  by
+theorem toBilinForm_anisotropic : h.toBilinForm.toQuadraticForm.Anisotropic := by
   apply QuadraticForm.PosDef.anisotropic
   intro v hv
   simp only [to_bilin_form, to_bilinear_map, BilinForm.toQuadraticForm_apply, LinearMap.mk_coe]
@@ -112,18 +108,15 @@ theorem ker_to_dual_eq_bot : h.toBilinForm.Nondegenerate :=
 -- Estimate medium effort.
 @[simp]
 theorem toBilinForm_symmetry_eq (u : V ≃ₗ[k] V) (hu : u ∈ h.symmetries) (x y : V) :
-    h.toBilinForm (u • x) (u • y) = h.toBilinForm x y :=
-  by
+    h.toBilinForm (u • x) (u • y) = h.toBilinForm x y := by
   have hu' : u.symm ∈ h.symmetries := inv_mem_iff.mpr hu
-  have hα : ∀ α : Φ, u.symm α ∈ Φ :=
-    by
+  have hα : ∀ α : Φ, u.symm α ∈ Φ := by
     rw [mem_symmetries_iff] at hu'
     intro α
     apply Eq.subset hu'
     exact ⟨α, α.2, rfl⟩
   let u' := u.dual_map
-  have h' : ∀ α : Φ, u.dual_map (h.coroot α) = h.coroot ⟨u.symm α, hα α⟩ :=
-    by
+  have h' : ∀ α : Φ, u.dual_map (h.coroot α) = h.coroot ⟨u.symm α, hα α⟩ := by
     intro α
     rw [coroot_apply_of_mem_symmetries h u.symm hu' α (hα α), LinearEquiv.symm_symm]
   have hbtd : ∀ a b, h.to_dual a b = h.to_bilin_form a b; intros; rfl
@@ -131,8 +124,7 @@ theorem toBilinForm_symmetry_eq (u : V ≃ₗ[k] V) (hu : u ∈ h.symmetries) (x
   rw [to_dual_apply_apply]
   dsimp only [SMul.smul]
   simp_rw [← LinearEquiv.dualMap_apply, h']
-  have hbij : Set.BijOn u.symm Φ Φ :=
-    by
+  have hbij : Set.BijOn u.symm Φ Φ := by
     rw [← LinearEquiv.coe_toEquiv]
     suffices Set.BijOn u.symm Φ (u.symm '' Φ) by rw [(mem_symmetries_iff h u.symm).mp hu'] at this ;
       exact this
@@ -147,26 +139,21 @@ theorem toBilinForm_symmetry_eq (u : V ≃ₗ[k] V) (hu : u ∈ h.symmetries) (x
   rfl
 
 theorem toBilinForm_weyl_eq (g : V ≃ₗ[k] V) (hg : g ∈ h.weylGroup) (x y : V) :
-    h.toBilinForm (g • x) (g • y) = h.toBilinForm x y :=
-  by
+    h.toBilinForm (g • x) (g • y) = h.toBilinForm x y := by
   have hg' : g ∈ h.symmetries := by
     apply weyl_group_le_symmetries
     exact hg
   apply to_bilin_form_symmetry_eq h g hg'
 
 -- Estimate high effort.
-theorem toBilinForm_orthogonal_eq_ker (α : Φ) : h.toBilinForm.orthogonal (k ∙ (α : V)) = αᘁ.ker :=
-  by
-  have hα' : h.to_bilin_form α α ≠ 0 :=
-    by
+theorem toBilinForm_orthogonal_eq_ker (α : Φ) : h.toBilinForm.orthogonal (k ∙ (α : V)) = αᘁ.ker := by
+  have hα' : h.to_bilin_form α α ≠ 0 := by
     have h' := h.to_bilin_form_anisotropic
     contrapose! h'
     rw [QuadraticForm.not_anisotropic_iff_exists]
     exact ⟨α, h.root_ne_zero α, h'⟩
-  suffices ∀ v : V, (h.coroot α) v = 2 * h.to_bilin_form α v / h.to_bilin_form α α
-    by
-    have hb : ∀ v : V, h.to_bilin_form α v = 0 ↔ (αᘁ) v = 0 :=
-      by
+  suffices ∀ v : V, (h.coroot α) v = 2 * h.to_bilin_form α v / h.to_bilin_form α α by
+    have hb : ∀ v : V, h.to_bilin_form α v = 0 ↔ (αᘁ) v = 0 := by
       intro v
       refine' ⟨fun hbα => _, fun hbα => _⟩
       · rw [this, hbα, MulZeroClass.mul_zero]
