@@ -1,7 +1,7 @@
 import Mathlib.Analysis.InnerProductSpace.Dual
 import Mathlib.Analysis.NormedSpace.Pointwise
 import Mathlib.Analysis.Quaternion
-import Rootsystem.Basic
+import LeanCamCombi.RootSystem.Basic
 
 noncomputable section
 

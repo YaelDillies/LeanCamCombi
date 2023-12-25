@@ -1,24 +1,13 @@
-import GroupTheory.OrderOfElement
-import LinearAlgebra.Contraction
-import LinearAlgebra.BilinearForm
-import LinearAlgebra.QuadraticForm.Basic
+import Mathlib.GroupTheory.OrderOfElement
+import Mathlib.LinearAlgebra.BilinearForm.Basic
+import Mathlib.LinearAlgebra.Contraction
+import Mathlib.LinearAlgebra.QuadraticForm.Basic
 
 noncomputable section
 
 open scoped TensorProduct BigOperators Classical Pointwise
 
 open Set Function
-
-#print Module.apply_evalEquiv_symm_apply /-
-@[simp]
-theorem Module.apply_evalEquiv_symm_apply {k V : Type _} [Field k] [AddCommGroup V] [Module k V]
-    [FiniteDimensional k V] (f : Module.Dual k V) (v : Module.Dual k <| Module.Dual k V) :
-    f ((Module.evalEquiv k V).symm v) = v f := by
-  set w := (Module.evalEquiv k V).symm v
-  have hw : v = Module.evalEquiv k V w := (LinearEquiv.apply_symm_apply _ _).symm
-  rw [hw]
-  rfl
--/
 
 @[simp]
 theorem Module.coe_end_one {k V : Type _} [Semiring k] [AddCommMonoid V] [Module k V] :
@@ -33,11 +22,11 @@ theorem LinearEquiv.coe_one {k V : Type _} [Semiring k] [AddCommMonoid V] [Modul
 -/
 
 @[simp]
-theorem LinearEquiv.coe_hMul {k V : Type _} [Semiring k] [AddCommMonoid V] [Module k V]
-    {e₁ e₂ : V ≃ₗ[k] V} : (↑(e₁ * e₂) : V →ₗ[k] V) = (e₁ : V →ₗ[k] V) * (e₂ : V →ₗ[k] V) := by ext;
-  simpa
+theorem LinearEquiv.coe_mul {k V : Type _} [Semiring k] [AddCommMonoid V] [Module k V]
+    {e₁ e₂ : V ≃ₗ[k] V} : (↑(e₁ * e₂) : V →ₗ[k] V) = (e₁ : V →ₗ[k] V) * (e₂ : V →ₗ[k] V) := by
+  ext; simp
 
-attribute [protected] Module.Finite
+-- attribute [protected] Module.Finite
 
 namespace Module
 
@@ -46,23 +35,23 @@ variable {k V : Type _} [CommRing k] [AddCommGroup V] [Module k V]
 /-- Given a vector `x` and a linear form `f`, this is the map `y ↦ y - (f y) • x`, bundled as a
 linear endomorphism.
 
-When `f x = 2`, it is involutive and sends `x ↦ - x`. See also `module.to_symmetry`. -/
+When `f x = 2`, it is involutive and sends `x ↦ - x`. See also `module.toSymmetry`. -/
 def toPreSymmetry (x : V) (f : Dual k V) : End k V :=
   LinearMap.id - dualTensorHom k V V (f ⊗ₜ x)
 
 @[simp]
 theorem toPreSymmetry_apply (x y : V) (f : Dual k V) : toPreSymmetry x f y = y - f y • x := by
-  simp [to_pre_symmetry]
+  simp [toPreSymmetry]
 
 theorem toPreSymmetry_apply_self {x : V} {f : Dual k V} (h : f x = 2) : toPreSymmetry x f x = -x :=
-  by rw [to_pre_symmetry_apply, h, ← one_smul k x, smul_smul, ← sub_smul]; norm_num
+  by rw [toPreSymmetry_apply, h, ← one_smul k x, smul_smul, ← sub_smul]; norm_num
 
 theorem toPreSymmetry_sq {x : V} {f : Dual k V} (h : f x = 2) :
     toPreSymmetry x f ^ 2 = LinearMap.id := by
   ext β
   rw [LinearMap.pow_apply, iterate_succ, iterate_one, comp_app]
-  nth_rw 2 [to_pre_symmetry_apply]
-  rw [map_sub, map_smul, to_pre_symmetry_apply_self h, to_pre_symmetry_apply, smul_neg,
+  nth_rw 2 [toPreSymmetry_apply]
+  rw [map_sub, map_smul, toPreSymmetry_apply_self h, toPreSymmetry_apply, smul_neg,
     sub_neg_eq_add, sub_add_cancel, LinearMap.id_apply]
 
 /-- Given a vector `x` and a linear form `f` such that `f x = 2`, this is the map
@@ -72,10 +61,10 @@ def toSymmetry {x : V} {f : Dual k V} (h : f x = 2) : V ≃ₗ[k] V :=
     invFun := toPreSymmetry x f
     left_inv := fun v => by
       simp only [LinearMap.toFun_eq_coe, ← LinearMap.comp_apply, ← LinearMap.mul_eq_comp, ← sq,
-        to_pre_symmetry_sq h, LinearMap.id_apply]
+        toPreSymmetry_sq h, LinearMap.id_apply]
     right_inv := fun v => by
       simp only [LinearMap.toFun_eq_coe, ← LinearMap.comp_apply, ← LinearMap.mul_eq_comp, ← sq,
-        to_pre_symmetry_sq h, LinearMap.id_apply] }
+        toPreSymmetry_sq h, LinearMap.id_apply] }
 
 @[simp]
 theorem eq_zero_or_zero_of_dualTensorHom_tmul_eq_zero {f : Dual k V} {x : V}
@@ -193,12 +182,12 @@ theorem eq_dual_of_toPreSymmetry_image_subseteq [CharZero k] [NoZeroSMulDivisors
     (hx : x ≠ 0) {Φ : Set V} (hΦ₁ : Φ.Finite) (hΦ₂ : Submodule.span k Φ = ⊤) {f g : Dual k V}
     (hf₁ : f x = 2) (hf₂ : toPreSymmetry x f '' Φ ⊆ Φ) (hg₁ : g x = 2)
     (hg₂ : toPreSymmetry x g '' Φ ⊆ Φ) : f = g := by
-  let u := to_symmetry hg₁ * to_symmetry hf₁
+  let u := toSymmetry hg₁ * toSymmetry hf₁
   suffices IsOfFinOrder u by
     have hu : ↑u = LinearMap.id + dualTensorHom k V V ((f - g) ⊗ₜ x) := by
       ext y
-      simp only [to_symmetry, hg₁, LinearMap.toFun_eq_coe, LinearEquiv.coe_hMul,
-        LinearMap.mul_apply, LinearEquiv.coe_coe, LinearEquiv.coe_mk, to_pre_symmetry_apply,
+      simp only [toSymmetry, hg₁, LinearMap.toFun_eq_coe, LinearEquiv.coe_mul,
+        LinearMap.mul_apply, LinearEquiv.coe_coe, LinearEquiv.coe_mk, toPreSymmetry_apply,
         LinearEquiv.map_sub, LinearEquiv.map_smulₛₗ, RingHom.id_apply, LinearMap.add_apply,
         LinearMap.id_coe, id.def, dualTensorHom_apply, LinearMap.sub_apply, map_sub,
         sub_add_cancel', smul_neg, sub_neg_eq_add, sub_smul, two_smul]
@@ -211,7 +200,7 @@ theorem eq_dual_of_toPreSymmetry_image_subseteq [CharZero k] [NoZeroSMulDivisors
             ((n : k) • dualTensorHom k V V ((f - g) ⊗ₜ[k] x)) =
           0 :=
         by ext v; simp [hf₁, hg₁]
-      rw [pow_succ, LinearEquiv.coe_hMul, ih, hu, add_mul, mul_add, mul_add]
+      rw [pow_succ, LinearEquiv.coe_mul, ih, hu, add_mul, mul_add, mul_add]
       simp only [LinearMap.mul_eq_comp, LinearMap.id_comp, LinearMap.comp_id, Nat.cast_succ, aux,
         add_zero, add_smul, one_smul, add_assoc]
     obtain ⟨n, hn₀, hn₁⟩ := (isOfFinOrder_iff_pow_eq_one u).mp this
@@ -221,7 +210,7 @@ theorem eq_dual_of_toPreSymmetry_image_subseteq [CharZero k] [NoZeroSMulDivisors
       eq_zero_or_zero_of_dual_tensor_hom_tmul_eq_zero, sub_eq_zero, self_eq_add_right] using hu
   suffices u '' Φ ⊆ Φ by
     exact is_of_fin_order_of_finite_of_span_eq_top_of_image_subseteq hΦ₁ hΦ₂ this
-  change to_pre_symmetry x g ∘ to_pre_symmetry x f '' Φ ⊆ Φ
+  change toPreSymmetry x g ∘ toPreSymmetry x f '' Φ ⊆ Φ
   rw [image_comp]
   exact (monotone_image hf₂).trans hg₂
 

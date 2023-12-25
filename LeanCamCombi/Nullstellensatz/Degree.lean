@@ -37,7 +37,7 @@ theorem totalDegree_sum [CommSemiring R] (s : Finset α) (p : α → MvPolynomia
   apply (total_degree_add _ _).trans
   simp [h_ind]
 
-theorem totalDegree_hMul_x_le [CommSemiring R] [Nontrivial R] (f : MvPolynomial σ R) (j : σ) :
+theorem totalDegree_mul_x_le [CommSemiring R] [Nontrivial R] (f : MvPolynomial σ R) (j : σ) :
     totalDegree (f * X j) ≤ totalDegree f + 1 := by
   apply (total_degree_mul f (X j)).trans
   simp only [total_degree_X]
@@ -72,9 +72,9 @@ theorem support_mul'' [CommRing R] {f g : MvPolynomial σ R} {m : σ →₀ ℕ}
 -- this uses code from flt-regular
 theorem totalDegree_mul' [CommRing R] [IsDomain R] {f g : MvPolynomial σ R} (hf : f ≠ 0)
     (hg : g ≠ 0) : totalDegree (f * g) = totalDegree f + totalDegree g :=
-  totalDegree_hMul_eq hf hg
+  totalDegree_mul_eq hf hg
 
-theorem totalDegree_hMul_x [CommRing R] [IsDomain R] {f : MvPolynomial σ R} (h : f ≠ 0) (j : σ) :
+theorem totalDegree_mul_x [CommRing R] [IsDomain R] {f : MvPolynomial σ R} (h : f ≠ 0) (j : σ) :
     totalDegree (f * X j) = totalDegree f + 1 := by simp [total_degree_mul' h (X_ne_zero j)]
 
 end MvPolynomial

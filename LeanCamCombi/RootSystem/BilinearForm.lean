@@ -1,6 +1,6 @@
 import Mathlib.Data.Set.Function
-import LinearAlgebra.BilinearForm
-import Rootsystem.Dual
+import Mathlib.LinearAlgebra.BilinearForm
+import LeanCamCombi.RootSystem.Dual
 
 noncomputable section
 

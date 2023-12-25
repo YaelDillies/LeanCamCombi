@@ -96,7 +96,7 @@ theorem claim_1 (n : Nat) (h : 1 ≤ n) (A : Finset ℕ)
       rw [← Nat.div_add_mod (a + 1) 2]
       rw [← Nat.div_add_mod (b + 1) 2]
       -- cc, -- works, but too slow
-      rw [abeq, Con]
+      rw [abeq, con]
     apply anb
     exact Nat.add_right_cancel this
   -- We may order the remainders wlog
@@ -182,7 +182,7 @@ theorem decompo_lemma (n a : ℕ) (aR : a ∈ Icc 1 (2 * n)) :
   constructor; constructor
   · by_contra! con
     rw [Nat.lt_one_iff] at con
-    rw [Con] at eq
+    rw [con] at eq
     rw [MulZeroClass.mul_zero] at eq
     rw [Eq] at aR
     simp only [Nat.one_ne_zero, Finset.mem_Icc, zero_le', le_zero_iff, false_and_iff] at aR
@@ -199,7 +199,7 @@ theorem decompo_lemma (n a : ℕ) (aR : a ∈ Icc 1 (2 * n)) :
   by_contra! con
   rw [Nat.mod_two_ne_one] at con
   rw [← Nat.even_iff, even_iff_two_dvd] at con
-  cases' Con with q qdef
+  cases' con with q qdef
   rw [qdef] at eq
   rw [← mul_assoc] at eq
   nth_rw 2 [← pow_one 2] at eq
@@ -218,10 +218,10 @@ theorem decompo_lemma (n a : ℕ) (aR : a ∈ Icc 1 (2 * n)) :
       apply Nat.mul_le_mul
       · apply pow_le_pow_right
         norm_num
-        exact Con
+        exact con
       · by_contra! con
         rw [Nat.lt_one_iff] at con
-        rw [Con] at eq
+        rw [con] at eq
         rw [MulZeroClass.mul_zero] at eq
         rw [Eq] at aR
         exact (not_le_of_lt Nat.zero_lt_one) aR.1
@@ -250,7 +250,7 @@ theorem size_lemma (n : Nat) : ((Icc 1 (2 * n)).filter fun x => x % 2 = 1).card 
     rw [mul_comm]
     apply lt_of_le_of_ne an
     intro con
-    rw [Con] at aodd
+    rw [con] at aodd
     rw [Nat.mul_mod_right 2 n] at aodd
     exact zero_ne_one aodd
     norm_num
@@ -317,7 +317,7 @@ theorem claim_2 (n : Nat) (hn : 1 ≤ n) (A : Finset ℕ)
     use 2 ^ (kb - ka)
     rw [ka_def, kb_def]
     rw [mul_assoc]
-    nth_rw_rhs 2 [mul_comm]
+    nth_rw 2 [mul_comm]
     rw [← mul_assoc]
     rw [← pow_add]
     -- rw add_sub_cancel'_right, -- we're not in a group
@@ -332,7 +332,7 @@ theorem claim_2 (n : Nat) (hn : 1 ≤ n) (A : Finset ℕ)
     use 2 ^ (ka - kb)
     rw [ka_def, kb_def]
     rw [mul_assoc]
-    nth_rw_rhs 2 [mul_comm]
+    nth_rw 2 [mul_comm]
     rw [← mul_assoc]
     rw [← pow_add]
     -- rw add_sub_cancel'_right, -- we're not in a group

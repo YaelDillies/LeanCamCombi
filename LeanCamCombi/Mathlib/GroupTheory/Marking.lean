@@ -62,7 +62,7 @@ instance : MonoidHomClass (GroupMarking G S) (FreeGroup S) G
     where
   coe f := f.toFun
   coe_injective' f g h := by cases f <;> cases g <;> congr
-  map_hMul f := f.map_mul'
+  map_mul f := f.map_mul'
   map_one f := f.map_one'
 
 @[to_additive]
@@ -173,7 +173,7 @@ noncomputable instance : NormedGroup (MarkedGroup m) :=
   GroupNorm.toNormedGroup
     { toFun := fun x => by classical exact Nat.find (mul_aux x)
       map_one' := cast_eq_zero.2 <| (find_eq_zero <| mul_aux _).2 ⟨1, by simp_rw [map_one], le_rfl⟩
-      hMul_le' := fun x y => by
+      mul_le' := fun x y => by
         norm_cast
         obtain ⟨a, rfl, ha⟩ := Nat.find_spec (mul_aux x)
         obtain ⟨b, rfl, hb⟩ := Nat.find_spec (mul_aux y)
@@ -221,19 +221,19 @@ theorem norm_eq_one (x : MarkedGroup m) :
 theorem norm_toMarkedGroup (s : S) : ‖(toMarkedGroup (m (FreeGroup.of s)) : MarkedGroup m)‖ = 1 :=
   sorry
 
-theorem gen_set_hMul_right (x : MarkedGroup m) (s : S) :
+theorem gen_set_mul_right (x : MarkedGroup m) (s : S) :
     ‖(toMarkedGroup (ofMarkedGroup x * m (FreeGroup.of s)) : MarkedGroup m)‖ ≤ ‖x‖ + 1 :=
   sorry
 
-theorem gen_set_hMul_right' (x : MarkedGroup m) {n : ℝ} (hx : ‖x‖ ≤ n) (s : S) :
+theorem gen_set_mul_right' (x : MarkedGroup m) {n : ℝ} (hx : ‖x‖ ≤ n) (s : S) :
     ‖(toMarkedGroup (ofMarkedGroup x * m (FreeGroup.of s)) : MarkedGroup m)‖ ≤ n + 1 :=
   sorry
 
-theorem gen_set_hMul_left (x : MarkedGroup m) (s : S) :
+theorem gen_set_mul_left (x : MarkedGroup m) (s : S) :
     ‖(toMarkedGroup (m (FreeGroup.of s) * ofMarkedGroup x) : MarkedGroup m)‖ ≤ ‖x‖ + 1 :=
   sorry
 
-theorem gen_set_hMul_left' (x : MarkedGroup m) {n : ℝ} (hx : ‖x‖ ≤ n) (s : S) :
+theorem gen_set_mul_left' (x : MarkedGroup m) {n : ℝ} (hx : ‖x‖ ≤ n) (s : S) :
     ‖(toMarkedGroup (m (FreeGroup.of s) * ofMarkedGroup x) : MarkedGroup m)‖ ≤ n + 1 :=
   sorry
 
@@ -256,19 +256,19 @@ theorem gen_norm_le_one_sub {H : Set G} {m' : GroupMarking G H} {s : MarkedGroup
     ‖s‖ ≤ 1 :=
   sorry
 
-theorem gen_set_hMul_right_sub {H : Set G} {s : G} {m' : GroupMarking G H} (sh : s ∈ H)
+theorem gen_set_mul_right_sub {H : Set G} {s : G} {m' : GroupMarking G H} (sh : s ∈ H)
     (g : MarkedGroup m') : ‖g * s‖ ≤ ‖g‖ + 1 :=
   sorry
 
-theorem gen_set_hMul_right'_sub {H : Set G} {s : G} {m' : GroupMarking G H} (sh : s ∈ H)
+theorem gen_set_mul_right'_sub {H : Set G} {s : G} {m' : GroupMarking G H} (sh : s ∈ H)
     (g : MarkedGroup m') {n : ℝ} (hg : ‖g‖ ≤ n) : ‖g * s‖ ≤ n + 1 :=
   sorry
 
-theorem gen_set_hMul_left_sub {H : Set G} {m' : GroupMarking G H} (g s : MarkedGroup m')
+theorem gen_set_mul_left_sub {H : Set G} {m' : GroupMarking G H} (g s : MarkedGroup m')
     (sh : s ∈ H) : ‖s * g‖ ≤ ‖g‖ + 1 :=
   sorry
 
-theorem gen_set_hMul_left'_sub {H : Set G} {m' : GroupMarking G H} (g s : MarkedGroup m')
+theorem gen_set_mul_left'_sub {H : Set G} {m' : GroupMarking G H} (g s : MarkedGroup m')
     (sh : s ∈ H) {n : ℝ} (hg : ‖g‖ ≤ n) : ‖s * g‖ ≤ n + 1 :=
   sorry
 

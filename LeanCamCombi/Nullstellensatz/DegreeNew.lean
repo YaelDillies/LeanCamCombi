@@ -193,7 +193,7 @@ theorem eq_and_eq_of_le_add_le_eq {a1 a2 b1 b2 : ℕ} (h1 : a1 ≤ b1) (h2 : a2 
     · simpa [h] using add_lt_add_of_le_of_lt h1 c
     · exact le_antisymm h2 (not_lt.1 c)
 
-theorem maxDegreeMonomial_hMul {σ R : Type _} [CommRing R] [IsDomain R] {f g : MvPolynomial σ R}
+theorem maxDegreeMonomial_mul {σ R : Type _} [CommRing R] [IsDomain R] {f g : MvPolynomial σ R}
     {m : σ →₀ ℕ} (hf : f ≠ 0) (hg : g ≠ 0) (h : MaxDegreeMonomial m (f * g)) :
     ∃ mf mg, MaxDegreeMonomial mf f ∧ MaxDegreeMonomial mg g ∧ mf + mg = m := by
   rw [max_degree_monomial] at h

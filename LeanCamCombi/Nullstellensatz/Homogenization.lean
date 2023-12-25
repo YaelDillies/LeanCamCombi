@@ -5,8 +5,8 @@ Authors: Alex J. Best
 -/
 import Mathlib.Data.MvPolynomial.CommRing
 import Mathlib.Data.Set.Finite
-import RingTheory.MvPolynomial.Homogeneous
-import RingTheory.Polynomial.Basic
+import Mathlib.RingTheory.MvPolynomial.Homogeneous
+import Mathlib.RingTheory.Polynomial.Basic
 import Order.SymmDiff
 
 /-!
@@ -541,7 +541,7 @@ theorem NoZeroSmulDivisors.smul_eq_zero_iff_eq_zero_or_eq_zero (R M : Type _) [Z
 -- (p * monomial x r).leading_terms = p.leading_terms * monomial x r :=
 --TODO also maybe an smul version
 @[simp]
-theorem leadingTerms_c_hMul [NoZeroSMulDivisors R R] (p : MvPolynomial ι R) (r : R) :
+theorem leadingTerms_c_mul [NoZeroSMulDivisors R R] (p : MvPolynomial ι R) (r : R) :
     (C r * p).leadingTerms = C r * p.leadingTerms := by
   by_cases hr : r = 0
   · simp [hr]
@@ -573,7 +573,7 @@ theorem eq_c_of_totalDegree_zero {p : MvPolynomial ι R} (hp : p.totalDegree = 0
 -- TODO can things be generalized to no_zero_divisors (would require an instance for mv_poly)
 -- sadly this adds some imports and requirements not needed in rest of file
 @[simp]
-theorem leadingTerms_hMul {S : Type _} [CommRing S] [IsDomain S] (p q : MvPolynomial ι S) :
+theorem leadingTerms_mul {S : Type _} [CommRing S] [IsDomain S] (p q : MvPolynomial ι S) :
     (p * q).leadingTerms = p.leadingTerms * q.leadingTerms := by
   by_cases hp : p.total_degree = 0
   · rw [eq_C_of_total_degree_zero hp, leading_terms_C_mul, leading_terms_C]
@@ -618,7 +618,7 @@ theorem leadingTerms_hMul {S : Type _} [CommRing S] [IsDomain S] (p q : MvPolyno
     exact ⟨tp, tq, add_lt_add tp tq⟩
 
 --TODO reinterpret this as a hom in this case
-theorem totalDegree_hMul_eq {S : Type _} [CommRing S] [IsDomain S] {p q : MvPolynomial ι S}
+theorem totalDegree_mul_eq {S : Type _} [CommRing S] [IsDomain S] {p q : MvPolynomial ι S}
     (hp : p ≠ 0) (hq : q ≠ 0) : (p * q).totalDegree = p.totalDegree + q.totalDegree := by
   rw [← total_degree_leading_terms, ← total_degree_leading_terms p, ← total_degree_leading_terms q,
     leading_terms_mul, is_homogeneous.total_degree]
@@ -632,7 +632,7 @@ theorem homogenization_add_of_totalDegree_eq (i : ι) (p q : MvPolynomial ι R)
     (p + q).homogenization i = p.homogenization i + q.homogenization i := by
   simp only [homogenization, Finsupp.mapDomain_add, ← h, ← hpq]
 
-theorem homogenization_hMul {S : Type _} [CommRing S] [IsDomain S] (i : ι)
+theorem homogenization_mul {S : Type _} [CommRing S] [IsDomain S] (i : ι)
     (p q : MvPolynomial ι S) :
     (-- TODO is this cond needed?
             --(hp : ∀ j ∈ p.support, (j : ι → ℕ) i = 0) (hq : ∀ j ∈ q.support, (j : ι → ℕ) i = 0) :

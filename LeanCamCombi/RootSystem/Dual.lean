@@ -1,5 +1,5 @@
-import LinearAlgebra.Finsupp
-import Rootsystem.Basic
+import Mathlib.LinearAlgebra.Finsupp
+import LeanCamCombi.RootSystem.Basic
 
 open Set Function
 

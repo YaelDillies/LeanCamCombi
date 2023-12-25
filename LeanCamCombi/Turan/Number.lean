@@ -69,7 +69,7 @@ theorem tn_turanNum' (t n : ℕ) : turanNum' t n + 2 * turanNum t n = n ^ 2 := b
     rw [tsub_add_cancel_of_le (succ_le_iff.2 ht)]
     ring
   · rw [← n3, add_mul] at n1 ; nth_rw 3 [← mul_one b] at n1 ; rw [add_assoc, ← mul_add b] at n1
-    nth_rw_rhs 1 [← n1]; rw [mul_add, mul_add, ← mul_assoc 2, ← mul_assoc 2 ((a + 1) ^ 2)]
+    nth_rw 1 [← n1]; rw [mul_add, mul_add, ← mul_assoc 2, ← mul_assoc 2 ((a + 1) ^ 2)]
     nth_rw 1 [mul_comm 2 _]; nth_rw 2 [mul_comm 2 _]
     rw [mul_assoc, mul_assoc _ 2, two, two, add_sq ((t - b) * a), mul_comm _ (a ^ 2)]
     set c := t - b with hc

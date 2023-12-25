@@ -32,7 +32,7 @@ namespace Nat
 
 variable {a b : ℕ}
 
-theorem le_hMul_div_add (hb : b ≠ 0) : a ≤ b * (a / b) + b - 1 :=
+theorem le_mul_div_add (hb : b ≠ 0) : a ≤ b * (a / b) + b - 1 :=
   le_tsub_of_add_le_right <| by
     rw [succ_le_iff, ← mul_add_one, mul_comm, ← div_lt_iff_lt_mul (pos_iff_ne_zero.2 hb),
       lt_add_one_iff]
@@ -225,7 +225,7 @@ theorem rothNumberNat_le_ruzsa_szemeredi_number_nat' :
         add_assoc, add_sub_assoc, add_mul, mul_right_comm]
       norm_num
       norm_cast
-      exact (Nat.le_hMul_div_add <| show 6 ≠ 0 by norm_num).trans (by norm_num)
+      exact (Nat.le_mul_div_add <| show 6 ≠ 0 by norm_num).trans (by norm_num)
     · norm_cast
       exact rothNumberNat_le_ruzsaSzemerediNumberNat _
 

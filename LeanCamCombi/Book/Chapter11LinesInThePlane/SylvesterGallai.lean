@@ -676,24 +676,9 @@ theorem SG_Pythagoras_workaround (x y z p t : E) (hyz : y = z) (htz : t ≠ z)
     using this.trans $ mul_self_le_mul_self (norm_nonneg _) con
   have := this.trans $ mul_self_le_mul_self (norm_nonneg _) con
   rw [← inner_neg_neg, neg_sub, neg_sub] at itzxz
-  have := add_nonpos itzxz iypxp
-  -- have problem : z = p := by
-  --   rw [← sub_eq_zero]
-  --   rw [← norm_eq_zero]
-  --   rw [← sq_eq_zero_iff]
-  --   apply le_antisymm
-  --   swap
-  --   apply sq_nonneg
-  --   rw [show ‖z - p‖ ^ 2 = ↑(‖z - p‖ ^ 2 : ℝ) by
-  --       simp only [IsROrC.ofReal_real_eq_id, id.def, eq_self_iff_true, sq_eq_sq]]
-  --   push_cast
-  --   rw [← @inner_self_eq_norm_sq_to_K ℝ _ _ _ _ (z - p)]
-  --   nth_rw 2 [show z - p = z - x + (x - p) by
-  --       simp only [eq_self_iff_true, sub_add_sub_cancel, sub_left_inj]]
-  --   rw [inner_add_right]
-  --   exact add_nonpos itzxz iypxp
-  -- rw [← problem] at eq
-  -- exact htz Eq
+  refine htz.symm ?_
+  simpa [← inner_add_right, real_inner_self_nonneg.le_iff_eq, sub_eq_zero]
+    using add_nonpos itzxz iypxp
 
 /-- ### The Sylvester-Gallai theorem:
 
@@ -703,7 +688,7 @@ the set is on the line they span.
 -/
 
 theorem Sylvester_Gallai (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈ line a b) :
-    ∃ a ∈ P, ∃ ∈ P, a ≠ b ∧ ∀ p ∈ P, p ≠ a → p ≠ b → p ∉ line a b := by
+    ∃ a ∈ P, ∃ b ∈ P, a ≠ b ∧ ∀ p ∈ P, p ≠ a → p ≠ b → p ∉ line a b := by
   /-
     We consider the minimum distance of the first of a triple of points
     to the line spanned by the other two, where the points are distinct,
@@ -722,9 +707,9 @@ theorem Sylvester_Gallai (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈
   rcases d_prop with ⟨t, tdef, tdist⟩
   -- The two points from this minimum achieving line satisfy the result
   use t.2.1.val
-  constructor; exact t.2.1.Prop
+  constructor; exact t.2.1.prop
   use t.2.2.val
-  constructor; exact t.2.2.Prop
+  constructor; exact t.2.2.prop
   -- We prove this by contradiction
   by_contra! con
   rw [pointLineFinset] at tdef
@@ -748,14 +733,16 @@ theorem Sylvester_Gallai (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈
     -/
   set t' :=
     ((⟨y, by
-          cases ydef; rw [ydef]; exact t.2.1.Prop
-          cases ydef; rw [ydef]; exact t.2.2.Prop
-          rw [ydef]; exact qP⟩ :
+          obtain rfl | rfl | rfl := ydef
+          · exact t.2.1.prop
+          · exact t.2.2.prop
+          · exact qP⟩ :
         ↥P),
       ((⟨x, by
-            cases xdef; rw [xdef]; exact t.2.1.Prop
-            cases xdef; rw [xdef]; exact t.2.2.Prop
-            rw [xdef]; exact qP⟩ :
+            obtain rfl | rfl | rfl := xdef
+            · exact t.2.1.prop
+            · exact t.2.2.prop
+            · exact qP⟩ :
           ↥P),
         t.1)) with
     t'_def

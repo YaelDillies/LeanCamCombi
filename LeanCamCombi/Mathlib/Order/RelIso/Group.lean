@@ -1,5 +1,5 @@
 import Mathlib.Algebra.Group.Opposite
-import GroupTheory.GroupAction.Defs
+import Mathlib.GroupTheory.GroupAction.Defs
 import Order.RelIso.Group
 
 namespace RelIso
@@ -11,14 +11,14 @@ instance applyMulAction : MulAction (r ≃r r) α
     where
   smul := coeFn
   one_smul _ := rfl
-  hMul_smul _ _ _ := rfl
+  mul_smul _ _ _ := rfl
 
 /-- The tautological action by `r ≃r r` on `α`. -/
 instance applyOpMulAction : MulAction (r ≃r r)ᵐᵒᵖ α
     where
   smul e := e.unop.symm
   one_smul _ := rfl
-  hMul_smul _ _ _ := rfl
+  mul_smul _ _ _ := rfl
 
 @[simp]
 theorem smul_def (f : r ≃r r) (a : α) : f • a = f a :=

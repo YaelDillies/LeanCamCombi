@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Yves Jäckle.
 -/
 import Mathlib.Analysis.PSeries
-import RingTheory.Int.Basic
-import Topology.Basic
+import Mathlib.RingTheory.Int.Basic
+import Mathlib.Topology.Basic
 
 /-!
 # Six proofs of the inﬁnity of primes : 5th proof
@@ -46,12 +46,12 @@ def n (a b : ℤ) : Set ℤ :=
 instance bonaFideTopology : TopologicalSpace ℤ
     where
   -- First, we define the property of a set being open in the topology
-  IsOpen O := O = ∅ ∨ ∀ a ∈ O, ∃ b : ℤ, ∃ b_tec : 0 < b, n a b ⊆ O
+  IsOpen O := O = ∅ ∨ ∀ a ∈ O, ∃ b : ℤ, 0 < b ∧ n a b ⊆ O
   -- The universal set should be open
   isOpen_univ := by
     --simp, use 1, exact zero_lt_one, -- the power of simp
     right
-    intro a auniv
+    intro a _
     use 1
     use zero_lt_one
     apply Set.subset_univ
@@ -59,9 +59,10 @@ instance bonaFideTopology : TopologicalSpace ℤ
   isOpen_inter := by
     intro s t sO tO
     -- First, we discuss the empty cases
-    cases sO;
-    left; rw [sO]; exact Set.empty_inter t
-    cases tO; left; rw [tO]; exact Set.inter_empty s
+    obtain rfl | sO := sO;
+    left; exact Set.empty_inter t
+    obtain rfl | tO := tO
+    · left; exact Set.inter_empty s
     -- Next come the non-empty cases
     right
     intro a auniv
@@ -73,9 +74,7 @@ instance bonaFideTopology : TopologicalSpace ℤ
     -- The common terms of the progressions is the progression with lcm bs bt
     -- as step, but that with step bs*bt (which is contained in the first),
     -- does the job too.
-    use bs * bt
-    constructor
-    exact mul_pos bs_tec bt_tec
+    refine ⟨bs * bt, mul_pos bs_tec bt_tec, ?_⟩
     simp only [n, Set.subset_inter_iff]
     constructor
     intro x xdef
@@ -83,7 +82,7 @@ instance bonaFideTopology : TopologicalSpace ℤ
     have : x ∈ n a bs := by rw [n]; use bt * xn; rw [← mul_assoc]; exact xeq
     exact sIn this
     intro x xdef; cases' xdef with xn xeq
-    have : x ∈ n a bt := by rw [n]; use bs * xn; rw [← mul_assoc]; nth_rw 2 [mul_comm]; exact xeq
+    have : x ∈ n a bt := by rw [n]; use bs * xn; rw [← mul_assoc]; simpa only [mul_comm] using xeq
     exact tIn this
   -- Arbitrary unions of open sets should be open
   isOpen_sUnion := by
@@ -92,7 +91,7 @@ instance bonaFideTopology : TopologicalSpace ℤ
     intro a aunion
     rw [Set.mem_sUnion] at aunion ; rcases aunion with ⟨s, ⟨sfam, as⟩⟩
     specialize fam_isO s sfam
-    cases fam_isO
+    obtain fam_isO | fam_isO := fam_isO
     exfalso; rw [fam_isO] at as ; exact Set.not_mem_empty a as
     specialize fam_isO a as
     rcases fam_isO with ⟨b, ⟨b_tec, incl⟩⟩
@@ -106,7 +105,8 @@ as a finite union of two-way arithmetic progressions.
 
 This allows us to show that N is closed, in the next lemma.
 -/
-theorem n_as_a_comlpement (a b : ℤ) (b_tec : 0 < b) : n a bᶜ = ⋃ i ∈ Finset.Ico 1 b, n (a + i) b := by
+theorem n_as_a_complement (a b : ℤ) (b_tec : 0 < b) :
+    (n a b)ᶜ = ⋃ i ∈ Finset.Ico 1 b, n (a + i) b := by
   ext x
   simp
   -- the suggested "simp only" is not enough to get the same result.
@@ -138,7 +138,7 @@ theorem n_as_a_comlpement (a b : ℤ) (b_tec : 0 < b) : n a bᶜ = ⋃ i ∈ Fin
     intro con
     -- We'll derive a contradiction from basic computations and comparisions
     simp only [n, Set.mem_setOf_eq] at *
-    cases' ai with n ndef; cases' Con with m mdef
+    cases' ai with n ndef; cases' con with m mdef
     have target : i = b * (m - n) := by linear_combination -ndef + mdef
     -- rw ndef at mdef,
     -- rw add_assoc at mdef, nth_rewrite_lhs 1 add_comm at mdef,
@@ -149,7 +149,7 @@ theorem n_as_a_comlpement (a b : ℤ) (b_tec : 0 < b) : n a bᶜ = ⋃ i ∈ Fin
     -- alternative to the previous line
     apply ltByCases (m - n) 0
     · intro q
-      linarith [show i < 0 by rw [target]; apply Linarith.hMul_neg q b_tec]
+      linarith [show i < 0 by rw [target]; apply Linarith.mul_neg q b_tec]
     · intro q; rw [q, MulZeroClass.mul_zero] at target ; linarith
     · intro q
       linarith [show b ≤ i by
@@ -162,10 +162,10 @@ theorem n_as_a_comlpement (a b : ℤ) (b_tec : 0 < b) : n a bᶜ = ⋃ i ∈ Fin
 /-- The N sets are closed in our topology -/
 theorem n_closed (a b : ℤ) (b_tec : 0 < b) : IsClosed (n a b) := by
   rw [← isOpen_compl_iff]
-  rw [n_as_a_comlpement a b b_tec]
+  rw [n_as_a_complement a b b_tec]
   apply isOpen_biUnion
   simp
-  intro i wierd
+  intro i _
   simp only [IsOpen, TopologicalSpace.IsOpen]
   -- unfold the meaning of open in our topology
   right
@@ -183,16 +183,16 @@ theorem n_closed (a b : ℤ) (b_tec : 0 < b) : IsClosed (n a b) := by
 theorem two_units_not_open : ¬bonaFideTopology.IsOpen {(-1 : ℤ), 1} := by
   intro con
   simp [TopologicalSpace.IsOpen] at con
-  cases Con
-  · have problem : (-1 : ℤ) ∈ ∅ := by rw [← Con]; apply Set.mem_insert
+  obtain con | con := con
+  · have problem : (-1 : ℤ) ∈ ∅ := by rw [← con]; apply Set.mem_insert
     rw [Set.mem_empty_iff_false] at problem
     exact problem
-  · obtain ⟨b, ⟨b_tec, incl⟩⟩ := Con.2; clear con
+  · obtain ⟨b, ⟨b_tec, incl⟩⟩ := con.2; clear con
     rw [n] at incl
-    have : 1 + b ∈ {x : ℤ | ∃ n : ℤ, x = 1 + b * n} := by rw [Set.mem_setOf_eq]; use 1;
-      rw [mul_one b]
+    have : 1 + b ∈ {x : ℤ | ∃ n : ℤ, x = 1 + b * n} := by
+      rw [Set.mem_setOf_eq]; use 1; rw [mul_one b]
     specialize incl this
-    cases incl
+    obtain incl | incl := incl
     linarith
     simp only [add_right_eq_self, Set.mem_singleton_iff] at incl
     apply lt_irrefl (0 : ℤ); convert b_tec; exact incl.symm
@@ -215,16 +215,16 @@ theorem univ_sdiff_units_as_prime_union : {(-1 : ℤ), (1 : ℤ)}ᶜ = ⋃ p ∈
       use 0; rw [MulZeroClass.mul_zero]; exact z
     -- Now, the absolute value of x is ≥ 2, and hence we may use
     -- `int.exists_prime_and_dvd`, which requires the following condition:
-    have condition : x.nat_abs ≠ 1 := by
+    have condition : x.natAbs ≠ 1 := by
       intro con; rw [Int.natAbs_eq_iff] at con
       rw [or_comm] at con
-      exact xuniv Con
+      exact xuniv con
     obtain ⟨p, ⟨p_prime, p_dvd_x⟩⟩ := Int.exists_prime_and_dvd condition
     cases' p_dvd_x with d ddef
-    use p.nat_abs
+    use p.natAbs
     constructor
     · rw [← Int.prime_iff_natAbs_prime]; exact p_prime
-    · cases Int.natAbs_eq p
+    · obtain h | h := Int.natAbs_eq p
       · use d; rwa [← h]
       · use-d; rw [h, neg_mul] at ddef ; rwa [mul_neg]
   · simp [n]
@@ -232,13 +232,12 @@ theorem univ_sdiff_units_as_prime_union : {(-1 : ℤ), (1 : ℤ)}ᶜ = ⋃ p ∈
     intro con
     rw [or_comm] at con
     have tec := (@Int.natAbs_eq_iff x 1).mpr
-    push_cast at tec ; rw [zero_add] at tec
-    replace con := tec Con; clear tec
+    push_cast at tec
+    replace con := tec con; clear tec
     apply_fun Int.natAbs at eq
-    rw [Con, Int.natAbs_mul, Int.natAbs_ofNat] at eq
+    rw [con, Int.natAbs_mul, Int.natAbs_ofNat] at eq
     apply Nat.Prime.not_dvd_one p_prime
-    use d.nat_abs
-    exact Eq
+    use d.natAbs
 
 /-- ### 5th proof of the infinitude of primes
 
@@ -257,7 +256,7 @@ theorem fifth_proof : {x : ℕ | x.Prime}.Infinite := by
   have pair_as_union := univ_sdiff_units_as_prime_union
   have union_closed : IsClosed (⋃ p ∈ {x : ℕ | x.Prime}, n 0 p) := by
     apply Set.Finite.isClosed_biUnion
-    exact Con
+    exact con
     intro p pdef
     apply n_closed
     rw [Set.mem_setOf_eq] at pdef

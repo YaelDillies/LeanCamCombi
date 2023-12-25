@@ -77,7 +77,7 @@ theorem list_set_lemma (P : Finset E) (u v : E) (hu : u ∈ P) (hv : v ∈ P) (u
     -- showing that we may find a 3rd (forbidden) point on `line u v`.
     intro con
     rw [lineSet, Finset.mem_image] at con
-    rcases Con with ⟨pair, pair_def, eq⟩
+    rcases con with ⟨pair, pair_def, eq⟩
     rw [Finset.mem_filter] at pair_def
     have not_both_v : ↑pair.1 ≠ v ∨ ↑pair.2 ≠ v := by
       by_contra! K
@@ -87,17 +87,17 @@ theorem list_set_lemma (P : Finset E) (u v : E) (hu : u ∈ P) (hv : v ∈ P) (u
     cases not_both_v
     · apply uv_prop ↑pair.1
       · apply Finset.erase_subset u P
-        exact pair.1.Prop
+        exact pair.1.prop
       · apply @Finset.ne_of_mem_erase _ _ P _ _
-        exact pair.1.Prop
+        exact pair.1.prop
       · exact not_both_v
       · rw [← Eq]
         apply left_mem_line
     · apply uv_prop ↑pair.2
       · apply Finset.erase_subset u P
-        exact pair.2.Prop
+        exact pair.2.prop
       · apply @Finset.ne_of_mem_erase _ _ P _ _
-        exact pair.2.Prop
+        exact pair.2.prop
       · exact not_both_v
       · rw [← Eq]
         apply right_mem_line
@@ -113,18 +113,18 @@ theorem list_set_lemma (P : Finset E) (u v : E) (hu : u ∈ P) (hv : v ∈ P) (u
         apply Finset.mem_univ
         intro con
         simp only [Subtype.mk_eq_mk] at con
-        exact unv Con
+        exact unv con
       · simp only [eq_self_iff_true, Subtype.coe_mk]
     · rw [lineSet, Finset.mem_image] at *
       rcases ldef with ⟨pair, pair_def, eq⟩
       rw [Finset.mem_filter] at pair_def
       use((⟨pair.1.val, by
               apply Finset.erase_subset u P
-              exact pair.1.Prop⟩ :
+              exact pair.1.prop⟩ :
             ↥P),
           (⟨pair.2.val, by
               apply Finset.erase_subset u P
-              exact pair.2.Prop⟩ :
+              exact pair.2.prop⟩ :
             ↥P))
       constructor
       · rw [Finset.mem_filter]
@@ -134,7 +134,7 @@ theorem list_set_lemma (P : Finset E) (u v : E) (hu : u ∈ P) (hv : v ∈ P) (u
         apply pair_def.2
         rw [Subtype.ext_iff_val] at *
         simp only [Subtype.val_eq_coe] at *
-        exact Con
+        exact con
       · simp only [Subtype.coe_mk, Subtype.val_eq_coe]
         exact Eq
 
@@ -204,7 +204,7 @@ theorem theorem_2 (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈ line a
       · -- For `line a b` we need two points of `P` that represent it
         have Tsize : 2 ≤ T.card := by
           apply_fun Finset.card at Tdef
-          nth_rw_rhs 1 [Finset.card_erase_of_mem uS] at Tdef
+          nth_rw 1 [Finset.card_erase_of_mem uS] at Tdef
           linarith [Sylvester_Gallai_condition_fact S hSG_S,
             show 1 ≤ S.card by
               rw [← zero_add 1]
@@ -236,7 +236,7 @@ theorem theorem_2 (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈ line a
           simp only [Subtype.mk_eq_mk, Ne.def]
           intro con
           apply Finset.not_mem_erase u S
-          nth_rw 1 [Con]
+          nth_rw 1 [con]
           exact tdef
         · simp only [Subtype.coe_mk]
           exact teq
@@ -285,7 +285,7 @@ theorem theorem_2 (P : Finset E) (hSG : ¬∃ a b : E, ∀ p ∈ P, p ∈ line a
         · exact tdef
     -- Form here, we do some accounting
     apply_fun Finset.card at Tdef
-    nth_rw_rhs 1 [Finset.card_erase_of_mem uS] at Tdef
+    nth_rw 1 [Finset.card_erase_of_mem uS] at Tdef
     rw [Finset.card_insert_of_not_mem this] at that
     rw [← thut, Tdef] at that
     rw [Nat.sub_add_cancel] at that
@@ -334,14 +334,14 @@ theorem theorem_3_ub {α : Type} [DecidableEq α] {X : Finset α} (hX : 3 ≤ X.
   obtain ⟨b, bdef, bprop⟩ := (ssubset_iff_of_subset (subset_of_ssubset (hA Aay))).mp (hA Aay)
   have bny : b ≠ y := by
     intro con
-    rw [Con] at bprop
+    rw [con] at bprop
     exact bprop Aay_prop.2.1
   set Aby := Classical.choose (h b y bdef yX bny) with Aby_def
   have Aby_prop := Classical.choose_spec (h b y bdef yX bny)
   rw [← Aby_def] at Aby_prop
   have anb : a ≠ b := by
     intro con
-    rw [← Con] at bprop
+    rw [← con] at bprop
     exact bprop Aay_prop.1
   set Aab := Classical.choose (h a b ((erase_subset y X) adef) bdef anb) with Aab_def
   have Aab_prop := Classical.choose_spec (h a b ((erase_subset y X) adef) bdef anb)
@@ -373,11 +373,11 @@ theorem theorem_3_lb {α : Type} [DecidableEq α] {X : Finset α} (hX : 3 ≤ X.
         (by
           intro con
           apply xnA
-          rw [Con]
+          rw [con]
           exact hy)) with
     fdef
   -- We use the set of these Aₖ to make the comparison
-  set I := image (fun z : A j => f z.val z.Prop) (A j).attach with Idef
+  set I := image (fun z : A j => f z.val z.prop) (A j).attach with Idef
   apply @le_of_eq_of_le _ _ _ I.card _
   · -- We show that the correspondence is a bijection
     apply card_congr f
@@ -403,7 +403,7 @@ theorem theorem_3_lb {α : Type} [DecidableEq α] {X : Finset α} (hX : 3 ≤ X.
             (by
               intro con
               apply xnA
-              rw [Con]
+              rw [con]
               exact adef)) with
         cadef
       have Ca :=
@@ -415,7 +415,7 @@ theorem theorem_3_lb {α : Type} [DecidableEq α] {X : Finset α} (hX : 3 ≤ X.
             (by
               intro con
               apply xnA
-              rw [Con]
+              rw [con]
               exact adef))
       set cb :=
         Classical.choose
@@ -426,7 +426,7 @@ theorem theorem_3_lb {α : Type} [DecidableEq α] {X : Finset α} (hX : 3 ≤ X.
             (by
               intro con
               apply xnA
-              rw [Con]
+              rw [con]
               exact bdef)) with
         cbdef
       have Cb :=
@@ -438,7 +438,7 @@ theorem theorem_3_lb {α : Type} [DecidableEq α] {X : Finset α} (hX : 3 ≤ X.
             (by
               intro con
               apply xnA
-              rw [Con]
+              rw [con]
               exact bdef))
       -- If `a ≠ b`, we would get on more Aₖ containg this pair,
       -- which by uniquness of of the sets containing a given pair
@@ -453,7 +453,7 @@ theorem theorem_3_lb {α : Type} [DecidableEq α] {X : Finset α} (hX : 3 ≤ X.
             (by
               apply subset_of_ssubset (hA j)
               exact bdef)
-            Con) with
+            con) with
         cabdef
       have Cab :=
         Classical.choose_spec
@@ -464,7 +464,7 @@ theorem theorem_3_lb {α : Type} [DecidableEq α] {X : Finset α} (hX : 3 ≤ X.
             (by
               apply subset_of_ssubset (hA j)
               exact bdef)
-            Con)
+            con)
       rw [← cadef] at *
       rw [← cbdef] at *
       rw [← cabdef] at *
@@ -506,7 +506,7 @@ theorem theorem_3_lb {α : Type} [DecidableEq α] {X : Finset α} (hX : 3 ≤ X.
             (by
               intro con
               apply xnA
-              rw [Con]
+              rw [con]
               exact c.prop))).1
 
 open scoped BigOperators
@@ -517,7 +517,7 @@ theorem splitter {α : Type} [DecidableEq α] (X : Finset α) (hX : 0 < X.card) 
   have : (X.card : ℚ) ≠ 0 := by
     intro con
     rw [Nat.cast_eq_zero] at con
-    rw [Con] at hX
+    rw [con] at hX
     exact (lt_irrefl 0) hX
   nth_rw 1 [← mul_one_div_cancel this]
   nth_rw 1 [card_eq_sum_ones X]
@@ -576,7 +576,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
       apply div_lt_div' (le_refl (1 : ℚ)) _ (by norm_num)
       · apply mul_pos
         rw [Nat.cast_pos]
-        exact lt_trans hm Con
+        exact lt_trans hm con
         rw [sub_pos]
         rw [Nat.cast_lt]
         exact Q x hx
@@ -585,7 +585,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
         rw [sub_lt_sub_iff_left]
         apply mul_lt_mul_of_nonneg_of_pos
         · rw [Nat.cast_lt]
-          exact Con
+          exact con
         · rw [Nat.cast_le]
           apply lb x hx i xnA
         · apply Nat.cast_nonneg
@@ -611,7 +611,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
       ∑ x in X, (1 / X.card : ℚ) =
         ∑ x in X.attach,
           ∑ i in univ.filter fun i => ↑x ∉ A i,
-            (1 / (X.card * (m - r (↑x) x.Prop)) : ℚ) :=-- Note: we need an `attach` to define r by
+            (1 / (X.card * (m - r (↑x) x.prop)) : ℚ) :=-- Note: we need an `attach` to define r by
       rw [← sum_attach]
       apply sum_congr
       rfl
@@ -730,7 +730,7 @@ theorem theorem_3 {α : Type} [DecidableEq α] (X : Finset α) (hX : 3 ≤ X.car
     -- To make the comparison, we first swap sums:
     have :=
       sum_rel X.attach (univ : Finset (Fin m)) (fun x => fun i => ↑x ∉ A i) fun x => fun i =>
-        (1 / (X.card * (m - r (↑x) x.Prop)) : ℚ)
+        (1 / (X.card * (m - r (↑x) x.prop)) : ℚ)
     dsimp at this
     rw [this]
     -- Then we compare sums, which due to < requires showing

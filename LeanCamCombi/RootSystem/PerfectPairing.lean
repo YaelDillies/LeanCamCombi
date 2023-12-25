@@ -1,5 +1,5 @@
-import LinearAlgebra.Dual
-import Rootsystem.LinearAlgebraAux
+import Mathlib.LinearAlgebra.Dual
+import LeanCamCombi.RootSystem.LinearAlgebraAux
 
 noncomputable section
 

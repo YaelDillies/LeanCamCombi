@@ -1,5 +1,5 @@
-import Rootsystem.LinearAlgebraAux
-import Rootsystem.Misc
+import LeanCamCombi.RootSystem.LinearAlgebraAux
+import LeanCamCombi.RootSystem.Misc
 
 noncomputable section
 

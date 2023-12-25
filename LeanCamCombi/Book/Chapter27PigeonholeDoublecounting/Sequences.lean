@@ -115,7 +115,7 @@ theorem lisl_non_extendable (I : Finset ℕ) (a : ℕ → ℝ) (i j : ℕ) (i_I 
   by_contra! con
   replace con :=
     show a j < a i by
-      apply lt_of_le_of_ne Con
+      apply lt_of_le_of_ne con
       apply distinct j j_I i i_I
       exact ne_of_lt wlog
   -- We find a longest increasing subsequence satrting at i
@@ -145,9 +145,9 @@ theorem lisl_non_extendable (I : Finset ℕ) (a : ℕ → ℝ) (i j : ℕ) (i_I 
         rw [le_iff_eq_or_lt] at index_seq_imin
         cases index_seq_imin
         rw [← index_seq_imin]
-        exact Con
+        exact con
         specialize index_seq_inc i index_seq_iin y y_index index_seq_imin
-        exact lt_trans Con index_seq_inc
+        exact lt_trans con index_seq_inc
       cases' ydef with yeqj y_index
       · exfalso
         specialize index_seq_imin x x_index

@@ -36,9 +36,9 @@ section
 variable {α : Type _} [CanonicallyOrderedCommSemiring α] [Sub α] [OrderedSub α] [IsTotal α (· ≤ ·)]
   [ContravariantClass α α (· + ·) (· ≤ ·)]
 
-theorem hMul_tsub_one (a b : α) : a * (b - 1) = a * b - a := by rw [mul_tsub, mul_one]
+theorem mul_tsub_one (a b : α) : a * (b - 1) = a * b - a := by rw [mul_tsub, mul_one]
 
-theorem tsub_one_hMul (a b : α) : (a - 1) * b = a * b - b := by rw [tsub_mul, one_mul]
+theorem tsub_one_mul (a b : α) : (a - 1) * b = a * b - b := by rw [tsub_mul, one_mul]
 
 end
 
@@ -154,7 +154,7 @@ namespace Nat
 
 variable {a b : ℕ}
 
-theorem eq_of_dvd_of_lt_two_hMul (ha : a ≠ 0) (hdvd : b ∣ a) (hlt : a < 2 * b) : a = b := by
+theorem eq_of_dvd_of_lt_two_mul (ha : a ≠ 0) (hdvd : b ∣ a) (hlt : a < 2 * b) : a = b := by
   obtain ⟨_ | _ | c, rfl⟩ := hdvd
   · simpa using ha
   · exact mul_one _
@@ -237,7 +237,7 @@ private theorem aux (hs : s.card = 2 * p - 1) (f : ι → ZMod p) :
   · simp only [card_map, ← Finset.filter_val, Finset.card_val, Function.comp_apply, ←
       Finset.map_val]
     refine'
-      Nat.eq_of_dvd_of_lt_two_hMul (Finset.card_pos.2 _).ne' _
+      Nat.eq_of_dvd_of_lt_two_mul (Finset.card_pos.2 _).ne' _
         ((Finset.card_filter_le _ _).trans_lt _)
     -- This number is nonzero because `x ≠ 0`.
     stop

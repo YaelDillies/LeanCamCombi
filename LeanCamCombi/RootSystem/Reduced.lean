@@ -1,4 +1,4 @@
-import Rootsystem.Basic
+import LeanCamCombi.RootSystem.Basic
 
 open Set Function
 

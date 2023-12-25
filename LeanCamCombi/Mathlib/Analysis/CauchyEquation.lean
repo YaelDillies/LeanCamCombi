@@ -62,7 +62,7 @@ theorem AddMonoidHom.measurable_of_continuous (f : ℝ →+ ℝ) (h : Measurable
   f.continuous_of_isBounded_nhds_zero hs hbdd
 
 -- do we want this one and where would it go?
-theorem isLinearMap_iff_apply_eq_apply_one_hMul {M : Type _} [CommSemiring M] (f : M →+ M) :
+theorem isLinearMap_iff_apply_eq_apply_one_mul {M : Type _} [CommSemiring M] (f : M →+ M) :
     IsLinearMap M f ↔ ∀ x : M, f x = f 1 * x := by
   refine' ⟨fun h x => _, fun h => ⟨map_add f, fun c x => _⟩⟩
   · convert h.2 x 1 using 1

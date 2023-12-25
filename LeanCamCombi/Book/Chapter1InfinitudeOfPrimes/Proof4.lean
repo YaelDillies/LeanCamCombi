@@ -85,15 +85,15 @@ def π (n : ℕ) : ℕ :=
   ((range (n + 1)).filter fun p => Nat.Prime p).card
 
 -- They are computable
-#eval π 10
+-- #eval π 10
 
-#eval π 100000
+-- #eval π 100000
 
 -- first 0 where this made my laptop take a second,
 -- next 0 causes a timeout
-#eval primesUpTo 10
-
-#eval primesUpTo 100000
+-- #eval primesUpTo 10
+--
+-- #eval primesUpTo 100000
 
 -- I later found out about:
 -- #check nat.nth
@@ -107,8 +107,8 @@ def π (n : ℕ) : ℕ :=
 We start the counting at 0 for `k`.
 -/
 def kthPrimeAmong (n k : ℕ) (h : k < π n) :=
-  List.nthLe (Finset.sort (· ≤ ·) ((range (n + 1)).filter fun p => Nat.Prime p)) k
-    (by rw [π] at h ; simp only [Finset.length_sort]; exact h)
+  List.get (Finset.sort (· ≤ ·) ((range (n + 1)).filter fun p => Nat.Prime p))
+    ⟨k, by rw [π] at h ; simp only [Finset.length_sort]; exact h⟩
 
 /-
 For some functions, specific value equalities can be
@@ -118,7 +118,7 @@ For example:
 def funtest (x : Nat) : ℕ :=
   2 * x
 
-#eval funtest 2
+-- #eval funtest 2
 
 example : funtest 2 = 4 := by rfl
 
@@ -129,20 +129,18 @@ The following proof is due to Bhavik Mehta.
 theorem thanks_Bhavik : π 10 = 4 := by
   rw [π]
   iterate 11
-
     rw [Finset.range_succ, Finset.filter_insert, apply_ite Finset.card,
       Finset.card_insert_of_not_mem]
     swap; · simp
     norm_num1
     simp only [if_true, if_false]
   rw [Finset.range_zero, Finset.filter_empty, Finset.card_empty]
-  norm_num1
 
 -- This computes the 2nd prime in 0,1,...10
-#eval kthPrimeAmong 10 1 (by rw [thanks_Bhavik]; norm_num)
+-- #eval kthPrimeAmong 10 1 (by rw [thanks_Bhavik]; norm_num)
 
 -- This computes the 4th prime in 0,1,...10
-#eval kthPrimeAmong 10 3 (by rw [thanks_Bhavik]; norm_num)
+-- #eval kthPrimeAmong 10 3 (by rw [thanks_Bhavik]; norm_num)
 
 /-- A function that takes as input `n`, `p` and a proof that
 `p` is a prime `≤ n` in the language of finsets,
@@ -158,53 +156,54 @@ def primeRankAmong (n p : ℕ) (h : p ∈ (range (n + 1)).filter fun q => Nat.Pr
 
 -- This computes the rank of the prime 5 in 0,1,...10,
 -- which is 3.
-#eval primeRankAmong 10 5 (by norm_num)
+-- #eval primeRankAmong 10 5 (by norm_num)
 
 -- This computes the rank of the prime 5 in 0,1,...10,
 -- which is 4.
-#eval primeRankAmong 10 7 (by norm_num)
+-- #eval primeRankAmong 10 7 (by norm_num)
 
-/-- `kth_prime_among` is a left inverse to `prime_rank_among` -/
+/-- `kthPrimeAmong` is a left inverse to `prime_rank_among` -/
 theorem order_tec_1 (n p : ℕ) (h : p ∈ (range (n + 1)).filter fun q => Nat.Prime q) :
-    kthPrimeAmong n (primeRankAmong n p h).val (primeRankAmong n p h).Prop = p := by
+    kthPrimeAmong n (primeRankAmong n p h).val (primeRankAmong n p h).prop = p := by
   simp [kthPrimeAmong, primeRankAmong]
 
-/-- `kth_prime_among n k h` is a prime `≤ n` -/
+/-- `kthPrimeAmong n k h` is a prime `≤ n` -/
 theorem kthPrimeAmong_makes_sense (n k : ℕ) (h : k < π n) :
     kthPrimeAmong n k h ∈ (range (n + 1)).filter Nat.Prime := by
   rw [kthPrimeAmong]
   rw [← Finset.mem_toList]
   have :
-    List.Perm (Finset.sort (· ≤ ·) (Filter Nat.Prime (range (n + 1))))
-      (Filter Nat.Prime (range (n + 1))).toList :=
-    sort_perm_to_list LE.le (Filter Nat.Prime (range (n + 1)))
+    List.Perm (Finset.sort (· ≤ ·) ((range (n + 1)).filter Nat.Prime))
+      ((range (n + 1)).filter Nat.Prime).toList :=
+    sort_perm_toList LE.le ((range (n + 1)).filter Nat.Prime)
   rw [← List.Perm.mem_iff this]
-  apply List.nthLe_mem
+  apply List.get_mem
 
-/-- `kth_prime_among n k h` is a prime `≤ n`, explicit version -/
+/-- `kthPrimeAmong n k h` is a prime `≤ n`, explicit version -/
 theorem kthPrimeAmong_makes_sense' (n k : ℕ) (h : k < π n) :
     kthPrimeAmong n k h < n + 1 ∧ Nat.Prime (kthPrimeAmong n k h) := by
   have := kthPrimeAmong_makes_sense n k h
   rw [mem_filter] at this
   rwa [mem_range] at this
 
-/-- `kth_prime_among` is a right inverse to `prime_rank_among` -/
+/-- `kthPrimeAmong` is a right inverse to `prime_rank_among` -/
 theorem order_tec_2 (n k : ℕ) (h : k < π n) :
     primeRankAmong n (kthPrimeAmong n k h) (kthPrimeAmong_makes_sense n k h) = ⟨k, h⟩ := by
   simp [kthPrimeAmong, primeRankAmong]
+  sorry
 
 /-- Expressing the set of primes `≤ n` as the image of
-0,1,...,(π n)-1 under `kth_prime_among`.
+0,1,...,(π n)-1 under `kthPrimeAmong`.
 -/
 theorem tec_order_set {n : ℕ} :
     ((range (n + 1)).filter fun p => Nat.Prime p) =
-      image (fun k : Fin (π n) => kthPrimeAmong n k.val k.Prop) (univ : Finset (Fin (π n))) := by
+      image (fun k : Fin (π n) => kthPrimeAmong n k.val k.prop) (univ : Finset (Fin (π n))) := by
   ext x
   constructor
   · intro xfil
     rw [mem_image]
     use primeRankAmong n x xfil
-    simp only [true_and_iff, Finset.mem_univ, Fin.val_eq_coe]
+    simp only [true_and_iff, Finset.mem_univ]
     apply order_tec_1
   · intro xim
     simp at xim
@@ -213,12 +212,12 @@ theorem tec_order_set {n : ℕ} :
     apply kthPrimeAmong_makes_sense
 
 /-- Ordering `∏ (p/(p-1) : ℚ)` according to the order of primes,
-using `kth_prime_among`.
+using `kthPrimeAmong`.
 -/
 theorem order_the_prod {n : ℕ} :
     ∏ p in (range (n + 1)).filter fun p => Nat.Prime p, (p / (p - 1) : ℚ) =
       ∏ k in (univ : Finset (Fin (π n))),
-        (kthPrimeAmong n k.val k.Prop / (kthPrimeAmong n k.val k.Prop - 1) : ℚ) := by
+        (kthPrimeAmong n k.val k.prop / (kthPrimeAmong n k.val k.prop - 1) : ℚ) := by
   rw [tec_order_set]
   apply prod_image
   simp
@@ -226,9 +225,8 @@ theorem order_the_prod {n : ℕ} :
   rw [kthPrimeAmong] at eq
   apply Fin.eq_of_veq
   have : List.Nodup (Finset.sort (· ≤ ·) ((range (n + 1)).filter fun p => Nat.Prime p)) :=
-    sort_nodup LE.le (Filter (fun p : ℕ => Nat.Prime p) (range (n + 1)))
-  apply list.nodup_iff_nth_le_inj.mp this
-  exact Eq
+    sort_nodup LE.le ((range (n + 1)).filter Nat.Prime)
+  simpa using List.nodup_iff_injective_get.mp this eq
 
 -- We didn't end up needing the following
 /-- `π` is an increasing function that increases either by 0
@@ -317,10 +315,10 @@ theorem list_stuff_3 (l : List Nat) (hl : List.Nodup l) (k : Nat) (hk : k.succ <
   intro k hk
   rw [List.nodup_cons] at hl
   cases k
-  simp; intro con; rw [Con] at hl ; apply hl.1; apply List.nthLe_mem
+  simp; intro con; rw [con] at hl ; apply hl.1; apply List.nthLe_mem
   simp; apply ih; exact hl.2
 
-/-- The `kth_prime_among` function increases by at leat 1 for successive indices.  -/
+/-- The `kthPrimeAmong` function increases by at leat 1 for successive indices.  -/
 theorem kthPrimeAmong_increase (n k : ℕ) (h : k.succ < π n) :
     kthPrimeAmong n k (by rw [Nat.succ_eq_add_one] at h ; linarith) + 1 ≤
       kthPrimeAmong n k.succ h := by
@@ -332,7 +330,7 @@ theorem kthPrimeAmong_increase (n k : ℕ) (h : k.succ < π n) :
   · apply list_stuff_3
     exact Finset.sort_nodup (· ≤ ·) (Filter Nat.Prime (range (n + 1)))
 
-/-- The lower bound on the `k`th prime: `k+2 ≤ kth_prime_among n k` -/
+/-- The lower bound on the `k`th prime: `k+2 ≤ kthPrimeAmong n k` -/
 theorem kthPrimeAmong_bound (n k : ℕ) (h : k < π n) : k + 2 ≤ kthPrimeAmong n k h := by
   induction' k with k ih
   · rw [zero_add]
@@ -350,9 +348,9 @@ theorem kthPrimeAmong_bound (n k : ℕ) (h : k < π n) : k + 2 ≤ kthPrimeAmong
 /-- We bound the ordered product of primes using the bound `kth_prime_among_bound`-/
 theorem prod_ordered_primes_bound_pre (n : ℕ) :
     ∏ k in (univ : Finset (Fin (π n))),
-        (kthPrimeAmong n k.val k.Prop / (kthPrimeAmong n k.val k.Prop - 1) : ℚ) ≤
+        (kthPrimeAmong n k.val k.prop / (kthPrimeAmong n k.val k.prop - 1) : ℚ) ≤
       ∏ k in (univ : Finset (Fin (π n))), ((k.val + 2) / (k.val + 1) : ℚ) := by
-  have useful_tec : ∀ k : Fin (π n), Nat.Prime (kthPrimeAmong n k.val k.Prop) := by
+  have useful_tec : ∀ k : Fin (π n), Nat.Prime (kthPrimeAmong n k.val k.prop) := by
     intro k
     exact (kthPrimeAmong_makes_sense' n k.val k.prop).2
   apply prod_le_prod
@@ -377,7 +375,7 @@ theorem prod_ordered_primes_bound_pre (n : ℕ) :
       rw [zero_add] at con
       apply Nat.Prime.ne_one (useful_tec i)
       rw [← @Nat.cast_inj ℚ _ _ _ _]
-      apply Con
+      apply con
     rw [this]; clear this
     have : ((i.val + 2) / (i.val + 1) : ℚ) = 1 + 1 / (i.val + 1 : ℚ) := by
       rw [show (2 : ℚ) = 1 + 1 by norm_num]
@@ -456,7 +454,7 @@ theorem prod_range_telescope (f : ℕ → ℚ) (n : ℕ) (h : ∀ n : ℕ, f n �
 /-- Upper-bounds the ordered product of primes by the prime counting function-/
 theorem prod_ordered_primes_bound (n : ℕ) :
     ∏ k in (univ : Finset (Fin (π n))),
-        (kthPrimeAmong n k.val k.Prop / (kthPrimeAmong n k.val k.Prop - 1) : ℚ) ≤
+        (kthPrimeAmong n k.val k.prop / (kthPrimeAmong n k.val k.prop - 1) : ℚ) ≤
       π n + 1 := by
   apply le_of_le_of_eq (prod_ordered_primes_bound_pre n)
   rw [prod_fin_range (fun k => ((k + 2) / (k + 1) : ℚ)) (π n)]
@@ -477,7 +475,7 @@ theorem prod_ordered_primes_bound (n : ℕ) :
     have : (0 : ℚ) = ((0 : ℕ) : ℚ) := by simp
     rw [this] at con
     rw [Nat.cast_inj] at con
-    exact (Nat.succ_ne_zero m) Con
+    exact (Nat.succ_ne_zero m) con
 
 -- #check prod_attach
 --This serves as a good example for library search inflexibility
@@ -506,7 +504,7 @@ theorem rw_the_prod {n : ℕ} :
     rw [this] at con ; clear this
     rw [Nat.cast_inj] at con
     have := p.prop; rw [mem_filter] at this
-    exact (Nat.Prime.ne_zero this.2) Con
+    exact (Nat.Prime.ne_zero this.2) con
   rw [this]
   simp only [eq_self_iff_true, one_div_div]
 
@@ -577,7 +575,7 @@ theorem the_great_split_part_1 {n : ℕ} :
     ∏ p in (range (n + 1)).filter fun p => Nat.Prime p, ∑ k in Ico 0 (n + 1), ((1 / p) ^ k : ℚ) =
       ∑ valu in ((range (n + 1)).filter fun p => Nat.Prime p).pi fun p => Ico 0 (n + 1),
         ∏ p in ((range (n + 1)).filter fun p => Nat.Prime p).attach,
-          ((1 / p.val) ^ valu p.val p.Prop : ℚ) :=
+          ((1 / p.val) ^ valu p.val p.prop : ℚ) :=
   by apply prod_sum
 
 /-- Second step in linking the hamronic series to the
@@ -591,17 +589,17 @@ theorem the_great_split_part_2 {n : ℕ} :
         filter
           (fun valu : ∀ a : ℕ, a ∈ filter (fun p : ℕ => Nat.Prime p) (range (n + 1)) → ℕ =>
             ∏ p in ((range (n + 1)).filter fun p => Nat.Prime p).attach,
-                p.val ^ valu p.val p.Prop ∈
+                p.val ^ valu p.val p.prop ∈
               Icc 1 n)
           (((range (n + 1)).filter fun p => Nat.Prime p).pi fun hmm => Ico 0 (n + 1)),
         (1 /
             ∏ p in ((range (n + 1)).filter fun p => Nat.Prime p).attach,
-              p.val ^ valu p.val p.Prop :
+              p.val ^ valu p.val p.prop :
           ℚ) ≤
       ∑ valu in ((range (n + 1)).filter fun p => Nat.Prime p).pi fun hmm => Ico 0 (n + 1),
         (1 /
             ∏ p in ((range (n + 1)).filter fun p => Nat.Prime p).attach,
-              p.val ^ valu p.val p.Prop :
+              p.val ^ valu p.val p.prop :
           ℚ) := by
   apply sum_le_sum_of_subset_of_nonneg
   · apply filter_subset
@@ -645,7 +643,7 @@ which we now present
 -- Prime decomposition present as `factorization_prod_pow_eq_self`,
 -- in terms of finsupp, not in the form:
 -- example (n : ℕ):
---   n = ∏ f in n.factors.to_finset, f^(n.factorization f) :=
+--   n = ∏ f in n.factors.toFinset, f^(n.factorization f) :=
 --     by {--library_search, --fails
 --         }
 -- This one I new about before formalizing `quick_prime_decompo`,
@@ -666,7 +664,7 @@ theorem quick_prime_decompo {n : ℕ} (m : ℕ) (mdef : m ∈ Icc 1 n) :
     ∃ valu : ∀ valu : ℕ, valu ∈ filter (fun p : ℕ => Nat.Prime p) (range (n + 1)) → ℕ,
       m =
         ∏ x : { x // x ∈ filter (fun p : ℕ => Nat.Prime p) (range (n + 1)) } in
-          (filter (fun p : ℕ => Nat.Prime p) (range (n + 1))).attach, ↑x ^ valu (↑x) x.Prop := by
+          (filter (fun p : ℕ => Nat.Prime p) (range (n + 1))).attach, ↑x ^ valu (↑x) x.prop := by
   revert mdef
   -- We use strong induciton on `m`
   apply Nat.strong_induction_on m
@@ -734,7 +732,7 @@ theorem quick_prime_decompo {n : ℕ} (m : ℕ) (mdef : m ∈ Icc 1 n) :
       · apply Nat.le_of_dvd _ facto
         exact lt_of_lt_of_le zero_lt_one Mdef.1
       · intro con
-        rw [Con] at P_def
+        rw [con] at P_def
         exact Mprime P_def
     have P_Icc : P ∈ Icc 1 n := by
       rw [mem_Icc] at *
@@ -751,7 +749,7 @@ theorem quick_prime_decompo {n : ℕ} (m : ℕ) (mdef : m ∈ Icc 1 n) :
         apply Nat.le_of_dvd _ d_dvd
         exact lt_of_lt_of_le zero_lt_one Mdef.1
       · intro con
-        rw [Con] at facto
+        rw [con] at facto
         rw [eq_comm] at facto
         rw [Nat.mul_left_eq_self_iff _] at facto
         exact (Nat.Prime.ne_one P_def) facto
@@ -761,7 +759,7 @@ theorem quick_prime_decompo {n : ℕ} (m : ℕ) (mdef : m ∈ Icc 1 n) :
       constructor
       · by_contra! con
         rw [Nat.lt_one_iff] at con
-        rw [Con] at facto
+        rw [con] at facto
         rw [MulZeroClass.mul_zero] at facto
         rw [facto] at two_le_M
         -- exact not_one_lt_zero, -- mathlib ?
@@ -785,8 +783,8 @@ to have domain `s`, with values in `t`,
 -/
 theorem surj_partition {α γ : Type} [DecidableEq α] [DecidableEq γ] {s : Finset α} {t : Finset γ}
     (i : ∀ a ∈ s, γ) (imap : ∀ a ha, i a ha ∈ t) (i_surj : ∀ b ∈ t, ∃ a ha, b = i a ha) :
-    ((t : Set γ).PairwiseDisjoint fun x => s.attach.filter fun y => x = i y.val y.Prop) ∧
-      s.attach = t.biUnion fun x => s.attach.filter fun y : { z // z ∈ s } => x = i y.val y.Prop := by
+    ((t : Set γ).PairwiseDisjoint fun x => s.attach.filter fun y => x = i y.val y.prop) ∧
+      s.attach = t.biUnion fun x => s.attach.filter fun y : { z // z ∈ s } => x = i y.val y.prop := by
   constructor
   · intro a ait b bit anb
     dsimp
@@ -916,12 +914,12 @@ theorem the_great_split_part_3 {n : ℕ} :
         filter
           (fun valu : ∀ a : ℕ, a ∈ filter (fun p : ℕ => Nat.Prime p) (range (n + 1)) → ℕ =>
             ∏ p in ((range (n + 1)).filter fun p => Nat.Prime p).attach,
-                p.val ^ valu p.val p.Prop ∈
+                p.val ^ valu p.val p.prop ∈
               Icc 1 n)
           (((range (n + 1)).filter fun p => Nat.Prime p).pi fun hmm => Ico 0 (n + 1)),
         (1 /
             ∏ p in ((range (n + 1)).filter fun p => Nat.Prime p).attach,
-              p.val ^ valu p.val p.Prop :
+              p.val ^ valu p.val p.prop :
           ℚ) := by
   -- i maps a valuation to the product of primes with these valuations
   set i :=
@@ -931,10 +929,10 @@ theorem the_great_split_part_3 {n : ℕ} :
           Filter
             (fun valu : ∀ a : ℕ, a ∈ Filter (fun p : ℕ => Nat.Prime p) (range (n + 1)) → ℕ =>
               ∏ p in ((range (n + 1)).filter fun p => Nat.Prime p).attach,
-                  p.val ^ valu p.val p.Prop ∈
+                  p.val ^ valu p.val p.prop ∈
                 Icc 1 n)
             (((range (n + 1)).filter fun p => Nat.Prime p).pi fun hmm => Ico 0 (n + 1))) =>
-    ∏ p in ((range (n + 1)).filter fun p => Nat.Prime p).attach, p.val ^ valu p.val p.Prop with
+    ∏ p in ((range (n + 1)).filter fun p => Nat.Prime p).attach, p.val ^ valu p.val p.prop with
     idef
   apply sum_nonneg_surj i
   -- i maps one set of the sum to the other
@@ -988,7 +986,7 @@ theorem the_great_split_part_3 {n : ℕ} :
           apply
             Nat.le_prod_mem_pos
               fun x : { x // x ∈ Filter (fun p : ℕ => Nat.Prime p) (range (n + 1)) } =>
-              ↑x ^ valu (↑x) x.Prop
+              ↑x ^ valu (↑x) x.prop
           · intro q qdef; simp; apply pow_pos; apply Nat.Prime.pos
             have : _ := q.prop; rw [mem_filter] at this ; exact this.2
           apply mem_attach
@@ -1005,7 +1003,7 @@ theorem the_great_split_part_3 {n : ℕ} :
               apply Nat.pow_le_pow_right
               apply Nat.Prime.pos
               exact pdef.2
-              exact Con
+              exact con
             _ ≤ m := this
         -- We use this bound and the assumption on `m` to
         -- contradict `2^(n+1)>n`
@@ -1031,10 +1029,10 @@ theorem the_great_merger {n : ℕ} : ∑ k in Icc 1 n, (1 / k : ℚ) ≤ π n + 
       (1 : ℚ) /
           ∏ p : { x // x ∈ Filter (fun p : ℕ => Nat.Prime p) (range (n + 1)) } in
             (Filter (fun p : ℕ => Nat.Prime p) (range (n + 1))).attach,
-            (p.val ^ valu p.val p.Prop : ℚ) =
+            (p.val ^ valu p.val p.prop : ℚ) =
         ∏ p : { x // x ∈ Filter (fun p : ℕ => Nat.Prime p) (range (n + 1)) } in
           (Filter (fun p : ℕ => Nat.Prime p) (range (n + 1))).attach,
-          (1 / p.val ^ valu p.val p.Prop : ℚ) := by
+          (1 / p.val ^ valu p.val p.prop : ℚ) := by
     intro valu
     nth_rw 1 [←
       @prod_eq_one _ _ _ (fun x => (1 : ℚ))
@@ -1046,10 +1044,10 @@ theorem the_great_merger {n : ℕ} : ∑ k in Icc 1 n, (1 / k : ℚ) ≤ π n + 
     ∀ valu : ∀ a : ℕ, a ∈ Filter (fun p : ℕ => Nat.Prime p) (range (n + 1)) → ℕ,
       ∏ p : { x // x ∈ Filter (fun p : ℕ => Nat.Prime p) (range (n + 1)) } in
           (Filter (fun p : ℕ => Nat.Prime p) (range (n + 1))).attach,
-          (1 / p.val ^ valu p.val p.Prop : ℚ) =
+          (1 / p.val ^ valu p.val p.prop : ℚ) =
         ∏ p : { x // x ∈ Filter (fun p : ℕ => Nat.Prime p) (range (n + 1)) } in
           (Filter (fun p : ℕ => Nat.Prime p) (range (n + 1))).attach,
-          ((1 / p.val) ^ valu p.val p.Prop : ℚ) :=
+          ((1 / p.val) ^ valu p.val p.prop : ℚ) :=
     by simp_rw [div_pow]; simp_rw [one_pow]; intro valu; rfl
   simp_rw [rw_tec_2]
   clear rw_tec_2 rw_tec
@@ -1119,7 +1117,7 @@ theorem harmonic_lb : ∀ n : ℕ, (n / 2 : ℚ) ≤ ∑ k in Icc 1 ((2 : ℕ) ^
     have rw_half : (1 / 2 : ℚ) = (2 ^ n / 2 ^ (n + 1) : ℚ) := by
       rw [div_eq_div_iff]
       · rw [one_mul]
-        nth_rw_rhs 2 [← @pow_one ℚ _ 2]
+        nth_rw 2 [← @pow_one ℚ _ 2]
         rw [← pow_add]
       · norm_num
       · apply ne_of_gt
@@ -1193,7 +1191,7 @@ theorem fourth_proof : {n : ℕ | n.Prime}.Infinite := by
   rw [Set.Infinite]
   intro con
   -- We consider the number of primes
-  set a := con.to_finset.card with adef
+  set a := con.toFinset.card with adef
   -- Next, we get a larger harmonic sum
   have bound_pre := harmonic_unbounded
   push_neg at bound_pre
@@ -1208,7 +1206,7 @@ theorem fourth_proof : {n : ℕ | n.Prime}.Infinite := by
     apply card_le_of_subset
     intro x xdef
     rw [mem_filter] at xdef
-    rw [Set.Finite.mem_toFinset Con]
+    rw [Set.Finite.mem_toFinset con]
     rw [Set.mem_setOf_eq]
     exact xdef.2
   simp only [algebraMap.coe_one, Nat.cast_bit0, Nat.cast_add] at bound

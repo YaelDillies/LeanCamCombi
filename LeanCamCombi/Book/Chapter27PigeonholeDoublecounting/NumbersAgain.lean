@@ -203,7 +203,7 @@ theorem lb_pre (n m : ℕ) (hm : m ≠ 0) : (n / m : ℚ) - 1 ≤ ((n / m : ℕ)
       intro con
       rw [show (0 : ℚ) = ↑(0 : ℕ) by simp only [algebraMap.coe_zero, eq_self_iff_true]] at con
       rw [Nat.cast_inj] at con
-      exact hm Con]
+      exact hm con]
   rw [show (m : ℚ) * ↑(n / m : ℕ) = ↑(m * (n / m : ℕ)) by
       simp only [mul_eq_mul_left_iff, true_or_iff, eq_self_iff_true, Nat.cast_inj, Nat.cast_eq_zero,
         Nat.cast_mul]]

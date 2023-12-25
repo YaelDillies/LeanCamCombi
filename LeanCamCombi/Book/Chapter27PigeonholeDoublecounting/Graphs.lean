@@ -1,11 +1,11 @@
-import LinearAlgebra.BilinearForm
-import LinearAlgebra.ProjectiveSpace.Independence
-import Mathlib.Data.Real.Sqrt
 import Mathlib.Algebra.BigOperators.Ring
 import Mathlib.Combinatorics.DoubleCounting
-import Mathlib.Data.Sym.Card
 import Mathlib.Combinatorics.SimpleGraph.Acyclic
 import Mathlib.Combinatorics.SimpleGraph.DegreeSum
+import Mathlib.Data.Real.Sqrt
+import Mathlib.Data.Sym.Card
+import Mathlib.LinearAlgebra.BilinearForm.Basic
+import Mathlib.LinearAlgebra.Projectivization.Independence
 
 /-!
 # Pigeon-hole and double counting : Graphs
@@ -82,17 +82,15 @@ The degree can be formulated as `(G.neighbor_set v).to_finset.card`,
 and we use it as source of inspiration to define the number of
 common neighbours.
 -/
-instance tecTec : Fintype ↥(∅ : Set V) :=
-  inferInstance
 
 open scoped Classical
 
 /-
-Otherwise, we get decidability issues for `u ∈ (G.common_neighbors v w)`,
+Otherwise, we get decidability issues for `u ∈ (G.commonNeighbors v w)`,
 even with `[decidable_eq V]`.
 -/
 noncomputable instance tec (G : SimpleGraph V) (v w : V) : Fintype ↥(G.commonNeighbors v w) := by
-  by_cases q : (G.common_neighbors v w).Nonempty
+  by_cases q : (G.commonNeighbors v w).Nonempty
   · dsimp [Set.Nonempty] at q
     --cases q with x xprop, --fails
     --rcases q with ⟨x, xprop⟩,  --fails
@@ -102,20 +100,20 @@ noncomputable instance tec (G : SimpleGraph V) (v w : V) : Fintype ↥(G.commonN
     /-
        We derive finiteness by building a surjection from the type
        of common neighbours to V, which requires some dummy element
-       from `G.common_neighbors v w` we can send elements of V not in
-       `G.common_neighbors v w` to. (hence the case disjunction)
+       from `G.commonNeighbors v w` we can send elements of V not in
+       `G.commonNeighbors v w` to. (hence the case disjunction)
        -/
     apply
-      @Fintype.ofSurjective V (↥(G.common_neighbors v w)) _ _ fun u : V =>
-        if h : u ∈ G.common_neighbors v w then (⟨u, h⟩ : ↥(G.common_neighbors v w))
-        else (⟨x, xprop⟩ : ↥(G.common_neighbors v w))
-    simp only [Function.Surjective.equations._eqn_1, SetCoe.forall]
+      @Fintype.ofSurjective V (↥(G.commonNeighbors v w)) _ _ fun u : V =>
+        if h : u ∈ G.commonNeighbors v w then (⟨u, h⟩ : ↥(G.commonNeighbors v w))
+        else (⟨x, xprop⟩ : ↥(G.commonNeighbors v w))
+    simp only [Function.Surjective, SetCoe.forall]
     intro y ydef
     use y
     rw [dif_pos ydef]
   · rw [Set.not_nonempty_iff_eq_empty] at q
     rw [q]
-    apply tecTec
+    infer_instance
 
 -- #check finset.card_eq_two
 /-- A technical lemma extracting a pair of elements from
@@ -140,7 +138,7 @@ theorem pair_of_two_le_card {α : Type} {s : Finset α} (h : 2 ≤ s.card) :
   constructor
   apply (Finset.erase_subset fst s) snd_def
   intro con
-  rw [← Con] at snd_def
+  rw [← con] at snd_def
   apply (Finset.not_mem_erase fst s) snd_def
 
 /-- In a 4-cycle-free graph,
@@ -154,33 +152,30 @@ theorem c4Free_common_neighbours (G : SimpleGraph V) (h : C4Free G) :
   rw [Nat.lt_iff_add_one_le] at con
   norm_num at con
   -- We get 2 common neighbours, and their properties
-  obtain ⟨a, ⟨b, ⟨useless1, ⟨useless2, anb⟩⟩⟩⟩ := pair_of_two_le_card Con
+  obtain ⟨a, ⟨b, ⟨useless1, ⟨useless2, anb⟩⟩⟩⟩ := pair_of_two_le_card con
   clear useless1 useless2
   have adef := a.prop
   --for readability
   have bdef := b.prop
-  dsimp [common_neighbors] at *
-  have vna := adj.ne adef.1
-  have wna := adj.ne adef.2
-  have vnb := adj.ne bdef.1
-  have wnb := adj.ne bdef.2
+  dsimp [commonNeighbors] at *
+  have vna := adef.1.ne
+  have wna := adef.2.ne
+  have vnb := bdef.1.ne
+  have wnb := bdef.2.ne
   dsimp [C4Free] at h
   -- We build a 4-cycle and use it to derive the contradiciton
-  let c4 :=
-    walk.cons bdef.1
-      (walk.cons (G.adj_symm bdef.2)
-        (walk.cons adef.2 (walk.cons (G.adj_symm adef.1) (@walk.nil V G v))))
+  let c4 := ((((@Walk.nil V G v).cons $ G.adj_symm adef.1).cons adef.2).cons $
+    G.adj_symm bdef.2).cons bdef.1
   apply h v c4
   have for_later_too : c4.length = 4 := by
     dsimp [c4]
-    norm_num
   constructor
   swap
   exact for_later_too
   --We must show that our construction is a 4-cycle
-  · rw [walk.is_cycle_def]
+  · rw [Walk.isCycle_def]
     constructor
-    · rw [walk.is_trail_def]
+    · rw [Walk.isTrail_def]
       dsimp [c4]
       dsimp [List.Nodup]
       repeat'
@@ -188,8 +183,7 @@ theorem c4Free_common_neighbours (G : SimpleGraph V) (h : C4Free G) :
         constructor
         intro e edef
         fin_cases edef <;>
-          · rw [Ne.def]
-            rw [not_iff_not.mpr Sym2.eq_iff]
+          · rw [not_iff_not.mpr Sym2.eq_iff]
             push_neg
             constructor
             repeat'
@@ -232,8 +226,8 @@ theorem c4Free_common_neighbours (G : SimpleGraph V) (h : C4Free G) :
       apply List.Pairwise.nil
     constructor
     · intro con
-      apply_fun walk.length at con
-      rw [walk.length_nil] at con
+      apply_fun Walk.length at con
+      rw [Walk.length_nil] at con
       rw [for_later_too] at con
       norm_num at con
     dsimp [c4]
@@ -286,15 +280,14 @@ theorem Finset.pair_eq {α : Type} {a b c d : α} :
     constructor
     exact Q
     rw [Q] at eq
-    nth_rw_lhs 1 [pair_comm] at eq
-    nth_rw_rhs 1 [pair_comm] at eq
+    nth_rw 1 [pair_comm] at eq
+    nth_rw 1 [pair_comm] at eq
     rw [eq_comm] at eq
     rw [insert_inj
         (show d ∉ {c} by
           intro con
           rw [mem_singleton] at con
-          exact q Con.symm)] at
-      eq
+          exact q con.symm)] at eq
     exact Eq.symm
   right
   constructor
@@ -332,7 +325,7 @@ theorem double_count_above (G : SimpleGraph V) (u : V) :
   simp only [Finset.bipartiteAbove, SimpleGraph.degree, Set.toFinset_setOf]
   -- We will put the pair of the relation in bijection
   -- with pairs of neighbours of `u`
-  rw [← Finset.card_powersetCard 2 (G.neighbor_finset u)]
+  rw [← Finset.card_powersetCard 2 (G.neighborFinset u)]
   rw [filter_filter]
   let bij (e : Sym2 V)
     (edef : e ∈ Filter (fun a : Sym2 V => ¬a.IsDiag ∧ DoubleCountingRel G u a) univ) :=
@@ -367,7 +360,7 @@ theorem double_count_above (G : SimpleGraph V) (u : V) :
     · intro con; apply edef.1
       rw [← Sym2.other_spec (Sym2.out_fst_mem e)]
       rw [Sym2.mk''_isDiag_iff]
-      exact Con
+      exact con
     rfl
   -- Injectivity
   · intro e r edef rdef eq
@@ -442,7 +435,7 @@ theorem double_count_above' (G : SimpleGraph V) (u : V) :
     intro con
     apply one.1
     rw [Sym2.mk''_isDiag_iff]
-    exact Con
+    exact con
     rfl
   · intro two
     --rcases two with ⟨a, ⟨b ,⟨ua ,⟨ub, anb⟩ ⟩, ⟨eq⟩ ⟩⟩,
@@ -454,7 +447,7 @@ theorem double_count_above' (G : SimpleGraph V) (u : V) :
     apply h.2.2
     rw [← Eq] at con
     rw [Sym2.mk''_isDiag_iff] at con
-    exact Con
+    exact con
     intro y ydef
     rw [← Eq] at ydef
     rw [Sym2.mem_iff] at ydef
@@ -472,7 +465,7 @@ theorem double_count_below (G : SimpleGraph V) (hG : C4Free G) (v w : V) (vnw : 
     ((Finset.bipartiteBelow (DoubleCountingRel G) univ) ⟦(v, w)⟧).card ≤ 1 := by
   have := c4Free_common_neighbours G hG v w vnw
   simp [Finset.bipartiteBelow, DoubleCountingRel]
-  dsimp [common_neighbors, neighbor_set] at this
+  dsimp [commonNeighbors, neighbor_set] at this
   simp at this
   rw [← filter_and] at this
   convert this
@@ -804,7 +797,7 @@ theorem commonNeighbors_c4Free (G : SimpleGraph V)
   rcases C with ⟨v, ⟨cyc, ⟨cyc_cycle, cyc_len⟩⟩⟩
   -- We unfold the cycle
   cases' cyc with _ _ a _ av cyc
-  exfalso; exact walk.is_cycle.not_of_nil cyc_cycle
+  exfalso; exact Walk.is_cycle.not_of_nil cyc_cycle
   cases' cyc with _ _ b _ ba cyc
   exfalso;
   simp only [SimpleGraph.Walk.length_nil, Nat.one_ne_bit0, zero_add,
@@ -821,25 +814,25 @@ theorem commonNeighbors_c4Free (G : SimpleGraph V)
   simp at cyc_len
   --norm_num at cyc_len, --fails, hence:
   have : cyc.length = 0 := by linarith
-  replace this := walk.eq_of_length_eq_zero this
+  replace this := Walk.eq_of_length_eq_zero this
   -- We will show that two vertices on oppsite sides of
   -- the cycles have at least two neighbours in common
   use v;
   use b
-  simp [walk.is_cycle_def] at cyc_cycle
+  simp [Walk.is_cycle_def] at cyc_cycle
   push_neg at cyc_cycle
   constructor
   exact cyc_cycle.1.2.1.2
-  have that : {a, c} ⊆ (G.common_neighbors v b).toFinset := by
+  have that : {a, c} ⊆ (G.commonNeighbors v b).toFinset := by
     intro x xdef
     rw [mem_insert] at xdef
     cases xdef
     rw [xdef]
-    simp [common_neighbors]
+    simp [commonNeighbors]
     exact ⟨av, G.adj_symm ba⟩
     rw [mem_singleton] at xdef
     rw [xdef]
-    simp [common_neighbors]
+    simp [commonNeighbors]
     rw [this] at dc
     exact ⟨G.adj_symm dc, bc⟩
   --apply_fun finset.card at that using finset.card_mono, --fails
@@ -848,7 +841,7 @@ theorem commonNeighbors_c4Free (G : SimpleGraph V)
     rw [card_singleton]
     intro con
     rw [mem_singleton] at con
-    exact cyc_cycle.1.1.2.1.2 Con
+    exact cyc_cycle.1.1.2.1.2 con
   apply lt_of_lt_of_le (show 1 < 2 by norm_num)
   rw [← thot]
   apply card_le_of_subset that
@@ -886,7 +879,7 @@ def extremalGraph : SimpleGraph (Projectivization (ZMod p) (Fin 3 → ZMod p))
     push_neg
     intro con
     exfalso
-    exact Con (Eq.refl v)
+    exact con (Eq.refl v)
 
 /-- A rewrite lemma characterizing neighbours in terms of orthogonality
 -/
@@ -1052,7 +1045,7 @@ theorem extremalGraph_c4Free : C4Free (extremalGraph p) := by
   by_contra! con
   rw [Nat.lt_iff_add_one_le] at con
   norm_num at con
-  obtain ⟨a, ⟨b, ⟨meh, ⟨meeh, absub⟩⟩⟩⟩ := pair_of_two_le_card Con
+  obtain ⟨a, ⟨b, ⟨meh, ⟨meeh, absub⟩⟩⟩⟩ := pair_of_two_le_card con
   have adef := a.prop
   have bdef := b.prop
   simp_rw [common_neighbors_eq] at adef bdef
