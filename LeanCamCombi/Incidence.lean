@@ -233,22 +233,11 @@ instance instSemiring [Preorder α] [LocallyFiniteOrder α] [DecidableEq α] [Se
     Semiring (IncidenceAlgebra 𝕜 α) where
   __ := instNonAssocSemiring
   mul := (· * ·)
-  mul_assoc := fun f g h ↦ by
+  mul_assoc f g h := by
     ext a b
-    simp only [mul_apply, sum_mul, mul_sum]
-    rw [sum_sigma', sum_sigma']
-    apply sum_bij fun x _ ↦ Sigma.mk x.snd x.fst
-    · rintro c hc
-      simp only [mem_sigma, mem_Icc] at hc
-      simp only [mem_sigma, mem_Icc]
-      exact ⟨⟨hc.2.1, hc.2.2.trans hc.1.2⟩, hc.2.2, hc.1.2⟩
-    · rintro c _
-      simp only [mul_assoc]
-    · rintro ⟨c₁, c₂⟩ ⟨d₁, d₂⟩ hc hd ⟨⟩
-      rfl
-    · rintro c hc
-      simp only [exists_prop, Sigma.exists, mem_sigma, heq_iff_eq, Sigma.mk.inj_iff, mem_Icc] at *
-      exact ⟨c.2, c.1, ⟨⟨hc.1.1.trans hc.2.1, hc.2.2⟩, hc.1.1, hc.2.1⟩, c.eta.symm⟩
+    simp only [mul_apply, sum_mul, mul_sum, sum_sigma']
+    apply sum_nbij' (fun ⟨a, b⟩ ↦ ⟨b, a⟩) (fun ⟨a, b⟩ ↦ ⟨b, a⟩) <;>
+      aesop (add simp mul_assoc) (add unsafe le_trans)
   one := 1
   zero := 0
 
@@ -277,23 +266,11 @@ end Smul
 instance instIsScalarTower [Preorder α] [LocallyFiniteOrder α] [AddCommMonoid 𝕜] [Monoid 𝕜]
     [Semiring 𝕝] [AddCommMonoid 𝕞] [SMul 𝕜 𝕝] [Module 𝕝 𝕞] [DistribMulAction 𝕜 𝕞]
     [IsScalarTower 𝕜 𝕝 𝕞] :
-    IsScalarTower (IncidenceAlgebra 𝕜 α) (IncidenceAlgebra 𝕝 α) (IncidenceAlgebra 𝕞 α) :=
-  ⟨fun f g h ↦ by
+    IsScalarTower (IncidenceAlgebra 𝕜 α) (IncidenceAlgebra 𝕝 α) (IncidenceAlgebra 𝕞 α) where
+  smul_assoc f g h := by
     ext a b
-    simp only [smul_apply, sum_smul, smul_sum]
-    rw [sum_sigma', sum_sigma']
-    apply sum_bij fun x _ ↦ Sigma.mk x.snd x.fst
-    · rintro c hc
-      simp only [mem_sigma, mem_Icc] at hc
-      simp only [mem_sigma, mem_Icc]
-      exact ⟨⟨hc.2.1, hc.2.2.trans hc.1.2⟩, hc.2.2, hc.1.2⟩
-    · rintro c _
-      simp only [smul_assoc]
-    · rintro ⟨c₁, c₂⟩ ⟨d₁, d₂⟩ hc hd ⟨⟩
-      rfl
-    · rintro c hc
-      simp only [exists_prop, Sigma.exists, mem_sigma, heq_iff_eq, Sigma.mk.inj_iff, mem_Icc] at *
-      exact ⟨c.2, c.1, ⟨⟨hc.1.1.trans hc.2.1, hc.2.2⟩, hc.1.1, hc.2.1⟩, c.eta.symm⟩⟩
+    simp only [smul_apply, sum_smul, smul_sum, sum_sigma']
+    apply sum_nbij' (fun ⟨a, b⟩ ↦ ⟨b, a⟩) (fun ⟨a, b⟩ ↦ ⟨b, a⟩) <;> aesop (add unsafe le_trans)
 
 instance [Preorder α] [LocallyFiniteOrder α] [DecidableEq α] [Semiring 𝕜] [Semiring 𝕝]
     [Module 𝕜 𝕝] : Module (IncidenceAlgebra 𝕜 α) (IncidenceAlgebra 𝕝 α) where
@@ -307,13 +284,12 @@ instance [Preorder α] [LocallyFiniteOrder α] [DecidableEq α] [Semiring 𝕜] 
 
 instance smulWithZeroRight [Zero 𝕜] [Zero 𝕝] [SMulWithZero 𝕜 𝕝] [LE α] :
     SMulWithZero 𝕜 (IncidenceAlgebra 𝕝 α) :=
-  Function.Injective.smulWithZero ⟨((⇑) : IncidenceAlgebra 𝕝 α → α → α → 𝕝), coe_zero⟩
-    FunLike.coe_injective coe_smul'
+  FunLike.coe_injective.smulWithZero ⟨((⇑) : IncidenceAlgebra 𝕝 α → α → α → 𝕝), coe_zero⟩ coe_smul'
 
 instance moduleRight [Preorder α] [Semiring 𝕜] [AddCommMonoid 𝕝] [Module 𝕜 𝕝] :
     Module 𝕜 (IncidenceAlgebra 𝕝 α) :=
-  Function.Injective.module _ ⟨⟨((⇑) : IncidenceAlgebra 𝕝 α → α → α → 𝕝), coe_zero⟩, coe_add⟩
-    FunLike.coe_injective coe_smul'
+  FunLike.coe_injective.module _ ⟨⟨((⇑) : IncidenceAlgebra 𝕝 α → α → α → 𝕝), coe_zero⟩, coe_add⟩
+    coe_smul'
 
 instance algebraRight [PartialOrder α] [LocallyFiniteOrder α] [DecidableEq α] [CommSemiring 𝕜]
     [CommSemiring 𝕝] [Algebra 𝕜 𝕝] : Algebra 𝕜 (IncidenceAlgebra 𝕝 α) where
@@ -619,20 +595,8 @@ lemma moebius_inversion_top (f g : α → 𝕜) (h : ∀ x, g x = ∑ y in Ici x
       erw [sum_sigma' (Ici x) fun y ↦ Ici y]
       erw [sum_sigma' (Ici x) fun z ↦ Icc x z]
       simp only [mul_boole, MulZeroClass.zero_mul, ite_mul, zeta_apply]
-      refine' sum_bij (fun X _ ↦ ⟨X.snd, X.fst⟩) _ _ _ _
-      · intro X hX
-        simp only [mem_Ici, mem_sigma, mem_Icc]
-        simp only [mem_Ici, mem_sigma, mem_Icc] at hX
-        exact ⟨hX.1.trans hX.2, hX⟩
-      · intro X hX
-        simp only at *
-      · intro X Y ha hb h
-        simpa [Sigma.ext_iff, and_comm] using h
-      · intro X hX
-        use ⟨X.snd, X.fst⟩
-        simp only [and_true_iff, mem_Ici, eq_self_iff_true, Sigma.eta, mem_sigma, mem_Icc,
-          exists_prop] at *
-        exact hX.2
+      apply sum_nbij' (fun ⟨a, b⟩ ↦ ⟨b, a⟩) (fun ⟨a, b⟩ ↦ ⟨b, a⟩) <;>
+        aesop (add simp mul_assoc) (add unsafe le_trans)
     _ = ∑ z in Ici x, (mu 𝕜 * zeta 𝕜 : IncidenceAlgebra 𝕜 α) x z * f z := by
       simp_rw [mul_apply, sum_mul]
     _ = ∑ y in Ici x, ∑ z in Ici y, (1 : IncidenceAlgebra 𝕜 α) x z * f z := by

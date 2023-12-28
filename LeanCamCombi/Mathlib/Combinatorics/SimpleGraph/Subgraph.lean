@@ -25,7 +25,7 @@ instance (G : SimpleGraph V) (H : Subgraph G) [DecidableRel H.Adj] : DecidableRe
   ext e
   induction' e using Sym2.ind with a b
   simp only [mem_edgeSet, Sym2.exists, Relation.Map, and_or_left, exists_or, map_adj,
-    Set.mem_image, Sym2.map_pair_eq, Quotient.eq, Sym2.rel_iff]
+    Set.mem_image, Sym2.map_pair_eq, Sym2.eq, Sym2.rel_iff]
   refine' (or_iff_left_of_imp _).symm
   rintro ⟨a, b, hab, rfl, rfl⟩
   exact ⟨b, a, hab.symm, rfl, rfl⟩
@@ -38,7 +38,7 @@ lemma image_coe_edgeSet_coe (G' : G.Subgraph) : Sym2.map (↑) '' G'.coe.edgeSet
   rintro e he
   induction' e using Sym2.ind with a b
   rw [Subgraph.mem_edgeSet] at he
-  exact ⟨⟦(⟨a, edge_vert _ he⟩, ⟨b, edge_vert _ he.symm⟩)⟧, Sym2.map_pair_eq _ _ _⟩
+  exact ⟨s(⟨a, edge_vert _ he⟩, ⟨b, edge_vert _ he.symm⟩), Sym2.map_pair_eq _ _ _⟩
 
 @[simp] lemma coe_bot : (⊥ : G.Subgraph).coe = ⊥ := rfl
 

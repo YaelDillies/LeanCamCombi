@@ -1,5 +1,4 @@
 import Mathlib.Combinatorics.Colex
-import LeanCamCombi.Mathlib.Data.Finset.Basic
 
 variable {α β : Type*}
 

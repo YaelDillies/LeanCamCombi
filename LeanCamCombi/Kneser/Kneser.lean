@@ -121,7 +121,7 @@ lemma mulStab_union (hs₁ : (s ∩ a • C.mulStab).Nonempty) (ht₁ : (t ∩ b
   have hxysub : (x * y) • C.mulStab ⊆ s ∩ a • C.mulStab * (t ∩ b • C.mulStab) :=
     hxyC.left_le_of_le_sup_left (hxyCsubC.trans $ (subset_union_left _ _).trans hx.subset')
   suffices s ∩ a • C.mulStab * (t ∩ b • C.mulStab) ⊂ (a * b) • C.mulStab by
-    have := (card_le_of_subset hxysub).not_lt ((card_lt_card this).trans_eq ?_)
+    have := (card_le_card hxysub).not_lt ((card_lt_card this).trans_eq ?_)
     cases this
     simp_rw [card_smul_finset]
   apply ssubset_of_subset_not_subset
@@ -186,18 +186,18 @@ lemma disjoint_mul_sub_card_le {a : α} (b : α) {s t C : Finset α} (has : a �
           (subset_trans (mul_subset_mul_left hst)
             (subset_trans (mul_subset_mul_right (inter_subset_right s _)) _)),
         card_smul_finset, Int.ofNat_sub]
-      · apply le_trans (card_le_of_subset (mul_subset_mul_left hst))
+      · apply le_trans (card_le_card (mul_subset_mul_left hst))
         apply
-          le_trans (card_le_of_subset inter_mul_subset)
-            (le_of_le_of_eq (card_le_of_subset (inter_subset_right _ _)) _)
+          le_trans (card_le_card inter_mul_subset)
+            (le_of_le_of_eq (card_le_card (inter_subset_right _ _)) _)
         rw [smul_mul_assoc, mulStab_mul_mulStab, card_smul_finset]
       · simp only [smul_mul_assoc, mulStab_mul_mulStab, Subset.rfl]
     _ ≤ ((s ∪ t) * C.mulStab).card -
           ((s ∪ t) * (s ∩ a • C.mulStab * (t ∩ b • C.mulStab)).mulStab).card := by
-      rw [← Int.ofNat_sub (card_le_of_subset (mul_subset_mul_left hst)), ←
+      rw [← Int.ofNat_sub (card_le_card (mul_subset_mul_left hst)), ←
         card_sdiff (mul_subset_mul_left hst)]
       norm_cast
-      apply card_le_of_subset
+      apply card_le_card
       refine' fun x hx => mem_sdiff.mpr ⟨_, _⟩
       · apply smul_finset_subset_smul (mem_union_left t has) (mem_sdiff.mp hx).1
       have hx' := (mem_sdiff.mp hx).2
@@ -234,7 +234,7 @@ lemma inter_mul_sub_card_le {a : α} {s t C : Finset α} (has : a ∈ s)
         (a • C.mulStab \
             ((s ∩ a • C.mulStab ∪ t ∩ a • C.mulStab) *
               (s ∩ a • C.mulStab * (t ∩ a • C.mulStab)).mulStab)).card := by
-      rw [card_sdiff, Int.ofNat_sub (card_le_of_subset _), card_smul_finset]
+      rw [card_sdiff, Int.ofNat_sub (card_le_card _), card_smul_finset]
       · rw [union_mul, le_sub_iff_add_le]
         apply le_trans (add_le_add_left (Int.ofNat_le.mpr $ card_union_le _ _) _)
         norm_num
@@ -246,10 +246,10 @@ lemma inter_mul_sub_card_le {a : α} {s t C : Finset α} (has : a ∈ s)
     _ ≤
         ((s ∪ t) * C.mulStab).card -
           ((s ∪ t) * (s ∩ a • C.mulStab * (t ∩ a • C.mulStab)).mulStab).card := by
-      rw [← Int.ofNat_sub (card_le_of_subset (mul_subset_mul_left hst)), ←
+      rw [← Int.ofNat_sub (card_le_card (mul_subset_mul_left hst)), ←
         card_sdiff (mul_subset_mul_left hst)]
       norm_cast
-      apply card_le_of_subset
+      apply card_le_card
       refine' fun x hx => mem_sdiff.mpr ⟨_, _⟩
       · apply smul_finset_subset_smul (mem_union_left t has) (mem_sdiff.mp hx).1
       have hx' := (mem_sdiff.mp hx).2
@@ -274,7 +274,7 @@ private lemma card_mul_add_card_lt (hC : C.Nonempty) (hs : s' ⊆ s) (ht : t' �
       (by
         rw [← tsub_pos_iff_lt, ← card_sdiff (mul_subset_mul hs ht), card_pos]
         exact hC.mono (subset_sdiff.2 ⟨hCst, hCst'⟩)) $
-    card_le_of_subset hs
+    card_le_card hs
 
 /-! ### Kneser's theorem -/
 
@@ -357,10 +357,10 @@ theorem mul_kneser :
   set convergent : Set (Finset α) :=
     {C | C ⊆ s * t ∧ (s ∩ t).card + ((s ∪ t) * C.mulStab).card ≤ C.card + C.mulStab.card}
   have convergent_nonempty : convergent.Nonempty := by
-    refine' ⟨s ∩ t * (s ∪ t), inter_mul_union_subset, (add_le_add_right (card_le_of_subset $
+    refine' ⟨s ∩ t * (s ∪ t), inter_mul_union_subset, (add_le_add_right (card_le_card $
       subset_mul_left _ $ one_mem_mulStab.2 $ hst.mul $ hs.mono $ subset_union_left _ _) _).trans $
         ih (s ∩ t) (s ∪ t) _⟩
-    exact add_lt_add_of_le_of_lt (card_le_of_subset inter_mul_union_subset) (card_lt_card hsts)
+    exact add_lt_add_of_le_of_lt (card_le_card inter_mul_union_subset) (card_lt_card hsts)
   let C := argminOn (fun C : Finset α => C.mulStab.card) IsWellFounded.wf _ convergent_nonempty
   set H := C.mulStab with hH
   obtain ⟨hCst, hCcard⟩ : C ∈ convergent := argminOn_mem _ _ _ _
@@ -374,7 +374,7 @@ theorem mul_kneser :
   -- `s.card + t.card - 1 = (s ∩ t).card + (s ∪ t).card - 1.card = ≤ C.card ≤ (s * t).card`
   obtain hCstab | hCstab := eq_singleton_or_nontrivial (one_mem_mulStab.2 hC)
   · simp only [hH, hCstab, card_singleton, card_mul_singleton, card_inter_add_card_union] at hCcard
-    exact hCcard.trans (add_le_add_right (card_le_of_subset hCst) _)
+    exact hCcard.trans (add_le_add_right (card_le_card hCst) _)
   exfalso
   have : ¬s * t * H ⊆ s * t := by
     rw [mul_subset_left_iff (hs.mul ht), hstab, ← coe_subset, coe_one]
@@ -459,7 +459,7 @@ theorem mul_kneser :
   have hSTcard : (S.card : ℤ) + T.card + (s ∪ t).card ≤ ((s ∪ t) * H).card := by
     norm_cast
     conv_lhs => rw [← card_disjoint_union hST, ← card_disjoint_union hSTst, ← mul_one (s ∪ t)]
-    refine' card_le_of_subset
+    refine' card_le_card
       (union_subset (union_subset _ _) $ mul_subset_mul_left $ one_subset.2 hC.one_mem_mulStab)
     · exact hSst.trans ((sdiff_subset _ _).trans $ smul_finset_subset_smul $ mem_union_left _ ha)
     · exact hTst.trans ((sdiff_subset _ _).trans $ smul_finset_subset_smul $ mem_union_right _ hb)
@@ -468,7 +468,7 @@ theorem mul_kneser :
   -- Now we prove inequality (2)
   have aux2₁ : (s₁.card : ℤ) + t₁.card + H₁.card ≤ H.card := by
     rw [← le_sub_iff_add_le']
-    refine' (Int.le_of_dvd ((sub_nonneg_of_le $ Nat.cast_le.2 $ card_le_of_subset $
+    refine' (Int.le_of_dvd ((sub_nonneg_of_le $ Nat.cast_le.2 $ card_le_card $
       mul_subset_mul_left hH₁H.subset).trans_lt aux1₁) $ dvd_sub
         (dvd_sub (card_mulStab_dvd_card_mulStab (hs₁ne.mul ht₁ne) hH₁H.subset).natCast
           (card_mulStab_dvd_card_mul_mulStab _ _).natCast) $
@@ -478,7 +478,7 @@ theorem mul_kneser :
       Nat.cast_le.2 $ card_le_card_mul_right _ hH₁ne) _
   have aux2₂ : (s₂.card : ℤ) + t₂.card + H₂.card ≤ H.card := by
     rw [← le_sub_iff_add_le']
-    refine' (Int.le_of_dvd ((sub_nonneg_of_le $ Nat.cast_le.2 $ card_le_of_subset $
+    refine' (Int.le_of_dvd ((sub_nonneg_of_le $ Nat.cast_le.2 $ card_le_card $
       mul_subset_mul_left hH₂H.subset).trans_lt aux1₂) $ dvd_sub
         (dvd_sub (card_mulStab_dvd_card_mulStab (hs₂ne.mul ht₂ne) hH₂H.subset).natCast
           (card_mulStab_dvd_card_mul_mulStab _ _).natCast) $
@@ -500,7 +500,7 @@ theorem mul_kneser :
     _ ≤ ((s ∪ t) * H).card + (s ∩ t).card - C.card := by
       suffices (C.card : ℤ) + (s₁ * t₁).card ≤ (s * t).card by linarith [this, hSTcard]
       · norm_cast
-        simp only [← card_disjoint_union hCst₁, card_le_of_subset hC₁st]
+        simp only [← card_disjoint_union hCst₁, card_le_card hC₁st]
     _ ≤ H.card := by
       simp only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ C.card,
         add_comm _ (s ∩ t).card, hCcard]
@@ -516,7 +516,7 @@ theorem mul_kneser :
     _ ≤ ((s ∪ t) * H).card + (s ∩ t).card - C.card := by
       suffices (C.card : ℤ) + (s₂ * t₂).card ≤ (s * t).card by linarith [this, hSTcard]
       · norm_cast
-        simp only [← card_disjoint_union hCst₂, card_le_of_subset hC₂st]
+        simp only [← card_disjoint_union hCst₂, card_le_card hC₂st]
     _ ≤ H.card := by
       simp only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ C.card,
         add_comm _ (s ∩ t).card, hCcard]

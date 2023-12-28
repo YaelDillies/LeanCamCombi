@@ -243,11 +243,11 @@ lemma familyMeasure_compression_lt_familyMeasure {U V : Finset (Fin n)} {hU : U.
     filter_union_filter_neg_eq _ _
   have ne₂ : (𝒜.filter fun A ↦ compress U V A ∉ 𝒜).Nonempty := by
     refine' nonempty_iff_ne_empty.2 fun z ↦ a _
-    rw [image_filter, z, image_empty, union_empty]
+    rw [filter_image, z, image_empty, union_empty]
     rwa [z, union_empty] at uA
   rw [familyMeasure, familyMeasure, sum_union compress_disjoint]
   conv_rhs => rw [←uA]
-  rw [sum_union (disjoint_filter_filter_neg _ _ _), add_lt_add_iff_left, image_filter,
+  rw [sum_union (disjoint_filter_filter_neg _ _ _), add_lt_add_iff_left, filter_image,
     sum_image compress_injOn]
   refine' sum_lt_sum_of_nonempty ne₂ fun A hA ↦ _
   simp_rw [←sum_image (Fin.val_injective.injOn _)]
@@ -318,7 +318,7 @@ This shows that the minimum possible shadow size is attained by initial segments
 lemma strengthened_kk (h₁ : (𝒜 : Set (Finset (Fin n))).Sized r) (h₂ : 𝒞.card ≤ 𝒜.card)
     (h₃ : IsInitSeg 𝒞 r) : (∂ 𝒞).card ≤ (∂ 𝒜).card := by
   rcases exists_smaller_set 𝒜 𝒞.card h₂ with ⟨𝒜', prop, size⟩
-  refine' (kruskal_katona (fun A hA ↦ h₁ (prop hA)) size h₃).trans (card_le_of_subset _)
+  refine' (kruskal_katona (fun A hA ↦ h₁ (prop hA)) size h₃).trans (card_le_card _)
   rw [shadow, shadow]
   apply shadow_monotone prop
 

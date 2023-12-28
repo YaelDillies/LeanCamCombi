@@ -4,8 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mantas Bakšys, Yaël Dillies
 -/
 import Mathlib.Combinatorics.Additive.ETransform
-import LeanCamCombi.Mathlib.Algebra.Order.Ring.Canonical
-import LeanCamCombi.Mathlib.Data.Finset.Basic
 import LeanCamCombi.Mathlib.Data.Finset.Card
 import LeanCamCombi.Kneser.MulStab
 
@@ -158,34 +156,33 @@ lemma le_card_union_add_card_mulStab_union :
     (∀ a, k a = 0 ∨ k a = Ht.card ∨ l a = 0 ∨ l a = Hs.card) ∧
       ((∀ a, k a = 0 → l a = 0) ∨ ∀ a, l a = 0 → k a = 0)
   · obtain ⟨hkl, hkl' | hkl'⟩ := hkl
-    · refine' Or.inl ((tsub_eq_zero_of_le <| card_mono _).trans_le <| zero_le _)
+    · refine' Or.inl ((tsub_eq_zero_of_le $ card_mono _).trans_le $ zero_le _)
       sorry
-    · refine' Or.inr ((tsub_eq_zero_of_le <| card_mono _).trans_le <| zero_le _)
+    · refine' Or.inr ((tsub_eq_zero_of_le $ card_mono _).trans_le $ zero_le _)
       sorry
   -- the remaining sketch is flawed since `H` is defined to be `Hbar` in Ruzsa's notes and
   -- `mulStab (s ∪ t) = H` in the notes
   suffices hHst : (Hs.card - 1) * (Ht.card - 1) ≤ (s \ t).card * (t \ s).card
   · by_contra!
-    exact
-      hHst.not_lt
-        (mul_lt_mul_of_lt_of_lt'' (this.1.trans_le <| tsub_le_tsub_left (one_le_card.2 Hst) _) <|
-          this.2.trans_le <| tsub_le_tsub_left (one_le_card.2 Hst) _)
+    exact hHst.not_lt $ CanonicallyOrderedCommSemiring.mul_lt_mul_of_lt_of_lt (this.1.trans_le $
+      tsub_le_tsub_left (one_le_card.2 Hst) _) $ this.2.trans_le $
+      tsub_le_tsub_left (one_le_card.2 Hst) _
   simp (config := {zeta := false}) only
     [not_and_or, not_or, Classical.not_forall, not_ne_iff, not_imp] at hkl
   obtain ⟨a, hka, hka', hla, hla'⟩ | ⟨⟨a, hka, hla⟩, b, hlb, hkb⟩ := hkl
   · refine'
       le_trans _
-        (mul_le_mul' (card_mono <| inter_subset_left _ <| a • H) <|
-          card_mono <| inter_subset_left _ <| a • H)
+        (mul_le_mul' (card_mono $ inter_subset_left _ $ a • H) $
+          card_mono $ inter_subset_left _ $ a • H)
     rw [hk, hl, mul_comm (k a), mul_mul_mul_comm, mul_comm (k a)]
     refine'
       le_trans _
-        (mul_le_mul' (Nat.add_sub_one_le_mul (tsub_pos_of_lt <| (hls _).lt_of_ne hla').ne' hla) <|
-          Nat.add_sub_one_le_mul (tsub_pos_of_lt <| (hkt _).lt_of_ne hka').ne' hka)
+        (mul_le_mul' (Nat.add_sub_one_le_mul (tsub_pos_of_lt $ (hls _).lt_of_ne hla').ne' hla) $
+          Nat.add_sub_one_le_mul (tsub_pos_of_lt $ (hkt _).lt_of_ne hka').ne' hka)
     rw [tsub_add_cancel_of_le (hkt _), tsub_add_cancel_of_le (hls _)]
   refine'
-    mul_le_mul' (tsub_le_self.trans <| le_trans _ <| card_mono <| inter_subset_left _ <| b • H)
-      (tsub_le_self.trans <| le_trans _ <| card_mono <| inter_subset_left _ <| a • H)
+    mul_le_mul' (tsub_le_self.trans $ le_trans _ $ card_mono $ inter_subset_left _ $ b • H)
+      (tsub_le_self.trans $ le_trans _ $ card_mono $ inter_subset_left _ $ a • H)
   · rw [hk, hlb, tsub_zero]
     exact le_mul_of_one_le_left' (pos_iff_ne_zero.2 hkb)
   · rw [hl, hka, tsub_zero]
@@ -202,7 +199,7 @@ lemma le_card_sup_add_card_mulStab_sup {ι : Type*} {s : Finset ι} {f : ι → 
   obtain rfl | hs := s.eq_empty_or_nonempty
   · simp
   simp only [hs, inf'_cons, sup_cons, sup_eq_union]
-  exact (inf_le_inf_left _ <| ih hs).trans le_card_union_add_card_mulStab_union
+  exact (inf_le_inf_left _ $ ih hs).trans le_card_union_add_card_mulStab_union
 
 /-! ### Kneser's lemma -/
 
@@ -228,28 +225,28 @@ lemma le_card_mul_add_card_mulStab_mul (hs : s.Nonempty) (ht : t.Nonempty) :
     refine' le_antisymm _ (Finset.sup_le_iff.2 fun _ _ => hst' _)
     exact
       mul_subset_iff_right.2 fun b hb =>
-        (smul_finset_subset_smul_finset <| hs' ⟨b, hb⟩).trans <|
-          (op_smul_finset_subset_mul <| hbt' ⟨b, hb⟩).trans <|
-            @le_sup _ _ _ _ _ (fun b => s' b * t' b) _ <| mem_univ _
+        (smul_finset_subset_smul_finset $ hs' ⟨b, hb⟩).trans $
+          (op_smul_finset_subset_mul $ hbt' ⟨b, hb⟩).trans $
+            @le_sup _ _ _ _ _ (fun b => s' b * t' b) _ $ mem_univ _
   rw [this]
   refine' (le_inf' ht.attach _ fun b _ => _).trans (le_card_sup_add_card_mulStab_sup _)
   rw [← hstcard b]
   refine'
     add_le_add (card_le_card_mul_right _ ⟨_, hbt' _⟩)
-      ((card_mono <| subset_mulStab_mul_left ⟨_, hbt' _⟩).trans' _)
+      ((card_mono $ subset_mulStab_mul_left ⟨_, hbt' _⟩).trans' _)
   rw [← card_smul_finset (b : α)⁻¹ (t' _)]
-  refine' card_mono ((mul_subset_left_iff <| hs.mono <| hs' _).1 _)
+  refine' card_mono ((mul_subset_left_iff $ hs.mono $ hs' _).1 _)
   refine' mul_subset_iff_left.2 fun c hc => _
   rw [← mul_smul]
   refine'
     smul_finset_subset_iff.2
-      (inter_eq_left.1 <| eq_of_subset_of_card_le (inter_subset_left _ _) _)
+      (inter_eq_left.1 $ eq_of_subset_of_card_le (inter_subset_left _ _) _)
   rw [← ht']
   refine'
     Nat.find_min' _
-      ⟨_, _, mem_inter.2 ⟨hbt' _, _⟩, (hs' _).trans <| subset_union_left _ _,
-        (mulDysonETransform.subset _ (s' b, t' b)).trans <| hst' _,
-        (mulDysonETransform.card _ _).trans <| hstcard _, rfl⟩
+      ⟨_, _, mem_inter.2 ⟨hbt' _, _⟩, (hs' _).trans $ subset_union_left _ _,
+        (mulDysonETransform.subset _ (s' b, t' b)).trans $ hst' _,
+        (mulDysonETransform.card _ _).trans $ hstcard _, rfl⟩
   rwa [mem_inv_smul_finset_iff, smul_eq_mul, inv_mul_cancel_right]
 
 /-- **Kneser's multiplication lemma**: A lower bound on the size of `s * t` in terms of its
@@ -265,7 +262,7 @@ lemma mul_kneser' (s t : Finset α) :
   obtain rfl | ht := t.eq_empty_or_nonempty
   · simp
   refine'
-    (le_card_mul_add_card_mulStab_mul (hs.mul (hs.mul ht).mulStab) <|
+    (le_card_mul_add_card_mulStab_mul (hs.mul (hs.mul ht).mulStab) $
           ht.mul (hs.mul ht).mulStab).trans_eq
       _
   rw [mul_mulStab_mul_mul_mul_mulStab_mul]
@@ -280,7 +277,7 @@ lemma mul_strict_kneser'
         (s * t).card + (s * t).mulStab.card) :
     (s * (s * t).mulStab).card + (t * (s * t).mulStab).card ≤ (s * t).card :=
   Nat.le_of_lt_add_of_dvd h
-      ((card_mulStab_dvd_card_mul_mulStab _ _).add <| card_mulStab_dvd_card_mul_mulStab _ _) <|
+      ((card_mulStab_dvd_card_mul_mulStab _ _).add $ card_mulStab_dvd_card_mul_mulStab _ _) $
     card_mulStab_dvd_card _
 
 end Finset

@@ -24,7 +24,7 @@ variable [OrderedRing 𝕜] [AddCommGroup E] [Module 𝕜 E] {m n k : ℕ} {K : 
 dimension less than `k`. -/
 def skeleton (K : SimplicialComplex 𝕜 E) (k : ℕ) : SimplicialComplex 𝕜 E :=
   K.ofSubcomplex' {s | s ∈ K ∧ s.card ≤ k + 1} (fun _s ⟨hs, _⟩ => hs) fun _s _t hs hts ht =>
-    ⟨K.down_closed' hs.1 hts ht, (card_le_of_subset hts).trans hs.2⟩
+    ⟨K.down_closed' hs.1 hts ht, (card_le_card hts).trans hs.2⟩
 
 lemma skeleton_le : K.skeleton k ≤ K := K.ofSubcomplex_le _
 lemma skeleton_bot (k : ℕ) : (⊥ : SimplicialComplex 𝕜 E).skeleton k = ⊥ := ofSubcomplex_bot _

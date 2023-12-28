@@ -83,7 +83,7 @@ lemma card_posDiffs_self_le (h𝒜 : (𝒜 : Set (Finset α)).OrdConnected) :
 /-- A **reverse Kleitman inequality**. -/
 lemma le_card_upper_inter_lower (h𝒜 : IsLowerSet (𝒜 : Set (Finset α)))
     (hℬ : IsUpperSet (ℬ : Set (Finset α))) : (𝒜 \₊ ℬ).card ≤ (𝒜 ∩ ℬ).card := by
-  refine' (card_le_of_subset _).trans (card_posDiffs_self_le _)
+  refine' (card_le_card _).trans (card_posDiffs_self_le _)
   · simp_rw [subset_iff, mem_posDiffs, mem_inter]
     rintro _ ⟨s, hs, t, ht, hts, rfl⟩
     exact ⟨s, ⟨hs, hℬ hts ht⟩, t, ⟨h𝒜 hts hs, ht⟩, hts, rfl⟩

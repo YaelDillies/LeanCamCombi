@@ -59,7 +59,7 @@ lemma pure_iff : K.Pure n ↔ ∀ ⦃s⦄, s ∈ K → ∃ t ∈ K, Finset.card 
   · obtain ⟨t, ht, hst⟩ := hK.exists_facet hs
     exact ⟨t, ht.1, hK.2 ht, hst⟩
   · obtain ⟨t, _, htcard, hst⟩ := hK hs
-    exact (Finset.card_le_of_subset hst).trans_eq htcard
+    exact (Finset.card_le_card hst).trans_eq htcard
   · obtain ⟨t, ht, htcard, hst⟩ := hK hs.1
     rwa [hs.2 ht hst]
 

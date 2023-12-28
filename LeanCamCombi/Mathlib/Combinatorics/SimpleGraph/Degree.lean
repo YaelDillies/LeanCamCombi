@@ -1,5 +1,4 @@
 import Mathlib.Combinatorics.SimpleGraph.Basic
-import LeanCamCombi.Mathlib.Algebra.BigOperators.Basic
 
 open Finset Nat
 open scoped BigOperators

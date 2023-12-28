@@ -3,9 +3,7 @@ Copyright (c) 2022 Yaël Dillies, Kexing Ying. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Kexing Ying
 -/
-import Mathlib.Algebra.BigOperators.Basic
 import Mathlib.Probability.IdentDistrib
-import LeanCamCombi.Mathlib.MeasureTheory.Measure.Typeclasses
 import LeanCamCombi.Mathlib.Probability.Independence.Basic
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 
