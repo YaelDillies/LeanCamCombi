@@ -407,8 +407,6 @@ theorem sum_schnirelmannDensity_ge_one_sumset_nat (A B : Set ℕ) :
       refine sumset_contains_n _ _ _  hA hB $ u n
     · exact Set.subset_univ (A + B)
 
-#check schnirelmannDensity_mul_le_card_filter
-
 noncomputable def next_elm (A : Set ℕ) (a : A) (n : ℕ) : ℕ :=
   if h : ((Ioc ↑a n).filter (· ∈ A)).Nonempty then ((Ioc ↑a n).filter (· ∈ A)).min' h else n
 
@@ -535,9 +533,6 @@ lemma schnirelmannDensity_for_two (A B : Set ℕ) : (0 ∈ A) → (0 ∈ B) →
     exact h0
   linarith
 
-
--- lemma schnirelmannDensity_for_gen (A B : Set ℕ) : (0 ∈ A) → (0 ∈ B) →
---   (1 - schnirelmannDensity (A + B)) ≤ (1 - schnirelmannDensity A) * (1 - schnirelmannDensity B) := by sorry
 
 
 theorem mannTheorem (A B : Set ℕ) : min 1 (schnirelmannDensity A + schnirelmannDensity B) ≤ schnirelmannDensity (A + B) := by sorry
