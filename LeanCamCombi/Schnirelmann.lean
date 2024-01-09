@@ -10,9 +10,10 @@ import Mathlib.GroupTheory.Submonoid.Operations
 
 open Finset
 open scoped Classical Pointwise
+open Function
 
-noncomputable def countelements (A : Set ℕ) (n : ℕ) : ℕ :=  -- for teaching purposes,
-  Finset.card ((Icc 1 n).filter (· ∈ A))                    -- writing this is better
+noncomputable def countelements (A : Set ℕ) (n : ℕ) : ℕ := -- for teaching purposes,
+  Finset.card ((Icc 1 n).filter (· ∈ A))      -- writing this is better
 
 lemma countelements_nonneg (A : Set ℕ) (n : ℕ) : (0 ≤ countelements A n) := by positivity
   -- -- ∧ (countelements A n ≤ n) :=
@@ -41,8 +42,7 @@ lemma sumset_contains_n (A B : Set ℕ) (n : ℕ) (ha : 0 ∈ A) (hb : 0 ∈ B)
   have hna : n ∉ A := by
     by_contra!
     apply h
-    use n
-    use 0
+    use n, 0
     simp only [add_zero, and_true]
     exact { left := this, right := hb }
   have hnb : n ∉ B := by
@@ -112,14 +112,180 @@ lemma sumset_contains_n (A B : Set ℕ) (n : ℕ) (ha : 0 ∈ A) (hb : 0 ∈ B)
   · have main : ∃ a b, a ∈ A ∧ b ∈ B ∧ (a : ℤ) = n - b := by
       have lem1 : Finset.card (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1))) = countelements B (n-1) := by
         rw [countelements]
-        apply le_antisymm
-        · simp only [Set.singleton_sub, Set.mem_image, Nat.lt_one_iff, tsub_eq_zero_iff_le, mem_Icc, and_imp]
-          sorry
-        · sorry
-      have lem2 : (Icc 1 (n-1)).filter (· ∈ A) ∪ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1))) ⊆ Icc 1 (n-1) := by sorry
-      have lem3 : (Icc 1 (n-1)).filter (· ∈ A) ∩ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1))) ≠ ∅ := by sorry
+        set f := fun x ↦ n - x
+        have hfinj : Set.InjOn f (filter (fun x ↦ x ∈ B) (Icc 1 (n - 1))) := by -- (filter (fun x ↦ x ∈ B) (Icc 1 (n - 1)))
+          intro xx hxx yy hyy hfxy
+          simp only [ge_iff_le] at hfxy
+          simp only [ge_iff_le, gt_iff_lt, Nat.lt_one_iff, tsub_eq_zero_iff_le, mem_Icc, and_imp,
+            coe_filter, Set.mem_setOf_eq] at hxx
+          simp only [ge_iff_le, gt_iff_lt, Nat.lt_one_iff, tsub_eq_zero_iff_le, mem_Icc, and_imp,
+            coe_filter, Set.mem_setOf_eq] at hyy
+          have hnx : 0 < n - xx := by
+            obtain ⟨hx1, hx2⟩ := hxx
+            obtain ⟨hx11, hx12⟩ := hx1
+            rw [← Nat.lt_add_one_iff] at hx12
+            have : n - 1 + 1 = n := by
+              zify
+              aesop
+            rw [this] at hx12
+            rwa [tsub_pos_iff_lt]
+          have hny : 0 < n - yy := by
+            obtain ⟨hy1, hy2⟩ := hyy
+            obtain ⟨hy11, hy12⟩ := hy1
+            rw [← Nat.lt_add_one_iff] at hy12
+            have : n - 1 + 1 = n := by
+              zify
+              aesop
+            rw [this] at hy12
+            rwa [tsub_pos_iff_lt]
+          zify at hfxy
+          rw [Nat.cast_sub, Nat.cast_sub] at hfxy
+          · simp at hfxy
+            exact hfxy
+          · by_contra! hny0
+            have : n - yy = 0 := by
+                have hhle : n ≤ yy := Nat.le_of_lt hny0
+                rw [Nat.sub_eq_zero_of_le hhle]
+            rw [this] at hny
+            absurd hny
+            trivial
+          · by_contra! hnx0
+            have : n - xx = 0 := by
+                have hhle : n ≤ xx := Nat.le_of_lt hnx0
+                rw [Nat.sub_eq_zero_of_le hhle]
+            rw [this] at hnx
+            absurd hnx
+            trivial
+        have hfim : Finset.image f (filter (fun x ↦ x ∈ B) (Icc 1 (n - 1))) = (filter (fun x ↦ x ∈ {n} - B) (Icc 1 (n - 1))) := by
+          ext y
+          constructor
+          · intro hy
+            simp only [ge_iff_le, gt_iff_lt, Nat.lt_one_iff, tsub_eq_zero_iff_le, mem_Icc, and_imp,
+              mem_image, mem_filter] at hy
+            simp only [Set.singleton_sub, ge_iff_le, Set.mem_image, gt_iff_lt, Nat.lt_one_iff,
+              tsub_eq_zero_iff_le, mem_Icc, and_imp, not_exists, not_and, mem_filter]
+            obtain ⟨a, hya, hnay⟩ := hy
+            obtain ⟨hya1, hya2⟩ := hya
+            obtain ⟨hya11, hya12⟩ := hya1
+            constructor
+            · constructor
+              · rw [← hnay]
+                rw [← Nat.lt_add_one_iff] at hya12
+                have : n - 1 + 1 = n := by
+                  zify
+                  aesop
+                rw [this] at hya12
+                -- zify
+                rw [Nat.one_le_iff_ne_zero]
+                exact Nat.sub_ne_zero_of_lt hya12
+              · rw [← hnay, ← Nat.lt_add_one_iff]
+                have : n - 1 + 1 = n := by
+                  zify
+                  aesop
+                rw [this, tsub_lt_iff_right]
+                zify
+                · simp only [lt_add_iff_pos_right, Nat.cast_pos]
+                  exact hya11
+                · rw [← Nat.lt_add_one_iff, this] at hya12
+                  exact Nat.le_of_lt hya12
+            · use a
+          · intro hy
+            simp only [Set.singleton_sub, ge_iff_le, Set.mem_image, gt_iff_lt, Nat.lt_one_iff,
+              tsub_eq_zero_iff_le, mem_Icc, and_imp, not_exists, not_and, mem_filter] at hy
+            simp only [ge_iff_le, gt_iff_lt, Nat.lt_one_iff, tsub_eq_zero_iff_le, mem_Icc, and_imp,
+              mem_image, mem_filter]
+            obtain ⟨hy1, x, hnxy⟩ := hy
+            obtain ⟨hy11, hy12⟩ := hy1
+            obtain ⟨hx, hnxy1⟩ := hnxy
+            use x
+            constructor
+            · constructor
+              · constructor
+                · rw [← hnxy1, ← Nat.lt_add_one_iff] at hy12
+                  have : n - 1 + 1 = n := by
+                    zify
+                    aesop
+                  rw [this, tsub_lt_iff_right] at hy12
+                  zify at hy12
+                  · simp only [lt_add_iff_pos_right, Nat.cast_pos] at hy12
+                    exact hy12
+                  · rw [← hnxy1] at hy11
+                    by_contra! hnx
+                    have last : n - x = 0 := by
+                      have hhle : n ≤ x := Nat.le_of_lt hnx
+                      rw [Nat.sub_eq_zero_of_le hhle]
+                    rw [last] at hy11
+                    absurd hy11
+                    trivial
+                · rw [← hnxy1] at hy11
+                  by_contra! hnx
+                  have last : n - x ≤ 0 := by
+                    rw [← Nat.add_one_le_iff] at hnx
+                    have : n - 1 + 1 = n := by
+                      zify
+                      aesop
+                    rw [this] at hnx
+                    rw [Nat.sub_eq_zero_of_le hnx]
+                  have abs : 1 ≤ 0 := le_trans hy11 last
+                  absurd abs
+                  trivial
+              · exact hx
+            · exact hnxy1
+        rw [← hfim]
+        exact card_image_iff.mpr hfinj
+      have lem2 : (Icc 1 (n-1)).filter (· ∈ A) ∪ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1))) ⊆ Icc 1 (n-1) := by
+        intro x hx
+        simp only [ge_iff_le, gt_iff_lt, Nat.lt_one_iff, tsub_eq_zero_iff_le, mem_Icc, and_imp,
+          Set.singleton_sub, Set.mem_image, not_exists, not_and, mem_union, mem_filter] at hx
+        simp only [ge_iff_le, gt_iff_lt, Nat.lt_one_iff, tsub_eq_zero_iff_le, mem_Icc]
+        rcases hx with hx1 | hx2
+        · exact hx1.1
+        · exact hx2.1
+      have lem3 : (Icc 1 (n-1)).filter (· ∈ A) ∩ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1))) ≠ ∅ := by
+        rw [← hca, ← hcb] at hc
+        have hun : Finset.card ((Icc 1 (n-1)).filter (· ∈ A) ∪ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1)))) ≤ n - 1 := by
+          nth_rewrite 3 [← card_Icc_one_n_n (n - 1)]
+          exact card_le_of_subset lem2
+        have hui : Finset.card ((Icc 1 (n-1)).filter (· ∈ A) ∪ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1))))
+          + Finset.card ((Icc 1 (n-1)).filter (· ∈ A) ∩ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1)))) = countelements A (n-1) + countelements B (n-1) := by
+            rw [card_union_add_card_inter, ← lem1, countelements]
+        have hin : 0 < Finset.card ((Icc 1 (n-1)).filter (· ∈ A) ∩ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1)))) := by
+          rw [← hui] at hc
+          -- have hip : 0 ≤ Finset.card ((Icc 1 (n-1)).filter (· ∈ A) ∩ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1)))) := by positivity
+          have hun1 : Finset.card ((Icc 1 (n-1)).filter (· ∈ A) ∪ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1))))
+            + Finset.card ((Icc 1 (n-1)).filter (· ∈ A) ∩ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1)))) ≤ (n - 1)
+            + Finset.card ((Icc 1 (n-1)).filter (· ∈ A) ∩ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1)))) := add_le_add hun le_rfl
+          have hip0 : n ≤ (n - 1) + Finset.card ((Icc 1 (n-1)).filter (· ∈ A) ∩ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1)))) := le_trans hc hun1
+          by_contra! hip
+          have hip1 : (n - 1) + Finset.card ((Icc 1 (n-1)).filter (· ∈ A) ∩ (Finset.filter (· ∈ {n} - B) (Icc 1 (n-1)))) ≤ (n - 1) := add_le_add le_rfl hip
+          have hnn : n ≤ (n - 1) := le_trans hip0 hip1
+          rw [← not_lt] at hnn
+          apply hnn
+          rw [propext (Nat.lt_iff_le_pred hn1)]
+        rwa [← Finset.nonempty_iff_ne_empty, ← Finset.card_pos]
       simp only [Nat.lt_one_iff, tsub_eq_zero_iff_le, mem_Icc, and_imp, Set.singleton_sub, Set.mem_image, ne_eq] at lem3  -- set is nonempty iff ?
-      have lem31 : A ∩ ({n} - B) ∩ Icc 1 (n-1) ≠ ∅ := by sorry
+      have lem31 : A ∩ ({n} - B) ∩ Icc 1 (n-1) ≠ ∅ := by
+        intro hyp
+        apply lem3
+        rw [← filter_and, filter_eq_empty_iff]
+        intro xx hxx
+        push_neg
+        intro hxa yy hyb
+        intro main
+        have : xx ∈ A ∩ ({n} - B) ∩ Icc 1 (n-1) := by
+          constructor
+          · constructor
+            · exact hxa
+            · rw [Set.mem_sub]
+              use n, yy
+              constructor
+              · rfl
+              · constructor
+                · exact hyb
+                · exact main
+          · exact hxx
+        rw [hyp] at this
+        contradiction
       rw [← Set.nonempty_iff_ne_empty, Set.nonempty_def] at lem31
       obtain ⟨x, hx⟩ := lem31
       rw [Set.inter_def] at hx
@@ -141,12 +307,40 @@ lemma sumset_contains_n (A B : Set ℕ) (n : ℕ) (ha : 0 ∈ A) (hb : 0 ∈ B)
           rw [Set.mem_singleton_iff] at hxx
           rw [hxx] at hxy
           zify at hxy
-          sorry
-          -- zify at hxy
-          -- rw [Int.cast_eq_cast_iff_Nat] at hxy
-          -- rw [← hxx, ← hxy]
-        sorry
-    sorry
+          have : yy = n - x := by
+            zify
+            rw [Nat.cast_sub, eq_sub_iff_add_eq', ← eq_sub_iff_add_eq, ← Nat.cast_sub]
+            · exact id hxy.symm
+            · simp only [ge_iff_le, Nat.cast_inj] at hxy
+              rw [← hxy] at hx2
+              simp only [ge_iff_le, gt_iff_lt, Nat.lt_one_iff, tsub_eq_zero_iff_le, coe_Icc, not_le,
+                Set.mem_Icc, tsub_le_iff_right] at hx2
+              zify at hx2
+              by_contra! hh
+              have : n - yy = 0 := by
+                have hhle : n ≤ yy := Nat.le_of_lt hh
+                rw [Nat.sub_eq_zero_of_le hhle]
+              rw [this] at hx2
+              obtain ⟨hx21, hx22⟩ := hx2
+              rw [← Int.not_lt] at hx21
+              apply hx21
+              simp only [Nat.cast_zero, zero_lt_one]
+            · exact Nat.le_of_lt hnx
+          rwa [← this]
+        aesop
+    apply h
+    obtain ⟨aa, bb, haa, hbb, hnn⟩ := main
+    rw [eq_sub_iff_add_eq] at hnn
+    rw [Set.mem_add]
+    use aa, bb
+    constructor
+    · exact haa
+    · constructor
+      · exact hbb
+      · zify
+        exact hnn
+
+
 
 theorem sum_schnirelmannDensity_ge_one_sumset_nat (A B : Set ℕ) :
     0 ∈ A → 0 ∈ B → 1 ≤ schnirelmannDensity A + schnirelmannDensity B → Set.univ = A + B := by
@@ -167,7 +361,8 @@ theorem sum_schnirelmannDensity_ge_one_sumset_nat (A B : Set ℕ) :
     have hsub : B ⊆ A + B := by
       intro b hb
       rw [Set.mem_add]
-      use 0, b
+      use 0
+      use b
       simp only [zero_add, and_true]
       constructor
       · exact hA
@@ -211,6 +406,8 @@ theorem sum_schnirelmannDensity_ge_one_sumset_nat (A B : Set ℕ) :
       intro n hn
       refine sumset_contains_n _ _ _  hA hB $ u n
     · exact Set.subset_univ (A + B)
+
+#check schnirelmannDensity_mul_le_card_filter
 
 noncomputable def next_elm (A : Set ℕ) (a : A) (n : ℕ) : ℕ :=
   if h : ((Ioc ↑a n).filter (· ∈ A)).Nonempty then ((Ioc ↑a n).filter (· ∈ A)).min' h else n
@@ -276,13 +473,23 @@ theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B)
         have hs : y ∈ (A + B) ∩ (Icc 1 n) := by aesop
         rw [Set.mem_inter_iff] at hs
         exact hs.1
-    have claim : countelements A n + β * (n - countelements A n) ≤ countelements (⋃ a : A, {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)}) n := by
+    have claim : countelements A n + β * (n - countelements A n) ≤
+      countelements (⋃ a : A, {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)}) n := by
       -- simp only [tsub_pos_iff_lt, Set.sep_and, Set.iUnion_coe_set]
+      --have hab (a : A) (b : B) : 0 < (b : ℕ) → (b : ℕ) ≤ (next_elm A a n) - a → (a : ℕ) + (b : ℕ) ∈ (⋃ a : A, {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)}) := by sorry
+      have hcc (a : A) : 1 + countelements B (next_elm A a n - a - 1) ≤ countelements {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)} n := by
+        sorry
+      have hax (a x : A) : a ≠ x → {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)} ∩ {c ∈ A + B | 0 < c - x ∧ (c : ℕ) ≤ (next_elm A x n)} = ∅ := by sorry
+        -- intro hh
+        -- by_contra! hin
+        -- rw? at hin
+      -- have hcount : ∑ a in A, (1 + countelements B (next_elm A a n - a - 1)) ≤ countelements (⋃ a : A, {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)}) n := by sorry
       sorry
     have ht : countelements A n + β * (n - countelements A n) ≤ countelements (A + B) n := by
       apply le_trans claim _
       norm_cast
-    have hc1 : countelements A n * (1 - β) + β * n = countelements A n + β * (n - countelements A n) := by ring_nf
+    have hc1 : countelements A n * (1 - β) + β * n =
+      countelements A n + β * (n - countelements A n) := by ring_nf
     have hc2 : α * n * (1 - β) + β * n ≤ countelements A n * (1 - β) + β * n := by
       rw [halpha]
       by_cases hbo : β = 1
@@ -305,7 +512,8 @@ theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B)
     rw [hc3] at hc2
     exact le_trans hc2 ht
 
-lemma schnirelmannDensity_for_two (A B : Set ℕ) : (0 ∈ A) → (0 ∈ B) → (1 - schnirelmannDensity (A + B)) ≤ (1 - schnirelmannDensity A) * (1 - schnirelmannDensity B) := by
+lemma schnirelmannDensity_for_two (A B : Set ℕ) : (0 ∈ A) → (0 ∈ B) →
+  (1 - schnirelmannDensity (A + B)) ≤ (1 - schnirelmannDensity A) * (1 - schnirelmannDensity B) := by
   let α := schnirelmannDensity A
   have halpha : α = schnirelmannDensity A := rfl
   let β := schnirelmannDensity B
@@ -326,5 +534,10 @@ lemma schnirelmannDensity_for_two (A B : Set ℕ) : (0 ∈ A) → (0 ∈ B) → 
       · exact hB
     exact h0
   linarith
+
+
+-- lemma schnirelmannDensity_for_gen (A B : Set ℕ) : (0 ∈ A) → (0 ∈ B) →
+--   (1 - schnirelmannDensity (A + B)) ≤ (1 - schnirelmannDensity A) * (1 - schnirelmannDensity B) := by sorry
+
 
 theorem mannTheorem (A B : Set ℕ) : min 1 (schnirelmannDensity A + schnirelmannDensity B) ≤ schnirelmannDensity (A + B) := by sorry
