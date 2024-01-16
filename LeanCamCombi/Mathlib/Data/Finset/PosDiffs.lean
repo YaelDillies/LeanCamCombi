@@ -46,7 +46,7 @@ variable [GeneralizedBooleanAlgebra α] [@DecidableRel α (· ≤ ·)] [Decidabl
 /-- The positive set difference of finsets `s` and `t` is the set of `a \ b` for `a ∈ s`, `b ∈ t`,
 `b ≤ a`. -/
 def posDiffs (s t : Finset α) : Finset α :=
-  ((s ×ˢ t).filter fun x ↦ x.2 ≤ x.1).image fun x ↦ x.1 \ x.2
+  ((s ×ˢ t).filter fun (a, b) ↦ b ≤ a).image fun (a, b) ↦ a \ b
 
 scoped[FinsetFamily] infixl:70 " \\₊ " => Finset.posDiffs
 
@@ -102,7 +102,7 @@ variable [Sub α] [Preorder α] [@DecidableRel α (· ≤ ·)] [DecidableEq α] 
 /-- The positive subtraction of finsets `s` and `t` is the set of `a - b` for `a ∈ s`, `b ∈ t`,
 `b ≤ a`. -/
 def posSub (s t : Finset α) : Finset α :=
-  ((s ×ˢ t).filter fun x ↦ x.2 ≤ x.1).image fun x ↦ x.1 - x.2
+  ((s ×ˢ t).filter fun (a, b) ↦ b ≤ a).image fun (a, b) ↦ a - b
 
 scoped[FinsetFamily] infixl:70 " -₊ " => Finset.posSub
 
@@ -112,10 +112,9 @@ lemma mem_posSub : a ∈ s -₊ t ↔ ∃ b ∈ s, ∃ c ∈ t, c ≤ b ∧ b - 
   simp_rw [posSub, mem_image, mem_filter, mem_product, Prod.exists, and_assoc, exists_and_left]
 
 lemma posSub_subset_sub : s -₊ t ⊆ s - t := fun x ↦ by
-  rw [mem_posSub, mem_sub]; exact fun ⟨b, hb, c, hc, _, h⟩ ↦ ⟨b, c, hb, hc, h⟩
+  rw [mem_posSub, mem_sub]; exact fun ⟨b, hb, c, hc, _, h⟩ ↦ ⟨b, hb, c, hc, h⟩
 
-lemma card_posSub_self_le (hs : (s : Set α).OrdConnected) : (s -₊ s).card ≤ s.card :=
-  sorry
+lemma card_posSub_self_le (hs : (s : Set α).OrdConnected) : (s -₊ s).card ≤ s.card := sorry
 
 end posSub
 end Finset

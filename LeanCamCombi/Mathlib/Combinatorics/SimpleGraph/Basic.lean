@@ -49,10 +49,6 @@ lemma ind_singleton (G : SimpleGraph α) (a : α) : G.ind {a} = ⊥ := by
 lemma ind_inter (G : SimpleGraph α) (s t : Set α) : G.ind (s ∩ t) = G.ind s ⊓ G.ind t := by
   ext; simp; tauto
 
-@[simp]
-lemma spanningCoe_induce (G : SimpleGraph α) (s : Set α) :
-    spanningCoe (induce (s : Set α) G) = G.ind s := by ext; simp [← and_assoc]
-
 /-- Induced subgraphs on disjoint sets meet in the empty graph. -/
 lemma disjoint_ind (h : Disjoint s t) : Disjoint (G.ind s) (G.ind t) := by
   rw [disjoint_iff, ← ind_inter, disjoint_iff_inter_eq_empty.1 h, ind_empty]

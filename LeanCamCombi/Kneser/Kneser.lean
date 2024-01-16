@@ -202,7 +202,7 @@ lemma disjoint_mul_sub_card_le {a : α} (b : α) {s t C : Finset α} (has : a �
       · apply smul_finset_subset_smul (mem_union_left t has) (mem_sdiff.mp hx).1
       have hx' := (mem_sdiff.mp hx).2
       contrapose! hx'
-      obtain ⟨y, d, hyst, hd, hxyd⟩ := mem_mul.mp hx'
+      obtain ⟨y, hyst, d, hd, hxyd⟩ := mem_mul.mp hx'
       obtain ⟨c, hc, hcx⟩ := mem_smul_finset.mp (mem_sdiff.mp hx).1
       rw [← hcx, ← eq_mul_inv_iff_mul_eq] at hxyd
       have hyC : y ∈ a • C.mulStab := by
@@ -255,7 +255,7 @@ lemma inter_mul_sub_card_le {a : α} {s t C : Finset α} (has : a ∈ s)
       have hx' := (mem_sdiff.mp hx).2
       contrapose! hx'
       rw [← inter_distrib_right]
-      obtain ⟨y, d, hyst, hd, hxyd⟩ := mem_mul.mp hx'
+      obtain ⟨y, hyst, d, hd, hxyd⟩ := mem_mul.mp hx'
       obtain ⟨c, hc, hcx⟩ := mem_smul_finset.mp (mem_sdiff.mp hx).1
       rw [← hcx, ← eq_mul_inv_iff_mul_eq] at hxyd
       have hyC : y ∈ a • C.mulStab := by
@@ -380,7 +380,7 @@ theorem mul_kneser :
     rw [mul_subset_left_iff (hs.mul ht), hstab, ← coe_subset, coe_one]
     exact hCstab.not_subset_singleton
   simp_rw [mul_subset_iff_left, Classical.not_forall, mem_mul] at this
-  obtain ⟨_, ⟨a, b, ha, hb, rfl⟩, hab⟩ := this
+  obtain ⟨_, ⟨a, ha, b, hb, rfl⟩, hab⟩ := this
   set s₁ := s ∩ a • H with hs₁
   set s₂ := s ∩ b • H with hs₂
   set t₁ := t ∩ b • H with ht₁

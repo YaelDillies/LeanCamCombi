@@ -1,5 +1,4 @@
 import Mathlib.Analysis.Convex.SimplicialComplex.Basic
-import LeanCamCombi.Mathlib.Analysis.Convex.Combination
 import Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 
 open Finset Geometry

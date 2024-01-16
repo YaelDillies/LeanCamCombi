@@ -412,7 +412,7 @@ lemma EKR {𝒜 : Finset (Finset (Fin n))} {r : ℕ} (h𝒜 : (𝒜 : Set (Finse
   have h𝒜bar : (𝒜ᶜˢ : Set (Finset (Fin n))).Sized (n - r) := by simpa using h₂.compls
   have : n - 2 * r ≤ n - r := by
     rw [tsub_le_tsub_iff_left ‹r ≤ n›]
-    exact Nat.le_mul_of_pos_left zero_lt_two
+    exact Nat.le_mul_of_pos_left _ zero_lt_two
   -- We can use the Lovasz form of Kruskal-Katona to get |∂^[n-2k] 𝒜ᶜˢ| ≥ (n-1) choose r
   have kk :=
     lovasz_form ‹n - 2 * r ≤ n - r› ((tsub_le_tsub_iff_left ‹1 ≤ n›).2 h1r) tsub_le_self h𝒜bar z.le

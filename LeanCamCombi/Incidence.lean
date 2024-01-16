@@ -218,16 +218,8 @@ instance instNonAssocSemiring [Preorder α] [LocallyFiniteOrder α] [DecidableEq
   mul := (· * ·)
   zero := 0
   one := 1
-  one_mul := fun f ↦ by
-    ext a b
-    simp_rw [mul_apply, one_apply, sum_boole_mul]
-    exact ite_eq_left_iff.2 (not_imp_comm.1 fun h ↦ left_mem_Icc.2 <| le_of_ne_zero <| Ne.symm h)
-  mul_one := fun f ↦ by
-    ext a b
-    simp_rw [mul_apply, one_apply, eq_comm, sum_mul_boole]
-    convert
-      (ite_eq_left_iff.2 <|
-          not_imp_comm.1 fun h ↦ right_mem_Icc.2 <| le_of_ne_zero <| Ne.symm h).symm
+  one_mul := fun f ↦ by ext; simp [*]
+  mul_one := fun f ↦ by ext; simp [*]
 
 instance instSemiring [Preorder α] [LocallyFiniteOrder α] [DecidableEq α] [Semiring 𝕜] :
     Semiring (IncidenceAlgebra 𝕜 α) where

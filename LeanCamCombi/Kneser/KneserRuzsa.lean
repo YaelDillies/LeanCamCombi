@@ -58,7 +58,7 @@ lemma le_card_union_add_card_mulStab_union :
       mulStab (image QuotientGroup.mk t) = 1 := by
       ext x
       constructor
-      · simp only [Nonempty.image_iff, mem_one, and_imp, ← QuotientGroup.mk_one]
+      · simp only [image_nonempty, mem_one, and_imp, ← QuotientGroup.mk_one]
         intro hx
         rw [← mulStab_quotient_commute_subgroup N s, ← mulStab_quotient_commute_subgroup N t] at hx
         simp only [mem_inter, mem_image] at hx
@@ -66,7 +66,7 @@ lemma le_card_union_add_card_mulStab_union :
         obtain ⟨w, hwx⟩ := Quotient.exists_rep x
         have : ⟦w⟧ = QuotientGroup.mk (s := N) w := by exact rfl
         rw [← hwx, this, QuotientGroup.eq] at hyx hzx ⊢
-        simp only [mul_one, inv_mem_iff, mem_inf, mem_stabilizer_iff] at hyx hzx ⊢
+        simp only [mul_one, inv_mem_iff, Subgroup.mem_inf, mem_stabilizer_iff] at hyx hzx ⊢
         constructor
         · convert hyx.1 using 1
           rw [mul_comm, mul_smul]
@@ -79,7 +79,7 @@ lemma le_card_union_add_card_mulStab_union :
         all_goals { aesop }
       · aesop
     specialize this (α := α ⧸ N) (s := s.image (↑)) (t := t.image (↑))
-    simp only [Nonempty.image_iff, mulStab_nonempty, mul_nonempty, and_imp,
+    simp only [image_nonempty, mulStab_nonempty, mul_nonempty, and_imp,
       forall_true_left, hs, ht, h1] at this
     calc
     min (card s + card Hs) (card t + card Ht) =
