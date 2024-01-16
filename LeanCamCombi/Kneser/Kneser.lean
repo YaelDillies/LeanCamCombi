@@ -7,21 +7,21 @@ import Mathlib.Tactic.Linarith
 import LeanCamCombi.Kneser.MulStab
 
 /-!
-# Kneser's addition lemma
+# Kneser's addition theorem
 
-This file proves Kneser's lemma. This states that `|s + H| + |t + H| - |H| ≤ |s + t|` where `s`,
+This file proves Kneser's theorem. This states that `|s + H| + |t + H| - |H| ≤ |s + t|` where `s`,
 `t` are finite nonempty sets in a commutative group and `H` is the stabilizer of `s + t`. Further,
 if the inequality is strict, then we in fact have `|s + H| + |t + H| ≤ |s + t|`.
 
 ## Main declarations
 
-* `finset.mul_kneser`: Kneser's lemma.
-* `finset.mul_strict_kneser`: Strict Kneser lemma.
+* `Finset.mul_kneser`: Kneser's theorem.
+* `Finset.mul_strict_kneser`: Strict Kneser theorem.
 
 ## References
 
 * [Imre Ruzsa, *Sumsets and structure*][ruzsa2009]
-* Matt DeVos, *A short proof of Kneser's addition lemma*
+* Matt DeVos, *A short proof of Kneser's addition theorem*
 -/
 
 open Function MulAction
