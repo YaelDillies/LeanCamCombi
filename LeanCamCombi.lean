@@ -7,8 +7,8 @@ import LeanCamCombi.ErdosRenyi.Connectivity
 import LeanCamCombi.ErdosRenyi.GiantComponent
 import LeanCamCombi.ExampleSheets.Graph.ES1
 import LeanCamCombi.ExampleSheets.Graph.ES2
+import LeanCamCombi.Impact
 import LeanCamCombi.Incidence
-import LeanCamCombi.Kneser.Impact
 import LeanCamCombi.Kneser.Kneser
 import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.Mathlib
@@ -46,6 +46,7 @@ import LeanCamCombi.Mathlib.Order.ConditionallyCompleteLattice.Basic
 import LeanCamCombi.Mathlib.Order.Hom.Lattice
 import LeanCamCombi.Mathlib.Order.Hom.Set
 import LeanCamCombi.Mathlib.Order.LocallyFinite
+import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.Sublattice
 import LeanCamCombi.Mathlib.Order.SupClosed
 import LeanCamCombi.Mathlib.Probability.Independence.Basic
@@ -59,5 +60,6 @@ import LeanCamCombi.SimplicialComplex.Pure
 import LeanCamCombi.SimplicialComplex.Simplex
 import LeanCamCombi.SimplicialComplex.Skeleton
 import LeanCamCombi.SimplicialComplex.Subdivision
+import LeanCamCombi.SliceRank
 import LeanCamCombi.SylvesterChvatal
 import LeanCamCombi.VanDenBergKesten
