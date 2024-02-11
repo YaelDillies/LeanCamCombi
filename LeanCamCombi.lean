@@ -28,6 +28,7 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Containment
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Degree
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
+import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Finite
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Maps
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Multipartite
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph

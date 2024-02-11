@@ -6,9 +6,6 @@ variable {α β : Type*} [DecidableEq α] [DecidableEq β]
 
 namespace Finpartition
 
--- TODO: Fix field name
-alias sup_parts := supParts
-
 @[simps]
 def finsetImage {a : Finset α} (P : Finpartition a) (f : α → β) (hf : Injective f) :
     Finpartition (a.image f) where
@@ -19,7 +16,7 @@ def finsetImage {a : Finset α} (P : Finpartition a) (f : α → β) (hf : Injec
     simp only [Set.PairwiseDisjoint, Set.Pairwise, mem_coe, Function.onFun, Ne.def,
       Function.id_comp, disjoint_image hf]
     exact P.disjoint
-  supParts := by
+  sup_parts := by
     ext i
     simp only [mem_sup, mem_image, exists_prop, id.def, exists_exists_and_eq_and]
     constructor
@@ -54,7 +51,7 @@ def modPartitions (s d : ℕ) (hd : d ≠ 0) (h : d ≤ s) : Finpartition (range
       simp only [hx₁.trans_le h, eq_self_iff_true, and_self_iff]
     rw [mem_filter, Nat.mod_eq_of_lt hx₁] at this
     exact this.2
-  supParts := by
+  sup_parts := by
     rw [sup_image, Function.id_comp]
     refine' Subset.antisymm _ _
     · rw [Finset.sup_eq_biUnion, biUnion_subset]

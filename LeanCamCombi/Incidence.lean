@@ -66,7 +66,7 @@ namespace IncidenceAlgebra
 section Zero
 variable [Zero 𝕜] [LE α] {a b : α}
 
-instance funLike : FunLike (IncidenceAlgebra 𝕜 α) α fun _ ↦ α → 𝕜 :=
+instance funLike : FunLike (IncidenceAlgebra 𝕜 α) α (α → 𝕜) :=
   ⟨toFun, fun f g h ↦ by cases f; cases g; congr⟩
 
 lemma apply_eq_zero_of_not_le (h : ¬a ≤ b) (f : IncidenceAlgebra 𝕜 α) : f a b = 0 :=
@@ -93,11 +93,11 @@ protected lemma congr_arg (f : IncidenceAlgebra 𝕜 α) {a₁ a₂ b₁ b₂ : 
 
 @[simp]
 lemma coe_inj {f g : IncidenceAlgebra 𝕜 α} : (f : α → α → 𝕜) = g ↔ f = g :=
-  FunLike.coe_injective.eq_iff
+  DFunLike.coe_injective.eq_iff
 
 @[ext]
 lemma ext ⦃f g : IncidenceAlgebra 𝕜 α⦄ (h : ∀ a b, a ≤ b → f a b = g a b) : f = g := by
-  refine' FunLike.coe_injective' (funext₂ fun a b ↦ _)
+  refine' DFunLike.coe_injective' (funext₂ fun a b ↦ _)
   by_cases hab : a ≤ b
   · exact h _ _ hab
   · rw [apply_eq_zero_of_not_le hab, apply_eq_zero_of_not_le hab]
@@ -146,10 +146,10 @@ lemma smul_apply' (c : M) (f : IncidenceAlgebra 𝕜 α) (a b : α) : (c • f) 
 end Smul
 
 instance instAddMonoid [AddMonoid 𝕜] [LE α] : AddMonoid (IncidenceAlgebra 𝕜 α) :=
-  FunLike.coe_injective.addMonoid _ coe_zero coe_add fun _ _ ↦ rfl
+  DFunLike.coe_injective.addMonoid _ coe_zero coe_add fun _ _ ↦ rfl
 
 instance instAddCommMonoid [AddCommMonoid 𝕜] [LE α] : AddCommMonoid (IncidenceAlgebra 𝕜 α) :=
-  FunLike.coe_injective.addCommMonoid _ coe_zero coe_add fun _ _ ↦ rfl
+  DFunLike.coe_injective.addCommMonoid _ coe_zero coe_add fun _ _ ↦ rfl
 
 section AddGroup
 variable [AddGroup 𝕜] [LE α]
@@ -166,12 +166,12 @@ lemma neg_apply (f : IncidenceAlgebra 𝕜 α) (a b : α) : (-f) a b = -f a b :=
 lemma sub_apply (f g : IncidenceAlgebra 𝕜 α) (a b : α) : (f - g) a b = f a b - g a b := rfl
 
 instance instAddGroup : AddGroup (IncidenceAlgebra 𝕜 α) :=
-  FunLike.coe_injective.addGroup _ coe_zero coe_add coe_neg coe_sub (fun _ _ ↦ rfl) fun _ _ ↦ rfl
+  DFunLike.coe_injective.addGroup _ coe_zero coe_add coe_neg coe_sub (fun _ _ ↦ rfl) fun _ _ ↦ rfl
 
 end AddGroup
 
 instance instAddCommGroup [AddCommGroup 𝕜] [LE α] : AddCommGroup (IncidenceAlgebra 𝕜 α) :=
-  FunLike.coe_injective.addCommGroup _ coe_zero coe_add coe_neg coe_sub (fun _ _ ↦ rfl)
+  DFunLike.coe_injective.addCommGroup _ coe_zero coe_add coe_neg coe_sub (fun _ _ ↦ rfl)
     fun _ _ ↦ rfl
 
 section One
@@ -276,11 +276,11 @@ instance [Preorder α] [LocallyFiniteOrder α] [DecidableEq α] [Semiring 𝕜] 
 
 instance smulWithZeroRight [Zero 𝕜] [Zero 𝕝] [SMulWithZero 𝕜 𝕝] [LE α] :
     SMulWithZero 𝕜 (IncidenceAlgebra 𝕝 α) :=
-  FunLike.coe_injective.smulWithZero ⟨((⇑) : IncidenceAlgebra 𝕝 α → α → α → 𝕝), coe_zero⟩ coe_smul'
+  DFunLike.coe_injective.smulWithZero ⟨((⇑) : IncidenceAlgebra 𝕝 α → α → α → 𝕝), coe_zero⟩ coe_smul'
 
 instance moduleRight [Preorder α] [Semiring 𝕜] [AddCommMonoid 𝕝] [Module 𝕜 𝕝] :
     Module 𝕜 (IncidenceAlgebra 𝕝 α) :=
-  FunLike.coe_injective.module _ ⟨⟨((⇑) : IncidenceAlgebra 𝕝 α → α → α → 𝕝), coe_zero⟩, coe_add⟩
+  DFunLike.coe_injective.module _ ⟨⟨((⇑) : IncidenceAlgebra 𝕝 α → α → α → 𝕝), coe_zero⟩, coe_add⟩
     coe_smul'
 
 instance algebraRight [PartialOrder α] [LocallyFiniteOrder α] [DecidableEq α] [CommSemiring 𝕜]
@@ -371,7 +371,7 @@ def muAux (a : α) : α → 𝕜
           have : (Icc a x).card < (Icc a b).card :=
             card_lt_card (Icc_ssubset_Icc_right (h.1.trans h.2.le) le_rfl h.2)
           muAux a x
-termination_by muAux a b => (Icc a b).card
+termination_by b => (Icc a b).card
 
 lemma muAux_apply (a b : α) :
     muAux 𝕜 a b = if a = b then 1 else -∑ x in (Ico a b).attach, muAux 𝕜 a x := by
@@ -437,7 +437,7 @@ private def mu'Aux (b : α) : α → 𝕜
           have : (Icc (↑x) b).card < (Icc a b).card :=
             card_lt_card (Icc_ssubset_Icc_left (h.1.le.trans h.2) h.1 le_rfl)
           mu'Aux b x
-termination_by mu'Aux b a => (Icc a b).card
+termination_by a => (Icc a b).card
 
 private lemma mu'Aux_apply (a b : α) :
     mu'Aux 𝕜 b a = if a = b then 1 else -∑ x in (Ioc a b).attach, mu'Aux 𝕜 b x := by

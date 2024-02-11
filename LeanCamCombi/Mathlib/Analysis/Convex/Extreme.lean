@@ -6,6 +6,7 @@ Authors: Yaël Dillies, Bhavik Mehta
 import Mathlib.Analysis.Convex.Independent
 import Mathlib.Analysis.Convex.Topology
 import Mathlib.Analysis.Normed.Order.Basic
+import Mathlib.Analysis.NormedSpace.Basic
 
 /-!
 # Extreme sets

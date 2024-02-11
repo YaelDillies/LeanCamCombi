@@ -1,4 +1,4 @@
-import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Finite
 
 open Finset Nat
 open scoped BigOperators

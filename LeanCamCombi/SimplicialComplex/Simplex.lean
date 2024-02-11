@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Bhavik Mehta
 -/
 import Mathlib.Analysis.Convex.Topology
+import Mathlib.Analysis.NormedSpace.Real
 import Mathlib.LinearAlgebra.FiniteDimensional
 import Mathlib.Order.Filter.Archimedean
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme

@@ -58,7 +58,7 @@ def IsContained (G : SimpleGraph α) (H : SimpleGraph β) : Prop :=
 
 scoped infixl:50 " ⊑ " => SimpleGraph.IsContained
 
-lemma isContained_of_le (h : G₁ ≤ G₂) : G₁ ⊑ G₂ := ⟨Hom.ofLe h, injective_id⟩
+lemma isContained_of_le (h : G₁ ≤ G₂) : G₁ ⊑ G₂ := ⟨.ofLE h, injective_id⟩
 
 protected lemma Iso.isContained (e : G ≃g H) : G ⊑ H := ⟨e, e.injective⟩
 protected lemma Iso.isContained' (e : G ≃g H) : H ⊑ G := e.symm.isContained
@@ -278,7 +278,7 @@ contain `G`. -/
 lemma not_isContained_kill (hG : G ≠ ⊥) : ¬ G ⊑ G.kill H := by
   rw [kill_of_ne_bot hG, deleteEdges_eq_sdiff_fromEdgeSet, isContained_iff_exists_subgraph]
   rintro ⟨H', hGH'⟩
-  have hH' : (H'.map $ Hom.ofLe (sdiff_le : H \ _ ≤ H)).edgeSet.Nonempty := by
+  have hH' : (H'.map $ Hom.ofLE (sdiff_le : H \ _ ≤ H)).edgeSet.Nonempty := by
     rw [Subgraph.edgeSet_map]
     exact (aux hG hGH').image _
   set e := hH'.some with he
@@ -287,14 +287,14 @@ lemma not_isContained_kill (hG : G ≠ ⊥) : ¬ G ⊑ G.kill H := by
   rw [←Subgraph.image_coe_edgeSet_coe] at this
   subst he
   obtain ⟨e, he₀, he₁⟩ := this
-  let e' : Sym2 H'.verts := Sym2.map (Subgraph.isoMap (Hom.ofLe _) injective_id _).symm e
+  let e' : Sym2 H'.verts := Sym2.map (Subgraph.isoMap (Hom.ofLE _) injective_id _).symm e
   have he' : e' ∈ H'.coe.edgeSet := (Iso.map_mem_edgeSet_iff _).2 he₀
   rw [Subgraph.edgeSet_coe] at he'
   have := Subgraph.edgeSet_subset _ he'
   simp only [edgeSet_sdiff,  edgeSet_fromEdgeSet,  edgeSet_sdiff_sdiff_isDiag, Set.mem_diff,
     Set.mem_iUnion, not_exists] at this
-  refine' this.2 (H'.map $ Hom.ofLe sdiff_le)
-    ⟨(Subgraph.isoMap (Hom.ofLe _) injective_id _).comp hGH'.some⟩ _
+  refine' this.2 (H'.map $ Hom.ofLE sdiff_le)
+    ⟨(Subgraph.isoMap (Hom.ofLE _) injective_id _).comp hGH'.some⟩ _
   rw [Sym2.map_map, Set.mem_singleton_iff, ←he₁]
   congr 1 with x
   refine' congr_arg (↑) (Equiv.Set.image_symm_apply _ _ injective_id _ _)

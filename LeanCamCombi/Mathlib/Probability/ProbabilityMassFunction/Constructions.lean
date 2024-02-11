@@ -47,7 +47,7 @@ section bernoulli
 /-- A `PMF` which assigns probability `p` to true propositions and `1 - p` to false ones. -/
 noncomputable def bernoulli' (p : ℝ≥0) (h : p ≤ 1) : PMF Prop :=
   (ofFintype fun b ↦ if b then p else 1 - p) $ by simp_rw [←ENNReal.coe_one, ←ENNReal.coe_sub,
-    ←apply_ite ((↑) : ℝ≥0 → ℝ≥0∞), ←ENNReal.coe_finset_sum, ENNReal.coe_eq_coe]; simp [h]
+    ←apply_ite ((↑) : ℝ≥0 → ℝ≥0∞), ←ENNReal.coe_finset_sum, ENNReal.coe_inj]; simp [h]
 
 variable {p : ℝ≥0} (hp : p ≤ 1) (b : Prop)
 
