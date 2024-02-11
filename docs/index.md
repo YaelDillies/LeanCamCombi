@@ -44,6 +44,7 @@ The project contains
 
 The following topics are under active development in LeanCamCombi.
 
+* The Erdős-Ginzburg-Ziv theorem
 * The Erdős-Rényi model for random graphs, aka binomial random graph
 * The Littlewood-Offord problem
 * The van den Berg-Kesten-Reimer inequality
@@ -62,7 +63,6 @@ Here is a precise list of the files containing unfinished material, along with t
 The following topics are covered in LeanCamCombi and could be upstreamed to mathlib.
 
 * The Kruskal-Katona theorem and the Erdős-Ko-Rado theorem
-<!-- * The Erdős-Ginzburg-Ziv theorem -->
 * Kneser's addition theorem
 * The Sylvester-Chvatal theorem
 * Containment of graphs
