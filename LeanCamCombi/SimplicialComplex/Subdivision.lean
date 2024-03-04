@@ -114,9 +114,7 @@ lemma subdivides_iff_partition :
     have hxspace := mem_space_iff.2 ⟨s, hs, hx'.1⟩
     rw [hspace, ← combiInteriors_cover, mem_iUnion₂] at hxspace
     obtain ⟨t', ht', hxt'⟩ := hxspace
-    suffices htt' : t = t'
-    · rw [htt']
-      exact hxt'.1
+    convert hxt'.1
     obtain ⟨F, hF, hinterior⟩ := hpartition _ ht
     obtain ⟨F', hF', hinterior'⟩ := hpartition _ ht'
     apply disjoint_interiors ht ht' (_ : x ∈ _) _
@@ -135,8 +133,8 @@ instance : IsPartialOrder (SimplicialComplex ℝ E) Subdivides where
   antisymm := by
     suffices aux_lemma :
       ∀ {K₁ K₂ : SimplicialComplex ℝ E},
-        K₁.Subdivides K₂ → K₂.Subdivides K₁ → ∀ {s}, s ∈ K₁.faces → s ∈ K₂.faces
-    · rintro K₁ K₂ h₁ h₂
+        K₁.Subdivides K₂ → K₂.Subdivides K₁ → ∀ {s}, s ∈ K₁.faces → s ∈ K₂.faces by
+      rintro K₁ K₂ h₁ h₂
       ext s
       exact ⟨fun hs => aux_lemma h₁ h₂ hs, fun hs => aux_lemma h₂ h₁ hs⟩
     rintro K₁ K₂ h₁ h₂ s hs
@@ -149,11 +147,8 @@ instance : IsPartialOrder (SimplicialComplex ℝ E) Subdivides where
     obtain ⟨F', hF', hF't⟩ := h₁.2.2 _ (hF ht)
     rw [hF't, mem_iUnion₂] at hxt
     obtain ⟨u, hu, hxu⟩ := hxt
-    have := disjoint_interiors hs (hF' hu) hxs hxu
-    subst this
-    suffices h : s = t
-    · rw [h]
-      exact hF ht
+    obtain rfl := disjoint_interiors hs (hF' hu) hxs hxu
+    convert hF ht
     refine' combiInterior.inj (K₁.indep hs) (K₂.indep <| hF ht) (Subset.antisymm _ _)
     · rw [hF't]
       exact subset_biUnion_of_mem hu

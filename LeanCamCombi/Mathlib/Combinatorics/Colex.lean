@@ -97,8 +97,8 @@ lemma erase_le_erase_min' (hst : toColex s ≤ toColex t) (hcard : s.card ≤ t.
   -- If `a < w`, case on whether `m < w` or `m = w`
   obtain rfl | hmw : m = w ∨ m < w := (min'_le _ _ hwt).eq_or_lt
   -- If `m = w`, then `s \ {a} = t \ {m}`
-  · have : erase t m ⊆ erase s a
-    · rintro b hb
+  · have : erase t m ⊆ erase s a := by
+      rintro b hb
       rw [mem_erase] at hb ⊢
       exact ⟨(haw.trans_le $ min'_le _ _ hb.2).ne', (hw $ hb.1.lt_of_le' $ min'_le _ _ hb.2).2 hb.2⟩
     rw [eq_of_subset_of_card_le this]

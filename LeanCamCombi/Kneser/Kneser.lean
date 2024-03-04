@@ -95,8 +95,8 @@ lemma mulStab_union (hs₁ : (s ∩ a • C.mulStab).Nonempty) (ht₁ : (t ∩ b
       fun x hx => _
   replace hx := (mem_mulStab $ (hs₁.mul ht₁).mono $ subset_union_right _ _).mp hx
   rw [smul_finset_union] at hx
-  suffices hxC : x ∈ C.mulStab
-  · rw [(mem_mulStab hCne).mp hxC] at hx
+  suffices hxC : x ∈ C.mulStab by
+    rw [(mem_mulStab hCne).mp hxC] at hx
     rw [mem_mulStab_iff_subset_smul_finset (hs₁.mul ht₁)]
     exact hC.symm.left_le_of_le_sup_left (le_sup_right.trans hx.ge)
   rw [mem_mulStab_iff_smul_finset_subset hCne]
@@ -153,7 +153,7 @@ lemma mul_aux1
       rw [← hCun]
       linarith [hconv, hnotconv]
     _ = H.card - (s' * t').card - H'.card := by
-      rw [card_union_eq hdisj, Int.ofNat_add]
+      rw [card_union_of_disjoint hdisj, Int.ofNat_add]
       abel
     _ ≤ H.card - (s' * H').card - (t' * H').card := by linarith [ih]
 
@@ -209,8 +209,8 @@ lemma disjoint_mul_sub_card_le {a : α} (b : α) {s t C : Finset α} (has : a �
         rw [hxyd, smul_mul_assoc, smul_mem_smul_finset_iff, ← mulStab_mul_mulStab]
         apply mul_mem_mul hc ((mem_mulStab hC).mpr (inv_smul_eq_iff.mpr _))
         exact Eq.symm ((mem_mulStab hC).mp (hst hd))
-      replace hyst : y ∈ s
-      · apply or_iff_not_imp_right.mp (mem_union.mp hyst)
+      replace hyst : y ∈ s := by
+        apply or_iff_not_imp_right.mp (mem_union.mp hyst)
         contrapose! hsC
         exact not_disjoint_iff.mpr ⟨y, hsC, hyC⟩
       rw [eq_mul_inv_iff_mul_eq, hcx] at hxyd
@@ -310,11 +310,11 @@ theorem mul_kneser :
           ((s.image (↑) : Finset (α ⧸ stabilizer α (s * t))).card +
               (t.image (↑) : Finset (α ⧸ stabilizer α (s * t))).card -
             1) ≤
-        (s * t).card
+        (s * t).card by
     -- now to prove that `(s * (s * t).mulStab).card = (s * t).mulStab * (s.image (↑)).card` and
     -- the analogous statement for `s` and `t` interchanged
     -- this will conclude the proof of the first case immediately
-    · rw [mul_tsub, mul_one, mul_add, tsub_le_iff_left, card_mulStab_mul_card_image_coe',
+      rw [mul_tsub, mul_one, mul_add, tsub_le_iff_left, card_mulStab_mul_card_image_coe',
         card_mulStab_mul_card_image_coe'] at hineq
       convert hineq using 1
       exact add_comm _ _
@@ -458,7 +458,7 @@ theorem mul_kneser :
   zify at hstconv
   have hSTcard : (S.card : ℤ) + T.card + (s ∪ t).card ≤ ((s ∪ t) * H).card := by
     norm_cast
-    conv_lhs => rw [← card_disjoint_union hST, ← card_disjoint_union hSTst, ← mul_one (s ∪ t)]
+    conv_lhs => rw [← card_union_of_disjoint hST, ← card_union_of_disjoint hSTst, ← mul_one (s ∪ t)]
     refine' card_le_card
       (union_subset (union_subset _ _) $ mul_subset_mul_left $ one_subset.2 hC.one_mem_mulStab)
     · exact hSst.trans ((sdiff_subset _ _).trans $ smul_finset_subset_smul $ mem_union_left _ ha)
@@ -488,38 +488,39 @@ theorem mul_kneser :
       Nat.cast_le.2 $ card_le_card_mul_right _ hH₂ne) _
   -- Now we deduce inequality (3) using the above lemma in addition to the facts that `s * t` is not
   -- convergent and then induction hypothesis applied to `sᵢ` and `tᵢ`
-  have aux3₁ : (S.card : ℤ) + T.card + s₁.card + t₁.card - H₁.card < H.card
-  calc
-    (S.card : ℤ) + T.card + s₁.card + t₁.card - H₁.card <
-        S.card + T.card + (s ∪ t).card + (s ∩ t).card - (s * t).card + (s₁ * t₁).card := by
-      have ih₁ :=
-        (add_le_add (card_le_card_mul_right _ hH₁ne) $ card_le_card_mul_right _ hH₁ne).trans
-          (ih _ _ hst₁)
-      zify at ih₁
-      linarith [hstconv, ih₁]
-    _ ≤ ((s ∪ t) * H).card + (s ∩ t).card - C.card := by
-      suffices (C.card : ℤ) + (s₁ * t₁).card ≤ (s * t).card by linarith [this, hSTcard]
-      · norm_cast
-        simp only [← card_disjoint_union hCst₁, card_le_card hC₁st]
-    _ ≤ H.card := by
-      simp only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ C.card,
-        add_comm _ (s ∩ t).card, hCcard]
-  have aux3₂ : (S.card : ℤ) + T.card + s₂.card + t₂.card - H₂.card < H.card
-  calc
-    (S.card : ℤ) + T.card + s₂.card + t₂.card - H₂.card <
-        S.card + T.card + (s ∪ t).card + (s ∩ t).card - (s * t).card + (s₂ * t₂).card := by
-      have ih₂ :=
-        (add_le_add (card_le_card_mul_right _ hH₂ne) $ card_le_card_mul_right _ hH₂ne).trans
-          (ih _ _ hst₂)
-      zify at hstconv ih₂
-      linarith [ih₂]
-    _ ≤ ((s ∪ t) * H).card + (s ∩ t).card - C.card := by
-      suffices (C.card : ℤ) + (s₂ * t₂).card ≤ (s * t).card by linarith [this, hSTcard]
-      · norm_cast
-        simp only [← card_disjoint_union hCst₂, card_le_card hC₂st]
-    _ ≤ H.card := by
-      simp only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ C.card,
-        add_comm _ (s ∩ t).card, hCcard]
+  have aux3₁ : (S.card : ℤ) + T.card + s₁.card + t₁.card - H₁.card < H.card :=
+    calc
+      (S.card : ℤ) + T.card + s₁.card + t₁.card - H₁.card
+        < S.card + T.card + (s ∪ t).card + (s ∩ t).card - (s * t).card + (s₁ * t₁).card := by
+        have ih₁ :=
+          (add_le_add (card_le_card_mul_right _ hH₁ne) $ card_le_card_mul_right _ hH₁ne).trans
+            (ih _ _ hst₁)
+        zify at ih₁
+        linarith [hstconv, ih₁]
+      _ ≤ ((s ∪ t) * H).card + (s ∩ t).card - C.card := by
+        suffices (C.card : ℤ) + (s₁ * t₁).card ≤ (s * t).card by linarith [this, hSTcard]
+        · norm_cast
+          simp only [← card_union_of_disjoint hCst₁, card_le_card hC₁st]
+      _ ≤ H.card := by
+        simp only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ C.card,
+          add_comm _ (s ∩ t).card, hCcard]
+
+  have aux3₂ : (S.card : ℤ) + T.card + s₂.card + t₂.card - H₂.card < H.card :=
+    calc
+      (S.card : ℤ) + T.card + s₂.card + t₂.card - H₂.card
+       < S.card + T.card + (s ∪ t).card + (s ∩ t).card - (s * t).card + (s₂ * t₂).card := by
+        have ih₂ :=
+          (add_le_add (card_le_card_mul_right _ hH₂ne) $ card_le_card_mul_right _ hH₂ne).trans
+            (ih _ _ hst₂)
+        zify at hstconv ih₂
+        linarith [ih₂]
+      _ ≤ ((s ∪ t) * H).card + (s ∩ t).card - C.card := by
+        suffices (C.card : ℤ) + (s₂ * t₂).card ≤ (s * t).card by linarith [this, hSTcard]
+        · norm_cast
+          simp only [← card_union_of_disjoint hCst₂, card_le_card hC₂st]
+      _ ≤ H.card := by
+        simp only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ C.card,
+          add_comm _ (s ∩ t).card, hCcard]
   have aux4₁ : H.card ≤ S.card + (s₁.card + t₂.card) := by
     rw [← card_smul_finset a H]
     exact card_le_card_sdiff_add_card.trans (add_le_add_left (card_union_le _ _) _)

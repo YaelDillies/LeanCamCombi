@@ -63,7 +63,7 @@ def topIso : (⊤ : G.Subgraph).coe ≃g G where
   map_rel_iff' := Iff.rfl
 
 /-- The isomorphism between a subgraph and its isomorphism under an injective map. -/
-@[simps]
+@[simps!]
 noncomputable def isoMap {H : SimpleGraph β} (f : G →g H) (hf : Injective f) (G' : G.Subgraph) :
     G'.coe ≃g (G'.map f).coe :=
   { Equiv.Set.image f G'.verts hf with map_rel_iff' := by dsimp; simp [hf] }

@@ -9,8 +9,8 @@ lemma finite_length_eq : {l : List α | l.length = n}.Finite := by
   induction n with
   | zero => simp [List.length_eq_zero]
   | succ n ih =>
-    suffices : {l : List α | l.length = n + 1} = Set.univ.image2 (· :: ·) {l | l.length = n}
-    · rw [this]; exact Set.finite_univ.image2 _ ih
+    suffices {l : List α | l.length = n + 1} = Set.univ.image2 (· :: ·) {l | l.length = n} by
+      rw [this]; exact Set.finite_univ.image2 _ ih
     ext (_ | _) <;> simp [n.succ_ne_zero.symm]
 
 lemma finite_length_lt : {l : List α | l.length < n}.Finite := by

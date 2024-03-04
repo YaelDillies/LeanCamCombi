@@ -9,7 +9,6 @@ import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.Algebra.Module.BigOperators
 import Mathlib.GroupTheory.GroupAction.Basic
 import Mathlib.GroupTheory.GroupAction.Pi
-import Mathlib.Data.Finset.LocallyFinite
 import LeanCamCombi.Mathlib.Algebra.BigOperators.LocallyFinite
 
 /-!

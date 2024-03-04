@@ -342,11 +342,10 @@ lemma lovasz_form (hir : i ≤ r) (hrk : r ≤ k) (hkn : k ≤ n)
   set range'k : Finset (Fin n) :=
     attachFin (range k) fun m ↦ by rw [mem_range]; apply forall_lt_iff_le.2 hkn
   set 𝒞 : Finset (Finset (Fin n)) := powersetCard r range'k
-  have Ccard : 𝒞.card = k.choose r
-  rw [card_powersetCard, card_attachFin, card_range]
+  have Ccard : 𝒞.card = k.choose r := by rw [card_powersetCard, card_attachFin, card_range]
   have : (𝒞 : Set (Finset (Fin n))).Sized r := Set.sized_powersetCard _ _
-  suffices this : (∂^[i] 𝒞).card = k.choose  (r - i)
-  · rw [←this]
+  suffices this : (∂^[i] 𝒞).card = k.choose  (r - i) by
+    rw [← this]
     apply iterated_kk h₁ _ _
     rwa [Ccard]
     refine' ⟨‹_›, _⟩
@@ -372,7 +371,7 @@ lemma lovasz_form (hir : i ≤ r) (hrk : r ≤ k) (hkn : k ≤ n)
     rw [mem_powersetCard] at Ah
     refine' ⟨BsubA.trans Ah.1, _⟩
     symm
-    rw [Nat.sub_eq_iff_eq_add hir, ←Ah.2, ←card_sdiff_i, ←card_disjoint_union disjoint_sdiff,
+    rw [Nat.sub_eq_iff_eq_add hir, ←Ah.2, ←card_sdiff_i, ←card_union_of_disjoint disjoint_sdiff,
       union_sdiff_of_subset BsubA]
   rintro ⟨hBk, hB⟩
   have := exists_intermediate_set i ?_ hBk
@@ -423,11 +422,11 @@ lemma EKR {𝒜 : Finset (Finset (Fin n))} {r : ℕ} (h𝒜 : (𝒜 : Set (Finse
     exact h₃
   rw [q] at kk
   -- But this gives a contradiction: `n choose r < |𝒜| + |∂^[n-2k] 𝒜ᶜˢ|`
-  have : n.choose r < (𝒜 ∪ ∂^[n - 2 * r] 𝒜ᶜˢ).card
-  rw [card_disjoint_union ‹_›]
-  convert lt_of_le_of_lt (add_le_add_left kk _) (add_lt_add_right size _) using 1
-  convert Nat.choose_succ_succ _ _ using 3
-  any_goals rwa [Nat.sub_one, Nat.succ_pred_eq_of_pos]
+  have : n.choose r < (𝒜 ∪ ∂^[n - 2 * r] 𝒜ᶜˢ).card := by
+    rw [card_union_of_disjoint ‹_›]
+    convert lt_of_le_of_lt (add_le_add_left kk _) (add_lt_add_right size _) using 1
+    convert Nat.choose_succ_succ _ _ using 3
+    all_goals rwa [Nat.sub_one, Nat.succ_pred_eq_of_pos]
   apply this.not_le
   convert Set.Sized.card_le _
   · rw [Fintype.card_fin]

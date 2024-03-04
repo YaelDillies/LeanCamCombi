@@ -1,5 +1,5 @@
 import Mathlib.Algebra.BigOperators.Basic
-import Mathlib.Data.Finset.LocallyFinite
+import Mathlib.Data.Finset.LocallyFinite.Basic
 
 open scoped BigOperators
 

@@ -121,7 +121,7 @@ theorem thm_two (h : ∀ x y z : V, ¬ NotCollinear x y z) :
   have : S.Nonempty := let ⟨x, y, hxy⟩ := exists_pair_ne V; ⟨_, Line_isLine hxy⟩
   obtain ⟨L, hL, hL'⟩ := S.toFinite.exists_maximal_wrt id S this
   dsimp at hL'
-  suffices L = Set.univ by rwa [←this]
+  suffices L = Set.univ by rwa [← this]
   rw [Set.eq_univ_iff_forall]
   by_contra!
   obtain ⟨a, b, hab, rfl⟩ := hL
@@ -158,8 +158,8 @@ lemma one_implies_two (h : ∃ x y z : V, NotCollinear x y z) :
   obtain ⟨⟨a, b, c⟩, (h₁ : NotCollinear _ _ _), h₂⟩ := S.toFinite.exists_minimal_wrt f S this
   simp only [Prod.forall, Set.mem_setOf_eq] at h₂
   replace h₂ : ∀ a' b' c' : V, NotCollinear a' b' c' →
-      dist a b + dist b c + dist c a ≤ dist a' b' + dist b' c' + dist c' a'
-  · intro a' b' c' hL
+      dist a b + dist b c + dist c a ≤ dist a' b' + dist b' c' + dist c' a' := by
+    intro a' b' c' hL
     by_contra! h
     exact h.ne' (h₂ a' b' c' hL h.le)
   simp only [SimpleTriangle]
@@ -173,18 +173,16 @@ lemma one_implies_two (h : ∃ x y z : V, NotCollinear x y z) :
         fun _ _ _ h => (h₂ _ _ _ h).trans_eq' <| by ring
   simp only [SimpleEdges_adj, h₁.1, ne_eq, not_false_eq_true, true_and, not_forall, not_not] at hab
   obtain ⟨d, adb⟩ := hab
-  have habc : c ∉ Line a b
-  · intro hc
-    exact h₁.2.2.2 (Line a b) (Line_isLine h₁.1)
+  have habc : c ∉ Line a b := fun hc ↦ h₁.2.2.2 (Line a b) (Line_isLine h₁.1)
       (by simp [left_mem_Line, right_mem_Line, hc])
   have hdab : d ∈ Line a b := middle_extend_mem_Line adb
   have hcd : c ≠ d := (habc <| · ▸ hdab)
-  have : dist d c < dist d b + dist b c
-  · by_contra!
+  have : dist d c < dist d b + dist b c := by
+    by_contra!
     refine habc (generateLine_close_right hdab right_mem_Line ?_)
     exact ⟨adb.ne23, hcd.symm, h₁.2.2.1, this.antisymm (dist_triangle _ _ _)⟩
-  replace : dist a d + dist d c + dist c a < dist a b + dist b c + dist c a
-  · linarith only [this, adb.2.2.2]
+  replace : dist a d + dist d c + dist c a < dist a b + dist b c + dist c a := by
+    linarith only [this, adb.2.2.2]
   replace : ¬ NotCollinear a d c := fun h => (h₂ a d c h).not_lt this
   simp only [notCollinear_iff, adb.ne12, hcd.symm, h₁.2.1, true_and, not_and, forall_true_left,
     ne_eq, not_forall, not_not, exists_prop, not_false_eq_true] at this
@@ -209,8 +207,8 @@ lemma Delta_pos_of {u v w : V} (h : NotCollinear u v w) : 0 < Delta u v w := by
 lemma exists_third {a b : V} (hab : a ≠ b) (h : Line a b ≠ {a, b}) :
     ∃ c, c ∈ Line a b ∧ (sbtw c a b ∨ sbtw a c b ∨ sbtw a b c) := by
   by_contra! h'
-  have : Line a b = {a, b}
-  · refine (subset_generateLine _).antisymm' ?_
+  have : Line a b = {a, b} := by
+    refine (subset_generateLine _).antisymm' ?_
     change Line a b ⊆ {a, b}
     refine generateLine_minimal le_rfl ?_ ?_
     · rintro x y z (rfl | rfl) (rfl | rfl) h
@@ -230,15 +228,14 @@ lemma eqn_7 {a b c d : V} (habc : SimpleTriangle a b c)
     (hacd : sbtw a c d) (hcd : SimpleEdges.Adj c d) :
     ¬ SimpleEdges.Adj b d := by
   intro h
-  have hbcd : NotCollinear b c d
-  · refine ⟨habc.2.1.ne, h.ne, hcd.ne, ?_⟩
-    intro l hl h
+  have hbcd : NotCollinear b c d := by
+    refine ⟨habc.2.1.ne, h.ne, hcd.ne, fun l hl h ↦ ?_⟩
     simp only [Set.mem_singleton_iff, Set.mem_insert_iff, Set.subset_def, forall_eq_or_imp,
       forall_eq] at h
     refine habc.2.2.2.2.2.2 l hl (by simp [*, hl.close_left h.2.1 h.2.2 hacd])
   replace hbcd : SimpleTriangle b c d := ⟨habc.2.1, hcd, h.symm, hbcd⟩
-  have habd : sbtw a b d
-  · refine sbtw_mk habc.1.ne h.ne ?_
+  have habd : sbtw a b d := by
+    refine sbtw_mk habc.1.ne h.ne ?_
     have := habc_min _ _ _ hbcd
     rw [Delta, Delta] at this
     linarith [hacd.dist]
@@ -248,8 +245,8 @@ lemma eqn_7 {a b c d : V} (habc : SimpleTriangle a b c)
 lemma eqn_8 {a b c d : V} (habc : SimpleTriangle a b c) (hacd : sbtw a c d) :
     dist a b + dist b d < dist a d + Delta a b c := by
   by_contra!
-  have hbcd : sbtw b c d
-  · refine sbtw_mk habc.2.1.ne hacd.ne23 ?_
+  have hbcd : sbtw b c d := by
+    refine sbtw_mk habc.2.1.ne hacd.ne23 ?_
     rw [Delta] at this
     linarith [hacd.dist]
   refine habc.2.2.2.2.2.2 (Line c d) (Line_isLine hbcd.ne23) ?_
@@ -357,7 +354,7 @@ lemma exists_simple_split_right {a b : V} (hab : a ≠ b) (hab' : ¬ SimpleEdges
   obtain ⟨c, hc : sbtw _ c _, hcmin⟩ := S.toFinite.exists_minimal_wrt (dist b) _ ⟨c', hc'⟩
   refine ⟨c, hc, hc.ne23, fun c' hc' => ?_⟩
   have : dist b c ≤ dist b c' :=
-    le_of_not_lt <| fun h => h.ne' <| hcmin _ (hc.trans_right' hc') h.le
+    le_of_not_lt fun h => h.ne' <| hcmin _ (hc.trans_right' hc') h.le
   rw [dist_comm b, dist_comm b] at this
   have : dist c c' ≤ 0 := by linarith [hc'.dist]
   simp only [dist_le_zero] at this
@@ -379,8 +376,8 @@ lemma case1 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
     False := by
   have ⟨b₁₂, hb₁₂, hba⟩ := exists_simple_split_right hα.1 c₁1
   have ⟨b₂₃, hb₂₃, hab⟩ := exists_simple_split_left hα.2.2.1 c₁2
-  have hb : NotCollinear b₁₂ a₂ b₂₃
-  · refine NotCollinear.mk <| fun l hl hl' => ?_
+  have hb : NotCollinear b₁₂ a₂ b₂₃ := by
+    refine NotCollinear.mk fun l hl hl' ↦ ?_
     simp only [Set.mem_singleton_iff, Set.mem_insert_iff, Set.subset_def, forall_eq_or_imp,
       forall_eq] at hl'
     have : a₁ ∈ l := hl.close_left hl'.1 hl'.2.1 hb₁₂
@@ -388,44 +385,38 @@ lemma case1 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
     exact hα.2.2.2 l hl (by simp [*, -ha₁])
   classical
   let P' : List V := a₁ :: b₁₂ :: b₂₃ :: a₃ :: l
-  have hP' : Delta b₁₂ a₂ b₂₃ = (a₁ :: a₂ :: a₃ :: l).pathLength - P'.pathLength
-  · simp only [List.pathLength, Delta]
-    linarith [hb₁₂.dist, hb₂₃.dist]
+  have hP' : Delta b₁₂ a₂ b₂₃ = (a₁ :: a₂ :: a₃ :: l).pathLength - P'.pathLength := by
+    simp only [List.pathLength, Delta]; linarith [hb₁₂.dist, hb₂₃.dist]
   have hd : 0 < Delta b₁₂ a₂ b₂₃ := Delta_pos_of hb
   have hP'lt : P'.pathLength < (a₁ :: a₂ :: a₃ :: l).pathLength := by linarith
-  replace hP'ns : ¬ P'.Special a b d
-  · intro hP'
-    linarith [hPmin _ hP']
+  replace hP'ns : ¬ P'.Special a b d := fun hP' ↦ by linarith [hPmin _ hP']
   simp only [ne_eq, not_false_eq_true, List.getLast_cons] at hPd
-  have hP'₁ : NotCollinear a₁ b₁₂ b₂₃
-  · refine NotCollinear.mk <| fun l hl hl' => ?_
+  have hP'₁ : NotCollinear a₁ b₁₂ b₂₃ := by
+    refine NotCollinear.mk fun l hl hl' ↦ ?_
     simp only [Set.mem_singleton_iff, Set.mem_insert_iff, Set.subset_def, forall_eq_or_imp,
       forall_eq] at hl'
     have ha₂ : a₂ ∈ l := hl.close_right hl'.1 hl'.2.1 hb₁₂
     exact hα.2.2.2 l hl (by simp [hl'.1, ha₂, hl.close_right ha₂ hl'.2.2 hb₂₃])
   have ha₃b₂₃ : a₃ ≠ b₂₃ := hb₂₃.ne23.symm
-  have ha₃b₁₂ : a₃ ≠ b₁₂
-  · rintro rfl
+  have ha₃b₁₂ : a₃ ≠ b₁₂ := by
+    rintro rfl
     refine hα.2.2.2 (Line a₁ a₃) (Line_isLine hb₁₂.ne12) ?_
     simp [right_extend_mem_Line hb₁₂]
   have hP'₂ : P'.pathLength ≤ (a₁ :: b :: d :: []).pathLength :=
     ha₁ ▸ hP'lt.le.trans (hPmin _ (abd_special habc hacd hbd' hbd))
-  have hP'₃ : P'.Chain' (· ≠ ·)
-  · simp only [ne_eq, List.chain'_cons] at hPc
-    simp only [List.chain'_cons, and_true, ←ha₁, hb₁₂.ne12, true_and, not_false_eq_true, ne_eq,
+  have hP'₃ : P'.Chain' (· ≠ ·) := by
+    simp only [ne_eq, List.chain'_cons] at hPc
+    simp only [List.chain'_cons, and_true, ← ha₁, hb₁₂.ne12, true_and, not_false_eq_true, ne_eq,
       ha₃b₁₂.symm, ha₃b₂₃.symm, hPc.2.2, hP'₁.2]
   simp only [List.Special, hP'₁, List.getLast_cons_cons, List.getLast_cons_cons, hPd,
-    hP'₂, hP'₃, ←ha₁, and_true, true_and, not_or, not_not] at hP'ns
+    hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not] at hP'ns
   have : SimpleTriangle b₁₂ a₂ b₂₃ := ⟨hba, hab, hP'ns.2.symm, hb⟩
   replace := habc_min _ _ _ this
   have h9 := eqn_9 habc hacd hbd' hbd hPmin
-  suffices : dist a d ≤ P'.pathLength
-  · linarith
-  have : List.Sublist [a, d] P'
-  · rw [←ha₁, List.cons_sublist_cons, List.singleton_sublist]
-    have : d ∈ a₃ :: l
-    · rw [←hPd]
-      exact List.getLast_mem _
+  suffices dist a d ≤ P'.pathLength by linarith
+  have : List.Sublist [a, d] P' := by
+    rw [← ha₁, List.cons_sublist_cons, List.singleton_sublist]
+    have : d ∈ a₃ :: l := by rw [← hPd]; exact List.getLast_mem _
     rw [List.mem_cons, List.mem_cons]
     simp only [this, or_true]
   have := List.Sublist.pathLength_sublist this
@@ -442,47 +433,41 @@ lemma case2 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
     (c₁2 : ¬SimpleGraph.Adj SimpleEdges a₂ a₃) :
     False := by
   have ⟨b₂₃, hb₂₃, hab⟩ := exists_simple_split_left hα.2.2.1 c₁2
-  have hb : NotCollinear a₁ a₂ b₂₃
-  · refine NotCollinear.mk <| fun l hl hl' => ?_
+  have hb : NotCollinear a₁ a₂ b₂₃ := by
+    refine NotCollinear.mk fun l hl hl' => ?_
     simp only [Set.mem_singleton_iff, Set.mem_insert_iff, Set.subset_def, forall_eq_or_imp,
       forall_eq] at hl'
     exact hα.2.2.2 l hl (by simp [hl'.1, hl'.2.1, hl.close_right hl'.2.1 hl'.2.2 hb₂₃])
-  have hP'₁ : NotCollinear a₁ b₂₃ a₃
-  · refine NotCollinear.mk <| fun l hl hl' => ?_
+  have hP'₁ : NotCollinear a₁ b₂₃ a₃ := by
+    refine NotCollinear.mk fun l hl hl' ↦ ?_
     simp only [Set.mem_singleton_iff, Set.mem_insert_iff, Set.subset_def, forall_eq_or_imp,
       forall_eq] at hl'
     have : a₂ ∈ l := hl.close_left hl'.2.1 hl'.2.2 hb₂₃
     exact hα.2.2.2 l hl (by simp [*, -ha₁])
   classical
   let P' : List V := a₁ :: b₂₃ :: a₃ :: l
-  have hP' : Delta a₁ a₂ b₂₃ = (a₁ :: a₂ :: a₃ :: l).pathLength - P'.pathLength
-  · simp only [List.pathLength, Delta]
-    linarith [hb₂₃.dist]
+  have hP' : Delta a₁ a₂ b₂₃ = (a₁ :: a₂ :: a₃ :: l).pathLength - P'.pathLength := by
+    simp only [List.pathLength, Delta]; linarith [hb₂₃.dist]
   have hd : 0 < Delta a₁ a₂ b₂₃ := Delta_pos_of hb
   have hP'lt : P'.pathLength < (a₁ :: a₂ :: a₃ :: l).pathLength := by linarith
-  replace hP'ns : ¬ P'.Special a b d
-  · intro hP'
-    linarith [hPmin _ hP']
+  replace hP'ns : ¬ P'.Special a b d := fun hP' ↦ by linarith [hPmin _ hP']
   simp only [ne_eq, not_false_eq_true, List.getLast_cons] at hPd
   have ha₃b₂₃ : a₃ ≠ b₂₃ := hb₂₃.ne23.symm
   have hP'₂ : P'.pathLength ≤ (a₁ :: b :: d :: []).pathLength :=
     ha₁ ▸ hP'lt.le.trans (hPmin _ (abd_special habc hacd hbd' hbd))
-  have hP'₃ : P'.Chain' (· ≠ ·)
-  · simp only [ne_eq, List.chain'_cons] at hPc
-    simp only [List.chain'_cons, and_true, ←ha₁, true_and, not_false_eq_true, ne_eq,
+  have hP'₃ : P'.Chain' (· ≠ ·) := by
+    simp only [ne_eq, List.chain'_cons] at hPc
+    simp only [List.chain'_cons, and_true, ← ha₁, true_and, not_false_eq_true, ne_eq,
       ha₃b₂₃.symm, hPc.2.2, hP'₁.2, hP'₁.1]
   simp only [List.Special, hP'₁, List.getLast_cons_cons, List.getLast_cons_cons, hPd,
-    hP'₂, hP'₃, ←ha₁, and_true, true_and, not_or, not_not] at hP'ns
+    hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not] at hP'ns
   have : SimpleTriangle a₁ a₂ b₂₃ := ⟨c₁1, hab, hP'ns.1.symm, hb⟩
   replace := habc_min _ _ _ this
   have h9 := eqn_9 habc hacd hbd' hbd hPmin
-  suffices : dist a d ≤ P'.pathLength
-  · linarith
-  have : List.Sublist [a, d] P'
-  · rw [←ha₁, List.cons_sublist_cons, List.singleton_sublist]
-    have : d ∈ a₃ :: l
-    · rw [←hPd]
-      exact List.getLast_mem _
+  suffices dist a d ≤ P'.pathLength by linarith
+  have : List.Sublist [a, d] P' := by
+    rw [← ha₁, List.cons_sublist_cons, List.singleton_sublist]
+    have : d ∈ a₃ :: l := by rw [← hPd]; exact List.getLast_mem _
     rw [List.mem_cons]
     simp only [this, or_true]
   have := List.Sublist.pathLength_sublist this
@@ -499,50 +484,44 @@ lemma case3 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
     (c₁2 : SimpleGraph.Adj SimpleEdges a₂ a₃) :
     False := by
   have ⟨b₁₂, hb₁₂, hba⟩ := exists_simple_split_right hα.1 c₁1
-  have hb : NotCollinear b₁₂ a₂ a₃
-  · refine NotCollinear.mk <| fun l hl hl' => ?_
+  have hb : NotCollinear b₁₂ a₂ a₃ := by
+    refine NotCollinear.mk fun l hl hl' => ?_
     simp only [Set.mem_singleton_iff, Set.mem_insert_iff, Set.subset_def, forall_eq_or_imp,
       forall_eq] at hl'
     have : a₁ ∈ l := hl.close_left hl'.1 hl'.2.1 hb₁₂
     exact hα.2.2.2 l hl (by simp [*, -ha₁])
   classical
   let P' : List V := a₁ :: b₁₂ :: a₃ :: l
-  have hP' : Delta b₁₂ a₂ a₃ = (a₁ :: a₂ :: a₃ :: l).pathLength - P'.pathLength
-  · simp only [List.pathLength, Delta]
-    linarith [hb₁₂.dist]
+  have hP' : Delta b₁₂ a₂ a₃ = (a₁ :: a₂ :: a₃ :: l).pathLength - P'.pathLength := by
+    simp only [List.pathLength, Delta]; linarith [hb₁₂.dist]
   have hd : 0 < Delta b₁₂ a₂ a₃ := Delta_pos_of hb
   have hP'lt : P'.pathLength < (a₁ :: a₂ :: a₃ :: l).pathLength := by linarith
-  replace hP'ns : ¬ P'.Special a b d
-  · intro hP'
-    linarith [hPmin _ hP']
+  replace hP'ns : ¬ P'.Special a b d := fun hP' ↦ by linarith [hPmin _ hP']
   simp only [ne_eq, not_false_eq_true, List.getLast_cons] at hPd
-  have hP'₁ : NotCollinear a₁ b₁₂ a₃
-  · refine NotCollinear.mk <| fun l hl hl' => ?_
+  have hP'₁ : NotCollinear a₁ b₁₂ a₃ := by
+    refine NotCollinear.mk fun l hl hl' ↦ ?_
     simp only [Set.mem_singleton_iff, Set.mem_insert_iff, Set.subset_def, forall_eq_or_imp,
       forall_eq] at hl'
     exact hα.2.2.2 l hl (by simp [hl'.1, hl.close_right hl'.1 hl'.2.1 hb₁₂, hl'.2.2])
-  have ha₃b₁₂ : a₃ ≠ b₁₂
-  · rintro rfl
+  have ha₃b₁₂ : a₃ ≠ b₁₂ := by
+    rintro rfl
     refine hα.2.2.2 (Line a₁ a₃) (Line_isLine hb₁₂.ne12) ?_
     simp [right_extend_mem_Line hb₁₂]
   have hP'₂ : P'.pathLength ≤ (a₁ :: b :: d :: []).pathLength :=
     ha₁ ▸ hP'lt.le.trans (hPmin _ (abd_special habc hacd hbd' hbd))
-  have hP'₃ : P'.Chain' (· ≠ ·)
-  · simp only [ne_eq, List.chain'_cons] at hPc
-    simp only [List.chain'_cons, and_true, ←ha₁, hb₁₂.ne12, true_and, not_false_eq_true, ne_eq,
+  have hP'₃ : P'.Chain' (· ≠ ·) := by
+    simp only [ne_eq, List.chain'_cons] at hPc
+    simp only [List.chain'_cons, and_true, ← ha₁, hb₁₂.ne12, true_and, not_false_eq_true, ne_eq,
       ha₃b₁₂.symm, hPc.2.2, hP'₁.2]
   simp only [List.Special, hP'₁, List.getLast_cons_cons, List.getLast_cons_cons, hPd,
-    hP'₂, hP'₃, ←ha₁, and_true, true_and, not_or, not_not] at hP'ns
+    hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not] at hP'ns
   have : SimpleTriangle b₁₂ a₂ a₃ := ⟨hba, c₁2, hP'ns.2.symm, hb⟩
   replace := habc_min _ _ _ this
   have h9 := eqn_9 habc hacd hbd' hbd hPmin
-  suffices : dist a d ≤ P'.pathLength
-  · linarith
-  have : List.Sublist [a, d] P'
-  · rw [←ha₁, List.cons_sublist_cons, List.singleton_sublist]
-    have : d ∈ a₃ :: l
-    · rw [←hPd]
-      exact List.getLast_mem _
+  suffices dist a d ≤ P'.pathLength by linarith
+  have : List.Sublist [a, d] P' := by
+    rw [← ha₁, List.cons_sublist_cons, List.singleton_sublist]
+    have : d ∈ a₃ :: l := by rw [← hPd]; exact List.getLast_mem _
     rw [List.mem_cons]
     simp only [this, or_true]
   have := List.Sublist.pathLength_sublist this
@@ -554,8 +533,8 @@ lemma two_implies_three (h : ∃ x y z : V, SimpleTriangle x y z) :
   have : S.Nonempty := let ⟨x, y, z, hxyz⟩ := h; ⟨(x, y, z), hxyz⟩
   obtain ⟨⟨a, b, c⟩, (habc : SimpleTriangle a b c), hmin⟩ :=
     S.toFinite.exists_minimal_wrt (fun ⟨x, y, z⟩ => Delta x y z) S this
-  replace hmin : ∀ a' b' c' : V, SimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c'
-  · intro a' b' c' h
+  replace hmin : ∀ a' b' c' : V, SimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c' := by
+    intro a' b' c' h
     by_contra! h'
     exact h'.ne' (hmin (a', b', c') h h'.le)
   refine ⟨a, c, habc.2.2.1.1.symm, ?_⟩
@@ -573,16 +552,16 @@ lemma two_implies_three (h : ∃ x y z : V, SimpleTriangle x y z) :
   clear hd'
   let S : Set V := setOf (sbtw a c)
   obtain ⟨d, hd : sbtw _ _ d, hdmin⟩ := S.toFinite.exists_minimal_wrt (dist c) S ⟨d, acd⟩
-  have hbd' : b ≠ d
-  · rintro rfl
+  have hbd' : b ≠ d := by
+    rintro rfl
     have := habc.2.2.2.2.2.2 (Line a c) (Line_isLine hd.ne12)
     simp [right_extend_mem_Line hd] at this
-  replace hdmin : ∀ d', sbtw a c d' → dist c d ≤ dist c d'
-  · intro d' hd'
+  replace hdmin : ∀ d', sbtw a c d' → dist c d ≤ dist c d' := by
+    intro d' hd'
     by_contra! hd''
     exact hd''.ne' (hdmin d' hd' hd''.le)
-  have hcd : SimpleEdges.Adj c d
-  · use hd.2.2.1
+  have hcd : SimpleEdges.Adj c d := by
+    use hd.2.2.1
     intro e he
     have : 0 ≤ dist e d := dist_nonneg
     have : dist e d = 0 := by linarith [he.dist, this, hdmin e (hd.right_cancel he)]
@@ -590,13 +569,13 @@ lemma two_implies_three (h : ∃ x y z : V, SimpleTriangle x y z) :
     exact he.ne23 this
   have hbd := eqn_7 habc hmin hd hcd
   let S : Set (List V) := setOf (List.Special a b d)
-  have : S.Finite
-  · have ⟨n, hn⟩ := uniformly_bounded_of_chain_ne_of_pathLength_le V [a, b, d].pathLength
+  have : S.Finite := by
+    have ⟨n, hn⟩ := uniformly_bounded_of_chain_ne_of_pathLength_le V [a, b, d].pathLength
     exact (List.finite_length_le _ _).subset fun l hl => hn l hl.chain_ne hl.pathLength_le
   have ⟨P, (hP : P.Special a b d), hPmin⟩ :=
     this.exists_minimal_wrt List.pathLength S ⟨[a, b, d], abd_special habc hd hbd' hbd⟩
-  replace hPmin : ∀ P' : List V, P'.Special a b d → P.pathLength ≤ P'.pathLength
-  · intro P' hP'
+  replace hPmin : ∀ P' : List V, P'.Special a b d → P.pathLength ≤ P'.pathLength := by
+    intro P' hP'
     by_contra! h
     exact h.ne' (hPmin P' hP' h.le)
   match P with
@@ -605,8 +584,7 @@ lemma two_implies_three (h : ∃ x y z : V, SimpleTriangle x y z) :
     rcases hP with ⟨ha₁, hα, hβ, hPd, hPc, _⟩
     have : (¬ SimpleEdges.Adj a₁ a₂ ∧ ¬ SimpleEdges.Adj a₂ a₃) ∨
           (SimpleEdges.Adj a₁ a₂ ∧ ¬ SimpleEdges.Adj a₂ a₃) ∨
-          (¬ SimpleEdges.Adj a₁ a₂ ∧ SimpleEdges.Adj a₂ a₃)
-    · tauto
+          (¬ SimpleEdges.Adj a₁ a₂ ∧ SimpleEdges.Adj a₂ a₃) := by tauto
     rcases this with (⟨c₁1, c₁2⟩ | ⟨c₂1, c₂2⟩ | ⟨c₃1, c₃2⟩)
     · exact case1 habc hmin hd hbd' hbd hPmin ha₁ hα hPd hPc c₁1 c₁2
     · exact case2 habc hmin hd hbd' hbd hPmin ha₁ hα hPd hPc c₂1 c₂2

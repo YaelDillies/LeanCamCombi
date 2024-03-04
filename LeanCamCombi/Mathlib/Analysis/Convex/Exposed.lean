@@ -43,8 +43,8 @@ lemma mem_exposed_set_iff_mem_frontier (hs₁ : Convex ℝ s) (hs₂ : (interior
   refine'
     ⟨{x ∈ s | ∀ y ∈ s, l y ≤ l x}, fun _ => ⟨l, rfl⟩, fun h =>
       not_le.2 (hl y hyA) ((h (interior_subset hyA)).2 x hxA), hxA, fun z hzA => _⟩
-  suffices h : l '' closure (interior s) ⊆ closure (Iio (l x))
-  · rw [closure_Iio, ← closure_eq_closure_interior hs₁ hs₂] at h
+  suffices h : l '' closure (interior s) ⊆ closure (Iio (l x)) by
+    rw [closure_Iio, ← closure_eq_closure_interior hs₁ hs₂] at h
     exact h ⟨z, subset_closure hzA, rfl⟩
   refine' (image_closure_subset_closure_image l.continuous).trans $ closure_mono _
   rintro _ ⟨w, hw, rfl⟩

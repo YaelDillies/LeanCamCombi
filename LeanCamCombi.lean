@@ -25,6 +25,7 @@ import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
 import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
 import LeanCamCombi.Mathlib.Combinatorics.Colex
+import LeanCamCombi.Mathlib.Combinatorics.Schnirelmann
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shatter
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Containment
@@ -62,7 +63,6 @@ import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.Mathlib.RingTheory.Int.Basic
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
-import LeanCamCombi.Schnirelmann
 import LeanCamCombi.SimplicialComplex.Basic
 import LeanCamCombi.SimplicialComplex.Finite
 import LeanCamCombi.SimplicialComplex.Pure

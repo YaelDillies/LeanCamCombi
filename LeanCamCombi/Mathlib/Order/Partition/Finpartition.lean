@@ -46,8 +46,8 @@ def modPartitions (s d : ℕ) (hd : d ≠ 0) (h : d ≤ s) : Finpartition (range
       exact hxy
     simp only [Set.InjOn, coe_range, Set.mem_Iio]
     intro x₁ hx₁ x₂ _ h'
-    have : x₁ ∈ (range s).filter fun j ↦ j % d = x₂
-    · rw [←h', mem_filter, mem_range, Nat.mod_eq_of_lt hx₁]
+    have : x₁ ∈ (range s).filter fun j ↦ j % d = x₂ := by
+      rw [←h', mem_filter, mem_range, Nat.mod_eq_of_lt hx₁]
       simp only [hx₁.trans_le h, eq_self_iff_true, and_self_iff]
     rw [mem_filter, Nat.mod_eq_of_lt hx₁] at this
     exact this.2

@@ -65,7 +65,7 @@ private lemma aux (hs : Multiset.card s = 2 * p - 1) :
   set N := Fintype.card {x // eval x (f₁ s) = 0 ∧ eval x (f₂ s) = 0}
   -- Zero is a common root to `f₁` and `f₂`, so `N` is nonzero
   let zero_sol : {x // eval x (f₁ s) = 0 ∧ eval x (f₂ s) = 0} :=
-    ⟨0, by simp [f₁, f₂, map_sum, (Fact.out : p.Prime).one_lt]⟩
+    ⟨0, by simp [f₁, f₂, map_sum, (Fact.out : p.Prime).one_lt, tsub_eq_zero_iff_le]⟩
   have hN₀ : 0 < N := @Fintype.card_pos _ _ ⟨zero_sol⟩
   have hs' : 2 * p - 1 = Fintype.card s.toEnumFinset := by simp [hs]
   -- Chevalley-Warning gives us that `p ∣ n` because the total degrees of `f₁` and `f₂` are at most
@@ -116,20 +116,19 @@ lemma exists_submultiset_eq_zero {s : Multiset (ZMod n)} (hs : 2 * n - 1 ≤ Mul
     obtain ⟨u, hut, hu⟩ := aux ht
     exact ⟨u, hut.trans hts, hu⟩
   case composite a ha iha b hb ihb =>
-    suffices : ∀ n ≤ 2 * b - 1, ∃ m : Multiset (Multiset $ ZMod $ a * b), Multiset.card m = n ∧
+    suffices ∀ n ≤ 2 * b - 1, ∃ m : Multiset (Multiset $ ZMod $ a * b), Multiset.card m = n ∧
       m.Pairwise _root_.Disjoint ∧ ∀ ⦃u : Multiset $ ZMod $ a * b⦄, u ∈ m →
-        Multiset.card u = 2 * a + 1 ∧ u.sum ∈ AddSubgroup.zmultiples (a : ZMod $ a * b)
-    · obtain ⟨m, hm⟩ := this _ le_rfl
+        Multiset.card u = 2 * a + 1 ∧ u.sum ∈ AddSubgroup.zmultiples (a : ZMod $ a * b) by
+      obtain ⟨m, hm⟩ := this _ le_rfl
       sorry
     rintro n hn
     induction' n with n ih
     · exact ⟨0, by simp⟩
     obtain ⟨m, hm⟩ := ih (Nat.le_of_succ_le hn)
-    have : 2 * a - 1 ≤ Multiset.card ((s - m.sum).map $ castHom (dvd_mul_right _ _) $ ZMod a)
-    · rw [card_map]
+    have : 2 * a - 1 ≤ Multiset.card ((s - m.sum).map $ castHom (dvd_mul_right _ _) $ ZMod a) := by
+      rw [card_map]
       refine (le_tsub_of_add_le_left $ le_trans ?_ hs).trans le_card_sub
-      have : m.map Multiset.card = replicate (2 * a - 1) n
-      · sorry
+      have : m.map Multiset.card = replicate (2 * a - 1) n := sorry
       rw [map_multiset_sum, this, sum_replicate, ←le_tsub_iff_right, tsub_tsub_tsub_cancel_right,
         ←mul_tsub, ←mul_tsub_one]
       sorry

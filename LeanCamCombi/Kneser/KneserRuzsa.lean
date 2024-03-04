@@ -35,7 +35,6 @@ namespace Finset
 
 /-! ### Auxiliary results -/
 
-
 -- Lemma 3.3 in Ruzsa's notes
 @[to_additive]
 lemma le_card_union_add_card_mulStab_union :
@@ -136,14 +135,14 @@ lemma le_card_union_add_card_mulStab_union :
     · rw [← mul_inv_eq_one, hab, this]
   -- mistake in proof sketch, need to interchange `Hs` and `Ht`
   suffices h2 : Hs.card - (mulStab (s ∪ t)).card ≤ (s \ t).card ∨
-                Ht.card - (mulStab (s ∪ t)).card ≤ (t \ s).card
-  · simp only [min_le_iff]
+                Ht.card - (mulStab (s ∪ t)).card ≤ (t \ s).card by
+    simp only [min_le_iff]
     cases' h2 with h2 h2
     · left
       sorry
     · right
       sorry
-  have Hst : (mulStab (s ∪ t)).Nonempty := Nonempty.mulStab (Nonempty.inr ht)
+  have Hst : (mulStab (s ∪ t)).Nonempty := ht.inr.mulStab
   set k : α → ℕ := fun a =>
     card ((a • H).image (QuotientGroup.mk (s := stabilizer α s)) ∩ s.image QuotientGroup.mk)
   set l : α → ℕ := fun a =>
@@ -162,23 +161,20 @@ lemma le_card_union_add_card_mulStab_union :
       sorry
   -- the remaining sketch is flawed since `H` is defined to be `Hbar` in Ruzsa's notes and
   -- `mulStab (s ∪ t) = H` in the notes
-  suffices hHst : (Hs.card - 1) * (Ht.card - 1) ≤ (s \ t).card * (t \ s).card
-  · by_contra!
+  suffices hHst : (Hs.card - 1) * (Ht.card - 1) ≤ (s \ t).card * (t \ s).card by
+    by_contra!
     exact hHst.not_lt $ CanonicallyOrderedCommSemiring.mul_lt_mul_of_lt_of_lt (this.1.trans_le $
       tsub_le_tsub_left (one_le_card.2 Hst) _) $ this.2.trans_le $
       tsub_le_tsub_left (one_le_card.2 Hst) _
   simp (config := {zeta := false}) only
     [not_and_or, not_or, Classical.not_forall, not_ne_iff, not_imp] at hkl
   obtain ⟨a, hka, hka', hla, hla'⟩ | ⟨⟨a, hka, hla⟩, b, hlb, hkb⟩ := hkl
-  · refine'
-      le_trans _
-        (mul_le_mul' (card_mono $ inter_subset_left _ $ a • H) $
-          card_mono $ inter_subset_left _ $ a • H)
+  · refine le_trans ?_ (mul_le_mul' (card_mono $ inter_subset_left _ $ a • H) $
+      card_mono $ inter_subset_left _ $ a • H)
     rw [hk, hl, mul_comm (k a), mul_mul_mul_comm, mul_comm (k a)]
-    refine'
-      le_trans _
-        (mul_le_mul' (Nat.add_sub_one_le_mul (tsub_pos_of_lt $ (hls _).lt_of_ne hla').ne' hla) $
-          Nat.add_sub_one_le_mul (tsub_pos_of_lt $ (hkt _).lt_of_ne hka').ne' hka)
+    refine le_trans ?_
+      (mul_le_mul' (Nat.add_sub_one_le_mul (tsub_pos_of_lt $ (hls _).lt_of_ne hla').ne' hla) $
+        Nat.add_sub_one_le_mul (tsub_pos_of_lt $ (hkt _).lt_of_ne hka').ne' hka)
     rw [tsub_add_cancel_of_le (hkt _), tsub_add_cancel_of_le (hls _)]
   refine'
     mul_le_mul' (tsub_le_self.trans $ le_trans _ $ card_mono $ inter_subset_left _ $ b • H)

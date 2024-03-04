@@ -1,7 +1,6 @@
 import Mathlib.Combinatorics.Schnirelmann
 import Mathlib.Algebra.Parity
 import Mathlib.Data.Finset.Card
-import Mathlib.Data.Finset.LocallyFinite
 import Mathlib.Data.Nat.Interval
 import Mathlib.Data.Nat.Prime
 import Mathlib.Data.Real.Basic
@@ -120,8 +119,8 @@ theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B)
   set β := schnirelmannDensity B with hbeta
   have dum : α * (1 - β) + β = α + β - α * β := by ring
   rw [← dum]
-  suffices main (n : ℕ) : (α * (1 - β) + β) * n ≤ countelements (A+B) n
-  · rw [schnirelmannDensity]
+  suffices main : ∀ n, (α * (1 - β) + β) * n ≤ countelements (A + B) n by
+    rw [schnirelmannDensity]
     have : Nonempty {n // n ≠ 0} := by
       use 1
       trivial
@@ -132,11 +131,12 @@ theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B)
     · specialize main x
       exact main
     · positivity
+  rintro n
   obtain rfl | n1 := n.eq_zero_or_pos
   · ring_nf
     positivity
-  · have lem : ⋃ a : A, {c ∈ A + B | 0 < c - a ∧ c ≤ next_elm A a n} ⊆ (A + B) ∩ Icc 1 n
-    · simp only [tsub_pos_iff_lt, Set.sep_and, Set.iUnion_coe_set, Nat.lt_one_iff, coe_Icc, not_le,
+  · have lem : ⋃ a : A, {c ∈ A + B | 0 < c - a ∧ c ≤ next_elm A a n} ⊆ (A + B) ∩ Icc 1 n := by
+      simp only [tsub_pos_iff_lt, Set.sep_and, Set.iUnion_coe_set, Nat.lt_one_iff, coe_Icc, not_le,
         Set.subset_inter_iff, Set.iUnion_subset_iff]
       constructor
       · intro i hi x hx
