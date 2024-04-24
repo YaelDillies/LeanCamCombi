@@ -57,7 +57,9 @@ lemma sumset_contains_n (hA : 0 ∈ A) (hB : 0 ∈ B) (hc : n ≤ countelements 
   apply h
   have lem1 : ((Ioo 0 n).filter (· ∈ {n} - B)).card = countelements B (n - 1) := by
     rw [countelements]
-    have hfim : Finset.image (n - ·) (filter (fun x ↦ x ∈ B) (Ioo 0 n)) = (filter (fun x ↦ x ∈ {n} - B) (Ioo 0 n)) := by ext; aesop
+    have hfim :
+      (filter (fun x ↦ x ∈ B) (Ioo 0 n)).image (n - ·) =
+        (filter (fun x ↦ x ∈ {n} - B) (Ioo 0 n)) := by ext; aesop
     rw [← hfim, card_image_of_injOn]
     congr
     exact (tsub_add_cancel_of_le $ Nat.succ_le_iff.2 hn1).symm
@@ -79,16 +81,21 @@ lemma sumset_contains_n (hA : 0 ∈ A) (hB : 0 ∈ B) (hc : n ≤ countelements 
       -- have hip : 0 ≤ Finset.card ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)) := by positivity
       have hun1 : Finset.card ((Ioo 0 n).filter (· ∈ A) ∪ (Ioo 0 n).filter (· ∈ {n} - B))
         + Finset.card ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)) ≤ (n - 1)
-        + Finset.card ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)) := add_le_add hun le_rfl
-      have hip0 : n ≤ (n - 1) + Finset.card ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)) := le_trans hc hun1
+        + Finset.card ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)) :=
+        add_le_add hun le_rfl
+      have hip0 : n ≤ (n - 1) + ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)).card :=
+        le_trans hc hun1
       by_contra! hip
-      have hip1 : (n - 1) + Finset.card ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)) ≤ (n - 1) := add_le_add le_rfl hip
+      have hip1 :
+        (n - 1) + Finset.card ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)) ≤ n - 1 :=
+        add_le_add le_rfl hip
       have hnn : n ≤ (n - 1) := le_trans hip0 hip1
       rw [← not_lt] at hnn
       apply hnn
       rw [propext (Nat.lt_iff_le_pred hn1)]
     rwa [← Finset.card_pos]
-  simp only [Nat.lt_one_iff, tsub_eq_zero_iff_le, mem_Ioo, and_imp, Set.singleton_sub, Set.mem_image, ne_eq] at lem3  -- set is nonempty iff ?
+  simp only [Nat.lt_one_iff, tsub_eq_zero_iff_le, mem_Ioo, and_imp, Set.singleton_sub,
+    Set.mem_image, ne_eq] at lem3  -- set is nonempty iff ?
   have lem31 : (A ∩ ({n} - B) ∩ Set.Ioo 0 n).Nonempty := by
     rw [← filter_and, ← coe_nonempty, coe_filter, Set.setOf_and, Set.setOf_and, Set.setOf_mem_eq,
       Set.inter_comm] at lem3
@@ -177,10 +184,13 @@ theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B)
       countelements (⋃ a : A, {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)}) n := by
       -- simp only [tsub_pos_iff_lt, Set.sep_and, Set.iUnion_coe_set]
       --have hab (a : A) (b : B) : 0 < (b : ℕ) → (b : ℕ) ≤ (next_elm A a n) - a → (a : ℕ) + (b : ℕ) ∈ (⋃ a : A, {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)}) := by sorry
-      have hcc (a : A) : 1 + countelements B (next_elm A a n - a - 1) ≤ countelements {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)} n := by
+      have hcc (a : A) :
+        1 + countelements B (next_elm A a n - a - 1) ≤
+        countelements {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)} n := by
         sorry
-      have hax (a x : A) : a ≠ x → {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)} ∩ {c ∈ A + B | 0 < c - x ∧ (c : ℕ) ≤ (next_elm A x n)} = ∅ := by sorry
-        -- intro hh
+      have hax (a x : A) (hh : a ≠ x) :
+        {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)} ∩
+        {c ∈ A + B | 0 < c - x ∧ (c : ℕ) ≤ next_elm A x n} = ∅ := by sorry
         -- by_contra! hin
         -- rw? at hin
       -- have hcount : ∑ a in A, (1 + countelements B (next_elm A a n - a - 1)) ≤ countelements (⋃ a : A, {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)}) n := by sorry
@@ -212,15 +222,15 @@ theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B)
     rw [hc3] at hc2
     exact le_trans hc2 ht
 
-lemma schnirelmannDensity_for_two (A B : Set ℕ) : (0 ∈ A) → (0 ∈ B) →
-  (1 - schnirelmannDensity (A + B)) ≤ (1 - schnirelmannDensity A) * (1 - schnirelmannDensity B) := by
+lemma schnirelmannDensity_for_two (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B) :
+    1 - schnirelmannDensity (A + B) ≤
+      (1 - schnirelmannDensity A) * (1 - schnirelmannDensity B) := by
   let α := schnirelmannDensity A
   have halpha : α = schnirelmannDensity A := rfl
   let β := schnirelmannDensity B
   have hbeta : β = schnirelmannDensity B := rfl
   let γ := schnirelmannDensity (A + B)
   have hgamma : γ = schnirelmannDensity (A + B) := rfl
-  intro hA hB
   rw [← halpha, ← hbeta, ← hgamma]
   have h : 1 - γ ≤ 1 - (α + β - α * β) := by
     rw [sub_le_iff_le_add, add_comm_sub]
@@ -237,4 +247,6 @@ lemma schnirelmannDensity_for_two (A B : Set ℕ) : (0 ∈ A) → (0 ∈ B) →
 
 
 
-theorem mannTheorem (A B : Set ℕ) : min 1 (schnirelmannDensity A + schnirelmannDensity B) ≤ schnirelmannDensity (A + B) := by sorry
+theorem mannTheorem (A B : Set ℕ) :
+    min 1 (schnirelmannDensity A + schnirelmannDensity B) ≤ schnirelmannDensity (A + B) := by
+  sorry

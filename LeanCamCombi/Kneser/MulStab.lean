@@ -38,14 +38,14 @@ def mulStab (s : Finset α) : Finset α := (s / s).filter fun a ↦ a • s = s
 lemma mem_mulStab (hs : s.Nonempty) : a ∈ s.mulStab ↔ a • s = s := by
   rw [mulStab, mem_filter, mem_div, and_iff_right_of_imp]
   obtain ⟨b, hb⟩ := hs
-  exact fun h ↦ ⟨_, by rw [← h]; exact smul_mem_smul_finset hb, _, hb, mul_div_cancel'' _ _⟩
+  exact fun h ↦ ⟨_, by rw [← h]; exact smul_mem_smul_finset hb, _, hb, mul_div_cancel_right _ _⟩
 
 @[to_additive]
 lemma mulStab_subset_div : s.mulStab ⊆ s / s := filter_subset _ _
 
 @[to_additive]
 lemma mulStab_subset_div_right (ha : a ∈ s) : s.mulStab ⊆ s / {a} := by
-  refine fun b hb ↦ mem_div.2 ⟨_, ?_, _, mem_singleton_self _, mul_div_cancel'' _ _⟩
+  refine fun b hb ↦ mem_div.2 ⟨_, ?_, _, mem_singleton_self _, mul_div_cancel_right _ _⟩
   rw [mem_mulStab ⟨a, ha⟩] at hb
   rw [← hb]
   exact smul_mem_smul_finset ha

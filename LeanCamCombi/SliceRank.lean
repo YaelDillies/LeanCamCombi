@@ -21,7 +21,8 @@ inductive HasSliceRankLE : ℕ → ((∀ i, α i) → R) → Prop
 lemma hasSliceRankLE_succ :
     HasSliceRankLE (n + 1) f ↔ ∃ f' i, ∃ (g : α i → R) (h : (∀ j ≠ i, α j) → R),
       HasSliceRankLE n f' ∧ f = f' + fun x ↦ g (x i) * h fun j _ ↦ x j := by
-  rw [hasSliceRankLE_iff]; aesop
+  rw [hasSliceRankLE_iff]
+  sorry -- aesop
 
 lemma hasSliceRankLE_one :
     HasSliceRankLE 1 f ↔ ∃ i, ∃ (g : α i → R) (h : (∀ j ≠ i, α j) → R),

@@ -7,8 +7,7 @@ import Mathlib.Data.Multiset.Fintype
 import Mathlib.FieldTheory.ChevalleyWarning
 import LeanCamCombi.Mathlib.Algebra.Order.Ring.Canonical
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
-import LeanCamCombi.Mathlib.Data.Nat.Order.Lemmas
-import LeanCamCombi.Mathlib.Data.Subtype
+import LeanCamCombi.Mathlib.Data.Nat.Defs
 import LeanCamCombi.Mathlib.FieldTheory.Finite.Basic
 import LeanCamCombi.Mathlib.RingTheory.Int.Basic
 
@@ -98,8 +97,8 @@ private lemma aux (hs : Multiset.card s = 2 * p - 1) :
     · rw [Finset.card_attach, card_toEnumFinset, hs]
       exact tsub_lt_self (mul_pos zero_lt_two (Fact.out : p.Prime).pos) zero_lt_one
   -- From `f₂ x = 0`, we get that `p` divides the sum of the `a ∈ s` such that `x a ≠ 0`.
-  · simpa only [f₂, map_sum, ZMod.pow_card_sub_one, Finset.sum_map_val, Finset.sum_filter, smul_eval,
-      map_pow, eval_X, mul_ite, mul_zero, mul_one] using x.2.2
+  · simpa only [f₂, map_sum, ZMod.pow_card_sub_one, Finset.sum_map_val, Finset.sum_filter,
+      smul_eval, map_pow, eval_X, mul_ite, mul_zero, mul_one] using x.2.2
 
 --TODO: Rename `Multiset.pairwise_nil` to `Multiset.pairwise_zero`
 

@@ -552,7 +552,7 @@ lemma mu_toDual (a b : α) : mu 𝕜 (toDual a) (toDual b) = mu 𝕜 b a := by
   ext a b
   simp only [mul_boole, one_apply, mul_apply, coe_mk, zeta_apply]
   obtain rfl | h := eq_or_ne a b
-  · simp
+  · simp [mud]
   · rw [if_neg h]
     convert_to ∑ x in Icc (ofDual b) (ofDual a), mu 𝕜 x a = 0
     sorry
@@ -683,7 +683,8 @@ variable (𝕜) [Ring 𝕜] [PartialOrder α] [PartialOrder β] [LocallyFiniteOr
   [LocallyFiniteOrder β] [DecidableEq α] [DecidableEq β] [DecidableRel ((· ≤ ·) : α → α → Prop)]
   [DecidableRel ((· ≤ ·) : β → β → Prop)]
 
-/-- The Möbius function on a product order. Based on lemma 2.1.13 of Incidence Algebras by Spiegel and O'Donnell. -/
+/-- The Möbius function on a product order. Based on lemma 2.1.13 of Incidence Algebras by Spiegel
+and O'Donnell. -/
 @[simp]
 lemma mu_prod_mu : (mu 𝕜).prod (mu 𝕜) = (mu 𝕜 : IncidenceAlgebra 𝕜 (α × β)) := by
   refine left_inv_eq_right_inv ?_ zeta_mul_mu

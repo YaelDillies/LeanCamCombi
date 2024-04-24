@@ -1,5 +1,6 @@
 import LeanCamCombi.Archive.CauchyDavenportFromKneser
 import LeanCamCombi.BernoulliSeq
+import LeanCamCombi.ConvexContinuous
 import LeanCamCombi.DiscreteDeriv
 import LeanCamCombi.ErdosGinzburgZiv
 import LeanCamCombi.ErdosRenyi.Basic
@@ -42,12 +43,11 @@ import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.List.Basic
 import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
+import LeanCamCombi.Mathlib.Data.Nat.Defs
 import LeanCamCombi.Mathlib.Data.Nat.Factors
-import LeanCamCombi.Mathlib.Data.Nat.Order.Lemmas
 import LeanCamCombi.Mathlib.Data.Set.Finite
 import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
-import LeanCamCombi.Mathlib.Data.Subtype
 import LeanCamCombi.Mathlib.FieldTheory.Finite.Basic
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 import LeanCamCombi.Mathlib.Order.Category.BoolAlg

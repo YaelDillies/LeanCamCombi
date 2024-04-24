@@ -38,7 +38,8 @@ namespace Finset
 -- Lemma 3.3 in Ruzsa's notes
 @[to_additive]
 lemma le_card_union_add_card_mulStab_union :
-    min (s.card + s.mulStab.card) (t.card + t.mulStab.card) ≤ (s ∪ t).card + (s ∪ t).mulStab.card := by
+    min (s.card + s.mulStab.card) (t.card + t.mulStab.card) ≤
+      (s ∪ t).card + (s ∪ t).mulStab.card := by
   obtain rfl | hs := s.eq_empty_or_nonempty
   · simp [-zero_le']
   -- TODO: `to_additive` chokes on `zero_le'`
@@ -65,7 +66,7 @@ lemma le_card_union_add_card_mulStab_union :
         obtain ⟨w, hwx⟩ := Quotient.exists_rep x
         have : ⟦w⟧ = QuotientGroup.mk (s := N) w := by exact rfl
         rw [← hwx, this, QuotientGroup.eq] at hyx hzx ⊢
-        simp only [mul_one, inv_mem_iff, Subgroup.mem_inf, mem_stabilizer_iff] at hyx hzx ⊢
+        simp only [mul_one, inv_mem_iff, Subgroup.mem_inf, mem_stabilizer_iff, N] at hyx hzx ⊢
         constructor
         · convert hyx.1 using 1
           rw [mul_comm, mul_smul]
@@ -76,7 +77,7 @@ lemma le_card_union_add_card_mulStab_union :
           congr
           simp only [← inv_smul_eq_iff, inv_inv, ← (mem_mulStab ht), hz]
         all_goals { aesop }
-      · aesop
+      · simp (config := { contextual := true }) [*]
     specialize this (α := α ⧸ N) (s := s.image (↑)) (t := t.image (↑))
     simp only [image_nonempty, mulStab_nonempty, mul_nonempty, and_imp,
       forall_true_left, hs, ht, h1] at this
@@ -100,89 +101,90 @@ lemma le_card_union_add_card_mulStab_union :
       (card (image (QuotientGroup.mk (s := N)) t) +
       card (mulStab (image (QuotientGroup.mk (s := N)) t))) := by
         rw [mulStab_quotient_commute_subgroup N t, mulStab_quotient_commute_subgroup N s]
-        all_goals { aesop }
+        all_goals simp [*]
     _ ≤ Nat.card N * (card (image (QuotientGroup.mk (s := N)) s ∪
       image (QuotientGroup.mk (s := N)) t) +
       card (mulStab (image (QuotientGroup.mk (s := N)) s ∪
       image (QuotientGroup.mk (s := N)) t))) := Nat.mul_le_mul_left _ this
-    _ ≤ card (s ∪ t) + card (mulStab (s ∪ t)) := by
+    _ ≤ card (s ∪ t) + card (s ∪ t).mulStab := by
       rw [mul_add, ← image_union, subgroup_mul_card_eq_mul_of_mul_stab_subset N (s ∪ t),
           ← mulStab_quotient_commute_subgroup N (s ∪ t),
-          subgroup_mul_card_eq_mul_of_mul_stab_subset N (mulStab (s ∪ t))]
+          subgroup_mul_card_eq_mul_of_mul_stab_subset N (s ∪ t).mulStab]
       all_goals
       { simp only [hNmulstab, mulStab_idem]; norm_cast; exact inter_mulStab_subset_mulStab_union }
-  obtain hst | hst := (subset_union_left s t).eq_or_ssubset
-  · simp [hst.symm]
-  obtain hts | hts := (subset_union_right s t).eq_or_ssubset
-  · simp [hts.symm]
-  have : H.card = Hs.card * Ht.card := by
-    refine' card_mul_iff.2 fun a ha b hb hab => _
-    replace hab : a.2 * b.2⁻¹ = a.1⁻¹ * b.1 := by
-      rw [mul_inv_eq_iff_eq_mul, mul_assoc, ← inv_mul_eq_iff_eq_mul, inv_inv]
-      exact hab
-    have : a.1⁻¹ * b.1 ∈ Hs ∩ Ht := by
-      simp only [mem_inter]
-      constructor
-      · rw [mem_mulStab hs, mul_smul, inv_smul_eq_iff,
-          (mem_mulStab hs).mp (show b.1 ∈ mulStab s by aesop),
-          (mem_mulStab hs).mp (show a.1 ∈ mulStab s by aesop)]
-      · rw [← hab, mem_mulStab ht, mul_comm, mul_smul, inv_smul_eq_iff,
-          (mem_mulStab ht).mp (show b.2 ∈ mulStab t by aesop),
-          (mem_mulStab ht).mp (show a.2 ∈ mulStab t by aesop)]
-    simp only [h1, mem_one] at this
-    ext
-    · rw [← inv_mul_eq_one, this]
-    · rw [← mul_inv_eq_one, hab, this]
+  -- obtain hst | hst := (subset_union_left s t).eq_or_ssubset
+  -- · simp [hst.symm]
+  -- obtain hts | hts := (subset_union_right s t).eq_or_ssubset
+  -- · simp [hts.symm]
+  -- have : H.card = Hs.card * Ht.card := by
+  --   refine' card_mul_iff.2 fun a ha b hb hab => _
+  --   replace hab : a.2 * b.2⁻¹ = a.1⁻¹ * b.1 := by
+  --     rw [mul_inv_eq_iff_eq_mul, mul_assoc, ← inv_mul_eq_iff_eq_mul, inv_inv]
+  --     exact hab
+  --   have : a.1⁻¹ * b.1 ∈ Hs ∩ Ht := by
+  --     simp only [mem_inter]
+  --     constructor
+  --     · rw [mem_mulStab hs, mul_smul, inv_smul_eq_iff,
+  --         (mem_mulStab hs).mp hb.1,
+  --         (mem_mulStab hs).mp ha.1]
+  --     · rw [← hab, mem_mulStab ht, mul_comm, mul_smul, inv_smul_eq_iff,
+  --         (mem_mulStab ht).mp hb.2,
+  --         (mem_mulStab ht).mp ha.2]
+  --   simp only [h1, mem_one] at this
+  --   ext
+  --   · rw [← inv_mul_eq_one, this]
+  --   · rw [← mul_inv_eq_one, hab, this]
   -- mistake in proof sketch, need to interchange `Hs` and `Ht`
-  suffices h2 : Hs.card - (mulStab (s ∪ t)).card ≤ (s \ t).card ∨
-                Ht.card - (mulStab (s ∪ t)).card ≤ (t \ s).card by
-    simp only [min_le_iff]
-    cases' h2 with h2 h2
-    · left
-      sorry
-    · right
-      sorry
-  have Hst : (mulStab (s ∪ t)).Nonempty := ht.inr.mulStab
-  set k : α → ℕ := fun a =>
-    card ((a • H).image (QuotientGroup.mk (s := stabilizer α s)) ∩ s.image QuotientGroup.mk)
-  set l : α → ℕ := fun a =>
-   card ((a • H).image (QuotientGroup.mk (s := stabilizer α t)) ∩ t.image QuotientGroup.mk)
-  have hkt : ∀ a, k a ≤ Ht.card := sorry
-  have hls : ∀ a, l a ≤ Hs.card := sorry
-  have hk : ∀ a, (s \ t ∩ a • H).card = k a * (Hs.card - l a) := by sorry
-  have hl : ∀ a, (t \ s ∩ a • H).card = l a * (Ht.card - k a) := by sorry
-  by_cases hkl :
-    (∀ a, k a = 0 ∨ k a = Ht.card ∨ l a = 0 ∨ l a = Hs.card) ∧
-      ((∀ a, k a = 0 → l a = 0) ∨ ∀ a, l a = 0 → k a = 0)
-  · obtain ⟨hkl, hkl' | hkl'⟩ := hkl
-    · refine' Or.inl ((tsub_eq_zero_of_le $ card_mono _).trans_le $ zero_le _)
-      sorry
-    · refine' Or.inr ((tsub_eq_zero_of_le $ card_mono _).trans_le $ zero_le _)
-      sorry
-  -- the remaining sketch is flawed since `H` is defined to be `Hbar` in Ruzsa's notes and
-  -- `mulStab (s ∪ t) = H` in the notes
-  suffices hHst : (Hs.card - 1) * (Ht.card - 1) ≤ (s \ t).card * (t \ s).card by
-    by_contra!
-    exact hHst.not_lt $ CanonicallyOrderedCommSemiring.mul_lt_mul_of_lt_of_lt (this.1.trans_le $
-      tsub_le_tsub_left (one_le_card.2 Hst) _) $ this.2.trans_le $
-      tsub_le_tsub_left (one_le_card.2 Hst) _
-  simp (config := {zeta := false}) only
-    [not_and_or, not_or, Classical.not_forall, not_ne_iff, not_imp] at hkl
-  obtain ⟨a, hka, hka', hla, hla'⟩ | ⟨⟨a, hka, hla⟩, b, hlb, hkb⟩ := hkl
-  · refine le_trans ?_ (mul_le_mul' (card_mono $ inter_subset_left _ $ a • H) $
-      card_mono $ inter_subset_left _ $ a • H)
-    rw [hk, hl, mul_comm (k a), mul_mul_mul_comm, mul_comm (k a)]
-    refine le_trans ?_
-      (mul_le_mul' (Nat.add_sub_one_le_mul (tsub_pos_of_lt $ (hls _).lt_of_ne hla').ne' hla) $
-        Nat.add_sub_one_le_mul (tsub_pos_of_lt $ (hkt _).lt_of_ne hka').ne' hka)
-    rw [tsub_add_cancel_of_le (hkt _), tsub_add_cancel_of_le (hls _)]
-  refine'
-    mul_le_mul' (tsub_le_self.trans $ le_trans _ $ card_mono $ inter_subset_left _ $ b • H)
-      (tsub_le_self.trans $ le_trans _ $ card_mono $ inter_subset_left _ $ a • H)
-  · rw [hk, hlb, tsub_zero]
-    exact le_mul_of_one_le_left' (pos_iff_ne_zero.2 hkb)
-  · rw [hl, hka, tsub_zero]
-    exact le_mul_of_one_le_left' (pos_iff_ne_zero.2 hla)
+  -- suffices h2 : Hs.card - (s ∪ t).mulStab.card ≤ (s \ t).card ∨
+  --               Ht.card - (s ∪ t).mulStab.card ≤ (t \ s).card by
+  --   simp only [min_le_iff]
+  --   cases' h2 with h2 h2
+  --   · left
+  --     sorry
+  --   · right
+  --     sorry
+  -- have Hst : (s ∪ t).mulStab.Nonempty := ht.inr.mulStab
+  -- set k : α → ℕ := fun a =>
+  --   card ((a • H).image (QuotientGroup.mk (s := stabilizer α s)) ∩ s.image QuotientGroup.mk)
+  sorry
+  -- set l : α → ℕ := fun a =>
+  --   card ((a • H).image (QuotientGroup.mk (s := stabilizer α t)) ∩ t.image QuotientGroup.mk)
+  -- have hkt : ∀ a, k a ≤ Ht.card := sorry
+  -- have hls : ∀ a, l a ≤ Hs.card := sorry
+  -- have hk : ∀ a, (s \ t ∩ a • H).card = k a * (Hs.card - l a) := by sorry
+  -- have hl : ∀ a, (t \ s ∩ a • H).card = l a * (Ht.card - k a) := by sorry
+  -- by_cases hkl :
+  --   (∀ a, k a = 0 ∨ k a = Ht.card ∨ l a = 0 ∨ l a = Hs.card) ∧
+  --     ((∀ a, k a = 0 → l a = 0) ∨ ∀ a, l a = 0 → k a = 0)
+  -- · obtain ⟨hkl, hkl' | hkl'⟩ := hkl
+  --   · refine' Or.inl ((tsub_eq_zero_of_le $ card_mono _).trans_le $ zero_le _)
+  --     sorry
+  --   · refine' Or.inr ((tsub_eq_zero_of_le $ card_mono _).trans_le $ zero_le _)
+  --     sorry
+  -- -- the remaining sketch is flawed since `H` is defined to be `Hbar` in Ruzsa's notes and
+  -- -- `mulStab (s ∪ t) = H` in the notes
+  -- suffices hHst : (Hs.card - 1) * (Ht.card - 1) ≤ (s \ t).card * (t \ s).card by
+  --   by_contra!
+  --   exact hHst.not_lt $ CanonicallyOrderedCommSemiring.mul_lt_mul_of_lt_of_lt (this.1.trans_le $
+  --     tsub_le_tsub_left (one_le_card.2 Hst) _) $ this.2.trans_le $
+  --     tsub_le_tsub_left (one_le_card.2 Hst) _
+  -- simp (config := {zeta := false}) only
+  --   [not_and_or, not_or, Classical.not_forall, not_ne_iff, not_imp] at hkl
+  -- obtain ⟨a, hka, hka', hla, hla'⟩ | ⟨⟨a, hka, hla⟩, b, hlb, hkb⟩ := hkl
+  -- · refine le_trans ?_ (mul_le_mul' (card_mono $ inter_subset_left _ $ a • H) $
+  --     card_mono $ inter_subset_left _ $ a • H)
+  --   rw [hk, hl, mul_comm (k a), mul_mul_mul_comm, mul_comm (k a)]
+  --   refine le_trans ?_
+  --     (mul_le_mul' (Nat.add_sub_one_le_mul (tsub_pos_of_lt $ (hls _).lt_of_ne hla').ne' hla) $
+  --       Nat.add_sub_one_le_mul (tsub_pos_of_lt $ (hkt _).lt_of_ne hka').ne' hka)
+  --   rw [tsub_add_cancel_of_le (hkt _), tsub_add_cancel_of_le (hls _)]
+  -- refine'
+  --   mul_le_mul' (tsub_le_self.trans $ le_trans _ $ card_mono $ inter_subset_left _ $ b • H)
+  --     (tsub_le_self.trans $ le_trans _ $ card_mono $ inter_subset_left _ $ a • H)
+  -- · rw [hk, hlb, tsub_zero]
+  --   exact le_mul_of_one_le_left' (pos_iff_ne_zero.2 hkb)
+  -- · rw [hl, hka, tsub_zero]
+  --   exact le_mul_of_one_le_left' (pos_iff_ne_zero.2 hla)
 
 -- Lemma 3.4 in Ruzsa's notes
 @[to_additive]
@@ -247,8 +249,8 @@ lemma le_card_mul_add_card_mulStab_mul (hs : s.Nonempty) (ht : t.Nonempty) :
 
 /-- **Kneser's multiplication lemma**: A lower bound on the size of `s * t` in terms of its
 stabilizer. -/
-@[to_additive
-      "**Kneser's addition lemma**: A lower bound on the size of `s + t` in terms of its\nstabilizer."]
+@[to_additive "**Kneser's addition lemma**: A lower bound on the size of `s + t` in terms of its
+stabilizer."]
 lemma mul_kneser' (s t : Finset α) :
     (s * (s * t).mulStab).card + (t * (s * t).mulStab).card ≤
       (s * t).card + (s * t).mulStab.card := by
@@ -263,10 +265,10 @@ lemma mul_kneser' (s t : Finset α) :
       _
   rw [mul_mulStab_mul_mul_mul_mulStab_mul]
 
-/-- The strict version of **Kneser's multiplication lemma**. If the LHS of `finset.mul_kneser`
+/-- The strict version of **Kneser's multiplication theorem**. If the LHS of `Finset.mul_kneser`
 does not equal the RHS, then it is in fact much smaller. -/
-@[to_additive
-      "The strict version of **Kneser's addition lemma**. If the LHS of\n`finset.add_kneser` does not equal the RHS, then it is in fact much smaller."]
+@[to_additive "The strict version of **Kneser's addition theorem**. If the LHS of
+`Finset.add_kneser` does not equal the RHS, then it is in fact much smaller."]
 lemma mul_strict_kneser'
     (h :
       (s * (s * t).mulStab).card + (t * (s * t).mulStab).card <

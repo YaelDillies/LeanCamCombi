@@ -8,7 +8,7 @@ variable {α : Type*} {l l' l₀ l₁ l₂ : List α} {a b : α} {m n : ℕ}
 lemma rtake_suffix (n : ℕ) (l : List α) : l.rtake n <:+ l := drop_suffix _ _
 
 lemma length_rtake (n : ℕ) (l : List α) : (l.rtake n).length = min n l.length :=
-  (length_drop _ _).trans $ by rw [tsub_tsub_eq_min, min_comm]
+  (length_drop _ _).trans $ by rw [Nat.sub_sub_eq_min, min_comm]
 
 @[simp] lemma take_reverse (n : ℕ) (l : List α) : l.reverse.take n = (l.rtake n).reverse := by
   rw [rtake_eq_reverse_take_reverse, reverse_reverse]
@@ -40,10 +40,10 @@ lemma take_prefix_take (h : m ≤ n) : l.take m <+: l.take n := by
 lemma drop_suffix_drop (h : m ≤ n) : l.drop n <:+ l.drop m := sorry
 
 lemma rtake_suffix_rtake (h : m ≤ n) : l.rtake m <:+ l.rtake n :=
-  drop_suffix_drop $ tsub_le_tsub_left h _
+  drop_suffix_drop $ Nat.sub_le_sub_left h _
 
 lemma rdrop_prefix_rdrop (h : m ≤ n) : l.rdrop n <+: l.rdrop m :=
-  take_prefix_take $ tsub_le_tsub_left h _
+  take_prefix_take $ Nat.sub_le_sub_left h _
 
 protected lemma IsPrefix.take (hl : l <+: l') (h : l.length ≤ n) : l <+: l'.take n := by
   rw [hl.eq_take]; exact take_prefix_take h
@@ -90,6 +90,6 @@ lemma Subperm.exists_intermediate (hl : l₀ <+~ l₂) (h₀ : l₀.length ≤ n
   exact ⟨l₁, ⟨_, hl₀, h₀₁⟩, h₁₂.subperm, hn⟩
 
 lemma exists_subperm_length_eq (hn : n ≤ l.length) : ∃ l', l' <+~ l ∧ l'.length = n := by
-  simpa using nil_subperm.exists_intermediate bot_le hn
+  simpa using nil_subperm.exists_intermediate (Nat.zero_le _) hn
 
 end List

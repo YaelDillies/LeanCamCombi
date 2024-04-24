@@ -19,11 +19,11 @@ lemma exists_intermediate (hst : s ≤ t) (hs : card s ≤ n) (ht : n ≤ card t
   exact ⟨l₁, h⟩
 
 lemma exists_le_card_eq (hn : n ≤ card s) : ∃ t, t ≤ s ∧ card t = n := by
-  simpa using exists_intermediate (zero_le _) bot_le hn
+  simpa using exists_intermediate (zero_le _) (Nat.zero_le _) hn
 
 variable [DecidableEq α]
 
 lemma le_card_sub : card s - card t ≤ card (s - t) :=
-  tsub_le_iff_left.2 $ (card_mono le_add_tsub).trans_eq $ card_add _ _
+  Nat.sub_le_iff_le_add'.2 $ (card_mono le_add_tsub).trans_eq $ card_add _ _
 
 end Multiset

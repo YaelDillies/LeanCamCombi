@@ -240,7 +240,7 @@ lemma inter_mul_sub_card_le {a : α} {s t C : Finset α} (has : a ∈ s)
         norm_num
       all_goals
         apply subset_trans (mul_subset_mul_left hst)
-        rw [← inter_distrib_right]
+        rw [← union_inter_distrib_right]
         refine' subset_trans (mul_subset_mul_right (inter_subset_right _ _)) _
         simp only [smul_mul_assoc, mulStab_mul_mulStab, Subset.rfl]
     _ ≤
@@ -254,7 +254,7 @@ lemma inter_mul_sub_card_le {a : α} {s t C : Finset α} (has : a ∈ s)
       · apply smul_finset_subset_smul (mem_union_left t has) (mem_sdiff.mp hx).1
       have hx' := (mem_sdiff.mp hx).2
       contrapose! hx'
-      rw [← inter_distrib_right]
+      rw [← union_inter_distrib_right]
       obtain ⟨y, hyst, d, hd, hxyd⟩ := mem_mul.mp hx'
       obtain ⟨c, hc, hcx⟩ := mem_smul_finset.mp (mem_sdiff.mp hx).1
       rw [← hcx, ← eq_mul_inv_iff_mul_eq] at hxyd
@@ -345,7 +345,7 @@ theorem mul_kneser :
   rw [← inv_smul_eq_iff] at ht'
   subst ht'
   rename' t' => t
-  rw [mem_inv_smul_finset_iff, smul_eq_mul, div_mul_cancel'] at hc
+  rw [mem_inv_smul_finset_iff, smul_eq_mul, div_mul_cancel] at hc
   rw [div_mul_comm, mem_inv_smul_finset_iff, smul_eq_mul, ← mul_assoc, div_mul_div_cancel',
     div_self', one_mul] at hbac
   rw [smul_finset_nonempty] at ht
@@ -419,13 +419,13 @@ theorem mul_kneser :
   obtain ht₂ | ht₂ne := t₂.eq_empty_or_nonempty
   · have aux₁_contr :=
       disjoint_mul_sub_card_le b (hs₁s has₁) (disjoint_iff_inter_eq_empty.2 ht₂) hH₁H.subset
-    linarith [aux1₁, aux₁_contr, Int.coe_nat_nonneg (t₁ * (s₁ * t₁).mulStab).card]
+    linarith [aux1₁, aux₁_contr, Int.natCast_nonneg (t₁ * (s₁ * t₁).mulStab).card]
   obtain hs₂ | hs₂ne := s₂.eq_empty_or_nonempty
   · have aux1₁_contr :=
       disjoint_mul_sub_card_le a (ht₁t hbt₁) (disjoint_iff_inter_eq_empty.2 hs₂)
         (by rw [mul_comm]; exact hH₁H.subset)
     simp only [union_comm t s, mul_comm t₁ s₁] at aux1₁_contr
-    linarith [aux1₁, aux1₁_contr, Int.coe_nat_nonneg (s₁ * (s₁ * t₁).mulStab).card]
+    linarith [aux1₁, aux1₁_contr, Int.natCast_nonneg (s₁ * (s₁ * t₁).mulStab).card]
   have hC₂stab : C₂.mulStab = H₂ := mulStab_union hs₂ne ht₂ne (by rwa [mul_comm]) hCst₂
   have hH₂H : H₂ ⊂ H := mulStab_mul_ssubset_mulStab hs₂ne ht₂ne (by rwa [mul_comm])
   have aux1₂ :=
@@ -444,17 +444,17 @@ theorem mul_kneser :
           habH).mono
       sdiff_le sdiff_le
   have hSst : S ⊆ a • H \ (s ∪ t) := by
-    simp only [hS, hs₁, ht₂, ← inter_distrib_right, sdiff_inter_self_right, Subset.rfl]
+    simp only [hS, hs₁, ht₂, ← union_inter_distrib_right, sdiff_inter_self_right, Subset.rfl]
   have hTst : T ⊆ b • H \ (s ∪ t) := by
-    simp only [hT, hs₂, ht₁, ← inter_distrib_right, sdiff_inter_self_right, Subset.rfl]
+    simp only [hT, hs₂, ht₁, ← union_inter_distrib_right, sdiff_inter_self_right, Subset.rfl]
   have hSTst : Disjoint (S ∪ T) (s ∪ t) := (subset_sdiff.1 hSst).2.sup_left (subset_sdiff.1 hTst).2
   have hstconv : s * t ∉ convergent := by
     apply hCmin (s * t)
     rw [hstab]
     refine (hC.mulStab_nontrivial.mp hCstab).symm.ssubset_of_subset ?_
     simp only [one_subset, one_mem_mulStab, hC]
-  simp only [Set.mem_setOf_eq, Subset.rfl, true_and_iff, not_le, hstab, mul_one, card_one]
-    at hstconv
+  simp only [Set.mem_setOf_eq, Subset.rfl, true_and_iff, not_le, hstab, mul_one, card_one,
+    convergent] at hstconv
   zify at hstconv
   have hSTcard : (S.card : ℤ) + T.card + (s ∪ t).card ≤ ((s ∪ t) * H).card := by
     norm_cast

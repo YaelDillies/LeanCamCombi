@@ -1,4 +1,4 @@
-import Mathlib.Data.Nat.Order.Lemmas
+import Mathlib.Data.Nat.Defs
 
 namespace Nat
 variable {a b : ℕ}
@@ -6,7 +6,8 @@ variable {a b : ℕ}
 lemma eq_of_dvd_of_lt_two_mul (ha : a ≠ 0) (hdvd : b ∣ a) (hlt : a < 2 * b) : a = b := by
   obtain ⟨_ | _ | c, rfl⟩ := hdvd
   · simp at ha
-  · exact mul_one _
-  · cases hlt.not_le ((mul_comm _ _).trans_le $ mul_le_mul_left' (by omega) _)
+  · exact Nat.mul_one _
+  · rw [Nat.mul_comm] at hlt
+    cases Nat.not_le_of_lt hlt (Nat.mul_le_mul_right _ (by omega))
 
 end Nat

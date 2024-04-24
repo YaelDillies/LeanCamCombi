@@ -137,8 +137,8 @@ protected lemma union (h : IndepFun X Y μ) :
       add_tsub_assoc_of_le (mul_le_of_le_one_left' $ hX.le_one)]
     · exact (add_le_add_left (mul_le_of_le_one_right' $ hY.le_one) _).trans_eq
         (add_tsub_cancel_of_le hX.le_one)
-  · rwa [IndepFun_iff, MeasurableSpace.comap_compl measurable_compl, MeasurableSpace.comap_compl measurable_compl,
-      ←IndepFun_iff]
+  · rwa [IndepFun_iff, MeasurableSpace.comap_compl measurable_compl,
+      MeasurableSpace.comap_compl measurable_compl, ← IndepFun_iff]
 
 end IsBernoulliSeq
 end ProbabilityTheory

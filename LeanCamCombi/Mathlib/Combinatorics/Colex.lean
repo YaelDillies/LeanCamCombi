@@ -57,7 +57,7 @@ lemma lt_iff_exists_forall_lt_mem_iff_mem :
   simp only [lt_iff_exists_forall_lt]
   refine ⟨fun h ↦ ?_, ?_⟩
   · let u := (t \ s).filter fun w ↦ ∀ a ∈ s, a ∉ t → a < w
-    have mem_u {w : α} : w ∈ u ↔ w ∈ t ∧ w ∉ s ∧ ∀ a ∈ s, a ∉ t → a < w := by simp [and_assoc]
+    have mem_u {w : α} : w ∈ u ↔ w ∈ t ∧ w ∉ s ∧ ∀ a ∈ s, a ∉ t → a < w := by simp [u, and_assoc]
     have hu : u.Nonempty := h.imp fun _ ↦ mem_u.2
     let m := max' _ hu
     have ⟨hmt, hms, hm⟩ : m ∈ t ∧ m ∉ s ∧ ∀ a ∈ s, a ∉ t → a < m := mem_u.1 $ max'_mem _ _

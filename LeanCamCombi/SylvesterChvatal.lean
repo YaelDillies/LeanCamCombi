@@ -299,7 +299,7 @@ lemma exists_min_dist (V : Type*) [MetricSpace V] [Finite V] :
   cases subsingleton_or_nontrivial V
   · exact ⟨1, zero_lt_one, fun x y ↦ by simp [Subsingleton.elim x y]⟩
   let S : Set (V × V) := (Set.diagonal V)ᶜ
-  have : S.Nonempty := have ⟨x, y, hxy⟩ := exists_pair_ne V; ⟨(x, y), by simp [hxy]⟩
+  have : S.Nonempty := have ⟨x, y, hxy⟩ := exists_pair_ne V; ⟨(x, y), by simp [S, hxy]⟩
   obtain ⟨⟨x, y⟩, (hxy : x ≠ y), h⟩ := S.toFinite.exists_minimal_wrt (Function.uncurry dist) _ this
   simp only [Set.mem_compl_iff, Set.mem_diagonal_iff, Function.uncurry_apply_pair, Prod.forall] at h
   exact ⟨dist x y, by simp [hxy], fun a b hab => le_of_not_lt (fun h' => h'.ne' (h _ _ hab h'.le))⟩
@@ -405,8 +405,8 @@ lemma case1 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
   have hP'₂ : P'.pathLength ≤ (a₁ :: b :: d :: []).pathLength :=
     ha₁ ▸ hP'lt.le.trans (hPmin _ (abd_special habc hacd hbd' hbd))
   have hP'₃ : P'.Chain' (· ≠ ·) := by
-    simp only [ne_eq, List.chain'_cons] at hPc
-    simp only [List.chain'_cons, and_true, ← ha₁, hb₁₂.ne12, true_and, not_false_eq_true, ne_eq,
+    simp only [P', ne_eq, List.chain'_cons] at hPc
+    simp only [P', List.chain'_cons, and_true, ← ha₁, hb₁₂.ne12, true_and, not_false_eq_true, ne_eq,
       ha₃b₁₂.symm, ha₃b₂₃.symm, hPc.2.2, hP'₁.2]
   simp only [List.Special, hP'₁, List.getLast_cons_cons, List.getLast_cons_cons, hPd,
     hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not] at hP'ns
@@ -456,8 +456,8 @@ lemma case2 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
   have hP'₂ : P'.pathLength ≤ (a₁ :: b :: d :: []).pathLength :=
     ha₁ ▸ hP'lt.le.trans (hPmin _ (abd_special habc hacd hbd' hbd))
   have hP'₃ : P'.Chain' (· ≠ ·) := by
-    simp only [ne_eq, List.chain'_cons] at hPc
-    simp only [List.chain'_cons, and_true, ← ha₁, true_and, not_false_eq_true, ne_eq,
+    simp only [P', ne_eq, List.chain'_cons] at hPc
+    simp only [P', List.chain'_cons, and_true, ← ha₁, true_and, not_false_eq_true, ne_eq,
       ha₃b₂₃.symm, hPc.2.2, hP'₁.2, hP'₁.1]
   simp only [List.Special, hP'₁, List.getLast_cons_cons, List.getLast_cons_cons, hPd,
     hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not] at hP'ns
@@ -510,8 +510,8 @@ lemma case3 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
   have hP'₂ : P'.pathLength ≤ (a₁ :: b :: d :: []).pathLength :=
     ha₁ ▸ hP'lt.le.trans (hPmin _ (abd_special habc hacd hbd' hbd))
   have hP'₃ : P'.Chain' (· ≠ ·) := by
-    simp only [ne_eq, List.chain'_cons] at hPc
-    simp only [List.chain'_cons, and_true, ← ha₁, hb₁₂.ne12, true_and, not_false_eq_true, ne_eq,
+    simp only [P', ne_eq, List.chain'_cons] at hPc
+    simp only [P', List.chain'_cons, and_true, ← ha₁, hb₁₂.ne12, true_and, not_false_eq_true, ne_eq,
       ha₃b₁₂.symm, hPc.2.2, hP'₁.2]
   simp only [List.Special, hP'₁, List.getLast_cons_cons, List.getLast_cons_cons, hPd,
     hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not] at hP'ns

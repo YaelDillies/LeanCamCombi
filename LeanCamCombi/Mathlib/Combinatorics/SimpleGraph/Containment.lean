@@ -233,7 +233,8 @@ end LabelledCopyCount
 An important aspect of graph containment is that we can remove not too many edges from a graph `H`
 to get a graph `H'` that doesn't contain `G`.
 
-`SimpleGraph.kill G H` is a subgraph of `H` where an edge was removed from each copy of `G` in `H`. by construction, it doesn't contain `G` and has at most the number of copies of `G` edges less than
+`SimpleGraph.kill G H` is a subgraph of `H` where an edge was removed from each copy of `G` in `H`.
+By construction, it doesn't contain `G` and has at most the number of copies of `G` edges less than
 `H`
 -/
 

@@ -54,7 +54,7 @@ lemma certificator_subset_inter : s □ t ⊆ s ∩ t := filter_subset _ _
 lemma certificator_subset_disjSups : s □ t ⊆ s ○ t := by
   simp_rw [subset_iff, mem_certificator, mem_disjSups]
   rintro x ⟨u, v, huv, hu, hv⟩
-  refine' ⟨x ⊓ u, hu inf_right_idem.symm, x ⊓ v, hv inf_right_idem.symm,
+  refine' ⟨x ⊓ u, hu (inf_right_idem _ _).symm, x ⊓ v, hv (inf_right_idem _ _).symm,
     huv.disjoint.mono inf_le_right inf_le_right, _⟩
   rw [←inf_sup_left, huv.codisjoint.eq_top, inf_top_eq]
 

@@ -33,7 +33,8 @@ def combiInterior (s : Finset E) : Set E := convexHull 𝕜 ↑s \ combiFrontier
 
 variable {𝕜}
 
-lemma mem_combiFrontier_iff : x ∈ combiFrontier 𝕜 s ↔ ∃ t, t ⊂ s ∧ x ∈ convexHull 𝕜 (t : Set E) := by simp [combiFrontier]
+lemma mem_combiFrontier_iff :
+    x ∈ combiFrontier 𝕜 s ↔ ∃ t, t ⊂ s ∧ x ∈ convexHull 𝕜 (t : Set E) := by simp [combiFrontier]
 
 lemma combiFrontier_subset_convexHull : combiFrontier 𝕜 s ⊆ convexHull 𝕜 ↑s :=
   iUnion₂_subset fun _t ht => convexHull_mono ht.1
@@ -270,7 +271,7 @@ lemma subset_closure_combiInterior (hs : AffineIndependent ℝ ((↑) : s → E)
         -- simp [hx]
       · apply centroid_weights
       · simp [Finset.sum_boole, Finset.filter_eq, hx]
-      · simp only [add_sub_cancel'_right]
+      · simp only [add_sub_cancel]
     apply Finset.sum_centroidWeights_eq_one_of_nonempty ℝ _ hsnonempty
   · rw [tendsto_iff_norm_sub_tendsto_zero]
     convert_to Filter.Tendsto (fun e : ℕ => ((e : ℝ) + 2)⁻¹ * ‖s.centroid ℝ id - x‖) Filter.atTop _
@@ -283,7 +284,7 @@ lemma subset_closure_combiInterior (hs : AffineIndependent ℝ ((↑) : s → E)
     suffices Filter.Tendsto (fun e : ℕ => (↑(e + 2) : ℝ)⁻¹) Filter.atTop (nhds 0) by
       simpa using this.mul_const _
     refine' tendsto_inv_atTop_zero.comp _
-    rw [tendsto_nat_cast_atTop_iff]
+    rw [tendsto_natCast_atTop_iff]
     apply Filter.tendsto_add_atTop_nat
 
 variable [T2Space E]

@@ -14,7 +14,8 @@ open Set
 open scoped Affine BigOperators Classical
 
 --TODO: Generalise to LCTVS
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] {x : E} {s B : Set E}
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] {x : E}
+  {s B : Set E}
 
 /-- The **Minkowski-Carathéodory Theorem**. A compact convex set in a finite dimensional space is
 the convex hull of its extreme points. -/
