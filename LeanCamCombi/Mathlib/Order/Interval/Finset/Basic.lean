@@ -1,4 +1,4 @@
-import Mathlib.Order.LocallyFinite
+import Mathlib.Order.Interval.Finset.Basic
 
 -- TODO: Rename `Prod.Icc_eq` to `Finset.Icc_prod_eq` to match `Set.Icc_prod_eq`
 

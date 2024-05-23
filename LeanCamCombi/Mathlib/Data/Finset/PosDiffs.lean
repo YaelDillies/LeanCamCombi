@@ -6,7 +6,7 @@ Authors: Yaël Dillies
 import Mathlib.Combinatorics.SetFamily.Compression.Down
 import Mathlib.Data.Finset.Pointwise
 import Mathlib.Data.Finset.Sups
-import Mathlib.Data.Set.Intervals.OrdConnected
+import Mathlib.Order.Interval.Set.OrdConnected
 import Mathlib.Order.UpperLower.Basic
 
 /-!

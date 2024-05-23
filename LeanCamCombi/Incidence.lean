@@ -9,7 +9,7 @@ import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.Algebra.Module.BigOperators
 import Mathlib.GroupTheory.GroupAction.Basic
 import Mathlib.GroupTheory.GroupAction.Pi
-import LeanCamCombi.Mathlib.Algebra.BigOperators.LocallyFinite
+import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.LocallyFinite
 
 /-!
 # Incidence algebras

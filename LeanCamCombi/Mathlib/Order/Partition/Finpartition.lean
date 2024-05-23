@@ -13,18 +13,18 @@ def finsetImage {a : Finset α} (P : Finpartition a) (f : α → β) (hf : Injec
   supIndep := by
     rw [supIndep_iff_pairwiseDisjoint, coe_image,
       ((image_injective hf).injOn _).pairwiseDisjoint_image]
-    simp only [Set.PairwiseDisjoint, Set.Pairwise, mem_coe, Function.onFun, Ne.def,
+    simp only [Set.PairwiseDisjoint, Set.Pairwise, mem_coe, Function.onFun, Ne,
       Function.id_comp, disjoint_image hf]
     exact P.disjoint
   sup_parts := by
     ext i
-    simp only [mem_sup, mem_image, exists_prop, id.def, exists_exists_and_eq_and]
+    simp only [mem_sup, mem_image, exists_prop, id, exists_exists_and_eq_and]
     constructor
     · rintro ⟨j, hj, i, hij, rfl⟩
       exact ⟨_, P.le hj hij, rfl⟩
     rintro ⟨j, hj, rfl⟩
     rw [←P.sup_parts] at hj
-    simp only [mem_sup, id.def, exists_prop] at hj
+    simp only [mem_sup, id, exists_prop] at hj
     obtain ⟨b, hb, hb'⟩ := hj
     exact ⟨b, hb, _, hb', rfl⟩
   not_bot_mem := by

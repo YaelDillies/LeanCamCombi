@@ -1,11 +1,4 @@
 import Mathlib.Combinatorics.Schnirelmann
-import Mathlib.Algebra.Parity
-import Mathlib.Data.Finset.Card
-import Mathlib.Data.Nat.Interval
-import Mathlib.Data.Nat.Prime
-import Mathlib.Data.Real.Basic
-import Mathlib.Data.Set.Pointwise.SMul
-import Mathlib.GroupTheory.Submonoid.Operations
 import LeanCamCombi.Mathlib.Algebra.Order.Sub.Canonical
 
 open Finset

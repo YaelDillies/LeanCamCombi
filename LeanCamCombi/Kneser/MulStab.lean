@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mantas Bakšys, Yaël Dillies
 -/
 import Mathlib.Algebra.Pointwise.Stabilizer
-import Mathlib.GroupTheory.Subgroup.Actions
 import LeanCamCombi.Kneser.Mathlib
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 
@@ -71,7 +70,7 @@ lemma mulStab_empty : mulStab (∅ : Finset α) = ∅ := by simp [mulStab]
 
 @[to_additive (attr := simp)]
 lemma mulStab_singleton (a : α) : mulStab ({a} : Finset α) = 1 := by
-  simp [mulStab, singleton_one]
+  simp [mulStab, singleton_one, filter_true_of_mem]
 
 @[to_additive]
 lemma Nonempty.of_mulStab : s.mulStab.Nonempty → s.Nonempty := by

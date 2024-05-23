@@ -24,7 +24,7 @@ lemma cons_sublist_cons_iff' : a :: l₁ <+ b :: l₂ ↔ a :: l₁ <+ l₂ ∨ 
     · exact Or.inr ⟨rfl, ‹_›⟩
   · rintro (h | ⟨rfl, h⟩)
     · exact sublist_cons_of_sublist _ h
-    · rwa [cons_sublist_cons_iff]
+    · rwa [cons_sublist_cons]
 
 attribute [simp] nil_subperm
 

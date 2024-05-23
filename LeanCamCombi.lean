@@ -1,6 +1,7 @@
 import LeanCamCombi.Archive.CauchyDavenportFromKneser
 import LeanCamCombi.BernoulliSeq
 import LeanCamCombi.ConvexContinuous
+import LeanCamCombi.Corners.CombiDegen
 import LeanCamCombi.DiscreteDeriv
 import LeanCamCombi.ErdosGinzburgZiv
 import LeanCamCombi.ErdosRenyi.Basic
@@ -17,8 +18,8 @@ import LeanCamCombi.Kneser.Mathlib
 import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.KruskalKatona
 import LeanCamCombi.LittlewoodOfford
-import LeanCamCombi.Mathlib.Algebra.BigOperators.LocallyFinite
 import LeanCamCombi.Mathlib.Algebra.BigOperators.Ring
+import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.LocallyFinite
 import LeanCamCombi.Mathlib.Algebra.Order.Ring.Canonical
 import LeanCamCombi.Mathlib.Algebra.Order.Sub.Canonical
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
@@ -54,7 +55,7 @@ import LeanCamCombi.Mathlib.Order.Category.BoolAlg
 import LeanCamCombi.Mathlib.Order.ConditionallyCompleteLattice.Basic
 import LeanCamCombi.Mathlib.Order.Hom.Lattice
 import LeanCamCombi.Mathlib.Order.Hom.Set
-import LeanCamCombi.Mathlib.Order.LocallyFinite
+import LeanCamCombi.Mathlib.Order.Interval.Finset.Basic
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.Sublattice
 import LeanCamCombi.Mathlib.Order.SupClosed

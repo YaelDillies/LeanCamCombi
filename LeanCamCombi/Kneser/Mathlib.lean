@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mantas Bakšys, Yaël Dillies
 -/
 import Mathlib.Algebra.CharP.Basic
+import Mathlib.Algebra.Group.Subgroup.Basic
 import Mathlib.Data.Finset.Pointwise
-import Mathlib.GroupTheory.Subgroup.Basic
 
 /-!
 # For mathlib

@@ -242,7 +242,7 @@ lemma subset_closure_combiInterior (hs : AffineIndependent ℝ ((↑) : s → E)
   · apply ((n : ℝ) + 2)⁻¹ • s.centroid ℝ id + (1 - ((n : ℝ) + 2)⁻¹) • x
   · rw [Finset.centroid_def]
     rw [affineCombination_eq_centerMass _]
-    · rw [← id.def x]
+    · rw [← id_def x]
       rw [← Finset.centerMass_ite_eq (R := ℝ) _ _ id hx]
       simp only
       rw [Finset.centerMass_segment]

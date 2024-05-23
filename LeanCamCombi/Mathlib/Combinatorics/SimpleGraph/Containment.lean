@@ -252,7 +252,7 @@ noncomputable irreducible_def kill (G : SimpleGraph α) (H : SimpleGraph β) : S
   else H.deleteEdges $ ⋃ (H' : H.Subgraph) (hH' : Nonempty (G ≃g H'.coe)), {(aux hG hH').some}
 
 /-- Removing an edge from `H` for each subgraph isomorphic to `G` results in a subgraph of `H`. -/
-lemma kill_le : G.kill H ≤ H := by rw [kill]; split_ifs; exacts [le_rfl, deleteEdges_le _ _]
+lemma kill_le : G.kill H ≤ H := by rw [kill]; split_ifs; exacts [le_rfl, deleteEdges_le _]
 
 @[simp] lemma bot_kill (H : SimpleGraph β) : (⊥ : SimpleGraph α).kill H = H := by
   rw [kill]; exact dif_pos rfl
@@ -277,7 +277,7 @@ lemma kill_of_not_isContained (hGH : ¬ G ⊑ H) : G.kill H = H := by
 /-- Removing an edge from `H` for each subgraph isomorphic to `G` results in a graph that doesn't
 contain `G`. -/
 lemma not_isContained_kill (hG : G ≠ ⊥) : ¬ G ⊑ G.kill H := by
-  rw [kill_of_ne_bot hG, deleteEdges_eq_sdiff_fromEdgeSet, isContained_iff_exists_subgraph]
+  rw [kill_of_ne_bot hG, deleteEdges, isContained_iff_exists_subgraph]
   rintro ⟨H', hGH'⟩
   have hH' : (H'.map $ Hom.ofLE (sdiff_le : H \ _ ≤ H)).edgeSet.Nonempty := by
     rw [Subgraph.edgeSet_map]
@@ -311,7 +311,7 @@ lemma le_card_edgeFinset_kill [Fintype β] :
     H.edgeFinset.card - G.copyCount H ≤ (G.kill H).edgeFinset.card := by
   obtain rfl | hG := eq_or_ne G ⊥
   · simp
-  simp only [kill_of_ne_bot, hG, Ne.def, not_false_iff, Set.iUnion_singleton_eq_range,
+  simp only [kill_of_ne_bot, hG, Ne, not_false_iff, Set.iUnion_singleton_eq_range,
     Set.toFinset_card, Fintype.card_ofFinset, edgeSet_deleteEdges]
   rw [←Set.toFinset_card, ←edgeFinset, copyCount, ←card_subtype, subtype_univ]
   refine' (tsub_le_tsub_left (card_image_le.trans_eq' $ congr_arg card $ Set.toFinset_range
