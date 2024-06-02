@@ -3,7 +3,7 @@ Copyright (c) 2023 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
-import Mathlib.Algebra.BigOperators.Basic
+import Mathlib.Algebra.BigOperators.Group.Finset
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 
 /-!
@@ -37,6 +37,7 @@ The following notation is declared in locale `SimpleGraph`:
 -/
 
 open Finset Function
+open Fintype (card)
 open scoped BigOperators Classical
 
 namespace SimpleGraph
@@ -218,7 +219,7 @@ noncomputable def labelledCopyCount (G : SimpleGraph α) (H : SimpleGraph β) : 
 
 /-- There's more labelled copies of `H` of-`G` than unlabelled ones. -/
 lemma copyCount_le_labelledCopyCount : G.copyCount H ≤ G.labelledCopyCount H := by
-  rw [copyCount, ←Fintype.card_coe]
+  rw [copyCount, ← Fintype.card_coe]
   refine Fintype.card_le_of_injective (fun H' ↦
     ⟨H'.val.hom.comp (mem_filter.1 H'.2).2.some.toHom,
       Subtype.coe_injective.comp (mem_filter.1 H'.2).2.some.injective⟩) ?_
@@ -241,7 +242,7 @@ By construction, it doesn't contain `G` and has at most the number of copies of 
 private lemma aux (hG : G ≠ ⊥) {H' : H.Subgraph} :
     Nonempty (G ≃g H'.coe) → H'.edgeSet.Nonempty := by
   obtain ⟨e, he⟩ := edgeSet_nonempty.2 hG
-  rw [←Subgraph.image_coe_edgeSet_coe]
+  rw [← Subgraph.image_coe_edgeSet_coe]
   exact fun ⟨f⟩ ↦ Set.Nonempty.image _ ⟨_, f.map_mem_edgeSet_iff.2 he⟩
 
 /-- `G.kill H` is a subgraph of `H` where an edge from every subgraph isomorphic to `G` was removed.
@@ -285,7 +286,7 @@ lemma not_isContained_kill (hG : G ≠ ⊥) : ¬ G ⊑ G.kill H := by
   set e := hH'.some with he
   have : e ∈ _ := hH'.some_mem
   clear_value e
-  rw [←Subgraph.image_coe_edgeSet_coe] at this
+  rw [← Subgraph.image_coe_edgeSet_coe] at this
   subst he
   obtain ⟨e, he₀, he₁⟩ := this
   let e' : Sym2 H'.verts := Sym2.map (Subgraph.isoMap (Hom.ofLE _) injective_id _).symm e
@@ -296,7 +297,7 @@ lemma not_isContained_kill (hG : G ≠ ⊥) : ¬ G ⊑ G.kill H := by
     Set.mem_iUnion, not_exists] at this
   refine' this.2 (H'.map $ Hom.ofLE sdiff_le)
     ⟨(Subgraph.isoMap (Hom.ofLE _) injective_id _).comp hGH'.some⟩ _
-  rw [Sym2.map_map, Set.mem_singleton_iff, ←he₁]
+  rw [Sym2.map_map, Set.mem_singleton_iff, ← he₁]
   congr 1 with x
   refine' congr_arg (↑) (Equiv.Set.image_symm_apply _ _ injective_id _ _)
 
@@ -311,16 +312,20 @@ lemma le_card_edgeFinset_kill [Fintype β] :
     H.edgeFinset.card - G.copyCount H ≤ (G.kill H).edgeFinset.card := by
   obtain rfl | hG := eq_or_ne G ⊥
   · simp
+  let f (H' : {H' : H.Subgraph // Nonempty (G ≃g H'.coe)}) := (aux hG H'.2).some
+  calc
+    _ = H.edgeFinset.card - card {H' : H.Subgraph // Nonempty (G ≃g H'.coe)} := ?_
+    _ ≤ H.edgeFinset.card - (univ.image f).card := Nat.sub_le_sub_left card_image_le _
+    _ = H.edgeFinset.card - (Set.range f).toFinset.card := by rw [Set.toFinset_range]
+    _ ≤ (H.edgeFinset \ (Set.range f).toFinset).card := le_card_sdiff ..
+    _ = (G.kill H).edgeFinset.card := ?_
+  · simp only [Set.toFinset_card]
+    rw [← Set.toFinset_card, ← edgeFinset, copyCount, ← card_subtype, subtype_univ, card_univ]
   simp only [kill_of_ne_bot, hG, Ne, not_false_iff, Set.iUnion_singleton_eq_range,
     Set.toFinset_card, Fintype.card_ofFinset, edgeSet_deleteEdges]
-  rw [←Set.toFinset_card, ←edgeFinset, copyCount, ←card_subtype, subtype_univ]
-  refine' (tsub_le_tsub_left (card_image_le.trans_eq' $ congr_arg card $ Set.toFinset_range
-    fun H' : {H' : H.Subgraph // Nonempty (G ≃g H'.coe)} ↦ (aux hG H'.2).some) _).trans $
-      (le_card_sdiff _ _).trans_eq $ _
-  simp only [Finset.sdiff_eq_inter_compl, Set.diff_eq, ←Set.iUnion_singleton_eq_range, coe_sdiff,
-    Set.coe_toFinset, coe_filter, Set.sep_mem_eq, Set.iUnion_subtype, ←Fintype.card_coe,
-    ←Finset.coe_sort_coe, coe_inter, coe_compl, Set.coe_toFinset]
-  congr
-  exact Subsingleton.elim _ _
+  simp only [Finset.sdiff_eq_inter_compl, Set.diff_eq, ← Set.iUnion_singleton_eq_range, coe_sdiff,
+    Set.coe_toFinset, coe_filter, Set.sep_mem_eq, Set.iUnion_subtype, ← Fintype.card_coe,
+    ← Finset.coe_sort_coe, coe_inter, coe_compl, Set.coe_toFinset, Set.compl_iUnion,
+    Fintype.card_ofFinset]
 
 end SimpleGraph
