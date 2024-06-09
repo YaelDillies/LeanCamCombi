@@ -107,7 +107,7 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
   have hjk : j ≤ k := min'_le _ _ (mem_compl.2 ‹k ∉ t›)
   have : j ∉ t := mem_compl.1 (min'_mem _ _)
   have hcard : card s = card (insert j t) := by
-    rw [card_insert_of_not_mem ‹j ∉ t›, ←‹_ = card t›, card_erase_add_one (min'_mem _ _)]
+    rw [card_insert_of_not_mem ‹j ∉ t›, ← ‹_ = card t›, card_erase_add_one (min'_mem _ _)]
   refine' ⟨j, ‹_›, hcard, _⟩
   -- Cases on j < k or j = k
   obtain hjk | r₁ := hjk.lt_or_eq
@@ -125,7 +125,7 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
     apply min'_le _ _ (mem_of_mem_erase ‹_›)
   · rw [r₁]; apply mem_insert_self
   · apply mem_insert_of_mem
-    rw [←r₁] at gt
+    rw [← r₁] at gt
     by_contra
     apply (min'_le tᶜ _ _).not_lt gt
     rwa [mem_compl]
@@ -134,14 +134,14 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
 protected lemma IsInitSeg.shadow [Finite α] (h₁ : IsInitSeg 𝒜 r) : IsInitSeg (∂ 𝒜) (r - 1) := by
   cases nonempty_fintype α
   obtain rfl | hr := Nat.eq_zero_or_pos r
-  · have : 𝒜 ⊆ {∅} := fun s hs ↦ by rw [mem_singleton, ←Finset.card_eq_zero]; exact h₁.1 hs
+  · have : 𝒜 ⊆ {∅} := fun s hs ↦ by rw [mem_singleton, ← Finset.card_eq_zero]; exact h₁.1 hs
     have := shadow_monotone this
     simp only [subset_empty, le_eq_subset, shadow_singleton_empty] at this
     simp [this]
   obtain rfl | h𝒜 := 𝒜.eq_empty_or_nonempty
   · simp
   obtain ⟨s, rfl, rfl⟩ := h₁.exists_initSeg h𝒜
-  rw [shadow_initSeg (card_pos.1 hr), ←card_erase_of_mem (min'_mem _ _)]
+  rw [shadow_initSeg (card_pos.1 hr), ← card_erase_of_mem (min'_mem _ _)]
   exact isInitSeg_initSeg
 
 end Colex
@@ -180,19 +180,19 @@ lemma compression_improved (𝒜 : Finset (Finset α)) (h₁ : UsefulCompression
   obtain ⟨UVd, same_size, hU, hV, max_lt⟩ := h₁
   refine' card_shadow_compression_le _ _ fun x Hx ↦ ⟨min' V hV, min'_mem _ _, _⟩
   obtain hU' | hU' := eq_or_lt_of_le (succ_le_iff.2 hU.card_pos)
-  · rw [←hU'] at same_size
-    have : erase U x = ∅ := by rw [←Finset.card_eq_zero, card_erase_of_mem Hx, ←hU']
+  · rw [← hU'] at same_size
+    have : erase U x = ∅ := by rw [← Finset.card_eq_zero, card_erase_of_mem Hx, ← hU']
     have : erase V (min' V hV) = ∅ := by
-      rw [←Finset.card_eq_zero, card_erase_of_mem (min'_mem _ _), ←same_size]
+      rw [← Finset.card_eq_zero, card_erase_of_mem (min'_mem _ _), ← same_size]
     rw [‹erase U x = ∅›, ‹erase V (min' V hV) = ∅›]
     exact isCompressed_self _ _
   refine' h₂ ⟨UVd.mono (erase_subset _ _) (erase_subset _ _), _, _, _, _⟩ (card_erase_lt_of_mem Hx)
   · rw [card_erase_of_mem (min'_mem _ _), card_erase_of_mem Hx, same_size]
-  · rwa [←card_pos, card_erase_of_mem Hx, tsub_pos_iff_lt]
-  · rwa [←Finset.card_pos, card_erase_of_mem (min'_mem _ _), ←same_size, tsub_pos_iff_lt]
+  · rwa [← card_pos, card_erase_of_mem Hx, tsub_pos_iff_lt]
+  · rwa [← Finset.card_pos, card_erase_of_mem (min'_mem _ _), ← same_size, tsub_pos_iff_lt]
   · refine' (Finset.max'_subset _ $ erase_subset _ _).trans_lt (max_lt.trans_le $
       le_max' _ _ $ mem_erase.2 ⟨(min'_lt_max'_of_card _ _).ne', max'_mem _ _⟩)
-    rwa [←same_size]
+    rwa [← same_size]
 
 /-- If we're compressed by all useful compressions, then we're an initial segment. This is the other
 key Kruskal-Katona part. -/
@@ -206,15 +206,15 @@ lemma isInitSeg_of_compressed {ℬ : Finset (Finset α)} {r : ℕ} (h₁ : (ℬ 
   have hU : (A \ B).Nonempty := sdiff_nonempty.2 fun h ↦ hAB $ eq_of_subset_of_card_le h hAB'.ge
   have hV : (B \ A).Nonempty :=
     sdiff_nonempty.2 fun h ↦ hAB.symm $ eq_of_subset_of_card_le h hAB'.le
-  have disj : Disjoint (B \ A) (A \ B) := disjoint_sdiff.mono_left (sdiff_subset _ _)
+  have disj : Disjoint (B \ A) (A \ B) := disjoint_sdiff.mono_left sdiff_subset
   have smaller : max' _ hV < max' _ hU := by
     obtain hlt | heq | hgt := lt_trichotomy (max' _ hU) (max' _ hV)
-    · rw [←compress_sdiff_sdiff A B] at hAB hBA
+    · rw [← compress_sdiff_sdiff A B] at hAB hBA
       cases hBA.not_lt $ toColex_compress_lt_toColex hlt hAB
     · exact (disjoint_right.1 disj (max'_mem _ hU) $ heq.symm ▸ max'_mem _ _).elim
     · assumption
   refine' hB _
-  rw [←(h₂ _ _ ⟨disj, card_sdiff_comm hAB'.symm, hV, hU, smaller⟩).eq]
+  rw [← (h₂ _ _ ⟨disj, card_sdiff_comm hAB'.symm, hV, hU, smaller⟩).eq]
   exact mem_compression.2 (Or.inr ⟨hB, A, hA, compress_sdiff_sdiff _ _⟩)
 
 attribute [-instance] Fintype.decidableForallFintype
@@ -246,11 +246,11 @@ lemma familyMeasure_compression_lt_familyMeasure {U V : Finset (Fin n)} {hU : U.
     rw [filter_image, z, image_empty, union_empty]
     rwa [z, union_empty] at uA
   rw [familyMeasure, familyMeasure, sum_union compress_disjoint]
-  conv_rhs => rw [←uA]
+  conv_rhs => rw [← uA]
   rw [sum_union (disjoint_filter_filter_neg _ _ _), add_lt_add_iff_left, filter_image,
     sum_image compress_injOn]
   refine' sum_lt_sum_of_nonempty ne₂ fun A hA ↦ _
-  simp_rw [←sum_image (Fin.val_injective.injOn _)]
+  simp_rw [← sum_image Fin.val_injective.injOn]
   rw [geomSum_lt_geomSum_iff_toColex_lt_toColex le_rfl,
     toColex_image_lt_toColex_image Fin.val_strictMono]
   exact toColex_compress_lt_toColex h $ q _ hA
@@ -359,7 +359,7 @@ lemma lovasz_form (hir : i ≤ r) (hrk : r ≤ k) (hkn : k ≤ n)
     simp_rw [mem_image]
     rintro _ ⟨a, ha, q⟩
     rw [mem_powersetCard] at hA
-    rw [←q, ←mem_range]
+    rw [← q, ← mem_range]
     have := hA.1 ha
     rwa [mem_attachFin] at this
   suffices ∂^[i] 𝒞 = powersetCard (r - i) range'k by
@@ -371,15 +371,15 @@ lemma lovasz_form (hir : i ≤ r) (hrk : r ≤ k) (hkn : k ≤ n)
     rw [mem_powersetCard] at Ah
     refine' ⟨BsubA.trans Ah.1, _⟩
     symm
-    rw [Nat.sub_eq_iff_eq_add hir, ←Ah.2, ←card_sdiff_i, ←card_union_of_disjoint disjoint_sdiff,
+    rw [Nat.sub_eq_iff_eq_add hir, ← Ah.2, ← card_sdiff_i, ← card_union_of_disjoint disjoint_sdiff,
       union_sdiff_of_subset BsubA]
   rintro ⟨hBk, hB⟩
   have := exists_intermediate_set i ?_ hBk
   obtain ⟨C, BsubC, hCrange, hcard⟩ := this
-  rw [hB, ←Nat.add_sub_assoc hir, Nat.add_sub_cancel_left] at hcard
+  rw [hB, ← Nat.add_sub_assoc hir, Nat.add_sub_cancel_left] at hcard
   refine' ⟨C, _, BsubC, _⟩; rw [mem_powersetCard]; exact ⟨hCrange, hcard⟩
   · rw [card_sdiff BsubC, hcard, hB, Nat.sub_sub_self hir]
-  · rwa [hB, card_attachFin, card_range, ←Nat.add_sub_assoc hir, Nat.add_sub_cancel_left]
+  · rwa [hB, card_attachFin, card_range, ← Nat.add_sub_assoc hir, Nat.add_sub_cancel_left]
 
 end KK
 
@@ -393,7 +393,7 @@ lemma EKR {𝒜 : Finset (Finset (Fin n))} {r : ℕ} (h𝒜 : (𝒜 : Set (Finse
   · convert Nat.zero_le _
     rw [Finset.card_eq_zero, eq_empty_iff_forall_not_mem]
     refine' fun A HA ↦ h𝒜 HA HA _
-    rw [disjoint_self_iff_empty, ←Finset.card_eq_zero, ←b]
+    rw [disjoint_self_iff_empty, ← Finset.card_eq_zero, ← b]
     exact h₂ HA
   refine' le_of_not_lt fun size ↦ _
   -- Consider 𝒜ᶜˢ = {sᶜ | s ∈ 𝒜}
@@ -418,7 +418,7 @@ lemma EKR {𝒜 : Finset (Finset (Fin n))} {r : ℕ} (h𝒜 : (𝒜 : Set (Finse
   have q : n - r - (n - 2 * r) = r := by
     rw [tsub_right_comm, Nat.sub_sub_self, two_mul]
     apply Nat.add_sub_cancel
-    rw [mul_comm, ←Nat.le_div_iff_mul_le' zero_lt_two]
+    rw [mul_comm, ← Nat.le_div_iff_mul_le' zero_lt_two]
     exact h₃
   rw [q] at kk
   -- But this gives a contradiction: `n choose r < |𝒜| + |∂^[n-2k] 𝒜ᶜˢ|`

@@ -23,7 +23,7 @@ lemma degOn_univ (a : α) : G.degOn univ a = G.degree a := by rw [degOn, degree,
 lemma degOn_union (h : Disjoint s t) (a) : G.degOn (s ∪ t) a = G.degOn s a + G.degOn t a := by
   unfold degOn
   rw [← card_union_of_disjoint, ← union_inter_distrib_right]
-  exact h.mono (inter_subset_left _ _) (inter_subset_left _ _)
+  exact h.mono inter_subset_left inter_subset_left
 
 -- edges from t to s\t equals edges from s\t to t
 lemma sum_degOn_comm (s t : Finset α) : ∑ a in s, G.degOn t a = ∑ a in t, G.degOn s a := by

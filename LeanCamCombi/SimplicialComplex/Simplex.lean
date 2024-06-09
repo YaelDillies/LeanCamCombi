@@ -39,7 +39,7 @@ lemma mem_combiFrontier_iff :
 lemma combiFrontier_subset_convexHull : combiFrontier 𝕜 s ⊆ convexHull 𝕜 ↑s :=
   iUnion₂_subset fun _t ht => convexHull_mono ht.1
 
-lemma combiInterior_subset_convexHull : combiInterior 𝕜 s ⊆ convexHull 𝕜 ↑s := diff_subset _ _
+lemma combiInterior_subset_convexHull : combiInterior 𝕜 s ⊆ convexHull 𝕜 ↑s := diff_subset
 
 @[simp] lemma combiFrontier_empty : combiFrontier 𝕜 (∅ : Finset E) = ∅ := by
   apply Set.eq_empty_of_subset_empty
@@ -79,7 +79,7 @@ lemma simplex_combiInteriors_cover : convexHull 𝕜 ↑s = ⋃ (t) (_ : t ⊆ s
       obtain ⟨Z, Zt, hZ⟩ := ih
       exact ⟨_, Zt.trans st.1, hZ⟩
     · exact subset_iUnion₂ s Subset.rfl ⟨hx, h⟩
-  · exact iUnion₂_subset fun t ht => (diff_subset _ _).trans $ convexHull_mono ht
+  · exact iUnion₂_subset fun t ht ↦ diff_subset.trans $ convexHull_mono ht
 
 end OrderedRing
 

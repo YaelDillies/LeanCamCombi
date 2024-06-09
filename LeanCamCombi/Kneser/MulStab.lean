@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mantas Bakšys, Yaël Dillies
 -/
 import Mathlib.Algebra.Pointwise.Stabilizer
+import Mathlib.GroupTheory.GroupAction.Quotient
 import LeanCamCombi.Kneser.Mathlib
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 
@@ -146,7 +147,7 @@ lemma inter_mulStab_subset_mulStab_union : s.mulStab ∩ t.mulStab ⊆ (s ∪ t)
   obtain rfl | ht := t.eq_empty_or_nonempty
   · simp
   intro x hx
-  rw [mem_mulStab (Finset.Nonempty.mono (subset_union_left s t) hs), smul_finset_union,
+  rw [mem_mulStab (hs.mono subset_union_left), smul_finset_union,
     (mem_mulStab hs).mp (mem_of_mem_inter_left hx),
     (mem_mulStab ht).mp (mem_of_mem_inter_right hx)]
 
@@ -269,7 +270,15 @@ lemma card_mulStab_dvd_card_mulStab (hs : s.Nonempty) (h : s.mulStab ⊆ t.mulSt
   rw [← coe_subset, coe_mulStab hs, coe_mulStab ht, SetLike.coe_subset_coe] at h
   letI : Fintype (stabilizer α s) := fintypeStabilizerOfMulStab hs
   letI : Fintype (stabilizer α t) := fintypeStabilizerOfMulStab ht
-  convert Subgroup.card_dvd_of_le h using 1 <;> exact ((card_map _).trans card_attach).symm
+  convert Subgroup.card_dvd_of_le h using 1
+  simp [-mem_stabilizer_iff]
+  change _ = (s.mulStab.attach.map
+    ⟨Subtype.map id fun _ ↦ (mem_mulStab hs).1, Subtype.map_injective _ injective_id⟩).card
+  simp
+  simp [-mem_stabilizer_iff]
+  change _ = (t.mulStab.attach.map
+    ⟨Subtype.map id fun _ ↦ (mem_mulStab ht).1, Subtype.map_injective _ injective_id⟩).card
+  simp
 
 /-- A version of Lagrange's theorem. -/
 @[to_additive "A version of Lagrange's theorem."]

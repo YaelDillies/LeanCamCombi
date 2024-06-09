@@ -14,7 +14,7 @@ variable [SemilatticeSup α] [SemilatticeSup β] {s : Finset ι} {t : Finset κ}
 lemma prod_mk_sup'_sup' (hs : s.Nonempty) (ht : t.Nonempty) (f : ι → α) (g : κ → β) :
     (sup' s hs f, sup' t ht g) = sup' (s ×ˢ t) (hs.product ht) (Prod.map f g) :=
   eq_of_forall_ge_iff fun a ↦ by
-    simp only [Prod_map, sup'_le_iff, mem_product, and_imp, Prod.forall, Prod.le_def]
+    simp only [Prod.map_apply, sup'_le_iff, mem_product, and_imp, Prod.forall, Prod.le_def]
     obtain ⟨a, ha⟩ := hs
     obtain ⟨b, hb⟩ := ht
     exact ⟨by aesop, fun h ↦ ⟨fun i hi ↦ (h _ _ hi hb).1, fun j hj ↦ (h _ _ ha hj).2⟩⟩
@@ -33,7 +33,7 @@ variable [SemilatticeInf α] [SemilatticeInf β] {s : Finset ι} {t : Finset κ}
 lemma prod_mk_inf'_inf' (hs : s.Nonempty) (ht : t.Nonempty) (f : ι → α) (g : κ → β) :
     (inf' s hs f, inf' t ht g) = inf' (s ×ˢ t) (hs.product ht) (Prod.map f g) :=
   eq_of_forall_le_iff fun a ↦ by
-    simp only [Prod_map, le_inf'_iff, mem_product, and_imp, Prod.forall, Prod.le_def]
+    simp only [Prod.map_apply, le_inf'_iff, mem_product, and_imp, Prod.forall, Prod.le_def]
     obtain ⟨a, ha⟩ := hs
     obtain ⟨b, hb⟩ := ht
     exact ⟨by aesop, fun h ↦ ⟨fun i hi ↦ (h _ _ hi hb).1, fun j hj ↦ (h _ _ ha hj).2⟩⟩

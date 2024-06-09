@@ -238,11 +238,11 @@ lemma le_card_mul_add_card_mulStab_mul (hs : s.Nonempty) (ht : t.Nonempty) :
   rw [← mul_smul]
   refine'
     smul_finset_subset_iff.2
-      (inter_eq_left.1 $ eq_of_subset_of_card_le (inter_subset_left _ _) _)
+      (inter_eq_left.1 $ eq_of_subset_of_card_le inter_subset_left _)
   rw [← ht']
   refine'
     Nat.find_min' _
-      ⟨_, _, mem_inter.2 ⟨hbt' _, _⟩, (hs' _).trans $ subset_union_left _ _,
+      ⟨_, _, mem_inter.2 ⟨hbt' _, _⟩, (hs' _).trans subset_union_left,
         (mulDysonETransform.subset _ (s' b, t' b)).trans $ hst' _,
         (mulDysonETransform.card _ _).trans $ hstcard _, rfl⟩
   rwa [mem_inv_smul_finset_iff, smul_eq_mul, inv_mul_cancel_right]

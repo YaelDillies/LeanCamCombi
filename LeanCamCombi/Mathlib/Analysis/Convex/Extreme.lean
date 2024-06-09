@@ -68,7 +68,7 @@ variable [NormedLinearOrderedField 𝕜] [SeminormedAddCommGroup E] [NormedSpace
 -- beurk
 lemma inter_frontier_self_inter_convexHull_extreme :
     IsExtreme 𝕜 (closure s) (closure s ∩ frontier (convexHull 𝕜 s)) := by
-  refine' ⟨inter_subset_left _ _, fun x₁ hx₁A x₂ hx₂A x hxs hx => ⟨⟨hx₁A, _⟩, hx₂A, _⟩⟩
+  refine' ⟨inter_subset_left, fun x₁ hx₁A x₂ hx₂A x hxs hx => ⟨⟨hx₁A, _⟩, hx₂A, _⟩⟩
   sorry
   sorry
 

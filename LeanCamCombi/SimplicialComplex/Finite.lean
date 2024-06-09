@@ -73,7 +73,7 @@ lemma locallyFinite_iff_mem_finitely_many_faces [DecidableEq E] :
       have hXYhull := K.inter_subset_convexHull hX hY.1 ⟨hXhull, hY.2⟩
       rw [← Finset.coe_inter] at hXYhull
       by_contra hXY
-      exact hXbound (mem_combiFrontier_iff.2 ⟨s ∩ t, ⟨Finset.inter_subset_left s t,
+      exact hXbound (mem_combiFrontier_iff.2 ⟨s ∩ t, ⟨Finset.inter_subset_left,
         fun hXXY => hXY (Finset.subset_inter_iff.1 hXXY).2⟩, hXYhull⟩)
     · refine (hx ?_).elim
       convert finite_empty

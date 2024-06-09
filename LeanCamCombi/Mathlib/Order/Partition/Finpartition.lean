@@ -12,7 +12,7 @@ def finsetImage {a : Finset α} (P : Finpartition a) (f : α → β) (hf : Injec
   parts := P.parts.image (image f)
   supIndep := by
     rw [supIndep_iff_pairwiseDisjoint, coe_image,
-      ((image_injective hf).injOn _).pairwiseDisjoint_image]
+      (image_injective hf).injOn.pairwiseDisjoint_image]
     simp only [Set.PairwiseDisjoint, Set.Pairwise, mem_coe, Function.onFun, Ne,
       Function.id_comp, disjoint_image hf]
     exact P.disjoint

@@ -35,10 +35,10 @@ lemma disjoint_interiors (hs : s ∈ K) (ht : t ∈ K) (hxs : x ∈ combiInterio
   classical
   by_contra h
   have hst : s ∩ t ⊂ s := by
-    use inter_subset_left s t
+    use inter_subset_left
     intro H
-    exact hxt.2 $ Set.mem_biUnion ⟨H.trans $ inter_subset_right _ _, fun H2 => h $ (H.trans $
-      inter_subset_right _ _).antisymm H2⟩ hxs.1
+    exact hxt.2 $ Set.mem_biUnion ⟨H.trans inter_subset_right,
+      fun H2 => h $ (H.trans inter_subset_right).antisymm H2⟩ hxs.1
   refine' hxs.2 (Set.mem_biUnion hst _)
   push_cast
   exact K.inter_subset_convexHull hs ht ⟨hxs.1, hxt.1⟩
