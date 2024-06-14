@@ -38,7 +38,6 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Maps
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Multipartite
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Data.Finset.Card
-import LeanCamCombi.Mathlib.Data.Finset.Lattice
 import LeanCamCombi.Mathlib.Data.Finset.Pointwise
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.List.Basic

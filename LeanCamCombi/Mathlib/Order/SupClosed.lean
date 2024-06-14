@@ -1,7 +1,6 @@
 import Mathlib.Data.Set.Finite
 import Mathlib.Order.Hom.Lattice
 import Mathlib.Order.SupClosed
-import LeanCamCombi.Mathlib.Data.Finset.Lattice
 
 open OrderDual
 
@@ -21,7 +20,7 @@ open Finset
       rintro ⟨_, _⟩ ⟨⟨u, hu, hus, rfl⟩, v, hv, hvt, rfl⟩
       refine ⟨u ×ˢ v, hu.product hv, ?_, ?_⟩
       · simpa only [coe_product] using Set.prod_mono hus hvt
-      · simp [prod_mk_sup'_sup']
+      · simp [prodMk_sup'_sup']
 
 end SemilatticeSup
 
@@ -37,7 +36,7 @@ open Finset
       rintro ⟨_, _⟩ ⟨⟨u, hu, hus, rfl⟩, v, hv, hvt, rfl⟩
       refine ⟨u ×ˢ v, hu.product hv, ?_, ?_⟩
       · simpa only [coe_product] using Set.prod_mono hus hvt
-      · simp [prod_mk_inf'_inf']
+      · simp [prodMk_inf'_inf']
 
 end SemilatticeInf
 
