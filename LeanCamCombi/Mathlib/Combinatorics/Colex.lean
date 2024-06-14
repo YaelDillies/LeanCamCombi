@@ -12,7 +12,7 @@ lemma cons_le_cons (ha hb) : toColex (s.cons a ha) ≤ toColex (s.cons b hb) ↔
   obtain rfl | hab := eq_or_ne a b
   · simp
   classical
-  rw [←toColex_sdiff_le_toColex_sdiff', cons_sdiff_cons hab, cons_sdiff_cons hab.symm,
+  rw [← toColex_sdiff_le_toColex_sdiff', cons_sdiff_cons hab, cons_sdiff_cons hab.symm,
    singleton_le_singleton]
 
 lemma cons_lt_cons (ha hb) : toColex (s.cons a ha) < toColex (s.cons b hb) ↔ a < b :=
@@ -22,18 +22,18 @@ variable [DecidableEq α]
 
 lemma insert_le_insert (ha : a ∉ s) (hb : b ∉ s) :
     toColex (insert a s) ≤ toColex (insert b s) ↔ a ≤ b := by
-  rw [←cons_eq_insert _ _ ha, ←cons_eq_insert _ _ hb, cons_le_cons]
+  rw [← cons_eq_insert _ _ ha, ← cons_eq_insert _ _ hb, cons_le_cons]
 
 lemma insert_lt_insert (ha : a ∉ s) (hb : b ∉ s) :
     toColex (insert a s) < toColex (insert b s) ↔ a < b := by
-  rw [←cons_eq_insert _ _ ha, ←cons_eq_insert _ _ hb, cons_lt_cons]
+  rw [← cons_eq_insert _ _ ha, ← cons_eq_insert _ _ hb, cons_lt_cons]
 
 lemma erase_le_erase (ha : a ∈ s) (hb : b ∈ s) :
     toColex (s.erase a) ≤ toColex (s.erase b) ↔ b ≤ a := by
   obtain rfl | hab := eq_or_ne a b
   · simp
   classical
-  rw [←toColex_sdiff_le_toColex_sdiff', erase_sdiff_erase hab hb, erase_sdiff_erase hab.symm ha,
+  rw [← toColex_sdiff_le_toColex_sdiff', erase_sdiff_erase hab hb, erase_sdiff_erase hab.symm ha,
    singleton_le_singleton]
 
 lemma erase_lt_erase (ha : a ∈ s) (hb : b ∈ s) :

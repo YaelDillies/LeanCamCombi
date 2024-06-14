@@ -103,7 +103,7 @@ lemma IsExtreme.subset_frontier (hAB : IsExtreme 𝕜 s t) (hBA : ¬s ⊆ t) : t
         _, _, _, _⟩).1,
       { exact (div_pos nat.one_div_pos_of_nat (add_pos nat.one_div_pos_of_nat (by linarith))).le },
       { exact le_of_lt (one_div_pos.2 (add_pos nat.one_div_pos_of_nat (by linarith))).le },
-      { rw [←add_div, div_self],
+      { rw [← add_div, div_self],
         exact (add_pos nat.one_div_pos_of_nat (by linarith)).ne' },
       {   sorry,
       },
@@ -112,7 +112,7 @@ lemma IsExtreme.subset_frontier (hAB : IsExtreme 𝕜 s t) (hBA : ¬s ⊆ t) : t
       { rintro h,
         apply hyB,
         suffices h : x = y,
-        { rw ←h, exact hxB },
+        { rw ← h, exact hxB },
         suffices h : (1/n.succ : ℝ) • x = (1/n.succ : ℝ) • y,
         { exact smul_injective (ne_of_gt nat.one_div_pos_of_nat) h },
         calc
@@ -123,14 +123,14 @@ lemma IsExtreme.subset_frontier (hAB : IsExtreme 𝕜 s t) (hBA : ¬s ⊆ t) : t
           ... = -(1 • x) + z n + (1/n.succ : ℝ) • y : by refl
           ... = -(1 • x) + x + (1/n.succ : ℝ) • y : by rw h
           ... = (1/n.succ : ℝ) • y : by simp } },
-    rw ←sub_zero x,
+    rw ← sub_zero x,
     apply filter.tendsto.sub,
-    { nth_rewrite 0 ←one_smul _ x,
+    { nth_rewrite 0 ← one_smul _ x,
       apply filter.tendsto.smul_const,
-      nth_rewrite 0 ←add_zero (1 : ℝ), --weirdly skips the first two `1`. Might break in the future
+      nth_rewrite 0 ← add_zero (1 : ℝ), --weirdly skips the first two `1`. Might break in the future
       apply filter.tendsto.const_add,
       sorry },
-    rw ←zero_smul _ y,
+    rw ← zero_smul _ y,
     apply filter.tendsto.smul_const,-/
   sorry
 
@@ -194,7 +194,7 @@ begin
     simp },
   have hw''₂ : s.sum (λ i, w'' i • i) = 0,
   { simp only [sub_smul, add_smul, finset.sum_add_distrib, finset.sum_sub_distrib],
-    simp only [mul_smul, ←finset.smul_sum, hy, hy'],
+    simp only [mul_smul, ← finset.smul_sum, hy, hy'],
     simp only [ite_smul, zero_smul, one_smul, finset.sum_ite_eq', if_pos hx, hθ₂, sub_self] }, by_contra t,
   push_neg at t,
   suffices hw''₃ : ∀ q ∈ s, w'' q = 0,
@@ -225,7 +225,7 @@ begin
       { rw finset.sum_eq_single x at hy,
         { rw hw₁ at hy,
           apply t.1,
-          rw ←hy,
+          rw ← hy,
           simp },
         { rintro q hq₁ hq₂,
           rw both_zero q hq₁ hq₂,

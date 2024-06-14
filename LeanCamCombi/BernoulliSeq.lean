@@ -43,12 +43,12 @@ namespace IsBernoulliSeq
 
 protected lemma ne_zero [Nonempty α] : μ ≠ 0 :=
   Nonempty.elim ‹_› fun a h ↦ (PMF.bernoulli' p hX.le_one).toMeasure_ne_zero $ by
-    rw [←hX.map a, h, Measure.map_zero]
+    rw [← hX.map a, h, Measure.map_zero]
 
 protected lemma aemeasurable (a : α) : AEMeasurable (fun ω ↦ a ∈ X ω) μ := by
   classical
   have : (PMF.bernoulli' p hX.le_one).toMeasure ≠ 0 := NeZero.ne _
-  rw [←hX.map a, Measure.map] at this
+  rw [← hX.map a, Measure.map] at this
   refine' (Ne.dite_ne_right_iff fun hX' ↦ _).1 this
   rw [Measure.mapₗ_ne_zero_iff hX'.measurable_mk]
   haveI : Nonempty α := ⟨a⟩
@@ -65,7 +65,7 @@ protected lemma identDistrib (a j : α) : IdentDistrib (fun ω ↦ a ∈ X ω) (
 
 @[simp] lemma meas_apply (a : α) : μ {ω | a ∈ X ω} = p := by
   rw [(_ : {ω | a ∈ X ω} = (fun ω ↦ a ∈ X ω) ⁻¹' {True}),
-    ←Measure.map_apply_of_aemeasurable (hX.aemeasurable a) MeasurableSpace.measurableSet_top]
+    ← Measure.map_apply_of_aemeasurable (hX.aemeasurable a) MeasurableSpace.measurableSet_top]
   · simp [hX.map]
   · ext ω
     simp
@@ -76,11 +76,11 @@ protected lemma meas [Fintype α] (s : Finset α) :
     μ {ω | {a | a ∈ X ω} = s} = (p : ℝ≥0∞) ^ s.card * (1 - p : ℝ≥0∞) ^ (card α - s.card) := by
   classical
   simp_rw [ext_iff, setOf_forall]
-  rw [hX.iIndepFun.meas_iInter, ←s.prod_mul_prod_compl, Finset.prod_eq_pow_card,
+  rw [hX.iIndepFun.meas_iInter, ← s.prod_mul_prod_compl, Finset.prod_eq_pow_card,
     Finset.prod_eq_pow_card, Finset.card_compl]
   · rintro a hi
     rw [Finset.mem_compl] at hi
-    simp only [hi, ←compl_setOf, prob_compl_eq_one_sub₀, mem_setOf_eq, Finset.mem_coe,
+    simp only [hi, ← compl_setOf, prob_compl_eq_one_sub₀, mem_setOf_eq, Finset.mem_coe,
       iff_false_iff, hX.nullMeasurableSet, hX.meas_apply]
   · rintro a hi
     simp only [hi, mem_setOf_eq, Finset.mem_coe, iff_true_iff, hX.meas_apply]
@@ -117,7 +117,7 @@ protected lemma inter (h : IndepFun X Y μ) : IsBernoulliSeq (fun ω ↦ X ω �
     change μ (⋂ i ∈ s, {ω | X ω i} ∩ {ω | Y ω i}) = s.prod fun i ↦ μ ({ω | X ω i} ∩ {ω | Y ω i})
     simp_rw [iInter_inter_distrib]
     rw [h.meas_inter, hX.iIndepFun.meas_biInter, hY.iIndepFun.meas_biInter,
-      ←Finset.prod_mul_distrib]
+      ← Finset.prod_mul_distrib]
     refine' Finset.prod_congr rfl fun i hi ↦ (h.meas_inter _ _).symm
     sorry -- needs refactor of `Probability.Independence.Basic`
     sorry -- needs refactor of `Probability.Independence.Basic`

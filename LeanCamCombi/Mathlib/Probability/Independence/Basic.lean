@@ -9,7 +9,7 @@ variable {Ω ι : Type*} {β : ι → Type*} [MeasurableSpace Ω]
   {π : ι → Set (Set Ω)} {μ : Measure Ω} {S : Finset ι} {s : ι → Set Ω} {f : ∀ i, Ω → β i}
 
 lemma iIndep_comap_iff : iIndep (fun i ↦ MeasurableSpace.comap (· ∈ s i) ⊤) μ ↔ iIndepSet s μ := by
-  simp_rw [←generateFrom_singleton]; rfl
+  simp_rw [← generateFrom_singleton]; rfl
 
 alias ⟨_, iIndepSet.Indep_comap⟩ := iIndep_comap_iff
 

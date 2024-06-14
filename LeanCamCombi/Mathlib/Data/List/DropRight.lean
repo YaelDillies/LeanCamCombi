@@ -17,7 +17,7 @@ lemma length_rtake (n : ℕ) (l : List α) : (l.rtake n).length = min n l.length
   rw [rtake_eq_reverse_take_reverse, reverse_reverse]
 
 @[simp] lemma rtake_rtake (n m) (l : List α) : (l.rtake m).rtake n = l.rtake (min n m) := by
-  rw [rtake_eq_reverse_take_reverse, ←take_reverse, take_take, rtake_eq_reverse_take_reverse]
+  rw [rtake_eq_reverse_take_reverse, ← take_reverse, take_take, rtake_eq_reverse_take_reverse]
 
 @[simp] lemma rdrop_append_rtake (n : ℕ) (l : List α) : l.rdrop n ++ l.rtake n = l :=
   take_append_drop _ _

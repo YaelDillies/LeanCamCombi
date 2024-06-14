@@ -24,7 +24,7 @@ lemma map_ofFintype (f : α → ℝ≥0∞) (h : ∑ a, f a = 1) (g : α → β)
             refine' fun b₁ _ b₂ _ hb ↦ disjoint_left.2 fun a ha₁ ha₂ ↦ _
             simp only [mem_filter, mem_univ, true_and_iff] at ha₁ ha₂
             exact hb (ha₁.symm.trans ha₂)
-          rw [←sum_disjiUnion _ _ this]
+          rw [← sum_disjiUnion _ _ this]
           convert h
           exact eq_univ_of_forall fun a ↦
             mem_disjiUnion.2 ⟨_, mem_univ _, mem_filter.2 ⟨mem_univ _, rfl⟩⟩) := by
@@ -46,8 +46,8 @@ section bernoulli
 
 /-- A `PMF` which assigns probability `p` to true propositions and `1 - p` to false ones. -/
 noncomputable def bernoulli' (p : ℝ≥0) (h : p ≤ 1) : PMF Prop :=
-  (ofFintype fun b ↦ if b then p else 1 - p) $ by simp_rw [←ENNReal.coe_one, ←ENNReal.coe_sub,
-    ←apply_ite ((↑) : ℝ≥0 → ℝ≥0∞), ←ENNReal.coe_finset_sum, ENNReal.coe_inj]; simp [h]
+  (ofFintype fun b ↦ if b then p else 1 - p) $ by simp_rw [← ENNReal.coe_one, ← ENNReal.coe_sub,
+    ← apply_ite ((↑) : ℝ≥0 → ℝ≥0∞), ← ENNReal.coe_finset_sum, ENNReal.coe_inj]; simp [h]
 
 variable {p : ℝ≥0} (hp : p ≤ 1) (b : Prop)
 

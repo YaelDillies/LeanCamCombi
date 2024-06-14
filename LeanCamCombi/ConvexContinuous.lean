@@ -74,7 +74,7 @@ lemma IsOpen.exists_mem_intrinsicInterior_convexHull_finset
   --   rw image_subset_iff,
   --   refine ball_subset_closedBall.trans _,
   --   simp_rw [closedBall_pi _ zero_le_one, Real.closedBall_eq_segment zero_le_one,
-  --     ←convexHull_pair, ←convexHull_pi, pi.zero_apply, zero_sub, zero_add, ht, Finset.coe_image,
+  --     ← convexHull_pair, ← convexHull_pi, pi.zero_apply, zero_sub, zero_add, ht, Finset.coe_image,
   --     Finset.coe_univ, image_univ],
   --   refine convexHull_min (fun w hw, subset_convexHull _ _ _) _,
   --   refine ⟨Finset.univ.filter (fun i ↦ w i = 1), _⟩,

@@ -47,6 +47,6 @@ open Finset
 
 @[simp] lemma latticeClosure_prod (s : Set α) (t : Set β) :
     latticeClosure (s ×ˢ t) = latticeClosure s ×ˢ latticeClosure t := by
-  simp_rw [←supClosure_infClosure]; simp
+  simp_rw [← supClosure_infClosure]; simp
 
 end DistribLattice

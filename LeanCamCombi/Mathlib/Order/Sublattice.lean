@@ -63,10 +63,10 @@ lemma le_prod_iff {M : Sublattice β} {N : Sublattice (α × β)} :
   simp [SetLike.le_def, forall_and]
 
 @[simp] lemma prod_eq_bot {M : Sublattice β} : L.prod M = ⊥ ↔ L = ⊥ ∨ M = ⊥ := by
-  simpa only [←coe_inj] using Set.prod_eq_empty_iff
+  simpa only [← coe_inj] using Set.prod_eq_empty_iff
 
 @[simp] lemma prod_eq_top [Nonempty α] [Nonempty β] {M : Sublattice β} :
-    L.prod M = ⊤ ↔ L = ⊤ ∧ M = ⊤ := by simpa only [←coe_inj] using Set.prod_eq_univ
+    L.prod M = ⊤ ↔ L = ⊤ ∧ M = ⊤ := by simpa only [← coe_inj] using Set.prod_eq_univ
 
 /-- The product of sublattices is isomorphic to their product as lattices. -/
 def prodEquiv (L : Sublattice α) (M : Sublattice β) : L.prod M ≃o L × M where
@@ -102,7 +102,7 @@ lemma le_pi {s : Set κ} {L : ∀ i, Sublattice (π i)} {M : Sublattice (∀ i, 
     M ≤ pi s L ↔ ∀ i ∈ s, M ≤ comap (Pi.evalLatticeHom π i) (L i) := by simp [SetLike.le_def]; aesop
 
 @[simp] lemma pi_univ_eq_bot {L : ∀ i, Sublattice (π i)} : pi univ L = ⊥ ↔ ∃ i, L i = ⊥ := by
-  simp_rw [←coe_inj]; simp
+  simp_rw [← coe_inj]; simp
 
 end Pi
 end Sublattice
@@ -176,7 +176,7 @@ lemma range_eq_top_of_surjective {β} [Lattice β] (f : LatticeHom α β) (hf : 
   range_eq_top.2 hf
 
 lemma _root_.Sublattice.range_subtype (L : Sublattice α) : L.subtype.range = L := by
-  rw [←map_top, ←SetLike.coe_set_eq, coe_map, Sublattice.coe_subtype]; ext; simp
+  rw [← map_top, ← SetLike.coe_set_eq, coe_map, Sublattice.coe_subtype]; ext; simp
 
 /-- Computable alternative to `LatticeHom.ofInjective`. -/
 def ofLeftInverse {f : LatticeHom α β} {g : β →* α} (h : LeftInverse g f) : α ≃o f.range :=

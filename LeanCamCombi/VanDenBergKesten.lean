@@ -56,7 +56,7 @@ lemma certificator_subset_disjSups : s □ t ⊆ s ○ t := by
   rintro x ⟨u, v, huv, hu, hv⟩
   refine' ⟨x ⊓ u, hu (inf_right_idem _ _).symm, x ⊓ v, hv (inf_right_idem _ _).symm,
     huv.disjoint.mono inf_le_right inf_le_right, _⟩
-  rw [←inf_sup_left, huv.codisjoint.eq_top, inf_top_eq]
+  rw [← inf_sup_left, huv.codisjoint.eq_top, inf_top_eq]
 
 variable (s t u)
 
@@ -68,7 +68,7 @@ lemma IsUpperSet.certificator_eq_inter (hs : IsUpperSet (s : Set α)) (ht : IsLo
   refine'
     certificator_subset_inter.antisymm fun a ha ↦ mem_certificator.2 ⟨a, aᶜ, isCompl_compl, _⟩
   rw [mem_inter] at ha
-  simp only [@eq_comm _ ⊥, ←sdiff_eq, inf_idem, right_eq_inf, _root_.sdiff_self, sdiff_eq_bot_iff]
+  simp only [@eq_comm _ ⊥, ← sdiff_eq, inf_idem, right_eq_inf, _root_.sdiff_self, sdiff_eq_bot_iff]
   exact ⟨fun b hab ↦ hs hab ha.1, fun b hab ↦ ht hab ha.2⟩
 
 lemma IsLowerSet.certificator_eq_inter (hs : IsLowerSet (s : Set α)) (ht : IsUpperSet (t : Set α)) :
@@ -76,7 +76,7 @@ lemma IsLowerSet.certificator_eq_inter (hs : IsLowerSet (s : Set α)) (ht : IsUp
   refine' certificator_subset_inter.antisymm fun a ha ↦
     mem_certificator.2 ⟨aᶜ, a, isCompl_compl.symm, _⟩
   rw [mem_inter] at ha
-  simp only [@eq_comm _ ⊥, ←sdiff_eq, inf_idem, right_eq_inf, _root_.sdiff_self, sdiff_eq_bot_iff]
+  simp only [@eq_comm _ ⊥, ← sdiff_eq, inf_idem, right_eq_inf, _root_.sdiff_self, sdiff_eq_bot_iff]
   exact ⟨fun b hab ↦ hs hab ha.1, fun b hab ↦ ht hab ha.2⟩
 
 lemma IsUpperSet.certificator_eq_disjSups (hs : IsUpperSet (s : Set α))
@@ -84,7 +84,7 @@ lemma IsUpperSet.certificator_eq_disjSups (hs : IsUpperSet (s : Set α))
   refine' certificator_subset_disjSups.antisymm fun a ha ↦ mem_certificator.2 _
   obtain ⟨x, hx, y, hy, hxy, rfl⟩ := mem_disjSups.1 ha
   refine' ⟨x, xᶜ, isCompl_compl, _⟩
-  simp only [inf_of_le_right, le_sup_left, right_eq_inf, ←sdiff_eq, hxy.sup_sdiff_cancel_left]
+  simp only [inf_of_le_right, le_sup_left, right_eq_inf, ← sdiff_eq, hxy.sup_sdiff_cancel_left]
   exact ⟨fun b hab ↦ hs hab hx, fun b hab ↦ ht (hab.trans_le sdiff_le) hy⟩
 
 end BooleanAlgebra

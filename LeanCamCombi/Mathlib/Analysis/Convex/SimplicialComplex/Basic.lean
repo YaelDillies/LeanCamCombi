@@ -87,7 +87,7 @@ lemma mem_of_mem_convexHull (hx : x ∈ K.vertices) (hs : s ∈ K)
     (hxs : x ∈ convexHull 𝕜 (s : Set E)) : x ∈ s := by
   have h := K.inter_subset_convexHull hx hs ⟨by simp, hxs⟩
   by_contra H
-  rwa [←coe_inter, inter_comm, disjoint_iff_inter_eq_empty.1 (disjoint_singleton_right.2 H),
+  rwa [← coe_inter, inter_comm, disjoint_iff_inter_eq_empty.1 (disjoint_singleton_right.2 H),
     coe_empty, convexHull_empty] at h
 
 lemma subset_of_convexHull_subset_convexHull (hs : s ∈ K) (ht : t ∈ K)

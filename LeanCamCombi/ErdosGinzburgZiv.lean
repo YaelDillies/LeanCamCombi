@@ -49,7 +49,7 @@ private lemma totalDegree_f₁_add_totalDegree_f₂ :
     (f₁ s).totalDegree + (f₂ s).totalDegree < 2 * p - 1 := by
   refine (add_le_add (totalDegree_finset_sum _ _) $ (totalDegree_finset_sum _ _).trans $
     Finset.sup_mono_fun fun a _ ↦ totalDegree_smul_le _ _).trans_lt ?_
-  simp only [totalDegree_X_pow, ←two_mul]
+  simp only [totalDegree_X_pow, ← two_mul]
   refine (mul_le_mul_left' Finset.sup_const_le _).trans_lt ?_
   rw [mul_tsub, mul_one]
   exact tsub_lt_tsub_left_of_le ((Fact.out : p.Prime).two_le.trans $
@@ -78,20 +78,20 @@ private lemma aux (hs : Multiset.card s = 2 * p - 1) :
   -- Note that we need `Multiset.toEnumFinset` to distinguish duplicated elements of `s`.
   refine ⟨(s.toEnumFinset.attach.filter $ fun a ↦ x.1 a ≠ 0).1.map
     (Prod.fst ∘ ((↑) : s.toEnumFinset → ZMod p × ℕ)), le_iff_count.2 $ fun a ↦ ?_, ?_, ?_⟩
-  · simp only [←Finset.filter_val, Finset.card_val, Function.comp_apply, count_map]
+  · simp only [← Finset.filter_val, Finset.card_val, Function.comp_apply, count_map]
     refine (Finset.card_le_card $ Finset.filter_subset_filter _ $
       Finset.filter_subset _ _).trans_eq ?_
     refine (Finset.card_filter_attach (fun c : ZMod p × ℕ ↦ a = c.1) _).trans ?_
     simp [toEnumFinset_filter_eq]
   -- From `f₁ x = 0`, we get that `p` divides the number of `a` such that `x a ≠ 0`.
-  · simp only [card_map, ←Finset.filter_val, Finset.card_val, Function.comp_apply,
-      count_map, ←Finset.map_val]
+  · simp only [card_map, ← Finset.filter_val, Finset.card_val, Function.comp_apply,
+      count_map, ← Finset.map_val]
     refine Nat.eq_of_dvd_of_lt_two_mul (Finset.card_pos.2 ?_).ne' ?_ $
       (Finset.card_filter_le _ _).trans_lt ?_
     -- This number is nonzero because `x ≠ 0`.
     · rw [← Subtype.coe_ne_coe, Function.ne_iff] at hx
       exact hx.imp (fun a ha ↦ mem_filter.2 ⟨Finset.mem_attach _ _, ha⟩)
-    · rw [← CharP.cast_eq_zero_iff (ZMod p), ←Finset.sum_boole]
+    · rw [← CharP.cast_eq_zero_iff (ZMod p), ← Finset.sum_boole]
       simpa only [f₁, map_sum, ZMod.pow_card_sub_one, map_pow, eval_X] using x.2.1
     -- And it is at most `2 * p - 1`, so it must be `p`.
     · rw [Finset.card_attach, card_toEnumFinset, hs]
@@ -128,8 +128,8 @@ lemma exists_submultiset_eq_zero {s : Multiset (ZMod n)} (hs : 2 * n - 1 ≤ Mul
       rw [card_map]
       refine (le_tsub_of_add_le_left $ le_trans ?_ hs).trans le_card_sub
       have : m.map Multiset.card = replicate (2 * a - 1) n := sorry
-      rw [map_multiset_sum, this, sum_replicate, ←le_tsub_iff_right, tsub_tsub_tsub_cancel_right,
-        ←mul_tsub, ←mul_tsub_one]
+      rw [map_multiset_sum, this, sum_replicate, ← le_tsub_iff_right, tsub_tsub_tsub_cancel_right,
+        ← mul_tsub, ← mul_tsub_one]
       sorry
       sorry
       sorry
