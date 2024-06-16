@@ -30,8 +30,10 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Finite
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Maps
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
+import LeanCamCombi.Mathlib.Data.Finset.Image
 import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
+import LeanCamCombi.Mathlib.Data.Set.Function
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
@@ -46,6 +48,8 @@ import LeanCamCombi.Multipartite
 import LeanCamCombi.PhD.VCDim.AddVCDim
 import LeanCamCombi.PhD.VCDim.HausslerPacking
 import LeanCamCombi.PhD.VCDim.HypercubeEdges
+import LeanCamCombi.PlainCombi.Chap1.Sec1.SCD
+import LeanCamCombi.PlainCombi.Chap1.Sec1.SDSS
 import LeanCamCombi.PlainCombi.LittlewoodOfford
 import LeanCamCombi.PlainCombi.OrderShatter
 import LeanCamCombi.PlainCombi.VanDenBergKesten
