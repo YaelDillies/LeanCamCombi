@@ -14,7 +14,11 @@ import LeanCamCombi.Mathlib.Combinatorics.SetFamily.LYM
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Copy
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
+import LeanCamCombi.Mathlib.Data.Finset.Image
+import LeanCamCombi.Mathlib.Data.Set.Function
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
+import LeanCamCombi.PlainCombi.Chap1.Sec1.SCD
+import LeanCamCombi.PlainCombi.Chap1.Sec1.SDSS
 import LeanCamCombi.PlainCombi.KatonaCircle
 import LeanCamCombi.PlainCombi.LittlewoodOfford
 import LeanCamCombi.PlainCombi.OrderShatter
