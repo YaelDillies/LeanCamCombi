@@ -1,6 +1,6 @@
 import Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.List.Basic
-import LeanCamCombi.Mathlib.Algebra.Order.Sub.Canonical
+import LeanCamCombi.Mathlib.Data.Nat.Defs
 
 namespace List
 variable {α : Type*} {l l' l₀ l₁ l₂ : List α} {a b : α} {m n : ℕ}
@@ -35,7 +35,7 @@ alias ⟨IsSuffix.eq_rtake, _⟩ := suffix_iff_eq_rtake
 @[simp] lemma rdrop_min : l.rdrop (min n l.length) = l.rdrop n := sorry
 
 lemma take_prefix_take (h : m ≤ n) : l.take m <+: l.take n := by
-  rw [prefix_iff_eq_take, length_take, take_take, min_right_comm, min_eq_left h, take_min]
+  rw [prefix_iff_eq_take, length_take, take_take, Nat.min_right_comm, min_eq_left h, take_min]
 
 lemma drop_suffix_drop (h : m ≤ n) : l.drop n <:+ l.drop m := sorry
 

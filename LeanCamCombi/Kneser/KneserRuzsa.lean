@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mantas Bakšys, Yaël Dillies
 -/
 import Mathlib.Combinatorics.Additive.ETransform
-import LeanCamCombi.Mathlib.Data.Finset.Card
 import LeanCamCombi.Kneser.MulStab
 
 /-!

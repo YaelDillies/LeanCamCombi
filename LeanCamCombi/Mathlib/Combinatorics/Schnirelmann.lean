@@ -1,5 +1,4 @@
 import Mathlib.Combinatorics.Schnirelmann
-import LeanCamCombi.Mathlib.Algebra.Order.Sub.Canonical
 
 open Finset
 open scoped Classical Pointwise

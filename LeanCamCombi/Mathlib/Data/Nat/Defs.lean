@@ -1,13 +1,17 @@
 import Mathlib.Data.Nat.Defs
 
 namespace Nat
-variable {a b : ℕ}
 
-lemma eq_of_dvd_of_lt_two_mul (ha : a ≠ 0) (hdvd : b ∣ a) (hlt : a < 2 * b) : a = b := by
-  obtain ⟨_ | _ | c, rfl⟩ := hdvd
-  · simp at ha
-  · exact Nat.mul_one _
-  · rw [Nat.mul_comm] at hlt
-    cases Nat.not_le_of_lt hlt (Nat.mul_le_mul_right _ (by omega))
+protected lemma min_left_comm (a b c : ℕ) : min a (min b c) = min b (min a c) := by
+  rw [← Nat.min_assoc, ← Nat.min_assoc, b.min_comm]
+
+protected lemma max_left_comm (a b c : ℕ) : max a (max b c) = max b (max a c) := by
+  rw [← Nat.max_assoc, ← Nat.max_assoc, b.max_comm]
+
+protected lemma min_right_comm (a b c : ℕ) : min (min a b) c = min (min a c) b := by
+  rw [Nat.min_assoc, Nat.min_assoc, b.min_comm]
+
+protected lemma max_right_comm (a b c : ℕ) : max (max a b) c = max (max a c) b := by
+  rw [Nat.max_assoc, Nat.max_assoc, b.max_comm]
 
 end Nat

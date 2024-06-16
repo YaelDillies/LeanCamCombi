@@ -20,8 +20,6 @@ import LeanCamCombi.KruskalKatona
 import LeanCamCombi.LittlewoodOfford
 import LeanCamCombi.Mathlib.Algebra.BigOperators.Ring
 import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.LocallyFinite
-import LeanCamCombi.Mathlib.Algebra.Order.Ring.Canonical
-import LeanCamCombi.Mathlib.Algebra.Order.Sub.Canonical
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
@@ -37,7 +35,6 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Finite
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Maps
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Multipartite
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
-import LeanCamCombi.Mathlib.Data.Finset.Card
 import LeanCamCombi.Mathlib.Data.Finset.Pointwise
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.List.Basic
@@ -53,7 +50,6 @@ import LeanCamCombi.Mathlib.Order.Hom.Lattice
 import LeanCamCombi.Mathlib.Order.Interval.Finset.Basic
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.Sublattice
-import LeanCamCombi.Mathlib.Order.SupClosed
 import LeanCamCombi.Mathlib.Probability.Independence.Basic
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.Mathlib.RingTheory.Int.Basic
