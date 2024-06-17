@@ -1,5 +1,4 @@
 import Mathlib.Order.Sublattice
-import LeanCamCombi.Mathlib.Order.Hom.Lattice
 
 /-!
 # Sublattices
@@ -43,10 +42,10 @@ lemma prod_mono_right {M₁ M₂ : Sublattice β} (hM : M₁ ≤ M₂) : L.prod 
 lemma prod_mono_left {L₁ L₂ : Sublattice α} {M : Sublattice β} (hL : L₁ ≤ L₂) :
     L₁.prod M ≤ L₂.prod M := prod_mono hL le_rfl
 
-lemma prod_top (L : Sublattice α) : L.prod (⊤ : Sublattice β) = L.comap (LatticeHom.fst α β) :=
+lemma prod_top (L : Sublattice α) : L.prod (⊤ : Sublattice β) = L.comap LatticeHom.fst :=
   ext fun a ↦ by simp [mem_prod, LatticeHom.coe_fst]
 
-lemma top_prod (L : Sublattice β) : (⊤ : Sublattice α).prod L = L.comap (LatticeHom.snd α β) :=
+lemma top_prod (L : Sublattice β) : (⊤ : Sublattice α).prod L = L.comap LatticeHom.snd :=
   ext fun a ↦ by simp [mem_prod, LatticeHom.coe_snd]
 
 @[simp] lemma top_prod_top : (⊤ : Sublattice α).prod (⊤ : Sublattice β) = ⊤ :=
@@ -59,7 +58,7 @@ lemma top_prod (L : Sublattice β) : (⊤ : Sublattice α).prod L = L.comap (Lat
   SetLike.coe_injective empty_prod
 
 lemma le_prod_iff {M : Sublattice β} {N : Sublattice (α × β)} :
-    N ≤ L.prod M ↔ N ≤ comap (LatticeHom.fst α β) L ∧ N ≤ comap (LatticeHom.snd α β) M := by
+    N ≤ L.prod M ↔ N ≤ comap LatticeHom.fst L ∧ N ≤ comap LatticeHom.snd M := by
   simp [SetLike.le_def, forall_and]
 
 @[simp] lemma prod_eq_bot {M : Sublattice β} : L.prod M = ⊥ ↔ L = ⊥ ∨ M = ⊥ := by
@@ -99,7 +98,7 @@ def pi (s : Set κ) (L : ∀ i, Sublattice (π i)) : Sublattice (∀ i, π i) wh
   ext fun a ↦ by simp [mem_pi]
 
 lemma le_pi {s : Set κ} {L : ∀ i, Sublattice (π i)} {M : Sublattice (∀ i, π i)} :
-    M ≤ pi s L ↔ ∀ i ∈ s, M ≤ comap (Pi.evalLatticeHom π i) (L i) := by simp [SetLike.le_def]; aesop
+    M ≤ pi s L ↔ ∀ i ∈ s, M ≤ comap (Pi.evalLatticeHom i) (L i) := by simp [SetLike.le_def]; aesop
 
 @[simp] lemma pi_univ_eq_bot {L : ∀ i, Sublattice (π i)} : pi univ L = ⊥ ↔ ∃ i, L i = ⊥ := by
   simp_rw [← coe_inj]; simp

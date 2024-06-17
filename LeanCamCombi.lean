@@ -43,10 +43,8 @@ import LeanCamCombi.Mathlib.Data.Multiset.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Defs
 import LeanCamCombi.Mathlib.Data.Set.Finite
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
-import LeanCamCombi.Mathlib.FieldTheory.Finite.Basic
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 import LeanCamCombi.Mathlib.Order.ConditionallyCompleteLattice.Basic
-import LeanCamCombi.Mathlib.Order.Hom.Lattice
 import LeanCamCombi.Mathlib.Order.Interval.Finset.Basic
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.Sublattice

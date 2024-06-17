@@ -6,7 +6,6 @@ Authors: Yaël Dillies
 import Mathlib.Data.Multiset.Fintype
 import Mathlib.FieldTheory.ChevalleyWarning
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
-import LeanCamCombi.Mathlib.FieldTheory.Finite.Basic
 import LeanCamCombi.Mathlib.RingTheory.Int.Basic
 
 /-!
