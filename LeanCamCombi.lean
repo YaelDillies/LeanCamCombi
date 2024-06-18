@@ -22,8 +22,12 @@ import LeanCamCombi.Mathlib.Algebra.BigOperators.Ring
 import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.LocallyFinite
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
+import LeanCamCombi.Mathlib.Analysis.Convex.Hull
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
+import LeanCamCombi.Mathlib.Analysis.Convex.Normed
+import LeanCamCombi.Mathlib.Analysis.Convex.Segment
 import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
+import LeanCamCombi.Mathlib.Analysis.Normed.Group.Basic
 import LeanCamCombi.Mathlib.Combinatorics.Colex
 import LeanCamCombi.Mathlib.Combinatorics.Schnirelmann
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shatter
@@ -52,6 +56,7 @@ import LeanCamCombi.Mathlib.Order.Sublattice
 import LeanCamCombi.Mathlib.Probability.Independence.Basic
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.Mathlib.RingTheory.Int.Basic
+import LeanCamCombi.Mathlib.Topology.Algebra.Group.Basic
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.SimplicialComplex.Basic
