@@ -48,7 +48,7 @@ instance : DecidablePred 𝒜.OrderShatters
   | a :: l => by unfold OrderShatters; sorry
 
 def orderShatterser (𝒜 : Finset (Finset α)) : Finset (Finset α) :=
-  (𝒜.biUnion powerset).filter $ fun s ↦ 𝒜.OrderShatters $ s.sort (· ≤ ·)
+  (𝒜.biUnion powerset).filter fun s ↦ 𝒜.OrderShatters $ s.sort (· ≤ ·)
 
 end order
 

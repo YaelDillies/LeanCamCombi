@@ -98,7 +98,7 @@ lemma sumset_contains_n (hA : 0 ∈ A) (hB : 0 ∈ B) (hc : n ≤ countelements 
 
 theorem sum_schnirelmannDensity_ge_one_sumset_nat (hA : 0 ∈ A) (hB : 0 ∈ B)
     (hAB : 1 ≤ schnirelmannDensity A + schnirelmannDensity B) : A + B = Set.univ := by
-  refine Set.eq_univ_of_forall $ fun n ↦ sumset_contains_n hA hB ?_
+  refine Set.eq_univ_of_forall fun n ↦ sumset_contains_n hA hB ?_
   obtain rfl | hn := eq_or_ne n 0
   · exact countelements_nonneg A 0
   rw [← Nat.cast_le (α := ℝ), ← one_le_div (by positivity)]
