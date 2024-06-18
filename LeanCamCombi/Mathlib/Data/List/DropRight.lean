@@ -77,7 +77,7 @@ lemma Sublist.exists_intermediate (hl : l₀ <+ l₂) (h₀ : l₀.length ≤ n)
   cases' l₂ with b l₂
   · cases h₂
   obtain ⟨l₁, h₀₁, h₁₂, rfl⟩ := ih sorry (Nat.succ_le_succ_iff.1 h₀) (Nat.le_of_succ_le h₂)
-  rw [cons_sublist_cons_iff'] at hl
+  rw [cons_sublist_cons'] at hl
   obtain hl | ⟨rfl, hl⟩ := hl
   stop
   · obtain ⟨l₁, h₀₁, h₁₂, rfl⟩ := ih _ (Nat.succ_le_succ_iff.1 h₀) (Nat.succ_le_succ_iff.1 h₂)
