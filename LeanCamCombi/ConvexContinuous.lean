@@ -5,9 +5,9 @@ Authors: Yaël Dillies
 -/
 import Mathlib.Analysis.Convex.Intrinsic
 import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.Analysis.Normed.Group.Basic
+import Mathlib.Topology.Algebra.Group.Basic
 import LeanCamCombi.Mathlib.Analysis.Convex.Normed
-import LeanCamCombi.Mathlib.Analysis.Normed.Group.Basic
-import LeanCamCombi.Mathlib.Topology.Algebra.Group.Basic
 
 /-!
 # Convex functions are continuous

@@ -1,5 +1,5 @@
 import Mathlib.Analysis.Convex.Segment
-import Mathlib.Topology.MetricSpace.PseudoMetric
+import Mathlib.Topology.MetricSpace.Pseudo.Defs
 
 namespace Real
 variable {ε r : ℝ}

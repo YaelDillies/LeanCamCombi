@@ -9,12 +9,6 @@ open Set
 variable {α β : Type*} {G H : SimpleGraph α} {s : Set (Sym2 α)}
 
 namespace SimpleGraph
-
-@[simp]
-lemma deleteEdges_eq_self {s : Set (Sym2 α)} : G.deleteEdges s = G ↔ Disjoint G.edgeSet s := by
-  rw [deleteEdges, sdiff_eq_left, disjoint_fromEdgeSet]
-#align simple_graph.delete_edges_eq SimpleGraph.deleteEdges_eq_self
-
 section Ind
 variable {s t : Set α} {a b : α}
 

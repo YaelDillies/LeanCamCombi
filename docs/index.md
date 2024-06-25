@@ -44,7 +44,6 @@ The project contains
 
 The following topics are under active development in LeanCamCombi.
 
-* The Erdős-Ginzburg-Ziv theorem
 * The Erdős-Rényi model for random graphs, aka binomial random graph
 * The Littlewood-Offord problem
 * The van den Berg-Kesten-Reimer inequality
@@ -83,6 +82,7 @@ The following topics have been upstreamed to mathlib and no longer live in LeanC
 * The four functions theorem and related discrete correlation inequalities: FKG inequality, Holley inequality, Daykin inequality, Marica-Schönheim inequality
 * The Birkhoff representation theorem, non-categorical version
 * The Cauchy-Davenport theorem for general groups, and also for linearly ordered cancellative semigroup
+* The Erdős-Ginzburg-Ziv theorem
 * Shatterings of sets, the Sauer-Shelah lemma and the Vapnik-Chervonenkis dimension
 * Sublattices
 * Strongly convex functions

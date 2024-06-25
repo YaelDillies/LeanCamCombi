@@ -3,7 +3,6 @@ import LeanCamCombi.BernoulliSeq
 import LeanCamCombi.ConvexContinuous
 import LeanCamCombi.Corners.CombiDegen
 import LeanCamCombi.DiscreteDeriv
-import LeanCamCombi.ErdosGinzburgZiv
 import LeanCamCombi.ErdosRenyi.Basic
 import LeanCamCombi.ErdosRenyi.BollobasContainment
 import LeanCamCombi.ErdosRenyi.Connectivity
@@ -18,7 +17,6 @@ import LeanCamCombi.Kneser.Mathlib
 import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.KruskalKatona
 import LeanCamCombi.LittlewoodOfford
-import LeanCamCombi.Mathlib.Algebra.BigOperators.Ring
 import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.LocallyFinite
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
@@ -27,7 +25,6 @@ import LeanCamCombi.Mathlib.Analysis.Convex.Independence
 import LeanCamCombi.Mathlib.Analysis.Convex.Normed
 import LeanCamCombi.Mathlib.Analysis.Convex.Segment
 import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
-import LeanCamCombi.Mathlib.Analysis.Normed.Group.Basic
 import LeanCamCombi.Mathlib.Combinatorics.Colex
 import LeanCamCombi.Mathlib.Combinatorics.Schnirelmann
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shatter
@@ -41,7 +38,6 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Multipartite
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Data.Finset.Pointwise
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
-import LeanCamCombi.Mathlib.Data.Int.Defs
 import LeanCamCombi.Mathlib.Data.List.Basic
 import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
@@ -56,7 +52,6 @@ import LeanCamCombi.Mathlib.Order.Sublattice
 import LeanCamCombi.Mathlib.Probability.Independence.Basic
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.Mathlib.RingTheory.Int.Basic
-import LeanCamCombi.Mathlib.Topology.Algebra.Group.Basic
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.SimplicialComplex.Basic
