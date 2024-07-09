@@ -317,7 +317,7 @@ lemma kruskal_katona (h₁ : (𝒜 : Set (Finset (Fin n))).Sized r) (h₂ : 𝒜
 This shows that the minimum possible shadow size is attained by initial segments. -/
 lemma strengthened_kk (h₁ : (𝒜 : Set (Finset (Fin n))).Sized r) (h₂ : 𝒞.card ≤ 𝒜.card)
     (h₃ : IsInitSeg 𝒞 r) : (∂ 𝒞).card ≤ (∂ 𝒜).card := by
-  rcases exists_smaller_set 𝒜 𝒞.card h₂ with ⟨𝒜', prop, size⟩
+  obtain ⟨𝒜', prop, size⟩ := exists_subset_card_eq h₂
   refine' (kruskal_katona (fun A hA ↦ h₁ (prop hA)) size h₃).trans (card_le_card _)
   rw [shadow, shadow]
   apply shadow_monotone prop
@@ -374,7 +374,7 @@ lemma lovasz_form (hir : i ≤ r) (hrk : r ≤ k) (hkn : k ≤ n)
     rw [Nat.sub_eq_iff_eq_add hir, ← Ah.2, ← card_sdiff_i, ← card_union_of_disjoint disjoint_sdiff,
       union_sdiff_of_subset BsubA]
   rintro ⟨hBk, hB⟩
-  have := exists_intermediate_set i ?_ hBk
+  have := exists_subsuperset_card_eq hBk (Nat.le_add_left _ i) ?_
   obtain ⟨C, BsubC, hCrange, hcard⟩ := this
   rw [hB, ← Nat.add_sub_assoc hir, Nat.add_sub_cancel_left] at hcard
   refine' ⟨C, _, BsubC, _⟩; rw [mem_powersetCard]; exact ⟨hCrange, hcard⟩

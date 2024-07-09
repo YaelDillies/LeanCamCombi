@@ -156,8 +156,7 @@ theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B)
       rw [next_elm] at hx3
       simp only [mem_Ioc, and_imp, ne_eq, ite_not] at hx3
       split_ifs at hx3 with h
-      · norm_cast at hx3
-        exact hx3.trans (mem_Ioc.1 (mem_filter.1 $ min'_mem _ _).1).2
+      · exact hx3.trans (mem_Ioc.1 (mem_filter.1 $ min'_mem _ _).1).2
       · simpa using hx3
     have aux : countelements (⋃ a : A, {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)}) n ≤
       countelements (A + B) n := by

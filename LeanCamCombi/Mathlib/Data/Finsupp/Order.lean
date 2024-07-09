@@ -1,3 +1,4 @@
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.Finsupp.Order
 import LeanCamCombi.Mathlib.Algebra.Order.Group.Pi
 

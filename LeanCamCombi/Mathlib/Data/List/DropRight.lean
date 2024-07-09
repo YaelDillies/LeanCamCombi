@@ -10,14 +10,14 @@ lemma rtake_suffix (n : ℕ) (l : List α) : l.rtake n <:+ l := drop_suffix _ _
 lemma length_rtake (n : ℕ) (l : List α) : (l.rtake n).length = min n l.length :=
   (length_drop _ _).trans $ by rw [Nat.sub_sub_eq_min, min_comm]
 
-@[simp] lemma take_reverse (n : ℕ) (l : List α) : l.reverse.take n = (l.rtake n).reverse := by
+@[simp] lemma take_reverse' (n : ℕ) (l : List α) : l.reverse.take n = (l.rtake n).reverse := by
   rw [rtake_eq_reverse_take_reverse, reverse_reverse]
 
 @[simp] lemma rtake_reverse (n : ℕ) (l : List α) : l.reverse.rtake n = (l.take n).reverse := by
   rw [rtake_eq_reverse_take_reverse, reverse_reverse]
 
 @[simp] lemma rtake_rtake (n m) (l : List α) : (l.rtake m).rtake n = l.rtake (min n m) := by
-  rw [rtake_eq_reverse_take_reverse, ← take_reverse, take_take, rtake_eq_reverse_take_reverse]
+  rw [rtake_eq_reverse_take_reverse, ← take_reverse', take_take, rtake_eq_reverse_take_reverse]
 
 @[simp] lemma rdrop_append_rtake (n : ℕ) (l : List α) : l.rdrop n ++ l.rtake n = l :=
   take_append_drop _ _
