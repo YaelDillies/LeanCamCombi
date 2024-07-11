@@ -1,6 +1,5 @@
 import Mathlib.Analysis.Convex.Normed
 import Mathlib.Analysis.NormedSpace.AddTorsorBases
-import LeanCamCombi.Mathlib.Analysis.Convex.Hull
 
 open AffineBasis FiniteDimensional Metric Set
 open scoped Pointwise Topology
@@ -42,7 +41,7 @@ lemma exists_mem_interior_convexHull_finset (hs : s ∈ 𝓝 x) :
     simp [t, Set.set_smul_subset_iff₀ hε'.ne', hε₀.le, _root_.smul_closedBall, abs_of_nonneg hε'.le]
     simpa [ε',  hε₀.ne'] using hunorm
   refine ⟨t, ?_, ?_⟩
-  · simpa [t, interior_smul₀, ← convexHull_smul, zero_mem_smul_set_iff, hε'.ne']
+  · simpa [t, interior_smul₀, convexHull_smul, zero_mem_smul_set_iff, hε'.ne']
   calc
     convexHull ℝ t ⊆ closedBall 0 (ε / 2) := convexHull_min htnorm (convex_closedBall ..)
     _ ⊆ ball 0 ε := closedBall_subset_ball (by linarith)

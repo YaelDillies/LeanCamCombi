@@ -25,7 +25,6 @@ import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.LocallyFinite
 import LeanCamCombi.Mathlib.Algebra.Order.Group.Pi
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
-import LeanCamCombi.Mathlib.Analysis.Convex.Hull
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
 import LeanCamCombi.Mathlib.Analysis.Convex.Normed
 import LeanCamCombi.Mathlib.Analysis.Convex.Segment
