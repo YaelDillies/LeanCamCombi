@@ -3,13 +3,13 @@ Copyright (c) 2020 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Yaël Dillies
 -/
+import Mathlib.Combinatorics.Colex
 import Mathlib.Combinatorics.SetFamily.Compression.UV
 import Mathlib.Combinatorics.SetFamily.Intersecting
 import Mathlib.Combinatorics.SetFamily.Shadow
 import Mathlib.Data.Finset.Fin
 import Mathlib.Data.Finset.Sort
 import Mathlib.Data.Finset.Sups
-import LeanCamCombi.Mathlib.Combinatorics.Colex
 
 /-!
 # Kruskal-Katona theorem
@@ -95,7 +95,7 @@ lemma shadow_initSeg [Fintype α] (hs : s.Nonempty) :
     · simpa [ha] using erase_le_erase_min' hts hst.ge (mem_insert_self _ _)
   -- Now show that if t ≤ s - min s, there is j such that t ∪ j ≤ s
   -- We choose j as the smallest thing not in t
-  simp_rw [le_iff_eq_or_lt, lt_iff_exists_forall_lt_mem_iff_mem]
+  simp_rw [le_iff_eq_or_lt, lt_iff_exists_filter_lt, mem_sdiff, filter_inj, and_assoc]
   simp only [toColex_inj, ofColex_toColex, ne_eq, and_imp]
   rintro cards' (rfl | ⟨k, hks, hkt, z⟩)
   -- If t = s - min s, then use j = min s so t ∪ j = s
@@ -158,7 +158,8 @@ the set is being "shifted 'down" as `max U < max V`. -/
 lemma toColex_compress_lt_toColex {hU : U.Nonempty} {hV : V.Nonempty} (h : max' U hU < max' V hV)
     (hA : compress U V s ≠ s) : toColex (compress U V s) < toColex s := by
   rw [compress, ite_ne_right_iff] at hA
-  rw [compress, if_pos hA.1, lt_iff_exists_forall_lt_mem_iff_mem]
+  rw [compress, if_pos hA.1, lt_iff_exists_filter_lt]
+  simp_rw [mem_sdiff (s := s), filter_inj, and_assoc]
   refine ⟨_, hA.1.2 $ max'_mem _ hV, not_mem_sdiff_of_mem_right $ max'_mem _ _, fun a ha ↦ ?_⟩
   have : a ∉ V := fun H ↦ ha.not_le (le_max' _ _ H)
   have : a ∉ U := fun H ↦ ha.not_lt ((le_max' _ _ H).trans_lt h)

@@ -29,7 +29,6 @@ import LeanCamCombi.Mathlib.Analysis.Convex.Independence
 import LeanCamCombi.Mathlib.Analysis.Convex.Normed
 import LeanCamCombi.Mathlib.Analysis.Convex.Segment
 import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
-import LeanCamCombi.Mathlib.Combinatorics.Colex
 import LeanCamCombi.Mathlib.Combinatorics.Schnirelmann
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shatter
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
@@ -50,8 +49,8 @@ import LeanCamCombi.Mathlib.Data.Nat.Defs
 import LeanCamCombi.Mathlib.Data.Set.Finite
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
-import LeanCamCombi.Mathlib.Init.Function
 import LeanCamCombi.Mathlib.Logic.Basic
+import LeanCamCombi.Mathlib.Logic.Function.Defs
 import LeanCamCombi.Mathlib.Order.ConditionallyCompleteLattice.Basic
 import LeanCamCombi.Mathlib.Order.Interval.Finset.Basic
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition

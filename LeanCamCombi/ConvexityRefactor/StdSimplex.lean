@@ -6,8 +6,8 @@ import Mathlib.GroupTheory.GroupAction.BigOperators
 import LeanCamCombi.Mathlib.Algebra.BigOperators.Finsupp
 import LeanCamCombi.Mathlib.Algebra.Module.BigOperators
 import LeanCamCombi.Mathlib.Data.Finsupp.Order
-import LeanCamCombi.Mathlib.Init.Function
 import LeanCamCombi.Mathlib.Logic.Basic
+import LeanCamCombi.Mathlib.Logic.Function.Defs
 
 noncomputable section
 
