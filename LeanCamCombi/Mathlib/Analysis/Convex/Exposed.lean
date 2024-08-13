@@ -40,13 +40,13 @@ lemma mem_exposed_set_iff_mem_frontier (hs₁ : Convex ℝ s) (hs₂ : (interior
   rintro ⟨hxA, hxfA⟩
   obtain ⟨y, hyA⟩ := id hs₂
   obtain ⟨l, hl⟩ := geometric_hahn_banach_open_point (Convex.interior hs₁) isOpen_interior hxfA.2
-  refine'
+  refine
     ⟨{x ∈ s | ∀ y ∈ s, l y ≤ l x}, fun _ => ⟨l, rfl⟩, fun h =>
-      not_le.2 (hl y hyA) ((h (interior_subset hyA)).2 x hxA), hxA, fun z hzA => _⟩
+      not_le.2 (hl y hyA) ((h (interior_subset hyA)).2 x hxA), hxA, fun z hzA => ?_⟩
   suffices h : l '' closure (interior s) ⊆ closure (Iio (l x)) by
     rw [closure_Iio, ← closure_eq_closure_interior hs₁ hs₂] at h
     exact h ⟨z, subset_closure hzA, rfl⟩
-  refine' (image_closure_subset_closure_image l.continuous).trans $ closure_mono _
+  refine (image_closure_subset_closure_image l.continuous).trans $ closure_mono ?_
   rintro _ ⟨w, hw, rfl⟩
   exact hl w hw
 
@@ -58,8 +58,6 @@ lemma mem_extreme_set_iff_mem_frontier (hs₁ : Convex ℝ s) (hs₂ : (interior
   exact ⟨t, hst.isExtreme, hts, hxt⟩
 
 /-! # Harder stuff -/
-
-
 
 --lemma of S. Straszewicz proved in 1935
 lemma extremePoints_subset_closure_exposedPoints (hs₁ : Convex ℝ s) (hs₂ : IsClosed s) :

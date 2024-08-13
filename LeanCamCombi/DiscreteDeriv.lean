@@ -92,7 +92,7 @@ private lemma discBackwardDiff_aux :
 variable [NoZeroDivisors R] [Nontrivial R] -- and those too
 
 lemma natDegree_discConv_le : natDegree (discConv w P) ≤ natDegree P := by
-  refine' (natDegree_sum_le _ _).trans $ Finset.sup_le fun r _ ↦ _
+  refine (natDegree_sum_le _ _).trans $ Finset.sup_le fun r _ ↦ ?_
   dsimp
   simp_rw [algebra_compatible_smul R (w r)]
   refine (natDegree_smul_le _ _).trans ?_
@@ -110,7 +110,7 @@ lemma degree_discConv_lt (hw : w.sum (fun _ ↦ id) = 0) (hP : P ≠ 0) :
   have := coeff_discConv_natDegree w P
   rw [hw, zero_smul] at this
   -- should be obvious from here
-  refine' (degree_sum_le _ _).trans_lt $ (Finset.sup_lt_iff _).2 _
+  refine (degree_sum_le _ _).trans_lt $ (Finset.sup_lt_iff ?_).2 ?_
   sorry
   sorry
 

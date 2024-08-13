@@ -41,9 +41,8 @@ lemma card_le_of_forall_dist_sum_le (hr : 0 < r) (h𝒜 : ∀ t ∈ 𝒜, t ⊆ 
   classical
   obtain ⟨P, hP, _hs, hr⟩ := exists_littlewood_offord_partition hr hf
   rw [← hP]
-  refine'
-    card_le_card_of_forall_subsingleton (· ∈ ·) (fun t ht ↦ _) fun ℬ hℬ t ht u hu ↦
-      (hr _ hℬ).eq ht.2 hu.2 (h𝒜r _ ht.1 _ hu.1).not_le
+  refine card_le_card_of_forall_subsingleton (· ∈ ·) (fun t ht ↦ ?_) fun ℬ hℬ t ht u hu ↦
+    (hr _ hℬ).eq ht.2 hu.2 (h𝒜r _ ht.1 _ hu.1).not_le
   simpa only [exists_prop] using P.exists_mem (mem_powerset.2 $ h𝒜 _ ht)
 
 end Finset

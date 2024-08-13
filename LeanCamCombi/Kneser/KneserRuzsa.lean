@@ -116,7 +116,7 @@ lemma le_card_union_add_card_mulStab_union :
   -- obtain hts | hts := (subset_union_right s t).eq_or_ssubset
   -- · simp [hts.symm]
   -- have : H.card = Hs.card * Ht.card := by
-  --   refine' card_mul_iff.2 fun a ha b hb hab => _
+  --   refine card_mul_iff.2 fun a ha b hb hab => _
   --   replace hab : a.2 * b.2⁻¹ = a.1⁻¹ * b.1 := by
   --     rw [mul_inv_eq_iff_eq_mul, mul_assoc, ← inv_mul_eq_iff_eq_mul, inv_inv]
   --     exact hab
@@ -156,9 +156,9 @@ lemma le_card_union_add_card_mulStab_union :
   --   (∀ a, k a = 0 ∨ k a = Ht.card ∨ l a = 0 ∨ l a = Hs.card) ∧
   --     ((∀ a, k a = 0 → l a = 0) ∨ ∀ a, l a = 0 → k a = 0)
   -- · obtain ⟨hkl, hkl' | hkl'⟩ := hkl
-  --   · refine' Or.inl ((tsub_eq_zero_of_le $ card_mono _).trans_le $ zero_le _)
+  --   · refine Or.inl ((tsub_eq_zero_of_le $ card_mono _).trans_le $ zero_le _)
   --     sorry
-  --   · refine' Or.inr ((tsub_eq_zero_of_le $ card_mono _).trans_le $ zero_le _)
+  --   · refine Or.inr ((tsub_eq_zero_of_le $ card_mono _).trans_le $ zero_le _)
   --     sorry
   -- -- the remaining sketch is flawed since `H` is defined to be `Hbar` in Ruzsa's notes and
   -- -- `mulStab (s ∪ t) = H` in the notes
@@ -177,7 +177,7 @@ lemma le_card_union_add_card_mulStab_union :
   --     (mul_le_mul' (Nat.add_sub_one_le_mul (tsub_pos_of_lt $ (hls _).lt_of_ne hla').ne' hla) $
   --       Nat.add_sub_one_le_mul (tsub_pos_of_lt $ (hkt _).lt_of_ne hka').ne' hka)
   --   rw [tsub_add_cancel_of_le (hkt _), tsub_add_cancel_of_le (hls _)]
-  -- refine'
+  -- refine
   --   mul_le_mul' (tsub_le_self.trans $ le_trans _ $ card_mono $ inter_subset_left _ $ b • H)
   --     (tsub_le_self.trans $ le_trans _ $ card_mono $ inter_subset_left _ $ a • H)
   -- · rw [hk, hlb, tsub_zero]
@@ -219,29 +219,29 @@ lemma le_card_mul_add_card_mulStab_mul (hs : s.Nonempty) (ht : t.Nonempty) :
   -- We have  `⋃ b ∈ t, s_b * t_b = s * t` because `s_b * t_b ⊆ s * t` and
   -- `∀ b ∈ t, s • b ⊆ s * t_b ⊆ s_b * t_b`.
   have : s * t = univ.sup fun b => s' b * t' b := by
-    refine' le_antisymm _ (Finset.sup_le_iff.2 fun _ _ => hst' _)
+    refine le_antisymm ?_ (Finset.sup_le_iff.2 fun _ _ => hst' _)
     exact
       mul_subset_iff_right.2 fun b hb =>
         (smul_finset_subset_smul_finset $ hs' ⟨b, hb⟩).trans $
           (op_smul_finset_subset_mul $ hbt' ⟨b, hb⟩).trans $
             @le_sup _ _ _ _ _ (fun b => s' b * t' b) _ $ mem_univ _
   rw [this]
-  refine' (le_inf' ht.attach _ fun b _ => _).trans (le_card_sup_add_card_mulStab_sup _)
+  refine (le_inf' ht.attach _ fun b _ => ?_).trans (le_card_sup_add_card_mulStab_sup _)
   rw [← hstcard b]
-  refine'
+  refine
     add_le_add (card_le_card_mul_right _ ⟨_, hbt' _⟩)
-      ((card_mono $ subset_mulStab_mul_left ⟨_, hbt' _⟩).trans' _)
+      ((card_mono $ subset_mulStab_mul_left ⟨_, hbt' _⟩).trans' ?_)
   rw [← card_smul_finset (b : α)⁻¹ (t' _)]
-  refine' card_mono ((mul_subset_left_iff $ hs.mono $ hs' _).1 _)
-  refine' mul_subset_iff_left.2 fun c hc => _
+  refine card_mono ((mul_subset_left_iff $ hs.mono $ hs' _).1 ?_)
+  refine mul_subset_iff_left.2 fun c hc => ?_
   rw [← mul_smul]
-  refine'
+  refine
     smul_finset_subset_iff.2
-      (inter_eq_left.1 $ eq_of_subset_of_card_le inter_subset_left _)
+      (inter_eq_left.1 $ eq_of_subset_of_card_le inter_subset_left ?_)
   rw [← ht']
-  refine'
+  refine
     Nat.find_min' _
-      ⟨_, _, mem_inter.2 ⟨hbt' _, _⟩, (hs' _).trans subset_union_left,
+      ⟨_, _, mem_inter.2 ⟨hbt' _, ?_⟩, (hs' _).trans subset_union_left,
         (mulDysonETransform.subset _ (s' b, t' b)).trans $ hst' _,
         (mulDysonETransform.card _ _).trans $ hstcard _, rfl⟩
   rwa [mem_inv_smul_finset_iff, smul_eq_mul, inv_mul_cancel_right]
@@ -258,10 +258,8 @@ lemma mul_kneser' (s t : Finset α) :
   · simp
   obtain rfl | ht := t.eq_empty_or_nonempty
   · simp
-  refine'
-    (le_card_mul_add_card_mulStab_mul (hs.mul (hs.mul ht).mulStab) $
-          ht.mul (hs.mul ht).mulStab).trans_eq
-      _
+  refine (le_card_mul_add_card_mulStab_mul (hs.mul (hs.mul ht).mulStab) $
+    ht.mul (hs.mul ht).mulStab).trans_eq ?_
   rw [mul_mulStab_mul_mul_mul_mulStab_mul]
 
 /-- The strict version of **Kneser's multiplication theorem**. If the LHS of `Finset.mul_kneser`

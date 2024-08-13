@@ -1,4 +1,4 @@
-import Mathlib.Data.Finset.Pointwise
+import Mathlib.Data.Finset.Pointwise.Basic
 
 open MulOpposite
 open scoped Pointwise

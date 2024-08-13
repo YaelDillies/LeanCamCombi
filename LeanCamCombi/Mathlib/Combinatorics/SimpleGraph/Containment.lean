@@ -134,8 +134,8 @@ lemma isIndContained_iff_exists_subgraph :
     G ⊴ H ↔ ∃ (H' : H.Subgraph) (_e : G ≃g H'.coe), H'.IsInduced' := by
   constructor
   · rintro ⟨f⟩
-    refine' ⟨Subgraph.map f.toHom ⊤,
-      (Subgraph.isoMap f.toHom f.injective _).comp Subgraph.topIso.symm, _⟩
+    refine ⟨Subgraph.map f.toHom ⊤,
+      (Subgraph.isoMap f.toHom f.injective _).comp Subgraph.topIso.symm, ?_⟩
     rintro _ _ ⟨a, -, rfl⟩ ⟨b, -, rfl⟩
     simp [Relation.map_apply_apply, f.injective]
   · rintro ⟨H', e, hH'⟩
@@ -167,11 +167,11 @@ noncomputable def copyCount (G : SimpleGraph α) (H : SimpleGraph β) : ℕ :=
           edge_vert := False.elim } : H.Subgraph)
   simp only [eq_singleton_iff_unique_mem, mem_filter, mem_univ, Subgraph.coe_bot, true_and_iff,
     Nonempty.forall]
-  refine'
+  refine
     ⟨⟨⟨(Equiv.Set.univ _).symm, by
       simp only [Prop.bot_eq_false, Subgraph.coe_adj, Pi.bot_apply, bot_adj, iff_self_iff,
         forall₂_true_iff]⟩⟩, fun H' e ↦
-      Subgraph.ext _ _ ((set_fintype_card_eq_univ_iff _).1 $ Fintype.card_congr e.toEquiv.symm) _⟩
+      Subgraph.ext ((set_fintype_card_eq_univ_iff _).1 $ Fintype.card_congr e.toEquiv.symm) ?_⟩
   ext a b
   simp only [Prop.bot_eq_false, Pi.bot_apply, iff_false_iff]
   exact fun hab ↦ e.symm.map_rel_iff.2 hab.coe
@@ -183,8 +183,8 @@ noncomputable def copyCount (G : SimpleGraph α) (H : SimpleGraph β) : ℕ :=
   simp only [eq_singleton_iff_unique_mem, mem_filter, mem_univ, Subgraph.coe_bot, true_and_iff,
     Nonempty.forall, Subsingleton.elim G ⊥]
   haveI : IsEmpty (⊥ : H.Subgraph).verts := by simp
-  refine' ⟨⟨⟨⟨isEmptyElim, isEmptyElim, isEmptyElim, isEmptyElim⟩, fun {a} ↦ isEmptyElim a⟩⟩,
-    fun H' e ↦ Subgraph.ext _ _ _ $ funext₂ fun a b ↦ _⟩
+  refine ⟨⟨⟨⟨isEmptyElim, isEmptyElim, isEmptyElim, isEmptyElim⟩, fun {a} ↦ isEmptyElim a⟩⟩,
+    fun H' e ↦ Subgraph.ext ?_ $ funext₂ fun a b ↦ ?_⟩
   · simpa [Set.eq_empty_iff_forall_not_mem, filter_eq_empty_iff, ‹IsEmpty α›] using
       e.toEquiv.symm.isEmpty_congr
   · simp only [Subgraph.not_bot_adj, eq_iff_iff, iff_false_iff]
@@ -223,7 +223,6 @@ lemma copyCount_le_labelledCopyCount : G.copyCount H ≤ G.labelledCopyCount H :
   refine Fintype.card_le_of_injective (fun H' ↦
     ⟨H'.val.hom.comp (mem_filter.1 H'.2).2.some.toHom,
       Subtype.coe_injective.comp (mem_filter.1 H'.2).2.some.injective⟩) ?_
-
   sorry
 
 end LabelledCopyCount
@@ -295,11 +294,11 @@ lemma not_isContained_kill (hG : G ≠ ⊥) : ¬ G ⊑ G.kill H := by
   have := Subgraph.edgeSet_subset _ he'
   simp only [edgeSet_sdiff,  edgeSet_fromEdgeSet,  edgeSet_sdiff_sdiff_isDiag, Set.mem_diff,
     Set.mem_iUnion, not_exists] at this
-  refine' this.2 (H'.map $ Hom.ofLE sdiff_le)
-    ⟨(Subgraph.isoMap (Hom.ofLE _) injective_id _).comp hGH'.some⟩ _
+  refine this.2 (H'.map $ Hom.ofLE sdiff_le)
+    ⟨(Subgraph.isoMap (Hom.ofLE _) injective_id _).comp hGH'.some⟩ ?_
   rw [Sym2.map_map, Set.mem_singleton_iff, ← he₁]
   congr 1 with x
-  refine' congr_arg (↑) (Equiv.Set.image_symm_apply _ _ injective_id _ _)
+  exact congr_arg _ (Equiv.Set.image_symm_apply _ _ injective_id _ _)
 
 variable [Fintype H.edgeSet]
 

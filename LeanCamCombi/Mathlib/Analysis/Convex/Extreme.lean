@@ -6,7 +6,7 @@ Authors: Yaël Dillies, Bhavik Mehta
 import Mathlib.Analysis.Convex.Independent
 import Mathlib.Analysis.Convex.Topology
 import Mathlib.Analysis.Normed.Order.Basic
-import Mathlib.Analysis.NormedSpace.Basic
+import Mathlib.Analysis.Normed.Module.Basic
 
 /-!
 # Extreme sets
@@ -21,9 +21,9 @@ variable [LinearOrderedField 𝕜] [AddCommGroup E] [Module 𝕜 E] {s t : Set E
 
 lemma Convex.isExtreme_iff_openSegment_subset_diff (hAconv : Convex 𝕜 s) :
     IsExtreme 𝕜 s t ↔ t ⊆ s ∧ ∀ ⦃x y⦄, x ∈ s → y ∈ s \ t → openSegment 𝕜 x y ⊆ s \ t := by
-  refine' ⟨fun h => ⟨h.1, fun x y hx hy z hz =>
+  refine ⟨fun h => ⟨h.1, fun x y hx hy z hz =>
     ⟨hAconv.openSegment_subset hx hy.1 hz, fun hzB => hy.2 (h.2 hx hy.1 hzB hz).2⟩⟩,
-      fun h => ⟨h.1, fun x hx y hy z hzB hz => ⟨_, _⟩⟩⟩
+      fun h => ⟨h.1, fun x hx y hy z hzB hz => ⟨?_, ?_⟩⟩⟩
   · by_contra hxB
     rw [openSegment_symm] at hz
     exact (h.2 hy ⟨hx, hxB⟩ hz).2 hzB
@@ -32,11 +32,11 @@ lemma Convex.isExtreme_iff_openSegment_subset_diff (hAconv : Convex 𝕜 s) :
 
 lemma extremePoints_convexHull_eq_iff_convexIndependent :
     (convexHull 𝕜 s).extremePoints 𝕜 = s ↔ ConvexIndependent 𝕜 (fun p => p : s → E) := by
-  refine' ⟨fun h => _, fun hs => _⟩
+  refine ⟨fun h => ?_, fun hs => ?_⟩
   · rw [← h]
     exact (convex_convexHull 𝕜 _).convexIndependent_extremePoints
   rw [convexIndependent_set_iff_not_mem_convexHull_diff] at hs
-  refine' extremePoints_convexHull_subset.antisymm fun x hxs => ⟨subset_convexHull 𝕜 _ hxs, _⟩
+  refine extremePoints_convexHull_subset.antisymm fun x hxs => ⟨subset_convexHull 𝕜 _ hxs, ?_⟩
   by_contra! h
   obtain ⟨x₁, hx₁, x₂, hx₂, hx⟩ := h
   suffices h : x₁ ∈ convexHull 𝕜 (s \ {x}) ∧ x₂ ∈ convexHull 𝕜 (s \ {x}) by
@@ -68,7 +68,7 @@ variable [NormedLinearOrderedField 𝕜] [SeminormedAddCommGroup E] [NormedSpace
 -- beurk
 lemma inter_frontier_self_inter_convexHull_extreme :
     IsExtreme 𝕜 (closure s) (closure s ∩ frontier (convexHull 𝕜 s)) := by
-  refine' ⟨inter_subset_left, fun x₁ hx₁A x₂ hx₂A x hxs hx => ⟨⟨hx₁A, _⟩, hx₂A, _⟩⟩
+  refine ⟨inter_subset_left, fun x₁ hx₁A x₂ hx₂A x hxs hx => ⟨⟨hx₁A, ?_⟩, hx₂A, ?_⟩⟩
   sorry
   sorry
 
@@ -138,11 +138,11 @@ lemma IsExtreme.subset_frontier (hAB : IsExtreme 𝕜 s t) (hBA : ¬s ⊆ t) : t
   [sequential_space E] [topological_add_group E] [has_continuous_smul ℝ E]-/
 lemma closure_eq_closure_interior {s : Set E} (hAconv : Convex 𝕜 s)
     (hAnemp : (interior s).Nonempty) : closure s = closure (interior s) := by
-  refine' Subset.antisymm (fun x hx => _) (closure_mono interior_subset)
+  refine Subset.antisymm (fun x hx => ?_) (closure_mono interior_subset)
   obtain ⟨y, hy⟩ := hAnemp
   rw [mem_closure_iff_seq_limit] at hx ⊢
   obtain ⟨z, hzA, hzx⟩ := hx
-  refine' ⟨fun n => (1 - 1 / (n + 2) : 𝕜) • z n + (1 / (n + 2) : 𝕜) • y, fun n => _, _⟩
+  refine ⟨fun n => (1 - 1 / (n + 2) : 𝕜) • z n + (1 / (n + 2) : 𝕜) • y, fun n => ?_, ?_⟩
   · rw [← closure_diff_frontier] at hy ⊢
     have h₁ : (1 : 𝕜) < ↑n + 2 := by norm_cast; norm_num
     have h₀ := zero_lt_one.trans h₁

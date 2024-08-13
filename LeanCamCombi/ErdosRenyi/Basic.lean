@@ -23,9 +23,10 @@ abbrev ErdosRenyi (G : Ω → SimpleGraph α) [∀ ω, DecidableRel (G ω).Adj] 
   IsBernoulliSeq (fun ω ↦ (G ω).edgeSet) p μ
 
 variable {G : Ω → SimpleGraph α} {H : SimpleGraph α} [∀ ω, DecidableRel (G ω).Adj] {p : ℝ≥0}
-  (μ : Measure Ω) [IsProbabilityMeasure μ] (hG : ErdosRenyi G p μ)
+  (μ : Measure Ω) (hG : ErdosRenyi G p μ)
 
 namespace ErdosRenyi
+include hG
 
 protected nonrec lemma le_one : p ≤ 1 := hG.le_one
 
@@ -48,7 +49,8 @@ protected nonrec lemma identDistrib (d e : Sym2 α) :
 
 lemma meas_edge (e : Sym2 α) : μ {ω | e ∈ (G ω).edgeSet} = p := hG.meas_apply _
 
-protected nonrec lemma meas [Fintype α] [DecidableEq α] [DecidableRel H.Adj] :
+protected nonrec lemma meas [IsProbabilityMeasure μ] [Fintype α] [DecidableEq α]
+    [DecidableRel H.Adj] :
     μ {ω | G ω = H} =
       p ^ H.edgeFinset.card * (1 - p) ^ (Fintype.card (Sym2 α) - H.edgeFinset.card) := by
   simpa using hG.meas H.edgeFinset

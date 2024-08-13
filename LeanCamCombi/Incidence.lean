@@ -8,7 +8,6 @@ import Mathlib.Algebra.BigOperators.Ring
 import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.Algebra.Module.BigOperators
 import Mathlib.GroupTheory.GroupAction.Basic
-import Mathlib.GroupTheory.GroupAction.Pi
 import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.LocallyFinite
 
 /-!
@@ -96,15 +95,12 @@ lemma coe_inj {f g : IncidenceAlgebra 𝕜 α} : (f : α → α → 𝕜) = g �
 
 @[ext]
 lemma ext ⦃f g : IncidenceAlgebra 𝕜 α⦄ (h : ∀ a b, a ≤ b → f a b = g a b) : f = g := by
-  refine' DFunLike.coe_injective' (funext₂ fun a b ↦ _)
+  refine DFunLike.coe_injective' (funext₂ fun a b ↦ ?_)
   by_cases hab : a ≤ b
   · exact h _ _ hab
   · rw [apply_eq_zero_of_not_le hab, apply_eq_zero_of_not_le hab]
 
-lemma ext_iff {f g : IncidenceAlgebra 𝕜 α} : f = g ↔ ∀ a b, f a b = g a b :=
-  ⟨IncidenceAlgebra.congr_fun, fun h ↦ ext fun _ _ _ ↦ h _ _⟩
-
-@[simp] lemma mk_coe (f : IncidenceAlgebra 𝕜 α) (h) : mk f h = f := ext fun _ _ _ ↦ rfl
+@[simp] lemma mk_coe (f : IncidenceAlgebra 𝕜 α) (h) : mk f h = f := rfl
 
 end Coes
 
@@ -299,7 +295,7 @@ instance algebraRight [PartialOrder α] [LocallyFiniteOrder α] [DecidableEq α]
           mul_apply, Algebra.mul_smul_comm, MulZeroClass.zero_mul, smul_apply',
           algebraMap_smul, ← ite_and, ite_mul, mul_ite, map_mul, mem_Icc, sum_ite_eq,
           MulZeroClass.mul_zero, smul_zero, Algebra.smul_mul_assoc, if_pos rfl, if_neg h]
-        refine' (sum_eq_zero fun x _ ↦ _).symm
+        refine (sum_eq_zero fun x _ ↦ ?_).symm
         exact if_neg fun hx ↦ h <| hx.2.trans hx.1
   map_zero' := by dsimp; rw [map_zero, zero_smul]
   map_add' c d := by dsimp; rw [map_add, add_smul]
@@ -345,14 +341,14 @@ end Zeta
 lemma zeta_mul_zeta [Semiring 𝕜] [Preorder α] [LocallyFiniteOrder α] [@DecidableRel α (· ≤ ·)]
     (a b : α) : (zeta 𝕜 * zeta 𝕜 : IncidenceAlgebra 𝕜 α) a b = (Icc a b).card := by
   rw [mul_apply, card_eq_sum_ones, Nat.cast_sum, Nat.cast_one]
-  refine' sum_congr rfl fun x hx ↦ _
+  refine sum_congr rfl fun x hx ↦ ?_
   rw [mem_Icc] at hx
   rw [zeta_of_le hx.1, zeta_of_le hx.2, one_mul]
 
 lemma zeta_mul_kappa [Semiring 𝕜] [Preorder α] [LocallyFiniteOrder α] [@DecidableRel α (· ≤ ·)]
     (a b : α) : (zeta 𝕜 * zeta 𝕜 : IncidenceAlgebra 𝕜 α) a b = (Icc a b).card := by
   rw [mul_apply, card_eq_sum_ones, Nat.cast_sum, Nat.cast_one]
-  refine' sum_congr rfl fun x hx ↦ _
+  refine sum_congr rfl fun x hx ↦ ?_
   rw [mem_Icc] at hx
   rw [zeta_of_le hx.1, zeta_of_le hx.2, one_mul]
 
@@ -409,7 +405,7 @@ lemma mu_spec_of_ne_right {a b : α} (h : a ≠ b) : ∑ x in Icc a b, mu 𝕜 a
   have : mu 𝕜 a b = _ := mu_apply_of_ne h
   by_cases hab : a ≤ b
   · rw [Icc_eq_cons_Ico hab]
-    simp [this, neg_add_self]
+    simp [this, neg_add_cancel]
   · have : ∀ x ∈ Icc a b, ¬a ≤ x := by
       intro x hx hn
       apply hab
@@ -477,7 +473,7 @@ lemma mu'_spec_of_ne_left {a b : α} (h : a ≠ b) : ∑ x in Icc a b, (mu' 𝕜
   have : mu' 𝕜 a b = _ := mu'_apply_of_ne h
   by_cases hab : a ≤ b
   · rw [Icc_eq_cons_Ioc hab]
-    simp [this, neg_add_self]
+    simp [this, neg_add_cancel]
   · have : ∀ x ∈ Icc a b, ¬x ≤ b := by
       intro x hx hn
       apply hab
@@ -690,7 +686,7 @@ lemma mu_prod_mu : (mu 𝕜).prod (mu 𝕜) = (mu 𝕜 : IncidenceAlgebra 𝕜 (
   refine left_inv_eq_right_inv ?_ zeta_mul_mu
   rw [← zeta_prod_zeta, prod_mul_prod', mu_mul_zeta, mu_mul_zeta, one_prod_one]
   ext
-  refine' fun _ _ _ _ _ _ ↦ Commute.mul_mul_mul_comm _ _ _
+  refine fun _ _ _ _ _ _ ↦ Commute.mul_mul_mul_comm _ _ _
   dsimp
   split_ifs <;> simp
 

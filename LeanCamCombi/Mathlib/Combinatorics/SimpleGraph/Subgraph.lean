@@ -26,7 +26,7 @@ instance (G : SimpleGraph V) (H : Subgraph G) [DecidableRel H.Adj] : DecidableRe
   induction' e using Sym2.ind with a b
   simp only [mem_edgeSet, Sym2.exists, Relation.Map, and_or_left, exists_or, map_adj,
     Set.mem_image, Sym2.map_pair_eq, Sym2.eq, Sym2.rel_iff]
-  refine' (or_iff_left_of_imp _).symm
+  refine (or_iff_left_of_imp ?_).symm
   rintro ⟨a, b, hab, rfl, rfl⟩
   exact ⟨b, a, hab.symm, rfl, rfl⟩
 

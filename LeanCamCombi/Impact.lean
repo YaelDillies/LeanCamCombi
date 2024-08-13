@@ -5,7 +5,7 @@ Authors: Yaël Dillies
 -/
 import Mathlib.Combinatorics.Additive.ETransform
 import Mathlib.Data.Nat.Lattice
-import LeanCamCombi.Mathlib.Data.Finset.Pointwise
+import LeanCamCombi.Mathlib.Data.Finset.Pointwise.Basic
 import LeanCamCombi.Kneser.Mathlib
 
 /-!
@@ -59,10 +59,10 @@ lemma mulImpact_map_of_infinite [Infinite α] (s : Finset α) (f : α →* β) (
   haveI : Infinite β := sorry
   haveI : Nonempty {t : Finset α // t.card = n} := nonempty_subtype.2 (exists_card_eq _)
   haveI : Nonempty {t : Finset β // t.card = n} := nonempty_subtype.2 (exists_card_eq _)
-  refine' le_antisymm _ _
-  · refine' le_ciInf fun t => _
+  refine le_antisymm ?_ ?_
+  · refine le_ciInf fun t => ?_
     sorry
-  · refine' le_ciInf fun t => _
+  · refine le_ciInf fun t => ?_
     sorry
 
 @[to_additive]

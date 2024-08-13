@@ -18,7 +18,7 @@ instance : DecidableRel (multipartiteGraph P).Adj := fun _ _ => Finset.decidable
 /-- If v and w are in distinct parts then they are adjacent. -/
 lemma multipartiteGraph_adj_of_mem_parts (hs : s ∈ P.parts) (ht : t ∈ P.parts) (ha : a ∈ s)
     (hb : b ∈ t) : (multipartiteGraph P).Adj a b ↔ s ≠ t := by
-  refine' ⟨_, fun hst u hu hau hbu => hst _⟩
+  refine ⟨?_, fun hst u hu hau hbu => hst ?_⟩
   · rintro hab rfl
     exact hab hs ha hb
   · rw [P.eq_of_mem_parts hs hu ha hau, P.eq_of_mem_parts ht hu hb hbu]

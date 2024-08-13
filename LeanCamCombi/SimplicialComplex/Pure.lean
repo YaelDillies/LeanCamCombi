@@ -55,7 +55,7 @@ lemma Pure.mem_facets_iff (hK : K.Pure n) (hs : s ∈ K) : s ∈ K.facets ↔ s.
 /-- A simplicial complex is pure iff there exists `n` such that all faces are subfaces of some
 `n`-dimensional face. -/
 lemma pure_iff : K.Pure n ↔ ∀ ⦃s⦄, s ∈ K → ∃ t ∈ K, Finset.card t = n + 1 ∧ s ⊆ t := by
-  refine' ⟨fun hK s hs => _, fun hK => ⟨fun s hs => _, fun s hs => _⟩⟩
+  refine ⟨fun hK s hs => ?_, fun hK => ⟨fun s hs => ?_, fun s hs => ?_⟩⟩
   · obtain ⟨t, ht, hst⟩ := hK.exists_facet hs
     exact ⟨t, ht.1, hK.2 ht, hst⟩
   · obtain ⟨t, _, htcard, hst⟩ := hK hs
@@ -65,7 +65,7 @@ lemma pure_iff : K.Pure n ↔ ∀ ⦃s⦄, s ∈ K → ∃ t ∈ K, Finset.card 
 
 lemma facets_mono {K₁ K₂ : SimplicialComplex 𝕜 E} (h : K₁ ≤ K₂) (hK₁ : K₁.Pure n)
     (hK₂ : K₂.Pure n) : K₁.facets ⊆ K₂.facets := by
-  refine' fun s hs => ⟨h hs.1, fun t ht hst => Finset.eq_of_subset_of_card_le hst _⟩
+  refine fun s hs => ⟨h hs.1, fun t ht hst => Finset.eq_of_subset_of_card_le hst ?_⟩
   rw [hK₁.2 hs]
   exact hK₂.card_le ht
 

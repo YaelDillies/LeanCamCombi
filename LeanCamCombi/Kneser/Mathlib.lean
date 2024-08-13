@@ -56,7 +56,7 @@ lemma pairwiseDisjoint_smul (s : Subgroup β) :
   rintro _ ⟨a, rfl⟩ _ ⟨b, rfl⟩ hab
   simp only [Function.onFun, id_eq, disjoint_left] at hab ⊢
   rintro _ ⟨c, hc, rfl⟩ ⟨d, hd, (hcd : b • d = a • c)⟩
-  refine' hab _
+  refine hab ?_
   rw [← smul_coe hc, ← smul_assoc, ← hcd, smul_assoc, smul_coe hc, smul_coe hd]
 
 end Subgroup

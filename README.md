@@ -50,7 +50,6 @@ The following topics are under active development in LeanCamCombi.
 
 The following topics are covered in LeanCamCombi and could be upstreamed to mathlib.
 
-* The Kruskal-Katona theorem and the Erdős-Ko-Rado theorem
 * Kneser's addition theorem
 * The Sylvester-Chvatal theorem
 * Containment of graphs

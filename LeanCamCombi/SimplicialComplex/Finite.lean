@@ -65,9 +65,9 @@ lemma locallyFinite_iff_mem_finitely_many_faces [DecidableEq E] :
     by_cases hxspace : x ∈ K.space
     · obtain ⟨s, ⟨hX, hXhull, hXbound⟩, hXunique⟩ := combiInteriors_partition hxspace
       simp at hXunique
-      refine'
-        ⟨s, hX, Finset.nonempty_of_ne_empty _, fun hXlocallyfinite =>
-          hx <| hXlocallyfinite.subset fun t hY => ⟨hY.1, _⟩⟩
+      refine
+        ⟨s, hX, Finset.nonempty_of_ne_empty ?_, fun hXlocallyfinite =>
+          hx <| hXlocallyfinite.subset fun t hY => ⟨hY.1, ?_⟩⟩
       · rintro rfl
         simp at hXhull
       have hXYhull := K.inter_subset_convexHull hX hY.1 ⟨hXhull, hY.2⟩

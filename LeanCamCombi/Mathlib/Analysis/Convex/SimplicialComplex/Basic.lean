@@ -144,7 +144,7 @@ def ofSimplex (indep : AffineIndependent 𝕜 ((↑) : s → E)) : SimplicialCom
 
 lemma mem_ofSimplex (hs : AffineIndependent 𝕜 ((↑) : s → E)) :
     t ∈ ofSimplex hs ↔ t.Nonempty ∧ t ⊆ s := by
-  refine' ⟨_, fun h => ⟨h.1, s, rfl, h.2⟩⟩
+  refine ⟨?_, fun h => ⟨h.1, s, rfl, h.2⟩⟩
   rintro ⟨ht, u, rfl : u = s, hts⟩
   exact ⟨ht, hts⟩
 
@@ -165,9 +165,9 @@ lemma subfacet [FiniteDimensional 𝕜 E] (hs : s ∈ K) : ∃ t, t ∈ K.facets
   exact ⟨v, hv.1, htu.1.trans hv.2⟩
 
 lemma facets_eq_empty_iff [FiniteDimensional 𝕜 E] : K.facets = ∅ ↔ K = ⊥ := by
-  refine' ⟨fun h => _, _⟩
+  refine ⟨fun h => ?_, ?_⟩
   · ext s
-    refine' iff_of_false (fun hs => _) (Set.not_mem_empty _)
+    refine iff_of_false (fun hs => ?_) (Set.not_mem_empty _)
     obtain ⟨t, ht, -⟩ := subfacet hs
     exact h.subset ht
   · rintro rfl

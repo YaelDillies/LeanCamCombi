@@ -285,7 +285,7 @@ lemma map_comap_eq (L : Sublattice β) : map f (comap f L) = f.range ⊓ L :=
     rw [coe_map, coe_comap, Set.image_preimage_eq_inter_range, coe_inf, coe_range, Set.inter_comm]
 
 lemma comap_map_eq (L : Sublattice α) : comap f (map f L) = L ⊔ f.ker := by
-  refine' le_antisymm _ (sup_le (le_comap_map _ _) (ker_le_comap _ _))
+  refine le_antisymm _ (sup_le (le_comap_map _ _) (ker_le_comap _ _))
   intro a hx; simp only [exists_prop, mem_map, mem_comap] at hx
   rcases hx with ⟨y, hy, hy'⟩
   rw [← mul_inv_cancel_left y a]

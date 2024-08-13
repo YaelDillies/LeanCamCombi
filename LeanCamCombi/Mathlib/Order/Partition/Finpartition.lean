@@ -53,7 +53,7 @@ def modPartitions (s d : ℕ) (hd : d ≠ 0) (h : d ≤ s) : Finpartition (range
     exact this.2
   sup_parts := by
     rw [sup_image, Function.id_comp]
-    refine' Subset.antisymm _ _
+    refine Subset.antisymm ?_ ?_
     · rw [Finset.sup_eq_biUnion, biUnion_subset]
       simp only [filter_subset, imp_true_iff]
     intro i hi
@@ -71,7 +71,7 @@ lemma modPartitions_parts_eq (s d : ℕ) (hd : d ≠ 0) (h : d ≤ s) :
   rw [modPartitions]
   ext x
   simp only [mem_image, mem_range]
-  refine' exists_congr fun i ↦ and_congr_right fun hi ↦ _
+  refine exists_congr fun i ↦ and_congr_right fun hi ↦ ?_
   suffices
     ((range ((s - i - 1) / d + 1)).image fun x ↦ i + d * x) = (range s).filter fun j ↦ j % d = i
     by rw [this]
@@ -86,7 +86,7 @@ lemma modPartitions_parts_eq (s d : ℕ) (hd : d ≠ 0) (h : d ≤ s) :
     rw [Nat.succ_le_iff]
     exact Nat.sub_pos_of_lt (hi.trans_le h)
   · rintro ⟨hj, rfl⟩
-    refine' ⟨j / d, _, Nat.mod_add_div _ _⟩
+    refine ⟨j / d, ?_, Nat.mod_add_div _ _⟩
     rwa [Nat.le_div_iff_mul_le' hd.bot_lt, Nat.le_sub_iff_add_le, Nat.le_sub_iff_add_le',
       ← add_assoc, mul_comm, Nat.mod_add_div, Nat.add_one_le_iff]
     · exact hi.le.trans h

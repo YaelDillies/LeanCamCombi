@@ -104,7 +104,7 @@ lemma combiFrontier_eq :
       rwa [← Finset.sum_subset ts.1, Finset.sum_extend_by_zero]
       simp only [ite_eq_right_iff]
       tauto
-    refine' ⟨w', _, hw'₁, ⟨_, ‹y ∈ s›, _⟩, _⟩
+    refine ⟨w', ?_, hw'₁, ⟨_, ‹y ∈ s›, ?_⟩, ?_⟩
     · rintro y -
       change 0 ≤ ite (y ∈ t) (w y) 0
       split_ifs
@@ -123,9 +123,9 @@ lemma combiFrontier_eq :
     exact fun i _ hi => if_neg hi
   · simp only [and_imp, exists_prop, exists_imp]
     intro w hw₁ hw₂ y hy₁ hy₂ hy₃
-    refine' ⟨s.erase y, Finset.erase_ssubset hy₁, _⟩
+    refine ⟨s.erase y, Finset.erase_ssubset hy₁, ?_⟩
     rw [Finset.convexHull_eq, Set.mem_setOf_eq]
-    refine' ⟨w, fun z hz => hw₁ z (s.erase_subset _ hz), _, _⟩
+    refine ⟨w, fun z hz => hw₁ z (s.erase_subset _ hz), ?_, ?_⟩
     rw [Finset.sum_erase _ hy₂]
     apply hw₂
     rwa [Finset.centerMass_subset _ (s.erase_subset _)]
@@ -142,17 +142,17 @@ lemma combiInterior_subset_positive_weighings :
   rintro x
   simp only [not_exists, and_imp, not_and, mem_setOf_eq, mem_diff, exists_imp]
   rintro w hw₁ hw₂ hw₃ q
-  refine' ⟨w, fun y hy => _, hw₂, hw₃⟩
+  refine ⟨w, fun y hy => ?_, hw₂, hw₃⟩
   exact lt_of_le_of_ne (hw₁ _ hy) (Ne.symm fun t => q w hw₁ hw₂ y hy t hw₃)
 
 lemma combiInterior_eq (hs : AffineIndependent 𝕜 ((↑) : s → E)) :
     combiInterior 𝕜 s = {x : E | ∃ (w : E → 𝕜)
       (_hw₀ : ∀ y ∈ s, 0 < w y) (_hw₁ : ∑ y in s, w y = 1), s.centerMass w id = x} := by
-  refine' combiInterior_subset_positive_weighings.antisymm fun x => _
+  refine combiInterior_subset_positive_weighings.antisymm fun x => ?_
   rw [combiInterior, Finset.convexHull_eq, combiFrontier_eq]
   simp only [not_exists, and_imp, not_and, mem_setOf_eq, mem_diff, exists_imp]
   intro w hw₀ hw₁ hw₂
-  refine' ⟨⟨w, fun y hy => (hw₀ y hy).le, hw₁, hw₂⟩, fun v hv₀ hv₁ y hy hvy hv₂ => (hw₀ y hy).ne' _⟩
+  refine ⟨⟨w, fun y hy => (hw₀ y hy).le, hw₁, hw₂⟩, fun v hv₀ hv₁ y hy hvy hv₂ => (hw₀ y hy).ne' ?_⟩
   rw [← hv₂] at hw₂
   rw [Finset.centerMass_eq_of_sum_1 _ _ hv₁, Finset.centerMass_eq_of_sum_1 _ _ hw₁] at hw₂
   rw [← hvy]
@@ -164,7 +164,7 @@ lemma centroid_mem_combiInterior (hs : AffineIndependent 𝕜 ((↑) : s → E))
   have hsweights := s.sum_centroidWeights_eq_one_of_nonempty 𝕜 hs'
   rw [affineCombination_eq_centerMass hsweights]
   rw [combiInterior_eq hs]
-  refine' ⟨_, fun y _ => _, hsweights, rfl⟩
+  refine ⟨_, fun y _ => ?_, hsweights, rfl⟩
   simpa using hs'.card_pos
 
 protected lemma Finset.Nonempty.combiInterior (hs : AffineIndependent 𝕜 ((↑) : s → E))
@@ -180,7 +180,7 @@ lemma convex_combiInterior (hs : AffineIndependent 𝕜 ((↑) : s → E)) :
     Convex 𝕜 (combiInterior 𝕜 s) := by
   simp_rw [convex_iff_forall_pos, combiInterior_eq hs]
   rintro x ⟨v, hv₀, hv₁, rfl⟩ y ⟨w, hw₀, hw₁, rfl⟩ a b ha hb h
-  refine' ⟨fun x => a * v x + b * w x, fun x hx => _, _, _⟩
+  refine ⟨fun x => a * v x + b * w x, fun x hx => ?_, ?_, ?_⟩
   · exact add_pos (mul_pos ha <| hv₀ x hx) (mul_pos hb <| hw₀ x hx)
   · rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum, hv₁, hw₁]
     simp [h]
@@ -197,7 +197,7 @@ lemma Finset.isClosed_convexHull (s : Finset E) : IsClosed (convexHull ℝ (s : 
   s.finite_toSet.isClosed_convexHull
 
 lemma isClosed_combiFrontier : IsClosed (combiFrontier ℝ s) := by
-  refine' Set.Finite.isClosed_biUnion _ fun t _ => t.isClosed_convexHull
+  refine Set.Finite.isClosed_biUnion ?_ fun t _ => t.isClosed_convexHull
   suffices Set.Finite {t | t ⊆ s} by exact this.subset fun i h => h.1
   convert s.powerset.finite_toSet using 1
   ext
@@ -238,7 +238,7 @@ lemma subset_closure_combiInterior (hs : AffineIndependent ℝ ((↑) : s → E)
   have hsnonempty : s.Nonempty := ⟨x, hx⟩
   have centroid_weights : ∑ i : E in s, Finset.centroidWeights ℝ s i = 1 := by
     apply Finset.sum_centroidWeights_eq_one_of_nonempty ℝ _ hsnonempty
-  refine' ⟨fun n => _, fun n => _, _⟩
+  refine ⟨fun n => ?_, fun n => ?_, ?_⟩
   · apply ((n : ℝ) + 2)⁻¹ • s.centroid ℝ id + (1 - ((n : ℝ) + 2)⁻¹) • x
   · rw [Finset.centroid_def]
     rw [affineCombination_eq_centerMass _]
@@ -247,7 +247,7 @@ lemma subset_closure_combiInterior (hs : AffineIndependent ℝ ((↑) : s → E)
       simp only
       rw [Finset.centerMass_segment]
       · rw [combiInterior_eq hs]
-        refine' ⟨_, _, _, rfl⟩
+        refine ⟨_, ?_, ?_, rfl⟩
         · simp only [mul_boole, Finset.centroidWeights_apply]
           intro y hy
           apply add_pos_of_pos_of_nonneg
@@ -283,7 +283,7 @@ lemma subset_closure_combiInterior (hs : AffineIndependent ℝ ((↑) : s → E)
       apply Nat.zero_le
     suffices Filter.Tendsto (fun e : ℕ => (↑(e + 2) : ℝ)⁻¹) Filter.atTop (nhds 0) by
       simpa using this.mul_const _
-    refine' tendsto_inv_atTop_zero.comp _
+    refine tendsto_inv_atTop_zero.comp ?_
     rw [tendsto_natCast_atTop_iff]
     apply Filter.tendsto_add_atTop_nat
 
@@ -292,9 +292,8 @@ variable [T2Space E]
 -- Affine indep is necessary, since if not combiInterior can be empty
 lemma closure_combiInterior_eq_convexHull (hs : AffineIndependent ℝ ((↑) : s → E)) :
     closure (combiInterior ℝ s) = convexHull ℝ (s : Set E) := by
-  refine'
-    Set.Subset.antisymm _
-      (convexHull_min (subset_closure_combiInterior hs) (convex_combiInterior hs).closure)
+  refine Set.Subset.antisymm ?_
+    (convexHull_min (subset_closure_combiInterior hs) (convex_combiInterior hs).closure)
   rw [s.isClosed_convexHull.closure_subset_iff]
   exact combiInterior_subset_convexHull
 

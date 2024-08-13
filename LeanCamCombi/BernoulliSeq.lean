@@ -41,6 +41,8 @@ variable {X Y : Ω → Set α} {μ : Measure Ω} {p q : ℝ≥0} (hX : IsBernoul
 
 namespace IsBernoulliSeq
 
+include hX
+
 protected lemma ne_zero [Nonempty α] : μ ≠ 0 :=
   Nonempty.elim ‹_› fun a h ↦ (PMF.bernoulli' p hX.le_one).toMeasure_ne_zero $ by
     rw [← hX.map a, h, Measure.map_zero]
@@ -49,7 +51,7 @@ protected lemma aemeasurable (a : α) : AEMeasurable (fun ω ↦ a ∈ X ω) μ 
   classical
   have : (PMF.bernoulli' p hX.le_one).toMeasure ≠ 0 := NeZero.ne _
   rw [← hX.map a, Measure.map] at this
-  refine' (Ne.dite_ne_right_iff fun hX' ↦ _).1 this
+  refine (Ne.dite_ne_right_iff fun hX' ↦ ?_).1 this
   rw [Measure.mapₗ_ne_zero_iff hX'.measurable_mk]
   haveI : Nonempty α := ⟨a⟩
   exact hX.ne_zero
@@ -70,12 +72,10 @@ protected lemma identDistrib (a j : α) : IdentDistrib (fun ω ↦ a ∈ X ω) (
   · ext ω
     simp
 
-variable [IsProbabilityMeasure (μ : Measure Ω)]
-
-protected lemma meas [Fintype α] (s : Finset α) :
+protected lemma meas [IsProbabilityMeasure (μ : Measure Ω)] [Fintype α] (s : Finset α) :
     μ {ω | {a | a ∈ X ω} = s} = (p : ℝ≥0∞) ^ s.card * (1 - p : ℝ≥0∞) ^ (card α - s.card) := by
   classical
-  simp_rw [ext_iff, setOf_forall]
+  simp_rw [Set.ext_iff, setOf_forall]
   rw [hX.iIndepFun.meas_iInter, ← s.prod_mul_prod_compl, Finset.prod_eq_pow_card,
     Finset.prod_eq_pow_card, Finset.card_compl]
   · rintro a hi
@@ -100,25 +100,29 @@ lemma compl : IsBernoulliSeq (fun ω ↦ (X ω)ᶜ) (1 - p) μ where
     exact (iIndepFun_iff _ _ _).1 hX.iIndepFun
   map a := by
     have : Measurable Not := fun _ _ ↦ trivial
-    refine' (this.aemeasurable.map_map_of_aemeasurable (hX.aemeasurable _)).symm.trans _
+    refine (this.aemeasurable.map_map_of_aemeasurable (hX.aemeasurable _)).symm.trans ?_
     rw [hX.map, PMF.map_toMeasure _ this, PMF.map_not_bernoulli']
+
+variable [IsProbabilityMeasure (μ : Measure Ω)]
+
+include hY
 
 /-- The intersection of a sequence of independent `p`-Bernoulli and `q`-Bernoulli random variables
 is a sequence of independent `p * q`-Bernoulli random variables. -/
 protected lemma inter (h : IndepFun X Y μ) : IsBernoulliSeq (fun ω ↦ X ω ∩ Y ω) (p * q) μ where
   le_one := mul_le_one' hX.le_one hY.le_one
   iIndepFun := by
-    refine' iIndepSet.Indep_comap ((iIndepSet_iff_meas_iInter fun i ↦ _).2 _)
-    refine' MeasurableSet.inter _ _
+    refine iIndepSet.Indep_comap ((iIndepSet_iff_meas_iInter fun i ↦ ?_).2 ?_)
+    refine MeasurableSet.inter ?_ ?_
     sorry -- needs refactor of `Probability.Independence.Basic`
     sorry -- needs refactor of `Probability.Independence.Basic`
-    refine' fun s ↦ _
+    refine fun s ↦ ?_
     -- We abused defeq using `iIndepSet.Indep_comap`, so we fix it here
     change μ (⋂ i ∈ s, {ω | X ω i} ∩ {ω | Y ω i}) = s.prod fun i ↦ μ ({ω | X ω i} ∩ {ω | Y ω i})
     simp_rw [iInter_inter_distrib]
     rw [h.meas_inter, hX.iIndepFun.meas_biInter, hY.iIndepFun.meas_biInter,
       ← Finset.prod_mul_distrib]
-    refine' Finset.prod_congr rfl fun i hi ↦ (h.meas_inter _ _).symm
+    refine Finset.prod_congr rfl fun i hi ↦ (h.meas_inter ?_ ?_).symm
     sorry -- needs refactor of `Probability.Independence.Basic`
     sorry -- needs refactor of `Probability.Independence.Basic`
     sorry -- needs refactor of `Probability.Independence.Basic`

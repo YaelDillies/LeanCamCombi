@@ -50,8 +50,8 @@ variable [SeminormedAddCommGroup E] [T2Space E] [NormedSpace ℝ E] {s t : Finse
 lemma subdivides_iff_combiInteriors_subset_combiInteriors :
     K₁.Subdivides K₂ ↔
       K₂.space ⊆ K₁.space ∧ ∀ s₁ ∈ K₁, ∃ s₂ ∈ K₂, combiInterior ℝ s₁ ⊆ combiInterior ℝ s₂ := by
-  refine' ⟨fun h => ⟨h.1.superset, fun s hs => _⟩, fun h =>
-    ⟨h.1.antisymm' fun x hx => _, fun s₁ hs₁ => _⟩⟩
+  refine ⟨fun h => ⟨h.1.superset, fun s hs => ?_⟩, fun h =>
+    ⟨h.1.antisymm' fun x hx => ?_, fun s₁ hs₁ => ?_⟩⟩
   · obtain ⟨t, ht, hst⟩ := h.2 hs
     obtain ⟨u, hut, hu, hsu⟩ :=
       simplex_combiInteriors_split_interiors_nonempty (K₁.nonempty hs) (K₂.indep ht) hst
@@ -70,17 +70,17 @@ lemma subdivides_iff_partition :
       ∀ s₂ ∈ K₂, ∃ F, F ⊆ K₁.faces ∧ combiInterior ℝ s₂ = ⋃ s₁ ∈ F, combiInterior ℝ s₁ := by
   constructor
   · rintro ⟨hspace, hsubdiv⟩
-    refine' ⟨_, hspace.le, fun s hs => _⟩
+    refine ⟨?_, hspace.le, fun s hs => ?_⟩
     · rintro ⟨s₁, hs₁⟩
       obtain ⟨s₂, hs₂, -⟩ := hsubdiv hs₁
       exact ⟨s₂, hs₂⟩
-    refine' ⟨{t | t ∈ K₁ ∧ combiInterior ℝ t ⊆ combiInterior ℝ s}, fun t ht => ht.1, _⟩
+    refine ⟨{t | t ∈ K₁ ∧ combiInterior ℝ t ⊆ combiInterior ℝ s}, fun t ht => ht.1, ?_⟩
     ext x
-    refine' ⟨fun hxs => _, _⟩
+    refine ⟨fun hxs => ?_, ?_⟩
     · have hxspace := mem_space_iff.2 ⟨s, hs, hxs.1⟩
       rw [← hspace, ← combiInteriors_cover, mem_iUnion₂] at hxspace
       obtain ⟨t, ht, hxt⟩ := hxspace
-      refine' mem_iUnion₂_of_mem ⟨ht, fun y hyt => _⟩ hxt
+      refine mem_iUnion₂_of_mem ⟨ht, fun y hyt => ?_⟩ hxt
       obtain ⟨u, hu, htu⟩ := hsubdiv ht
       obtain ⟨W, hWu, htW⟩ := simplex_combiInteriors_split_interiors (K₂.indep hu) htu
       rw [disjoint_interiors hs (K₂.down_closed hu hWu _) hxs (htW hxt)]
@@ -93,14 +93,14 @@ lemma subdivides_iff_partition :
       exact hts hxt
   · rintro ⟨hempty, hspace, hpartition⟩
     have hspace : K₁.space = K₂.space := by
-      refine' hspace.antisymm fun x hx => _
+      refine hspace.antisymm fun x hx => ?_
       rw [← combiInteriors_cover, mem_iUnion₂] at hx ⊢
       obtain ⟨s, hs, hxs⟩ := hx
       obtain ⟨F, hF, hsint⟩ := hpartition _ hs
       rw [hsint, mem_iUnion₂] at hxs
       obtain ⟨t, ht, hxt⟩ := hxs
       exact ⟨t, hF ht, hxt⟩
-    refine' ⟨hspace, fun s hs => _⟩
+    refine ⟨hspace, fun s hs => ?_⟩
     obtain rfl | hsnonempty := s.eq_empty_or_nonempty
     · obtain ⟨t, ht⟩ := hempty ⟨_, hs⟩
       exact ⟨t, ht, by simp⟩
@@ -110,7 +110,7 @@ lemma subdivides_iff_partition :
     obtain ⟨t, ht, hxt⟩ := hxspace
     use t, ht
     rw [← closure_combiInterior_eq_convexHull (K₁.indep hs)]
-    refine' closure_minimal (fun x' hx' => _) (isClosed_convexHull _)
+    refine closure_minimal (fun x' hx' => ?_) (isClosed_convexHull _)
     have hxspace := mem_space_iff.2 ⟨s, hs, hx'.1⟩
     rw [hspace, ← combiInteriors_cover, mem_iUnion₂] at hxspace
     obtain ⟨t', ht', hxt'⟩ := hxspace
@@ -123,7 +123,7 @@ lemma subdivides_iff_partition :
       exact ⟨u, hu, hxu⟩
     · rw [hinterior', mem_iUnion₂] at hxt' ⊢
       obtain ⟨u, hu, hxu⟩ := hxt'
-      refine' ⟨u, hu, _⟩
+      refine ⟨u, hu, ?_⟩
       rw [← disjoint_interiors hs (hF' hu) hx' hxu]
       exact hx
 
@@ -149,7 +149,7 @@ instance : IsPartialOrder (SimplicialComplex ℝ E) Subdivides where
     obtain ⟨u, hu, hxu⟩ := hxt
     obtain rfl := disjoint_interiors hs (hF' hu) hxs hxu
     convert hF ht
-    refine' combiInterior.inj (K₁.indep hs) (K₂.indep <| hF ht) (Subset.antisymm _ _)
+    refine combiInterior.inj (K₁.indep hs) (K₂.indep <| hF ht) (Subset.antisymm ?_ ?_)
     · rw [hF't]
       exact subset_biUnion_of_mem hu
     · rw [hFs]

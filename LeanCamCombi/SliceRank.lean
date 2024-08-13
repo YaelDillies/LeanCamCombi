@@ -4,7 +4,7 @@ import Mathlib.Data.Matrix.Rank
 
 open scoped BigOperators
 
-variable {ι R : Type*} [DecidableEq ι] {α : ι → Type*} [Semiring R] {m n : ℕ}
+variable {ι R : Type*} {α : ι → Type*} [Semiring R] {m n : ℕ}
   {f f₁ f₂ : (∀ i, α i) → R}
 
 /-- A function `f` *has slice-rank at most* `n` if it can be written as the sum of `n` functions
@@ -52,6 +52,8 @@ lemma HasSliceRankLE.add (h₁ : HasSliceRankLE m f₁) :
     ∀ {n f₂}, HasSliceRankLE n f₂ → HasSliceRankLE (m + n) (f₁ + f₂)
   | _, _, .zero => by simpa
   | _, _, .succ g h h₂ => by simpa [add_assoc] using (h₁.add h₂).succ g h
+
+variable [DecidableEq ι]
 
 /-- Any function has slice-rank bounded by the cardinality of its domain. -/
 lemma hasSliceRankLE_card [Fintype ι] [∀ i, Fintype (α i)] (f : (∀ i, α i) → R) :

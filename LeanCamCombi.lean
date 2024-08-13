@@ -1,6 +1,5 @@
 import LeanCamCombi.Archive.CauchyDavenportFromKneser
 import LeanCamCombi.BernoulliSeq
-import LeanCamCombi.ConvexContinuous
 import LeanCamCombi.ConvexityRefactor.Defs
 import LeanCamCombi.ConvexityRefactor.StdSimplex
 import LeanCamCombi.Corners.CombiDegen
@@ -17,7 +16,6 @@ import LeanCamCombi.Kneser.Kneser
 import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.Mathlib
 import LeanCamCombi.Kneser.MulStab
-import LeanCamCombi.KruskalKatona
 import LeanCamCombi.LittlewoodOfford
 import LeanCamCombi.Mathlib.Algebra.BigOperators.Finsupp
 import LeanCamCombi.Mathlib.Algebra.Module.BigOperators
@@ -26,7 +24,6 @@ import LeanCamCombi.Mathlib.Algebra.Order.Group.Pi
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
-import LeanCamCombi.Mathlib.Analysis.Convex.Normed
 import LeanCamCombi.Mathlib.Analysis.Convex.Segment
 import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
 import LeanCamCombi.Mathlib.Combinatorics.Schnirelmann
@@ -39,7 +36,7 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Finite
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Maps
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Multipartite
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
-import LeanCamCombi.Mathlib.Data.Finset.Pointwise
+import LeanCamCombi.Mathlib.Data.Finset.Pointwise.Basic
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.Finsupp.Order
 import LeanCamCombi.Mathlib.Data.List.Basic
@@ -57,7 +54,6 @@ import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.Sublattice
 import LeanCamCombi.Mathlib.Probability.Independence.Basic
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
-import LeanCamCombi.Mathlib.RingTheory.Int.Basic
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.SimplicialComplex.Basic

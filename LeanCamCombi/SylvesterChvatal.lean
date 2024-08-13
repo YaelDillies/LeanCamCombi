@@ -81,19 +81,31 @@ lemma Set.IsLine.generateLine_subset {S L : Set V} (hL₀ : S ⊆ L) (hL : L.IsL
 
 attribute [local simp] Set.subset_def
 
-variable [Finite V] [Nontrivial V] {x y z : V}
+variable {x y z : V}
+
+section NotCollinear
+
+def NotCollinear (x y z : V) : Prop :=
+  x ≠ y ∧ x ≠ z ∧ y ≠ z ∧ ∀ l : Set V, l.IsLine → ¬ {x, y, z} ⊆ l
+
+lemma notCollinear_iff :
+    NotCollinear x y z ↔ x ≠ y ∧ x ≠ z ∧ y ≠ z ∧ ∀ l : Set V, l.IsLine → ¬ {x, y, z} ⊆ l := Iff.rfl
+
+lemma NotCollinear.rotate (h : NotCollinear u v w) : NotCollinear v w u :=
+  ⟨h.2.2.1, h.1.symm, h.2.1.symm,
+   fun l h₁ h₂ => h.2.2.2 l h₁ (h₂.trans' (by simp))⟩
+
+lemma NotCollinear.swap (h : NotCollinear u v w) : NotCollinear w v u :=
+  ⟨h.2.2.1.symm, h.2.1.symm, h.1.symm,
+   fun l h₁ h₂ => h.2.2.2 l h₁ (h₂.trans' (by simp))⟩
+
+variable [Nontrivial V]
 
 lemma exists_isLine (a b : V) : ∃ L : Set V, L.IsLine ∧ {a, b} ⊆ L := by
   rcases ne_or_eq a b with h | rfl
   · exact ⟨Line a b, Line_isLine h, by simp⟩
   have ⟨b, h⟩ := exists_ne a
   exact ⟨Line a b, Line_isLine h.symm, by simp⟩
-
-def NotCollinear (x y z : V) : Prop :=
-  x ≠ y ∧ x ≠ z ∧ y ≠ z ∧ ∀ l : Set V, l.IsLine → ¬ {x, y, z} ⊆ l
-
-lemma notCollinear_iff :
-   NotCollinear x y z ↔ x ≠ y ∧ x ≠ z ∧ y ≠ z ∧ ∀ l : Set V, l.IsLine → ¬ {x, y, z} ⊆ l := Iff.rfl
 
 lemma NotCollinear.mk (hl : ∀ l : Set V, l.IsLine → ¬ {x, y, z} ⊆ l) : NotCollinear x y z := by
   refine ⟨?_, ?_, ?_, hl⟩
@@ -107,13 +119,7 @@ lemma NotCollinear.mk (hl : ∀ l : Set V, l.IsLine → ¬ {x, y, z} ⊆ l) : No
     obtain ⟨L, hL, hL'⟩ := exists_isLine x y
     aesop
 
-lemma NotCollinear.rotate (h : NotCollinear u v w) : NotCollinear v w u :=
-  ⟨h.2.2.1, h.1.symm, h.2.1.symm,
-   fun l h₁ h₂ => h.2.2.2 l h₁ (h₂.trans' (by simp))⟩
-
-lemma NotCollinear.swap (h : NotCollinear u v w) : NotCollinear w v u :=
-  ⟨h.2.2.1.symm, h.2.1.symm, h.1.symm,
-   fun l h₁ h₂ => h.2.2.2 l h₁ (h₂.trans' (by simp))⟩
+variable [Finite V]
 
 theorem thm_two (h : ∀ x y z : V, ¬ NotCollinear x y z) :
     (Set.univ : Set V).IsLine := by
@@ -138,20 +144,25 @@ theorem thm_two' (h : ∀ x y z : V, ¬ NotCollinear x y z) :
     ∃ l : Set V, l = Set.univ ∧ l.IsLine :=
   ⟨Set.univ, rfl, thm_two h⟩
 
+end NotCollinear
+
+section IsSimpleTriangle
+
 @[simps]
 def SimpleEdges : SimpleGraph V where
   Adj a b := a ≠ b ∧ ∀ x, ¬ sbtw a x b
   symm a b := fun | ⟨hab, h⟩ => ⟨hab.symm, fun x hx => h x hx.symm⟩
 
-def SimpleTriangle (x y z : V) : Prop :=
-  SimpleEdges.Adj x y ∧ SimpleEdges.Adj y z ∧ SimpleEdges.Adj z x ∧
-      NotCollinear x y z
+def IsSimpleTriangle (x y z : V) : Prop :=
+  SimpleEdges.Adj x y ∧ SimpleEdges.Adj y z ∧ SimpleEdges.Adj z x ∧ NotCollinear x y z
 
-lemma SimpleTriangle.swap (h : SimpleTriangle u v w) : SimpleTriangle w v u :=
+lemma IsSimpleTriangle.swap (h : IsSimpleTriangle u v w) : IsSimpleTriangle w v u :=
 ⟨h.2.1.symm, h.1.symm, h.2.2.1.symm, h.2.2.2.swap⟩
 
+variable [Finite V]
+
 lemma one_implies_two (h : ∃ x y z : V, NotCollinear x y z) :
-    ∃ x y z : V, SimpleTriangle x y z := by
+    ∃ x y z : V, IsSimpleTriangle x y z := by
   let S : Set (V × V × V) := setOf (fun ⟨a, b, c⟩ => NotCollinear a b c)
   have : S.Nonempty := let ⟨x, y, z, hxyz⟩ := h; ⟨(x, y, z), hxyz⟩
   let f : V × V × V → ℝ := fun ⟨a, b, c⟩ => dist a b + dist b c + dist c a
@@ -162,7 +173,7 @@ lemma one_implies_two (h : ∃ x y z : V, NotCollinear x y z) :
     intro a' b' c' hL
     by_contra! h
     exact h.ne' (h₂ a' b' c' hL h.le)
-  simp only [SimpleTriangle]
+  simp only [IsSimpleTriangle]
   by_contra! cont
   wlog hab : ¬ SimpleEdges.Adj a b generalizing a b c
   · rw [not_not] at hab
@@ -192,6 +203,8 @@ lemma one_implies_two (h : ∃ x y z : V, NotCollinear x y z) :
   have : b ∈ L := hL.close_right hL'.1 hL'.2.1 adb
   refine h₁.2.2.2 L hL ?_
   simp [this, hL'.1, hL'.2.2]
+
+end IsSimpleTriangle
 
 def Delta (u v w : V) : ℝ := dist u v + dist v w - dist u w
 
@@ -223,8 +236,8 @@ lemma exists_third {a b : V} (hab : a ≠ b) (h : Line a b ≠ {a, b}) :
       · exact (h.ne13 rfl).elim
   exact h this
 
-lemma eqn_7 {a b c d : V} (habc : SimpleTriangle a b c)
-    (habc_min : ∀ a' b' c' : V, SimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c')
+lemma eqn_7 {a b c d : V} (habc : IsSimpleTriangle a b c)
+    (habc_min : ∀ a' b' c' : V, IsSimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c')
     (hacd : sbtw a c d) (hcd : SimpleEdges.Adj c d) :
     ¬ SimpleEdges.Adj b d := by
   intro h
@@ -233,7 +246,7 @@ lemma eqn_7 {a b c d : V} (habc : SimpleTriangle a b c)
     simp only [Set.mem_singleton_iff, Set.mem_insert_iff, Set.subset_def, forall_eq_or_imp,
       forall_eq] at h
     refine habc.2.2.2.2.2.2 l hl (by simp [*, hl.close_left h.2.1 h.2.2 hacd])
-  replace hbcd : SimpleTriangle b c d := ⟨habc.2.1, hcd, h.symm, hbcd⟩
+  replace hbcd : IsSimpleTriangle b c d := ⟨habc.2.1, hcd, h.symm, hbcd⟩
   have habd : sbtw a b d := by
     refine sbtw_mk habc.1.ne h.ne ?_
     have := habc_min _ _ _ hbcd
@@ -242,7 +255,7 @@ lemma eqn_7 {a b c d : V} (habc : SimpleTriangle a b c)
   refine habc.2.2.2.2.2.2 (Line a d) (Line_isLine habd.ne13) ?_
   simp [middle_extend_mem_Line, hacd, habd]
 
-lemma eqn_8 {a b c d : V} (habc : SimpleTriangle a b c) (hacd : sbtw a c d) :
+lemma eqn_8 {a b c d : V} (habc : IsSimpleTriangle a b c) (hacd : sbtw a c d) :
     dist a b + dist b d < dist a d + Delta a b c := by
   by_contra!
   have hbcd : sbtw b c d := by
@@ -327,7 +340,7 @@ lemma uniformly_bounded_of_chain_ne_of_pathLength_le (V : Type*) [MetricSpace V]
   · linarith
   · positivity
 
-lemma abd_special {a b c d : V} (habc : SimpleTriangle a b c) (hacd : sbtw a c d) (hbd' : b ≠ d)
+lemma abd_special {a b c d : V} (habc : IsSimpleTriangle a b c) (hacd : sbtw a c d) (hbd' : b ≠ d)
     (hbd : ¬ SimpleEdges.Adj b d) :
     [a, b, d].Special a b d := by
   simp only [List.Special, ne_eq, List.getLast_cons, List.getLast_singleton', and_true, hbd,
@@ -338,13 +351,15 @@ lemma abd_special {a b c d : V} (habc : SimpleTriangle a b c) (hacd : sbtw a c d
   intro l hl hl'
   exact habc.2.2.2.2.2.2 l hl $ by simp [*, hl.close_middle hl'.1 hl'.2.2 hacd]
 
-lemma eqn_9 {a b c d : V} {P : List V} (habc : SimpleTriangle a b c) (hacd : sbtw a c d)
+lemma eqn_9 {a b c d : V} {P : List V} (habc : IsSimpleTriangle a b c) (hacd : sbtw a c d)
     (hbd' : b ≠ d) (hbd : ¬ SimpleEdges.Adj b d)
     (hP' : ∀ P' : List V, P'.Special a b d → P.pathLength ≤ P'.pathLength) :
     P.pathLength < dist a d + Delta a b c := by
   refine (hP' [a, b, d] (abd_special habc hacd hbd' hbd)).trans_lt ?_
   rw [List.pathLength, List.pathLength, List.pathLength, add_zero]
   exact eqn_8 habc hacd
+
+variable [Finite V]
 
 lemma exists_simple_split_right {a b : V} (hab : a ≠ b) (hab' : ¬ SimpleEdges.Adj a b) :
     ∃ c, sbtw a c b ∧ SimpleEdges.Adj c b := by
@@ -364,8 +379,10 @@ lemma exists_simple_split_left {a b : V} (hab : a ≠ b) (hab' : ¬ SimpleEdges.
     ∃ c, sbtw a c b ∧ SimpleEdges.Adj a c :=
   have ⟨c, hc, hc'⟩ := exists_simple_split_right hab.symm (hab' ·.symm); ⟨c, hc.symm, hc'.symm⟩
 
-lemma case1 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b c)
-    (habc_min : ∀ a' b' c' : V, SimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c')
+variable [Nontrivial V]
+
+lemma case1 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : IsSimpleTriangle a b c)
+    (habc_min : ∀ a' b' c' : V, IsSimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c')
     (hacd : sbtw a c d) (hbd' : b ≠ d) (hbd : ¬ SimpleEdges.Adj b d)
     (hPmin : ∀ P' : List V, P'.Special a b d → (a₁ :: a₂ :: a₃ :: l).pathLength ≤ P'.pathLength)
     (ha₁ : a₁ = a) (hα : NotCollinear a₁ a₂ a₃)
@@ -410,7 +427,7 @@ lemma case1 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
       ha₃b₁₂.symm, ha₃b₂₃.symm, hPc.2.2, hP'₁.2]
   simp only [List.Special, hP'₁, List.getLast_cons_cons, List.getLast_cons_cons, hPd,
     hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not] at hP'ns
-  have : SimpleTriangle b₁₂ a₂ b₂₃ := ⟨hba, hab, hP'ns.2.symm, hb⟩
+  have : IsSimpleTriangle b₁₂ a₂ b₂₃ := ⟨hba, hab, hP'ns.2.symm, hb⟩
   replace := habc_min _ _ _ this
   have h9 := eqn_9 habc hacd hbd' hbd hPmin
   suffices dist a d ≤ P'.pathLength by linarith
@@ -422,8 +439,8 @@ lemma case1 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
   have := List.Sublist.pathLength_sublist this
   rwa [List.pathLength, List.pathLength, add_zero] at this
 
-lemma case2 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b c)
-    (habc_min : ∀ a' b' c' : V, SimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c')
+lemma case2 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : IsSimpleTriangle a b c)
+    (habc_min : ∀ a' b' c' : V, IsSimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c')
     (hacd : sbtw a c d) (hbd' : b ≠ d) (hbd : ¬ SimpleEdges.Adj b d)
     (hPmin : ∀ P' : List V, P'.Special a b d → (a₁ :: a₂ :: a₃ :: l).pathLength ≤ P'.pathLength)
     (ha₁ : a₁ = a) (hα : NotCollinear a₁ a₂ a₃)
@@ -461,7 +478,7 @@ lemma case2 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
       ha₃b₂₃.symm, hPc.2.2, hP'₁.2, hP'₁.1]
   simp only [List.Special, hP'₁, List.getLast_cons_cons, List.getLast_cons_cons, hPd,
     hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not] at hP'ns
-  have : SimpleTriangle a₁ a₂ b₂₃ := ⟨c₁1, hab, hP'ns.1.symm, hb⟩
+  have : IsSimpleTriangle a₁ a₂ b₂₃ := ⟨c₁1, hab, hP'ns.1.symm, hb⟩
   replace := habc_min _ _ _ this
   have h9 := eqn_9 habc hacd hbd' hbd hPmin
   suffices dist a d ≤ P'.pathLength by linarith
@@ -473,8 +490,8 @@ lemma case2 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
   have := List.Sublist.pathLength_sublist this
   rwa [List.pathLength, List.pathLength, add_zero] at this
 
-lemma case3 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b c)
-    (habc_min : ∀ a' b' c' : V, SimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c')
+lemma case3 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : IsSimpleTriangle a b c)
+    (habc_min : ∀ a' b' c' : V, IsSimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c')
     (hacd : sbtw a c d) (hbd' : b ≠ d) (hbd : ¬ SimpleEdges.Adj b d)
     (hPmin : ∀ P' : List V, P'.Special a b d → (a₁ :: a₂ :: a₃ :: l).pathLength ≤ P'.pathLength)
     (ha₁ : a₁ = a) (hα : NotCollinear a₁ a₂ a₃)
@@ -515,7 +532,7 @@ lemma case3 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
       ha₃b₁₂.symm, hPc.2.2, hP'₁.2]
   simp only [List.Special, hP'₁, List.getLast_cons_cons, List.getLast_cons_cons, hPd,
     hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not] at hP'ns
-  have : SimpleTriangle b₁₂ a₂ a₃ := ⟨hba, c₁2, hP'ns.2.symm, hb⟩
+  have : IsSimpleTriangle b₁₂ a₂ a₃ := ⟨hba, c₁2, hP'ns.2.symm, hb⟩
   replace := habc_min _ _ _ this
   have h9 := eqn_9 habc hacd hbd' hbd hPmin
   suffices dist a d ≤ P'.pathLength by linarith
@@ -527,13 +544,13 @@ lemma case3 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : SimpleTriangle a b
   have := List.Sublist.pathLength_sublist this
   rwa [List.pathLength, List.pathLength, add_zero] at this
 
-lemma two_implies_three (h : ∃ x y z : V, SimpleTriangle x y z) :
+lemma two_implies_three (h : ∃ x y z : V, IsSimpleTriangle x y z) :
     ∃ a b : V, a ≠ b ∧ Line a b = {a, b} := by
-  let S : Set (V × V × V) := setOf (fun ⟨x, y, z⟩ => SimpleTriangle x y z)
+  let S : Set (V × V × V) := setOf (fun ⟨x, y, z⟩ => IsSimpleTriangle x y z)
   have : S.Nonempty := let ⟨x, y, z, hxyz⟩ := h; ⟨(x, y, z), hxyz⟩
-  obtain ⟨⟨a, b, c⟩, (habc : SimpleTriangle a b c), hmin⟩ :=
+  obtain ⟨⟨a, b, c⟩, (habc : IsSimpleTriangle a b c), hmin⟩ :=
     S.toFinite.exists_minimal_wrt (fun ⟨x, y, z⟩ => Delta x y z) S this
-  replace hmin : ∀ a' b' c' : V, SimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c' := by
+  replace hmin : ∀ a' b' c' : V, IsSimpleTriangle a' b' c' → Delta a b c ≤ Delta a' b' c' := by
     intro a' b' c' h
     by_contra! h'
     exact h'.ne' (hmin (a', b', c') h h'.le)

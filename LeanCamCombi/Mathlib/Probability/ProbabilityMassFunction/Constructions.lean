@@ -21,7 +21,7 @@ lemma map_ofFintype (f : α → ℝ≥0∞) (h : ∑ a, f a = 1) (g : α → β)
           have :
             ((univ : Finset β) : Set β).PairwiseDisjoint fun b ↦
               univ.filter fun a : α ↦ g a = b := by
-            refine' fun b₁ _ b₂ _ hb ↦ disjoint_left.2 fun a ha₁ ha₂ ↦ _
+            refine fun b₁ _ b₂ _ hb ↦ disjoint_left.2 fun a ha₁ ha₂ ↦ ?_
             simp only [mem_filter, mem_univ, true_and_iff] at ha₁ ha₂
             exact hb (ha₁.symm.trans ha₂)
           rw [← sum_disjiUnion _ _ this]
@@ -64,7 +64,7 @@ lemma mem_support_bernoulli'_iff : b ∈ (bernoulli' p hp).support ↔ if b then
     rintro p
     ext q
     by_cases p <;> by_cases q <;> simp [*]
-  refine' (map_ofFintype _ _ _).trans _
+  refine (map_ofFintype _ _ _).trans ?_
   simp only [this, bernoulli', Finset.mem_filter, Finset.mem_univ, true_and_iff,
     Finset.mem_disjiUnion, tsub_le_self, eq_iff_iff, Finset.sum_singleton, WithTop.coe_sub,
     ENNReal.coe_one]
