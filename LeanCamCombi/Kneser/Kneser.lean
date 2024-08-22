@@ -3,6 +3,7 @@ Copyright (c) 2023 Mantas Bakšys, Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mantas Bakšys, Yaël Dillies
 -/
+import Mathlib.Tactic.Abel
 import Mathlib.Tactic.Linarith
 import LeanCamCombi.Kneser.MulStab
 
@@ -23,6 +24,8 @@ if the inequality is strict, then we in fact have `|s + H| + |t + H| ≤ |s + t|
 * [Imre Ruzsa, *Sumsets and structure*][ruzsa2009]
 * Matt DeVos, *A short proof of Kneser's addition theorem*
 -/
+
+set_option linter.haveLet 0
 
 open Function MulAction
 open scoped Classical Pointwise
@@ -390,145 +393,143 @@ theorem mul_kneser :
   have ht₂t : t₂ ⊆ t := inter_subset_left
   have has₁ : a ∈ s₁ := mem_inter.mpr ⟨ha, mem_smul_finset.2 ⟨1, one_mem_mulStab.2 hC, mul_one _⟩⟩
   have hbt₁ : b ∈ t₁ := mem_inter.mpr ⟨hb, mem_smul_finset.2 ⟨1, one_mem_mulStab.2 hC, mul_one _⟩⟩
-  -- have hs₁ne : s₁.Nonempty := ⟨_, has₁⟩
-  -- have ht₁ne : t₁.Nonempty := ⟨_, hbt₁⟩
-  -- set C₁ := C ∪ s₁ * t₁ with hC₁
-  -- set C₂ := C ∪ s₂ * t₂ with hC₂
-  -- set H₁ := (s₁ * t₁).mulStab with hH₁
-  -- set H₂ := (s₂ * t₂).mulStab with hH₂
-  -- have hC₁st : C₁ ⊆ s * t := union_subset hCst (mul_subset_mul hs₁s ht₁t)
-  -- have hC₂st : C₂ ⊆ s * t := union_subset hCst (mul_subset_mul hs₂s ht₂t)
-  -- have hstabH₁ : s₁ * t₁ ⊆ (a * b) • H := by
-  --   rw [hH, ← mulStab_mul_mulStab C, ← smul_mul_smul]
-  --   apply mul_subset_mul inter_subset_right inter_subset_right
-  -- have hstabH₂ : s₂ * t₂ ⊆ (a * b) • H := by
-  --   rw [hH, ← mulStab_mul_mulStab C, ← smul_mul_smul, mul_comm s₂ t₂]
-  --   apply mul_subset_mul inter_subset_right inter_subset_right
-  -- have hCst₁ := disjoint_of_subset_right hstabH₁ (disjoint_smul_mulStab hCst hab)
-  -- have hCst₂ := disjoint_of_subset_right hstabH₂ (disjoint_smul_mulStab hCst hab)
-  -- have hst₁ : (s₁ * t₁).card + s₁.card < (s * t).card + s.card :=
-  --   card_mul_add_card_lt hC hs₁s ht₁t hCst hCst₁
-  -- have hst₂ : (s₂ * t₂).card + s₂.card < (s * t).card + s.card :=
-  --   card_mul_add_card_lt hC hs₂s ht₂t hCst hCst₂
-  -- have hC₁stab : C₁.mulStab = H₁ := mulStab_union hs₁ne ht₁ne hab hCst₁
-  -- have hH₁H : H₁ ⊂ H := mulStab_mul_ssubset_mulStab hs₁ne ht₁ne hab
-  -- have aux1₁ :=
-  --   mul_aux1 (ih _ _ hst₁) hCcard
-  --     (not_le.1 fun h => hCmin _ (hC₁stab.trans_ssubset hH₁H) ⟨hC₁st, h⟩) hC₁stab hH₁H.subset hCst₁
-  -- obtain ht₂ | ht₂ne := t₂.eq_empty_or_nonempty
-  -- · have aux₁_contr :=
-  --     disjoint_mul_sub_card_le b (hs₁s has₁) (disjoint_iff_inter_eq_empty.2 ht₂) hH₁H.subset
-  --   linarith [aux1₁, aux₁_contr, Int.natCast_nonneg (t₁ * (s₁ * t₁).mulStab).card]
-  -- obtain hs₂ | hs₂ne := s₂.eq_empty_or_nonempty
-  -- · have aux1₁_contr :=
-  --     disjoint_mul_sub_card_le a (ht₁t hbt₁) (disjoint_iff_inter_eq_empty.2 hs₂)
-  --       (by rw [mul_comm]; exact hH₁H.subset)
-  --   simp only [union_comm t s, mul_comm t₁ s₁] at aux1₁_contr
-  --   linarith [aux1₁, aux1₁_contr, Int.natCast_nonneg (s₁ * (s₁ * t₁).mulStab).card]
-  -- have hC₂stab : C₂.mulStab = H₂ := mulStab_union hs₂ne ht₂ne (by rwa [mul_comm]) hCst₂
-  -- have hH₂H : H₂ ⊂ H := mulStab_mul_ssubset_mulStab hs₂ne ht₂ne (by rwa [mul_comm])
-  -- have aux1₂ :=
-  --   mul_aux1 (ih _ _ hst₂) hCcard
-  --     (not_le.1 fun h => hCmin _ (hC₂stab.trans_ssubset hH₂H) ⟨hC₂st, h⟩) hC₂stab hH₂H.subset hCst₂
-  -- obtain habH | habH := eq_or_ne (a • H) (b • H)
-  -- · simp only [← habH] at aux1₁
-  --   rw [hH₁, hs₁, ht₁, ← habH, hH] at hH₁H
-  --   refine aux1₁.not_le ?_
-  --   simp only [hs₁, ht₁, ← habH, inter_mul_sub_card_le (hs₁s has₁) hH₁H.subset]
+  have hs₁ne : s₁.Nonempty := ⟨_, has₁⟩
+  have ht₁ne : t₁.Nonempty := ⟨_, hbt₁⟩
+  set C₁ := C ∪ s₁ * t₁ with hC₁
+  set C₂ := C ∪ s₂ * t₂ with hC₂
+  set H₁ := (s₁ * t₁).mulStab with hH₁
+  set H₂ := (s₂ * t₂).mulStab with hH₂
+  have hC₁st : C₁ ⊆ s * t := union_subset hCst (mul_subset_mul hs₁s ht₁t)
+  have hC₂st : C₂ ⊆ s * t := union_subset hCst (mul_subset_mul hs₂s ht₂t)
+  have hstabH₁ : s₁ * t₁ ⊆ (a * b) • H := by
+    rw [hH, ← mulStab_mul_mulStab C, ← smul_mul_smul]
+    apply mul_subset_mul inter_subset_right inter_subset_right
+  have hstabH₂ : s₂ * t₂ ⊆ (a * b) • H := by
+    rw [hH, ← mulStab_mul_mulStab C, ← smul_mul_smul, mul_comm s₂ t₂]
+    apply mul_subset_mul inter_subset_right inter_subset_right
+  have hCst₁ := disjoint_of_subset_right hstabH₁ (disjoint_smul_mulStab hCst hab)
+  have hCst₂ := disjoint_of_subset_right hstabH₂ (disjoint_smul_mulStab hCst hab)
+  have hst₁ : (s₁ * t₁).card + s₁.card < (s * t).card + s.card :=
+    card_mul_add_card_lt hC hs₁s ht₁t hCst hCst₁
+  have hst₂ : (s₂ * t₂).card + s₂.card < (s * t).card + s.card :=
+    card_mul_add_card_lt hC hs₂s ht₂t hCst hCst₂
+  have hC₁stab : C₁.mulStab = H₁ := mulStab_union hs₁ne ht₁ne hab hCst₁
+  have hH₁H : H₁ ⊂ H := mulStab_mul_ssubset_mulStab hs₁ne ht₁ne hab
+  have aux1₁ :=
+    mul_aux1 (ih _ _ hst₁) hCcard
+      (not_le.1 fun h => hCmin _ (hC₁stab.trans_ssubset hH₁H) ⟨hC₁st, h⟩) hC₁stab hH₁H.subset hCst₁
+  obtain ht₂ | ht₂ne := t₂.eq_empty_or_nonempty
+  · have aux₁_contr :=
+      disjoint_mul_sub_card_le b (hs₁s has₁) (disjoint_iff_inter_eq_empty.2 ht₂) hH₁H.subset
+    linarith [aux1₁, aux₁_contr, Int.natCast_nonneg (t₁ * (s₁ * t₁).mulStab).card]
+  obtain hs₂ | hs₂ne := s₂.eq_empty_or_nonempty
+  · have aux1₁_contr :=
+      disjoint_mul_sub_card_le a (ht₁t hbt₁) (disjoint_iff_inter_eq_empty.2 hs₂)
+        (by rw [mul_comm]; exact hH₁H.subset)
+    simp only [union_comm t s, mul_comm t₁ s₁] at aux1₁_contr
+    linarith [aux1₁, aux1₁_contr, Int.natCast_nonneg (s₁ * (s₁ * t₁).mulStab).card]
+  have hC₂stab : C₂.mulStab = H₂ := mulStab_union hs₂ne ht₂ne (by rwa [mul_comm]) hCst₂
+  have hH₂H : H₂ ⊂ H := mulStab_mul_ssubset_mulStab hs₂ne ht₂ne (by rwa [mul_comm])
+  have aux1₂ :=
+    mul_aux1 (ih _ _ hst₂) hCcard
+      (not_le.1 fun h => hCmin _ (hC₂stab.trans_ssubset hH₂H) ⟨hC₂st, h⟩) hC₂stab hH₂H.subset hCst₂
+  obtain habH | habH := eq_or_ne (a • H) (b • H)
+  · simp only [← habH] at aux1₁
+    rw [hH₁, hs₁, ht₁, ← habH, hH] at hH₁H
+    refine aux1₁.not_le ?_
+    simp only [hs₁, ht₁, ← habH, inter_mul_sub_card_le (hs₁s has₁) hH₁H.subset]
   -- temporarily skipping deduction of inequality (2)
-  -- set S := a • H \ (s₁ ∪ t₂) with hS
-  -- set T := b • H \ (s₂ ∪ t₁) with hT
-  -- have hST : Disjoint S T :=
-  --   (C.pairwiseDisjoint_smul_finset_mulStab (Set.mem_range_self _) (Set.mem_range_self _)
-  --         habH).mono
-  --     sdiff_le sdiff_le
-  -- have hSst : S ⊆ a • H \ (s ∪ t) := by
-  --   simp only [hS, hs₁, ht₂, ← union_inter_distrib_right, sdiff_inter_self_right, Subset.rfl]
-  -- have hTst : T ⊆ b • H \ (s ∪ t) := by
-  --   simp only [hT, hs₂, ht₁, ← union_inter_distrib_right, sdiff_inter_self_right, Subset.rfl]
-  -- have hSTst : Disjoint (S ∪ T) (s ∪ t) := (subset_sdiff.1 hSst).2.sup_left (subset_sdiff.1 hTst).2
-  -- have hstconv : s * t ∉ convergent := by
-  --   apply hCmin (s * t)
-  --   rw [hstab]
-  --   refine (hC.mulStab_nontrivial.mp hCstab).symm.ssubset_of_subset ?_
-  --   simp only [one_subset, one_mem_mulStab, hC]
-  -- simp only [Set.mem_setOf_eq, Subset.rfl, true_and_iff, not_le, hstab, mul_one, card_one,
-  --   convergent] at hstconv
-  -- zify at hstconv
-  -- have hSTcard : (S.card : ℤ) + T.card + (s ∪ t).card ≤ ((s ∪ t) * H).card := by
-  --   norm_cast
-  --   conv_lhs => rw [← card_union_of_disjoint hST, ← card_union_of_disjoint hSTst, ← mul_one (s ∪ t)]
-  --   refine card_le_card
-  --     (union_subset (union_subset ?_ ?_) $ mul_subset_mul_left $ one_subset.2 hC.one_mem_mulStab)
-  --   · exact hSst.trans (sdiff_subset.trans $ smul_finset_subset_smul $ mem_union_left _ ha)
-  --   · exact hTst.trans (sdiff_subset.trans $ smul_finset_subset_smul $ mem_union_right _ hb)
-  -- have hH₁ne : H₁.Nonempty := (hs₁ne.mul ht₁ne).mulStab
-  -- have hH₂ne : H₂.Nonempty := (hs₂ne.mul ht₂ne).mulStab
-  -- -- Now we prove inequality (2)
-  -- have aux2₁ : (s₁.card : ℤ) + t₁.card + H₁.card ≤ H.card := by
-  --   rw [← le_sub_iff_add_le']
-  --   refine (Int.le_of_dvd ((sub_nonneg_of_le $ Nat.cast_le.2 $ card_le_card $
-  --     mul_subset_mul_left hH₁H.subset).trans_lt aux1₁) $ dvd_sub
-  --       (dvd_sub (card_mulStab_dvd_card_mulStab (hs₁ne.mul ht₁ne) hH₁H.subset).natCast
-  --         (card_mulStab_dvd_card_mul_mulStab _ _).natCast) $
-  --       (card_mulStab_dvd_card_mul_mulStab _ _).natCast).trans ?_
-  --   rw [sub_sub]
-  --   exact sub_le_sub_left (add_le_add (Nat.cast_le.2 $ card_le_card_mul_right _ hH₁ne) $
-  --     Nat.cast_le.2 $ card_le_card_mul_right _ hH₁ne) _
-  -- have aux2₂ : (s₂.card : ℤ) + t₂.card + H₂.card ≤ H.card := by
-  --   rw [← le_sub_iff_add_le']
-  --   refine (Int.le_of_dvd ((sub_nonneg_of_le $ Nat.cast_le.2 $ card_le_card $
-  --     mul_subset_mul_left hH₂H.subset).trans_lt aux1₂) $ dvd_sub
-  --       (dvd_sub (card_mulStab_dvd_card_mulStab (hs₂ne.mul ht₂ne) hH₂H.subset).natCast
-  --         (card_mulStab_dvd_card_mul_mulStab _ _).natCast) $
-  --       (card_mulStab_dvd_card_mul_mulStab _ _).natCast).trans ?_
-  --   rw [sub_sub]
-  --   exact sub_le_sub_left (add_le_add (Nat.cast_le.2 $ card_le_card_mul_right _ hH₂ne) $
-  --     Nat.cast_le.2 $ card_le_card_mul_right _ hH₂ne) _
-  -- -- Now we deduce inequality (3) using the above lemma in addition to the facts that `s * t` is not
-  -- -- convergent and then induction hypothesis applied to `sᵢ` and `tᵢ`
-  -- have aux3₁ : (S.card : ℤ) + T.card + s₁.card + t₁.card - H₁.card < H.card :=
-  --   calc
-  --     (S.card : ℤ) + T.card + s₁.card + t₁.card - H₁.card
-  --       < S.card + T.card + (s ∪ t).card + (s ∩ t).card - (s * t).card + (s₁ * t₁).card := by
-  --       have ih₁ :=
-  --         (add_le_add (card_le_card_mul_right _ hH₁ne) $ card_le_card_mul_right _ hH₁ne).trans
-  --           (ih _ _ hst₁)
-  --       zify at ih₁
-  --       linarith [hstconv, ih₁]
-  --     _ ≤ ((s ∪ t) * H).card + (s ∩ t).card - C.card := by
-  --       suffices (C.card : ℤ) + (s₁ * t₁).card ≤ (s * t).card by linarith [this, hSTcard]
-  --       · norm_cast
-  --         simp only [← card_union_of_disjoint hCst₁, card_le_card hC₁st]
-  --     _ ≤ H.card := by
-  --       simp only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ C.card,
-  --         add_comm _ (s ∩ t).card, hCcard]
+  set S := a • H \ (s₁ ∪ t₂) with hS
+  set T := b • H \ (s₂ ∪ t₁) with hT
+  have hST : Disjoint S T :=
+    (C.pairwiseDisjoint_smul_finset_mulStab (Set.mem_range_self _) (Set.mem_range_self _)
+          habH).mono
+      sdiff_le sdiff_le
+  have hSst : S ⊆ a • H \ (s ∪ t) := by
+    simp only [hS, hs₁, ht₂, ← union_inter_distrib_right, sdiff_inter_self_right, Subset.rfl]
+  have hTst : T ⊆ b • H \ (s ∪ t) := by
+    simp only [hT, hs₂, ht₁, ← union_inter_distrib_right, sdiff_inter_self_right, Subset.rfl]
+  have hSTst : Disjoint (S ∪ T) (s ∪ t) := (subset_sdiff.1 hSst).2.sup_left (subset_sdiff.1 hTst).2
+  have hstconv : s * t ∉ convergent := by
+    apply hCmin (s * t)
+    rw [hstab]
+    refine (hC.mulStab_nontrivial.mp hCstab).symm.ssubset_of_subset ?_
+    simp only [one_subset, one_mem_mulStab, hC]
+  simp only [Set.mem_setOf_eq, Subset.rfl, true_and_iff, not_le, hstab, mul_one, card_one,
+    convergent] at hstconv
+  zify at hstconv
+  have hSTcard : (S.card : ℤ) + T.card + (s ∪ t).card ≤ ((s ∪ t) * H).card := by
+    norm_cast
+    conv_lhs => rw [← card_union_of_disjoint hST, ← card_union_of_disjoint hSTst, ← mul_one (s ∪ t)]
+    refine card_le_card
+      (union_subset (union_subset ?_ ?_) $ mul_subset_mul_left $ one_subset.2 hC.one_mem_mulStab)
+    · exact hSst.trans (sdiff_subset.trans $ smul_finset_subset_smul $ mem_union_left _ ha)
+    · exact hTst.trans (sdiff_subset.trans $ smul_finset_subset_smul $ mem_union_right _ hb)
+  have hH₁ne : H₁.Nonempty := (hs₁ne.mul ht₁ne).mulStab
+  have hH₂ne : H₂.Nonempty := (hs₂ne.mul ht₂ne).mulStab
+  -- Now we prove inequality (2)
+  have aux2₁ : (s₁.card : ℤ) + t₁.card + H₁.card ≤ H.card := by
+    rw [← le_sub_iff_add_le']
+    refine (Int.le_of_dvd ((sub_nonneg_of_le $ Nat.cast_le.2 $ card_le_card $
+      mul_subset_mul_left hH₁H.subset).trans_lt aux1₁) $ dvd_sub
+        (dvd_sub (card_mulStab_dvd_card_mulStab (hs₁ne.mul ht₁ne) hH₁H.subset).natCast
+          (card_mulStab_dvd_card_mul_mulStab _ _).natCast) $
+        (card_mulStab_dvd_card_mul_mulStab _ _).natCast).trans ?_
+    rw [sub_sub]
+    exact sub_le_sub_left (add_le_add (Nat.cast_le.2 $ card_le_card_mul_right _ hH₁ne) $
+      Nat.cast_le.2 $ card_le_card_mul_right _ hH₁ne) _
+  have aux2₂ : (s₂.card : ℤ) + t₂.card + H₂.card ≤ H.card := by
+    rw [← le_sub_iff_add_le']
+    refine (Int.le_of_dvd ((sub_nonneg_of_le $ Nat.cast_le.2 $ card_le_card $
+      mul_subset_mul_left hH₂H.subset).trans_lt aux1₂) $ dvd_sub
+        (dvd_sub (card_mulStab_dvd_card_mulStab (hs₂ne.mul ht₂ne) hH₂H.subset).natCast
+          (card_mulStab_dvd_card_mul_mulStab _ _).natCast) $
+        (card_mulStab_dvd_card_mul_mulStab _ _).natCast).trans ?_
+    rw [sub_sub]
+    exact sub_le_sub_left (add_le_add (Nat.cast_le.2 $ card_le_card_mul_right _ hH₂ne) $
+      Nat.cast_le.2 $ card_le_card_mul_right _ hH₂ne) _
+  -- Now we deduce inequality (3) using the above lemma in addition to the facts that `s * t` is not
+  -- convergent and then induction hypothesis applied to `sᵢ` and `tᵢ`
+  have aux3₁ : (S.card : ℤ) + T.card + s₁.card + t₁.card - H₁.card < H.card :=
+    calc
+      (S.card : ℤ) + T.card + s₁.card + t₁.card - H₁.card
+        < S.card + T.card + (s ∪ t).card + (s ∩ t).card - (s * t).card + (s₁ * t₁).card := by
+        have ih₁ :=
+          (add_le_add (card_le_card_mul_right _ hH₁ne) $ card_le_card_mul_right _ hH₁ne).trans
+            (ih _ _ hst₁)
+        zify at ih₁
+        linarith [hstconv, ih₁]
+      _ ≤ ((s ∪ t) * H).card + (s ∩ t).card - C.card := by
+        suffices (C.card : ℤ) + (s₁ * t₁).card ≤ (s * t).card by linarith [this, hSTcard]
+        · norm_cast
+          simp only [← card_union_of_disjoint hCst₁, card_le_card hC₁st]
+      _ ≤ H.card := by
+        simp only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ C.card,
+          add_comm _ (s ∩ t).card, hCcard]
 
-  -- have aux3₂ : (S.card : ℤ) + T.card + s₂.card + t₂.card - H₂.card < H.card :=
-  --   calc
-  --     (S.card : ℤ) + T.card + s₂.card + t₂.card - H₂.card
-  --      < S.card + T.card + (s ∪ t).card + (s ∩ t).card - (s * t).card + (s₂ * t₂).card := by
-  --       have ih₂ :=
-  --         (add_le_add (card_le_card_mul_right _ hH₂ne) $ card_le_card_mul_right _ hH₂ne).trans
-  --           (ih _ _ hst₂)
-  --       zify at hstconv ih₂
-  --       linarith [ih₂]
-  --     _ ≤ ((s ∪ t) * H).card + (s ∩ t).card - C.card := by
-  --       suffices (C.card : ℤ) + (s₂ * t₂).card ≤ (s * t).card by linarith [this, hSTcard]
-  --       · norm_cast
-  --         simp only [← card_union_of_disjoint hCst₂, card_le_card hC₂st]
-  --     _ ≤ H.card := by
-  --       simp only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ C.card,
-  --         add_comm _ (s ∩ t).card, hCcard]
-  -- have aux4₁ : H.card ≤ S.card + (s₁.card + t₂.card) := by
-  --   rw [← card_smul_finset a H]
-  --   exact card_le_card_sdiff_add_card.trans (add_le_add_left (card_union_le _ _) _)
-  -- have aux4₂ : H.card ≤ T.card + (s₂.card + t₁.card) := by
-  --   rw [← card_smul_finset b H]
-  --   exact card_le_card_sdiff_add_card.trans (add_le_add_left (card_union_le _ _) _)
-  -- linarith [aux2₁, aux2₂, aux3₁, aux3₂, aux4₁, aux4₂]
-  stop
-  done
+  have aux3₂ : (S.card : ℤ) + T.card + s₂.card + t₂.card - H₂.card < H.card :=
+    calc
+      (S.card : ℤ) + T.card + s₂.card + t₂.card - H₂.card
+       < S.card + T.card + (s ∪ t).card + (s ∩ t).card - (s * t).card + (s₂ * t₂).card := by
+        have ih₂ :=
+          (add_le_add (card_le_card_mul_right _ hH₂ne) $ card_le_card_mul_right _ hH₂ne).trans
+            (ih _ _ hst₂)
+        zify at hstconv ih₂
+        linarith [ih₂]
+      _ ≤ ((s ∪ t) * H).card + (s ∩ t).card - C.card := by
+        suffices (C.card : ℤ) + (s₂ * t₂).card ≤ (s * t).card by linarith [this, hSTcard]
+        · norm_cast
+          simp only [← card_union_of_disjoint hCst₂, card_le_card hC₂st]
+      _ ≤ H.card := by
+        simp only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ C.card,
+          add_comm _ (s ∩ t).card, hCcard]
+  have aux4₁ : H.card ≤ S.card + (s₁.card + t₂.card) := by
+    rw [← card_smul_finset a H]
+    exact card_le_card_sdiff_add_card.trans (add_le_add_left (card_union_le _ _) _)
+  have aux4₂ : H.card ≤ T.card + (s₂.card + t₁.card) := by
+    rw [← card_smul_finset b H]
+    exact card_le_card_sdiff_add_card.trans (add_le_add_left (card_union_le _ _) _)
+  linarith [aux2₁, aux2₂, aux3₁, aux3₂, aux4₁, aux4₂]
 
 /-- The strict version of **Kneser's multiplication theorem**. If the LHS of `Finset.mul_kneser`
 does not equal the RHS, then it is in fact much smaller. -/

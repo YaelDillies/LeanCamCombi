@@ -19,7 +19,7 @@ lemma exists_intermediate (hst : s ≤ t) (hs : card s ≤ n) (ht : n ≤ card t
   exact ⟨l₁, h⟩
 
 lemma exists_le_card_eq (hn : n ≤ card s) : ∃ t, t ≤ s ∧ card t = n := by
-  simpa using exists_intermediate (zero_le _) (Nat.zero_le _) hn
+  simpa [zero_le] using exists_intermediate (zero_le _) (Nat.zero_le _) hn
 
 variable [DecidableEq α]
 

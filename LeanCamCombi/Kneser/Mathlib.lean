@@ -3,8 +3,9 @@ Copyright (c) 2023 Mantas Bakšys, Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mantas Bakšys, Yaël Dillies
 -/
-import Mathlib.Algebra.CharP.Basic
-import Mathlib.GroupTheory.Coset
+import Mathlib.GroupTheory.Coset.Basic
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.SetTheory.Cardinal.Finite
 
 /-!
 # For mathlib
@@ -62,7 +63,8 @@ lemma pairwiseDisjoint_smul (s : Subgroup β) :
 end Subgroup
 
 namespace CharP
-variable {R : Type*} [AddGroupWithOne R] (p : ℕ) [CharP R p] {a b n : ℕ}
+-- variable {R : Type*} [AddGroupWithOne R] (p : ℕ) [CharP R p] {a b n : ℕ}
 
 -- lemma addOrderOf_cast (hn : n ≠ 0) : addOrderOf (n : R) = p / p.gcd n := sorry
 end CharP
+

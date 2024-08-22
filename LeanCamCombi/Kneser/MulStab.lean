@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mantas Bakšys, Yaël Dillies
 -/
 import Mathlib.Algebra.Pointwise.Stabilizer
+import Mathlib.GroupTheory.Coset.Card
 import Mathlib.GroupTheory.GroupAction.Quotient
 import LeanCamCombi.Kneser.Mathlib
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
@@ -318,7 +319,7 @@ lemma card_mulStab_mul_card_image_coe (s t : Finset α) :
   · simp
   obtain rfl | ht := t.eq_empty_or_nonempty
   · simp
-  have := QuotientGroup.preimageMkEquivSubgroupProdSet (stabilizer α (s * t))
+  let this := QuotientGroup.preimageMkEquivSubgroupProdSet (stabilizer α (s * t))
     ((s +ˢ stabilizer α (s * t)) * (t +ˢ stabilizer α (s * t)))
   have image_coe_mul :
     ((s * t) +ˢ stabilizer α (s * t)) = (s +ˢ stabilizer α (s * t)) * (t +ˢ stabilizer α (s * t)) :=
@@ -329,7 +330,7 @@ lemma card_mulStab_mul_card_image_coe (s t : Finset α) :
     (stabilizer α (s * t) × ↥((s +ˢ stabilizer α (s * t)) * (t +ˢ stabilizer α (s * t)))) =
       ((s * t).mulStab × ↥((s +ˢ stabilizer α (s * t)) * (t +ˢ stabilizer α (s * t)))) := by
     rw [← SetLike.coe_sort_coe, ← coe_mulStab (hs.mul ht), Finset.coe_sort_coe]
-  have temp := this.trans (Equiv.cast that)
+  let temp := this.trans (Equiv.cast that)
   replace temp := Fintype.card_congr temp
   simp_rw [← Finset.coe_mul s t] at temp
   simp only [Fintype.card_prod, Fintype.card_coe] at temp

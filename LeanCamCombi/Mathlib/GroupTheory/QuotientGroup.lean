@@ -1,4 +1,4 @@
-import Mathlib.GroupTheory.QuotientGroup
+import Mathlib.GroupTheory.QuotientGroup.Basic
 
 open Set
 open scoped Pointwise
