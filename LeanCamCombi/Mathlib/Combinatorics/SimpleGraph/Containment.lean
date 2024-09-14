@@ -165,29 +165,29 @@ noncomputable def copyCount (G : SimpleGraph α) (H : SimpleGraph β) : ℕ :=
           Adj := ⊥
           adj_sub := False.elim
           edge_vert := False.elim } : H.Subgraph)
-  simp only [eq_singleton_iff_unique_mem, mem_filter, mem_univ, Subgraph.coe_bot, true_and_iff,
+  simp only [eq_singleton_iff_unique_mem, mem_filter, mem_univ, Subgraph.coe_bot, true_and,
     Nonempty.forall]
   refine
     ⟨⟨⟨(Equiv.Set.univ _).symm, by
-      simp only [Prop.bot_eq_false, Subgraph.coe_adj, Pi.bot_apply, bot_adj, iff_self_iff,
+      simp only [Prop.bot_eq_false, Subgraph.coe_adj, Pi.bot_apply, bot_adj, iff_self,
         forall₂_true_iff]⟩⟩, fun H' e ↦
       Subgraph.ext ((set_fintype_card_eq_univ_iff _).1 $ Fintype.card_congr e.toEquiv.symm) ?_⟩
   ext a b
-  simp only [Prop.bot_eq_false, Pi.bot_apply, iff_false_iff]
+  simp only [Prop.bot_eq_false, Pi.bot_apply, iff_false]
   exact fun hab ↦ e.symm.map_rel_iff.2 hab.coe
 
 @[simp] lemma copyCount_of_isEmpty [IsEmpty α] (G : SimpleGraph α) (H : SimpleGraph β) :
     G.copyCount H = 1 := by
   rw [copyCount]
   convert card_singleton (⊥ : H.Subgraph)
-  simp only [eq_singleton_iff_unique_mem, mem_filter, mem_univ, Subgraph.coe_bot, true_and_iff,
+  simp only [eq_singleton_iff_unique_mem, mem_filter, mem_univ, Subgraph.coe_bot, true_and,
     Nonempty.forall, Subsingleton.elim G ⊥]
   haveI : IsEmpty (⊥ : H.Subgraph).verts := by simp
   refine ⟨⟨⟨⟨isEmptyElim, isEmptyElim, isEmptyElim, isEmptyElim⟩, fun {a} ↦ isEmptyElim a⟩⟩,
     fun H' e ↦ Subgraph.ext ?_ $ funext₂ fun a b ↦ ?_⟩
   · simpa [Set.eq_empty_iff_forall_not_mem, filter_eq_empty_iff, ‹IsEmpty α›] using
       e.toEquiv.symm.isEmpty_congr
-  · simp only [Subgraph.not_bot_adj, eq_iff_iff, iff_false_iff]
+  · simp only [Subgraph.not_bot_adj, eq_iff_iff, iff_false]
     exact fun hab ↦ e.symm.map_rel_iff.2 hab.coe
 
 @[simp] lemma copyCount_eq_zero : G.copyCount H = 0 ↔ ¬ G ⊑ H := by

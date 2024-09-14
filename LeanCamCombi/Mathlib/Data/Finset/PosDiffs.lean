@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
 import Mathlib.Combinatorics.SetFamily.Compression.Down
-import Mathlib.Data.Finset.Pointwise.Basic
+import Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import Mathlib.Data.Finset.Sups
 import Mathlib.Order.Interval.Set.OrdConnected
 import Mathlib.Order.UpperLower.Basic

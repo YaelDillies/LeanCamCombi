@@ -79,8 +79,6 @@ lemma coeff_discConv_natDegree (w : R →₀ S) (P : R[X]) :
     coeff (discConv w P) P.natDegree = w.sum (fun _ ↦ id) • leadingCoeff P := by
   sorry -- not so easy but still obvious on paper
 
-variable [Nontrivial S] -- feel free to move this assumption around
-
 private lemma discForwardDiff_aux :
     ((fun₀ | 1 => 1) - fun₀ | 0 => 1 : R →₀ ℤ).sum (fun _ ↦ id) = 0 := by
   classical simp [Finsupp.sum_sub_index, -Finsupp.single_neg]

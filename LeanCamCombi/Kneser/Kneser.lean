@@ -53,8 +53,8 @@ lemma mulStab_mul_ssubset_mulStab (hs₁ : (s ∩ a • C.mulStab).Nonempty)
     apply subset_trans (mulStab_subset_div_right hxymem)
     have : s ∩ a • C.mulStab * (t ∩ b • C.mulStab) ⊆ (x * y) • C.mulStab := by
       apply subset_trans (mul_subset_mul inter_subset_right inter_subset_right)
-      rw [smul_mul_smul]
-      rw [← hac, ← had, smul_mul_smul, smul_assoc]
+      rw [smul_mul_smul_comm]
+      rw [← hac, ← had, smul_mul_smul_comm, smul_assoc]
       apply smul_finset_subset_smul_finset
       rw [← smul_smul]
       rw [mul_subset_iff]
@@ -63,7 +63,7 @@ lemma mulStab_mul_ssubset_mulStab (hs₁ : (s ∩ a • C.mulStab).Nonempty)
         (mem_mulStab hCne).mp hy, (mem_mulStab hCne).mp hx]
     apply subset_trans (div_subset_div_right this) _
     have hsing : (x * y) • C.mulStab = {x * y} * C.mulStab := by rw [singleton_mul]; rfl
-    simp_rw [hsing, singleton_mul, div_singleton, image_image, div_eq_mul_inv, mul_comm, comp,
+    simp_rw [hsing, singleton_mul, div_singleton, image_image, div_eq_mul_inv, mul_comm, comp_def,
       mul_inv_cancel_right, image_id', subset_refl]
   have : (a * b) • C.mulStab = (a * c * (b * d)) • C.mulStab := by
     rw [smul_eq_iff_eq_inv_smul, ← smul_assoc, smul_eq_mul, mul_assoc, mul_comm c _, ← mul_assoc, ←
@@ -71,7 +71,7 @@ lemma mulStab_mul_ssubset_mulStab (hs₁ : (s ∩ a • C.mulStab).Nonempty)
       smul_assoc, smul_mulStab hc, smul_mulStab hd]
   have hsub : s ∩ a • C.mulStab * (t ∩ b • C.mulStab) ⊆ (a * b) • C.mulStab := by
     apply subset_trans (mul_subset_mul inter_subset_right inter_subset_right)
-    simp only [smul_mul_smul, mulStab_mul_mulStab, subset_refl]
+    simp only [smul_mul_smul_comm, mulStab_mul_mulStab, subset_refl]
   have hxy : x * y ∈ s ∩ a • C.mulStab * (t ∩ b • C.mulStab) := mul_mem_mul hx hy
   rw [this] at hsub
   rw [this] at hab
@@ -81,7 +81,7 @@ lemma mulStab_mul_ssubset_mulStab (hs₁ : (s ∩ a • C.mulStab).Nonempty)
   rw [mem_mulStab' ⟨x * y, hxy⟩]
   push_neg
   refine ⟨a * c * (b * d), by convert hxy, ?_⟩
-  rw [smul_eq_mul, mul_comm, ← smul_eq_mul, hwz]
+  rw [smul_eq_mul, mul_comm w, ← smul_eq_mul (a' := w), hwz]
   exact not_mem_mono (mul_subset_mul inter_subset_left inter_subset_left) hzst
 
 @[to_additive]
@@ -129,7 +129,7 @@ lemma mulStab_union (hs₁ : (s ∩ a • C.mulStab).Nonempty) (ht₁ : (t ∩ b
     simp_rw [card_smul_finset]
   apply ssubset_of_subset_not_subset
   · refine (mul_subset_mul inter_subset_right inter_subset_right).trans ?_
-    simp only [smul_mul_smul, mulStab_mul_mulStab, subset_refl]
+    simp only [smul_mul_smul_comm, mulStab_mul_mulStab, subset_refl]
   · contrapose! hab
     exact hab.trans (mul_subset_mul inter_subset_left inter_subset_left)
 
@@ -402,10 +402,10 @@ theorem mul_kneser :
   have hC₁st : C₁ ⊆ s * t := union_subset hCst (mul_subset_mul hs₁s ht₁t)
   have hC₂st : C₂ ⊆ s * t := union_subset hCst (mul_subset_mul hs₂s ht₂t)
   have hstabH₁ : s₁ * t₁ ⊆ (a * b) • H := by
-    rw [hH, ← mulStab_mul_mulStab C, ← smul_mul_smul]
+    rw [hH, ← mulStab_mul_mulStab C, ← smul_mul_smul_comm]
     apply mul_subset_mul inter_subset_right inter_subset_right
   have hstabH₂ : s₂ * t₂ ⊆ (a * b) • H := by
-    rw [hH, ← mulStab_mul_mulStab C, ← smul_mul_smul, mul_comm s₂ t₂]
+    rw [hH, ← mulStab_mul_mulStab C, ← smul_mul_smul_comm, mul_comm s₂ t₂]
     apply mul_subset_mul inter_subset_right inter_subset_right
   have hCst₁ := disjoint_of_subset_right hstabH₁ (disjoint_smul_mulStab hCst hab)
   have hCst₂ := disjoint_of_subset_right hstabH₂ (disjoint_smul_mulStab hCst hab)
@@ -455,7 +455,7 @@ theorem mul_kneser :
     rw [hstab]
     refine (hC.mulStab_nontrivial.mp hCstab).symm.ssubset_of_subset ?_
     simp only [one_subset, one_mem_mulStab, hC]
-  simp only [Set.mem_setOf_eq, Subset.rfl, true_and_iff, not_le, hstab, mul_one, card_one,
+  simp only [Set.mem_setOf_eq, Subset.rfl, true_and, not_le, hstab, mul_one, card_one,
     convergent] at hstconv
   zify at hstconv
   have hSTcard : (S.card : ℤ) + T.card + (s ∪ t).card ≤ ((s ∪ t) * H).card := by

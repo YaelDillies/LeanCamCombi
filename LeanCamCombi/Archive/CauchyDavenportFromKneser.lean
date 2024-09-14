@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
-import LeanCamCombi.Mathlib.Data.Finset.Pointwise.Basic
+import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Kneser.Kneser
 
 /-!

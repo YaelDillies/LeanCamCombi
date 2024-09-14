@@ -324,7 +324,7 @@ lemma map_le_map_iff {f : LatticeHom α β} {L M : Sublattice α} :
 
 lemma map_le_map_iff' {f : LatticeHom α β} {L M : Sublattice α} :
     L.map f ≤ L.map f ↔ L ⊔ f.ker ≤ L ⊔ f.ker := by
-  simp only [map_le_map_iff, sup_le_iff, le_sup_right, and_true_iff]
+  simp only [map_le_map_iff, sup_le_iff, le_sup_right, and_true]
 
 lemma map_eq_map_iff {f : LatticeHom α β} {L M : Sublattice α} :
     L.map f = L.map f ↔ L ⊔ f.ker = L ⊔ f.ker := by simp only [le_antisymm_iff, map_le_map_iff']

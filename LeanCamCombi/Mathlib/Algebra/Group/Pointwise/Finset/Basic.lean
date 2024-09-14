@@ -1,4 +1,4 @@
-import Mathlib.Data.Finset.Pointwise.Basic
+import Mathlib.Algebra.Group.Pointwise.Finset.Basic
 
 open MulOpposite
 open scoped Pointwise
@@ -16,4 +16,8 @@ lemma singleton_mul' (a : α) (s : Finset α) : {a} * s = a • s := singleton_m
 lemma mul_singleton' (s : Finset α) (a : α) : s * {a} = op a • s := mul_singleton _
 
 end Mul
+
+@[to_additive]
+instance {s t : Set α} [Mul α] [Fintype s] [Fintype t] :  Fintype (s * t) := sorry
+
 end Finset

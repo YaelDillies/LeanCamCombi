@@ -5,7 +5,7 @@ Authors: Yaël Dillies
 -/
 import Mathlib.Combinatorics.Additive.ETransform
 import Mathlib.Data.Nat.Lattice
-import LeanCamCombi.Mathlib.Data.Finset.Pointwise.Basic
+import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Kneser.Mathlib
 
 /-!

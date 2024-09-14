@@ -6,11 +6,13 @@ Authors: Mantas Bakšys, Yaël Dillies
 import Mathlib.Algebra.Pointwise.Stabilizer
 import Mathlib.GroupTheory.Coset.Card
 import Mathlib.GroupTheory.GroupAction.Quotient
-import LeanCamCombi.Kneser.Mathlib
+import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
+import LeanCamCombi.Kneser.Mathlib
 
 /-!
 # Stabilizer of a finset
+
 
 This file defines the stabilizer of a finset of a group as a finset.
 

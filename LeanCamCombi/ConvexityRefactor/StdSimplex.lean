@@ -1,8 +1,8 @@
 import Mathlib.Algebra.BigOperators.Finsupp
+import Mathlib.Algebra.BigOperators.GroupWithZero.Action
 import Mathlib.Algebra.Module.BigOperators
 import Mathlib.Algebra.Order.Module.OrderedSMul
 import Mathlib.Data.Countable.Small
-import Mathlib.GroupTheory.GroupAction.BigOperators
 import LeanCamCombi.Mathlib.Algebra.BigOperators.Finsupp
 import LeanCamCombi.Mathlib.Algebra.Module.BigOperators
 import LeanCamCombi.Mathlib.Data.Finsupp.Order
@@ -62,7 +62,7 @@ section restrict
 def restrict (w : StdSimplex ι R) : StdSimplex w.support R where
   toFun i := w i
   support := univ
-  mem_support_toFun i := by simpa using i.2
+  mem_support_toFun i := by simpa [-coe_mem] using i.2
   nonneg' i := w.nonneg i
   sum_toFinsupp_eq_one := by simp [Finsupp.sum, sum_attach]
 

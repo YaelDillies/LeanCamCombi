@@ -1,5 +1,5 @@
+import LeanCamCombi.Batteries.Data.List.Perm
 import Mathlib.Data.List.DropRight
-import LeanCamCombi.Mathlib.Data.List.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Defs
 
 namespace List

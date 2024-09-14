@@ -80,8 +80,8 @@ lemma modPartitions_parts_eq (s d : ℕ) (hd : d ≠ 0) (h : d ≤ s) :
   simp only [mem_image, mem_filter, mem_range, Nat.lt_add_one_iff]
   constructor
   · rintro ⟨j, hj, rfl⟩
-    rw [Nat.add_mul_mod_self_left, Nat.mod_eq_of_lt hi, eq_self_iff_true, and_true_iff, ←
-      Nat.lt_sub_iff_add_lt', mul_comm]
+    rw [Nat.add_mul_mod_self_left, Nat.mod_eq_of_lt hi, eq_self_iff_true, and_true,
+      ← Nat.lt_sub_iff_add_lt', mul_comm]
     rwa [Nat.le_div_iff_mul_le hd.bot_lt, Nat.le_sub_iff_add_le, Nat.succ_le_iff] at hj
     rw [Nat.succ_le_iff]
     exact Nat.sub_pos_of_lt (hi.trans_le h)

@@ -93,7 +93,7 @@ lemma mem_of_mem_convexHull (hx : x ∈ K.vertices) (hs : s ∈ K)
 lemma subset_of_convexHull_subset_convexHull (hs : s ∈ K) (ht : t ∈ K)
     (hst : convexHull 𝕜 (s : Set E) ⊆ convexHull 𝕜 ↑t) : s ⊆ t := fun _x hxs =>
   mem_of_mem_convexHull (K.down_closed' hs (singleton_subset_iff.2 hxs) <| singleton_nonempty _)
-      ht <| hst <| subset_convexHull 𝕜 (↑s) hxs
+      ht <| hst <| subset_convexHull _ _ hxs
 
 end OrderedRing
 

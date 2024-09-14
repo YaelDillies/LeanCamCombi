@@ -291,7 +291,7 @@ instance algebraRight [PartialOrder α] [LocallyFiniteOrder α] [DecidableEq α]
           boole_smul, smul_apply', ← ite_and, algebraMap_smul, map_mul, Algebra.smul_mul_assoc,
           if_pos rfl, eq_comm, and_self_iff, Icc_self]
         simp
-      · simp only [true_and_iff, ite_self, le_rfl, one_apply, mul_one, Algebra.id.smul_eq_mul,
+      · simp only [true_and, ite_self, le_rfl, one_apply, mul_one, Algebra.id.smul_eq_mul,
           mul_apply, Algebra.mul_smul_comm, MulZeroClass.zero_mul, smul_apply',
           algebraMap_smul, ← ite_and, ite_mul, mul_ite, map_mul, mem_Icc, sum_ite_eq,
           MulZeroClass.mul_zero, smul_zero, Algebra.smul_mul_assoc, if_pos rfl, if_neg h]

@@ -126,7 +126,7 @@ theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B)
     apply le_ciInf
     intro x
     have hx : (x : ℝ) ≠ 0 := by aesop
-    rw [le_div_iff]
+    rw [le_div_iff₀]
     · specialize main x
       exact main
     · positivity
@@ -201,7 +201,7 @@ theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B)
           rw [lt_sub_iff_add_lt, zero_add, lt_iff_le_and_ne]
           exact ⟨schnirelmannDensity_le_one, hbo⟩
         simp only [add_le_add_iff_right, sub_pos, sub_neg]
-        rw [← le_div_iff (hbn)]
+        rw [← le_div_iff₀ (hbn)]
         rw [mul_div_assoc]
         have hun : (1 - schnirelmannDensity B) / (1 - schnirelmannDensity B) = 1 := by
           rw [div_self]
