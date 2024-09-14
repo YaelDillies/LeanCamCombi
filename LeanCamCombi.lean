@@ -46,6 +46,7 @@ import LeanCamCombi.Mathlib.Data.Nat.Defs
 import LeanCamCombi.Mathlib.Data.Set.Finite
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
+import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.AffineMap
 import LeanCamCombi.Mathlib.Logic.Basic
 import LeanCamCombi.Mathlib.Logic.Function.Defs
 import LeanCamCombi.Mathlib.Order.ConditionallyCompleteLattice.Basic
@@ -55,6 +56,7 @@ import LeanCamCombi.Mathlib.Probability.Independence.Basic
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
+import LeanCamCombi.Sight.Sight
 import LeanCamCombi.SimplicialComplex.Basic
 import LeanCamCombi.SimplicialComplex.Finite
 import LeanCamCombi.SimplicialComplex.Pure
