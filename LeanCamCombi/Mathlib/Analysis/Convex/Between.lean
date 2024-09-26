@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Convex.Basic
 import Mathlib.Analysis.Convex.Between
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.AffineMap
 
@@ -8,6 +9,11 @@ variable {k V P : Type*}
 section OrderedRing
 variable [OrderedRing k] [AddCommGroup V] [Module k V] [AddTorsor V P] {Q : AffineSubspace k P}
   {p₀ p₁ p₂ : P}
+
+alias ⟨_, Wbtw.mem_segment⟩ := mem_segment_iff_wbtw
+
+lemma Convex.mem_of_wbtw {p₀ p₁ p₂ : V} {s : Set V} (hs : Convex k s) (h₀₁₂ : Wbtw k p₀ p₁ p₂)
+    (h₀ : p₀ ∈ s) (h₂ : p₂ ∈ s) : p₁ ∈ s := hs.segment_subset h₀ h₂ h₀₁₂.mem_segment
 
 lemma AffineSubspace.mem_of_wbtw (h₀₁₂ : Wbtw k p₀ p₁ p₂) (h₀ : p₀ ∈ Q) (h₂ : p₂ ∈ Q) : p₁ ∈ Q := by
   obtain ⟨ε, -, rfl⟩ := h₀₁₂; exact lineMap_mem _ h₀ h₂

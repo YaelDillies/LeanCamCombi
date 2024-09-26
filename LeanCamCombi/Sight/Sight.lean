@@ -49,7 +49,33 @@ lemma IsOpen.eq_of_isInSight_of_left_mem (hs : IsOpen s) (hsxy : IsInSight 𝕜 
 lemma IsInSight.of_convexHull_of_pos {ι : Type*} {t : Finset ι} {a : ι → V} {w : ι → 𝕜}
     (hw₀ : ∀ i ∈ t, 0 ≤ w i) (hw₁ : ∑ i ∈ t, w i = 1) (ha : ∀ i ∈ t, a i ∈ s)
     (hx : x ∉ convexHull 𝕜 s) (hw : IsInSight 𝕜 (convexHull 𝕜 s) x (∑ i ∈ t, w i • a i)) {i : ι}
-    (hi : i ∈ t) (hwi : 0 < w i) : IsInSight 𝕜 (convexHull 𝕜 s) x (a i) := sorry
+    (hi : i ∈ t) (hwi : 0 < w i) : IsInSight 𝕜 (convexHull 𝕜 s) x (a i) := by
+  obtain hwi | hwi : w i = 1 ∨ w i < 1 := eq_or_lt_of_le <| (single_le_sum hw₀ hi).trans_eq hw₁
+  · convert hw
+    rw [← one_smul 𝕜 (a i), ← hwi, eq_comm]
+    exact sum_eq_single _ sorry (by simp [hi])
+  rintro _ hε ⟨⟨ε, ⟨hε₀, hε₁⟩, rfl⟩, h⟩
+  replace hε₀ : 0 < ε := hε₀.lt_of_ne <| by rintro rfl; simp at h
+  replace hε₁ : ε < 1 := hε₁.lt_of_ne <| by rintro rfl; simp at h
+  have : 0 < 1 - ε := by linarith
+  have hwi : 0 < 1 - w i := by linarith
+  refine hw (z := lineMap x (∑ j ∈ t, w j • a j) ((w i)⁻¹ / ((1 - ε) / ε + (w i)⁻¹)))
+    ?_ <| sbtw_lineMap_iff.2 ⟨(ne_of_mem_of_not_mem ((convex_convexHull ..).sum_mem hw₀ hw₁
+    fun i hi ↦ subset_convexHull _ _ <| ha _ hi) hx).symm, by positivity,
+    (div_lt_one <| by positivity).2 ?_⟩
+  · classical
+    have : Wbtw 𝕜
+      (lineMap x (a i) ε)
+      (lineMap x (∑ j ∈ t, w j • a j) ((w i)⁻¹ / ((1 - ε) / ε + (w i)⁻¹)))
+      (∑ j ∈ t.erase i, (w j / (1 - w i)) • a j) :=
+      ⟨((1 - w i) / w i) / ((1 - ε) / ε + (1 - w i) / w i + 1), ⟨by positivity, sorry⟩, sorry⟩
+    refine (convex_convexHull _ _).mem_of_wbtw this hε <| (convex_convexHull _ _).sum_mem ?_ ?_ ?_
+    · intros j hj
+      have := hw₀ j <| erase_subset _ _ hj
+      positivity
+    · rw [← sum_div, sum_erase_eq_sub hi, hw₁, div_self hwi.ne']
+    · exact fun j hj ↦ subset_convexHull _ _ <| ha _ <| erase_subset _ _ hj
+  · exact lt_add_of_pos_left _ <| by positivity
 
 end Module
 
