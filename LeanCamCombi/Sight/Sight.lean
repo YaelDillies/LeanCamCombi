@@ -30,22 +30,7 @@ lemma IsInSight.mono (hst : s ⊆ t) (ht : IsInSight 𝕜 t x y) : IsInSight �
 end AddTorsor
 
 section Module
-variable [LinearOrderedField 𝕜] [AddCommGroup V] [Module 𝕜 V] [TopologicalSpace 𝕜]
-  [OrderTopology 𝕜] [TopologicalSpace V] [TopologicalAddGroup V] [ContinuousSMul 𝕜 V]
-  {s : Set V} {x y z : V}
-
-lemma IsOpen.eq_of_isInSight_of_left_mem (hs : IsOpen s) (hsxy : IsInSight 𝕜 s x y) (hx : x ∈ s) :
-    x = y := by
-  by_contra! hxy
-  have hmem : ∀ᶠ (δ : 𝕜) in 𝓝[>] 0, lineMap x y δ ∈ s :=
-    lineMap_continuous.continuousWithinAt.eventually_mem (hs.mem_nhds (by simpa))
-  have hsbtw : ∀ᶠ (δ : 𝕜) in 𝓝[>] 0, Sbtw 𝕜 x (lineMap x y δ) y := by
-    simpa [sbtw_lineMap_iff, eventually_and, hxy] using
-      ⟨eventually_nhdsWithin_of_forall fun δ hδ ↦ hδ,
-        eventually_lt_of_tendsto_lt zero_lt_one nhdsWithin_le_nhds⟩
-  suffices h : ∀ᶠ (_δ : 𝕜) in 𝓝[>] 0, False by obtain ⟨_, ⟨⟩⟩ := h.exists
-  filter_upwards [hmem, hsbtw] with δ hmem hsbtw
-  exact hsxy hmem hsbtw
+variable [LinearOrderedField 𝕜] [AddCommGroup V] [Module 𝕜 V] {s : Set V} {x y z : V}
 
 lemma IsInSight.of_convexHull_of_pos {ι : Type*} {t : Finset ι} {a : ι → V} {w : ι → 𝕜}
     (hw₀ : ∀ i ∈ t, 0 ≤ w i) (hw₁ : ∑ i ∈ t, w i = 1) (ha : ∀ i ∈ t, a i ∈ s)
@@ -83,13 +68,7 @@ lemma IsInSight.of_convexHull_of_pos {ι : Type*} {t : Finset ι} {a : ι → V}
         simp_rw [smul_smul, mul_div_cancel₀ _ hwi.ne']
         exact add_sum_erase _ (fun i ↦ w i • a i) hi
       simp_rw [lineMap_apply_module, ← this, smul_add, smul_smul]
-      match_scalars
-      · field_simp
-        ring
-      · field_simp
-        ring
-      · field_simp
-        ring
+      match_scalars <;> field_simp <;> ring
     refine (convex_convexHull _ _).mem_of_wbtw this hε <| (convex_convexHull _ _).sum_mem ?_ ?_ ?_
     · intros j hj
       have := hw₀ j <| erase_subset _ _ hj
@@ -98,11 +77,39 @@ lemma IsInSight.of_convexHull_of_pos {ι : Type*} {t : Finset ι} {a : ι → V}
     · exact fun j hj ↦ subset_convexHull _ _ <| ha _ <| erase_subset _ _ hj
   · exact lt_add_of_pos_left _ <| by positivity
 
+variable [TopologicalSpace 𝕜] [OrderTopology 𝕜] [TopologicalSpace V] [TopologicalAddGroup V]
+  [ContinuousSMul 𝕜 V]
+
+lemma IsOpen.eq_of_isInSight_of_left_mem (hs : IsOpen s) (hsxy : IsInSight 𝕜 s x y) (hx : x ∈ s) :
+    x = y := by
+  by_contra! hxy
+  have hmem : ∀ᶠ (δ : 𝕜) in 𝓝[>] 0, lineMap x y δ ∈ s :=
+    lineMap_continuous.continuousWithinAt.eventually_mem (hs.mem_nhds (by simpa))
+  have hsbtw : ∀ᶠ (δ : 𝕜) in 𝓝[>] 0, Sbtw 𝕜 x (lineMap x y δ) y := by
+    simpa [sbtw_lineMap_iff, eventually_and, hxy] using
+      ⟨eventually_nhdsWithin_of_forall fun δ hδ ↦ hδ,
+        eventually_lt_of_tendsto_lt zero_lt_one nhdsWithin_le_nhds⟩
+  suffices h : ∀ᶠ (_δ : 𝕜) in 𝓝[>] 0, False by obtain ⟨_, ⟨⟩⟩ := h.exists
+  filter_upwards [hmem, hsbtw] with δ hmem hsbtw
+  exact hsxy hmem hsbtw
+
 end Module
 
 section Real
-variable [AddCommGroup V] [Module ℝ V] [TopologicalSpace V] [TopologicalAddGroup V]
-  [ContinuousSMul ℝ V] {s : Set V} {x y z : V}
+variable [AddCommGroup V] [Module ℝ V] {s : Set V} {x y z : V}
+
+lemma IsInSight.mem_convexHull_isInSight (hx : x ∉ convexHull ℝ s) (hy : y ∈ convexHull ℝ s)
+    (hxy : IsInSight ℝ (convexHull ℝ s) x y) :
+    y ∈ convexHull ℝ {z ∈ s | IsInSight ℝ (convexHull ℝ s) x z} := by
+  classical
+  obtain ⟨ι, _, w, a, hw₀, hw₁, ha, rfl⟩ := mem_convexHull_iff_exists_fintype.1 hy
+  rw [← Fintype.sum_subset (s := {i | w i ≠ 0})
+    fun i hi ↦ mem_filter.2 ⟨mem_univ _, left_ne_zero_of_smul hi⟩]
+  exact (convex_convexHull ..).sum_mem (fun i _ ↦ hw₀ _) (by rwa [sum_filter_ne_zero])
+    fun i hi ↦ subset_convexHull _ _ ⟨ha _, IsInSight.of_convexHull_of_pos (fun _ _ ↦ hw₀ _) hw₁
+      (by simpa) hx hxy (mem_univ _) <| (hw₀ _).lt_of_ne' (mem_filter.1 hi).2⟩
+
+variable [TopologicalSpace V] [TopologicalAddGroup V] [ContinuousSMul ℝ V]
 
 lemma IsClosed.exists_wbtw_isInSight (hs : IsClosed s) (hy : y ∈ s) (x : V) :
     ∃ z ∈ s, Wbtw ℝ x z y ∧ IsInSight ℝ s x z := by
@@ -119,17 +126,6 @@ lemma IsClosed.exists_wbtw_isInSight (hs : IsClosed s) (hy : y ∈ s) (x : V) :
   replace hε₁ : ε < 1 := hε₁.lt_of_ne <| by rintro rfl; simp at h
   rw [lineMap_lineMap_right] at hε
   exact (csInf_le ht ⟨mul_nonneg hε₀ hδ₀.le, hε⟩).not_lt <| mul_lt_of_lt_one_left hδ₀ hε₁
-
-lemma IsInSight.mem_convexHull_isInSight (hx : x ∉ convexHull ℝ s) (hy : y ∈ convexHull ℝ s)
-    (hxy : IsInSight ℝ (convexHull ℝ s) x y) :
-    y ∈ convexHull ℝ {z ∈ s | IsInSight ℝ (convexHull ℝ s) x z} := by
-  classical
-  obtain ⟨ι, _, w, a, hw₀, hw₁, ha, rfl⟩ := mem_convexHull_iff_exists_fintype.1 hy
-  rw [← Fintype.sum_subset (s := {i | w i ≠ 0})
-    fun i hi ↦ mem_filter.2 ⟨mem_univ _, left_ne_zero_of_smul hi⟩]
-  exact (convex_convexHull ..).sum_mem (fun i _ ↦ hw₀ _) (by rwa [sum_filter_ne_zero])
-    fun i hi ↦ subset_convexHull _ _ ⟨ha _, IsInSight.of_convexHull_of_pos (fun _ _ ↦ hw₀ _) hw₁
-      (by simpa) hx hxy (mem_univ _) <| (hw₀ _).lt_of_ne' (mem_filter.1 hi).2⟩
 
 lemma IsClosed.convexHull_subset_affineSpan_isInSight (hs : IsClosed (convexHull ℝ s))
     (hx : x ∉ convexHull ℝ s) :
