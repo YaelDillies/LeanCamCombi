@@ -1,10 +1,15 @@
 import Mathlib.Analysis.Convex.Between
 import Mathlib.Analysis.Convex.Topology
+import Mathlib.Data.Set.Card
 import Mathlib.Tactic.Module
+import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set
+import LeanCamCombi.Mathlib.Algebra.GroupWithZero.Pointwise.Set
 import LeanCamCombi.Mathlib.Analysis.Convex.Between
+import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.AffineSubspace
+import LeanCamCombi.Mathlib.LinearAlgebra.Span
 
 open AffineMap Filter Finset Set
-open scoped Topology
+open scoped Cardinal Pointwise Topology
 
 variable {𝕜 V P : Type*}
 
@@ -127,6 +132,8 @@ lemma IsClosed.exists_wbtw_isInSight (hs : IsClosed s) (hy : y ∈ s) (x : V) :
   rw [lineMap_lineMap_right] at hε
   exact (csInf_le ht ⟨mul_nonneg hε₀ hδ₀.le, hε⟩).not_lt <| mul_lt_of_lt_one_left hδ₀ hε₁
 
+-- TODO: Once we have cone hulls, the RHS can be strengthened to
+-- `coneHull ℝ x {y ∈ s | IsInSight ℝ (convexHull ℝ s) x y}`
 lemma IsClosed.convexHull_subset_affineSpan_isInSight (hs : IsClosed (convexHull ℝ s))
     (hx : x ∉ convexHull ℝ s) :
     convexHull ℝ s ⊆ affineSpan ℝ ({x} ∪ {y ∈ s | IsInSight ℝ (convexHull ℝ s) x y}) := by
@@ -136,5 +143,26 @@ lemma IsClosed.convexHull_subset_affineSpan_isInSight (hs : IsClosed (convexHull
   exact AffineSubspace.right_mem_of_wbtw hxzy (subset_affineSpan _ _ <| subset_union_left rfl)
     (affineSpan_mono _ subset_union_right <| convexHull_subset_affineSpan _ <|
       hxz.mem_convexHull_isInSight hx hz) (ne_of_mem_of_not_mem hz hx).symm
+
+open Submodule in
+lemma rank_le_card_isInSight (hs : IsClosed (convexHull ℝ s)) (hx : x ∉ convexHull ℝ s) :
+    Module.rank ℝ (span ℝ (-x +ᵥ s)) ≤ #{y ∈ s | IsInSight ℝ (convexHull ℝ s) x y} := by
+  calc
+    Module.rank ℝ (span ℝ (-x +ᵥ s)) ≤
+      Module.rank ℝ (span ℝ
+        (-x +ᵥ affineSpan ℝ ({x} ∪ {y ∈ s | IsInSight ℝ (convexHull ℝ s) x y}) : Set V)) := by
+      push_cast
+      refine rank_le_of_submodule _ _ ?_
+      gcongr
+      exact (subset_convexHull ..).trans <| hs.convexHull_subset_affineSpan_isInSight hx
+    _ = Module.rank ℝ (span ℝ (-x +ᵥ {y ∈ s | IsInSight ℝ (convexHull ℝ s) x y})) := by
+      suffices h :
+        -x +ᵥ (affineSpan ℝ ({x} ∪ {y ∈ s | IsInSight ℝ (convexHull ℝ s) x y}) : Set V) =
+          span ℝ (-x +ᵥ {y ∈ s | IsInSight ℝ (convexHull ℝ s) x y}) by
+        rw [AffineSubspace.coe_pointwise_vadd, h, span_span]
+      simp [← AffineSubspace.coe_pointwise_vadd, AffineSubspace.pointwise_vadd_span,
+        vadd_set_insert, -coe_affineSpan]
+    _ ≤ #(-x +ᵥ {y ∈ s | IsInSight ℝ (convexHull ℝ s) x y}) := rank_span_le _
+    _ = #{y ∈ s | IsInSight ℝ (convexHull ℝ s) x y} := by simp
 
 end Real

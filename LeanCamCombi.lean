@@ -20,6 +20,8 @@ import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.LittlewoodOfford
 import LeanCamCombi.Mathlib.Algebra.BigOperators.Finsupp
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
+import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set
+import LeanCamCombi.Mathlib.Algebra.GroupWithZero.Pointwise.Set
 import LeanCamCombi.Mathlib.Algebra.Module.BigOperators
 import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.LocallyFinite
 import LeanCamCombi.Mathlib.Algebra.Order.Group.Pi
@@ -44,10 +46,14 @@ import LeanCamCombi.Mathlib.Data.Finsupp.Order
 import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Defs
+import LeanCamCombi.Mathlib.Data.Set.Card
 import LeanCamCombi.Mathlib.Data.Set.Finite
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.AffineMap
+import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.AffineSubspace
+import LeanCamCombi.Mathlib.LinearAlgebra.Dimension.Construction
+import LeanCamCombi.Mathlib.LinearAlgebra.Span
 import LeanCamCombi.Mathlib.Logic.Basic
 import LeanCamCombi.Mathlib.Order.ConditionallyCompleteLattice.Basic
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
