@@ -23,6 +23,7 @@ import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Mathlib.Algebra.Module.BigOperators
 import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.LocallyFinite
 import LeanCamCombi.Mathlib.Algebra.Order.Group.Pi
+import LeanCamCombi.Mathlib.Analysis.Convex.Between
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
@@ -48,7 +49,6 @@ import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.AffineMap
 import LeanCamCombi.Mathlib.Logic.Basic
-import LeanCamCombi.Mathlib.Logic.Function.Defs
 import LeanCamCombi.Mathlib.Order.ConditionallyCompleteLattice.Basic
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.Sublattice
@@ -56,6 +56,8 @@ import LeanCamCombi.Mathlib.Probability.Independence.Basic
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
+import LeanCamCombi.OrderShatter
+import LeanCamCombi.PhD.VCDim.Basic
 import LeanCamCombi.Sight.Sight
 import LeanCamCombi.SimplicialComplex.Basic
 import LeanCamCombi.SimplicialComplex.Finite
