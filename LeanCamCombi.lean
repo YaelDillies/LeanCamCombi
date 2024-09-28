@@ -22,7 +22,6 @@ import LeanCamCombi.Mathlib.Algebra.BigOperators.Finsupp
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set
 import LeanCamCombi.Mathlib.Algebra.GroupWithZero.Pointwise.Set
-import LeanCamCombi.Mathlib.Algebra.Module.BigOperators
 import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.LocallyFinite
 import LeanCamCombi.Mathlib.Algebra.Order.Group.Pi
 import LeanCamCombi.Mathlib.Analysis.Convex.Between
@@ -49,9 +48,11 @@ import LeanCamCombi.Mathlib.Data.Nat.Defs
 import LeanCamCombi.Mathlib.Data.Set.Card
 import LeanCamCombi.Mathlib.Data.Set.Finite
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
+import LeanCamCombi.Mathlib.Data.SetLike.Basic
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.AffineMap
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.AffineSubspace
+import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.LinearAlgebra.Dimension.Construction
 import LeanCamCombi.Mathlib.LinearAlgebra.Span
 import LeanCamCombi.Mathlib.Logic.Basic

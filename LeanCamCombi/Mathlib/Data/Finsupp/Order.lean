@@ -5,7 +5,7 @@ import LeanCamCombi.Mathlib.Algebra.Order.Group.Pi
 namespace Finsupp
 variable {ι κ α β : Type*}
 
-section Zero
+section Preorder
 variable [Zero α] [Preorder α] {i : ι} {a b : α}
 
 @[simp] lemma single_le_single : single i a ≤ single i b ↔ a ≤ b := by
@@ -20,9 +20,6 @@ lemma single_mono : Monotone (single i : α → ι →₀ α) := fun _ _ ↦ sin
 
 variable [OrderedAddCommMonoid β]
 
-lemma sum_le_sum {f : ι →₀ α} {h₁ h₂ : ι → α → β} (h : ∀ i ∈ f.support, h₁ i (f i) ≤ h₂ i (f i)) :
-    f.sum h₁ ≤ f.sum h₂ := Finset.sum_le_sum h
-
 lemma sum_le_sum_index [DecidableEq ι] {f₁ f₂ : ι →₀ α} {h : ι → α → β} (hf : f₁ ≤ f₂)
     (hh : ∀ i ∈ f₁.support ∪ f₂.support, Monotone (h i))
     (hh₀ : ∀ i ∈ f₁.support ∪ f₂.support, h i 0 = 0): f₁.sum h ≤ f₂.sum h := by
@@ -31,7 +28,15 @@ lemma sum_le_sum_index [DecidableEq ι] {f₁ f₂ : ι →₀ α} {h : ι → �
     sum_of_support_subset _ Finset.subset_union_right _ hh₀]
   exact Finset.sum_le_sum fun i hi ↦ hh _ hi $ hf _
 
-end Zero
+end Preorder
+
+section OrderedAddCommMonoid
+variable [Zero α] [OrderedAddCommMonoid β]
+
+lemma sum_le_sum {f : ι →₀ α} {h₁ h₂ : ι → α → β} (h : ∀ i ∈ f.support, h₁ i (f i) ≤ h₂ i (f i)) :
+    f.sum h₁ ≤ f.sum h₂ := Finset.sum_le_sum h
+
+end OrderedAddCommMonoid
 
 variable [OrderedAddCommMonoid α] {i : ι} {a b : α} {f₁ f₂ g : ι →₀ α}
 

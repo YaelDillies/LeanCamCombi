@@ -4,9 +4,8 @@ import Mathlib.Algebra.Module.BigOperators
 import Mathlib.Algebra.Order.Module.OrderedSMul
 import Mathlib.Data.Countable.Small
 import LeanCamCombi.Mathlib.Algebra.BigOperators.Finsupp
-import LeanCamCombi.Mathlib.Algebra.Module.BigOperators
 import LeanCamCombi.Mathlib.Data.Finsupp.Order
-import LeanCamCombi.Mathlib.Logic.Basic
+  import LeanCamCombi.Mathlib.Logic.Basic
 
 noncomputable section
 

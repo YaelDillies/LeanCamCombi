@@ -81,14 +81,14 @@ protected lemma meas [IsProbabilityMeasure (μ : Measure Ω)] [Fintype α] (s : 
   · rintro a hi
     rw [Finset.mem_compl] at hi
     simp only [hi, ← compl_setOf, prob_compl_eq_one_sub₀, mem_setOf_eq, Finset.mem_coe,
-      iff_false_iff, hX.nullMeasurableSet, hX.meas_apply]
+      iff_false, hX.nullMeasurableSet, hX.meas_apply]
   · rintro a hi
     simp only [hi, mem_setOf_eq, Finset.mem_coe, iff_true_iff, hX.meas_apply]
   rintro a
   by_cases a ∈ s
   · simp only [mem_setOf_eq, Finset.mem_coe, iff_true_iff, *]
     exact ⟨{True}, trivial, by ext; simp⟩
-  · simp only [mem_setOf_eq, Finset.mem_coe, iff_false_iff, *]
+  · simp only [mem_setOf_eq, Finset.mem_coe, iff_false, *]
     exact ⟨{False}, trivial, by ext; simp⟩
 
 /-- The complement of a sequence of independent `p`-Bernoulli random variables is a sequence of
