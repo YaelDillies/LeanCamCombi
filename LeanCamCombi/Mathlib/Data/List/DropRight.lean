@@ -1,6 +1,6 @@
 import LeanCamCombi.Batteries.Data.List.Perm
 import Mathlib.Data.List.DropRight
-import LeanCamCombi.Mathlib.Data.Nat.Defs
+import Mathlib.Data.Nat.Defs
 
 namespace List
 variable {α : Type*} {l l' l₀ l₁ l₂ : List α} {a b : α} {m n : ℕ}

@@ -11,7 +11,7 @@ import LeanCamCombi.SimplicialComplex.Simplex
 # Simplicial complexes
 -/
 
-open Finset
+open Finset Module
 
 variable {𝕜 E ι : Type*}
 
@@ -23,12 +23,12 @@ variable [OrderedRing 𝕜] [AddCommGroup E] [Module 𝕜 E] {K K₁ K₂ : Simp
 /-- The cells of a simplicial complex are its simplices whose dimension matches the one of the
 space. -/
 def cells (K : SimplicialComplex 𝕜 E) : Set (Finset E) :=
-  {s | s ∈ K ∧ s.card = FiniteDimensional.finrank 𝕜 E + 1}
+  {s | s ∈ K ∧ s.card = finrank 𝕜 E + 1}
 
 /-- The subcells of a simplicial complex are its simplices whose cardinality matches the dimension
 of the space. They are thus one smaller than cells. -/
 def subcells (K : SimplicialComplex 𝕜 E) : Set (Finset E) :=
-  {s | s ∈ K ∧ s.card = FiniteDimensional.finrank 𝕜 E}
+  {s | s ∈ K ∧ s.card = finrank 𝕜 E}
 
 lemma disjoint_interiors (hs : s ∈ K) (ht : t ∈ K) (hxs : x ∈ combiInterior 𝕜 s)
     (hxt : x ∈ combiInterior 𝕜 t) : s = t := by

@@ -1,5 +1,4 @@
-import Mathlib.Algebra.Order.Group.Defs
-import Mathlib.Algebra.Group.Pi.Lemmas
+import Mathlib.Algebra.Order.Pi
 
 namespace Pi
 variable {ι : Type*} {α : ι → Type*} [DecidableEq ι] [∀ i, One (α i)] [∀ i, Preorder (α i)] {i : ι}

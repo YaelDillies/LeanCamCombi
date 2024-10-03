@@ -1,7 +1,4 @@
 import Mathlib.LinearAlgebra.AffineSpace.AffineSubspace
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set
-import LeanCamCombi.Mathlib.Data.SetLike.Basic
-import LeanCamCombi.Mathlib.LinearAlgebra.Span
 
 /-!
 # TODO

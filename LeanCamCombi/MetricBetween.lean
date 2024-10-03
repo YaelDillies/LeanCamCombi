@@ -1,5 +1,5 @@
 import Mathlib.Order.Circular
-import Mathlib.Topology.MetricSpace.Basic
+import Mathlib.Topology.MetricSpace.Defs
 
 /-!
 ### TODO

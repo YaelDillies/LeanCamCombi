@@ -1,6 +1,5 @@
-import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Algebra.BigOperators.Group.Finset
 import Mathlib.Data.Fin.VecNotation
-import Mathlib.Tactic.Eval
 
 open scoped BigOperators
 

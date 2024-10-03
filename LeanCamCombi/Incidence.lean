@@ -5,9 +5,8 @@ Authors: Alex J. Best, Yaël Dillies
 -/
 import Mathlib.Algebra.Algebra.Basic
 import Mathlib.Algebra.BigOperators.Ring
-import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.Algebra.Module.BigOperators
-import Mathlib.GroupTheory.GroupAction.Basic
+import Mathlib.Algebra.Module.Pi
 import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.LocallyFinite
 
 /-!

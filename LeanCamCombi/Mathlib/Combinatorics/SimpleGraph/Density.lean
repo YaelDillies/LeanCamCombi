@@ -1,4 +1,4 @@
-import Mathlib.Combinatorics.SimpleGraph.Density
+import Mathlib.Algebra.Order.Ring.Unbundled.Rat
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 
 open Finset

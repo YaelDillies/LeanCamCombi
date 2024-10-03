@@ -1,4 +1,5 @@
-import Mathlib.Data.Set.Pointwise.SMul
+import Mathlib.Algebra.Group.Action.Opposite
+import Mathlib.Algebra.Group.Pointwise.Set.Basic
 
 open MulOpposite
 open scoped Pointwise

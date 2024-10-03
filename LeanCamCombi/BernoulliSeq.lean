@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Kexing Ying
 -/
 import Mathlib.Probability.IdentDistrib
-import LeanCamCombi.Mathlib.Probability.Independence.Basic
+import Mathlib.Probability.Independence.Basic
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 
 /-!
@@ -83,10 +83,10 @@ protected lemma meas [IsProbabilityMeasure (μ : Measure Ω)] [Fintype α] (s : 
     simp only [hi, ← compl_setOf, prob_compl_eq_one_sub₀, mem_setOf_eq, Finset.mem_coe,
       iff_false, hX.nullMeasurableSet, hX.meas_apply]
   · rintro a hi
-    simp only [hi, mem_setOf_eq, Finset.mem_coe, iff_true_iff, hX.meas_apply]
+    simp only [hi, mem_setOf_eq, Finset.mem_coe, iff_true, hX.meas_apply]
   rintro a
   by_cases a ∈ s
-  · simp only [mem_setOf_eq, Finset.mem_coe, iff_true_iff, *]
+  · simp only [mem_setOf_eq, Finset.mem_coe, iff_true, *]
     exact ⟨{True}, trivial, by ext; simp⟩
   · simp only [mem_setOf_eq, Finset.mem_coe, iff_false, *]
     exact ⟨{False}, trivial, by ext; simp⟩
@@ -112,7 +112,7 @@ is a sequence of independent `p * q`-Bernoulli random variables. -/
 protected lemma inter (h : IndepFun X Y μ) : IsBernoulliSeq (fun ω ↦ X ω ∩ Y ω) (p * q) μ where
   le_one := mul_le_one' hX.le_one hY.le_one
   iIndepFun := by
-    refine iIndepSet.Indep_comap ((iIndepSet_iff_meas_iInter fun i ↦ ?_).2 ?_)
+    refine ((iIndepSet_iff_meas_biInter fun i ↦ ?_).2 ?_).iIndep_comap_mem
     refine MeasurableSet.inter ?_ ?_
     sorry -- needs refactor of `Probability.Independence.Basic`
     sorry -- needs refactor of `Probability.Independence.Basic`

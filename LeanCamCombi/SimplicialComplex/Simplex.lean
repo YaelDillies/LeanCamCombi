@@ -5,8 +5,7 @@ Authors: Yaël Dillies, Bhavik Mehta
 -/
 import Mathlib.Analysis.Convex.Topology
 import Mathlib.Analysis.NormedSpace.Real
-import Mathlib.LinearAlgebra.FiniteDimensional
-import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
+import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 
 /-!
 # Definitions and lemmas about individual simplices
@@ -15,7 +14,7 @@ These are phrased in terms of finite sets of points, and the assumption of affin
 (ie non-degeneracy) is added to lemmas.
 -/
 
-open Set
+open Module Set
 open scoped BigOperators Classical
 
 variable {𝕜 E ι : Type*}
@@ -204,13 +203,13 @@ lemma isClosed_combiFrontier : IsClosed (combiFrontier ℝ s) := by
 
 /-- `combiInterior 𝕜 s` is the topological interior iff `s` is of dimension `m`. -/
 lemma interiors_agree_of_full_dimensional [FiniteDimensional ℝ E]
-    (hs : AffineIndependent ℝ ((↑) : s → E)) (hscard : s.card = FiniteDimensional.finrank ℝ E + 1) :
+    (hs : AffineIndependent ℝ ((↑) : s → E)) (hscard : s.card = finrank ℝ E + 1) :
     combiInterior ℝ s = interior (convexHull ℝ ↑s) := by
   unfold combiInterior
   sorry
 
 lemma frontiers_agree_of_full_dimensional [FiniteDimensional ℝ E]
-    (hscard : s.card = FiniteDimensional.finrank ℝ E + 1) :
+    (hscard : s.card = finrank ℝ E + 1) :
     combiFrontier ℝ s = frontier (convexHull ℝ ↑s) := by
   ext x
   constructor

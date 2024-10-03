@@ -3,7 +3,8 @@ Copyright (c) 2022 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
-import Mathlib.Combinatorics.SetFamily.Shatter
+import Mathlib.Combinatorics.SetFamily.Compression.Down
+import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Finset.Sort
 
 /-!
@@ -22,7 +23,7 @@ This file defines the shattering property and VC-dimension of set families.
 * Strong shattering
 -/
 
-open scoped BigOperators FinsetFamily
+open scoped FinsetFamily
 
 namespace Finset
 variable {α : Type*} [DecidableEq α] {𝒜 ℬ : Finset (Finset α)} {s t : Finset α} {a : α} {n : ℕ}

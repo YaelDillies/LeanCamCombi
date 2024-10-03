@@ -1,5 +1,5 @@
-import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shatter
 import Mathlib.Algebra.Group.Pointwise.Finset.Basic
+import Mathlib.Combinatorics.SetFamily.Shatter
 
 open scoped Pointwise
 

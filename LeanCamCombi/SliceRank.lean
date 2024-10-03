@@ -1,6 +1,8 @@
+import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Algebra.BigOperators.Pi
+import Mathlib.Algebra.Order.Ring.Nat
 import Mathlib.Algebra.Ring.Pi
 import Mathlib.Data.Fintype.Pi
-import Mathlib.Data.Matrix.Rank
 
 open scoped BigOperators
 

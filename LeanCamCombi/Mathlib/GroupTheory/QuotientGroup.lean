@@ -1,5 +1,5 @@
 import Mathlib.Algebra.Group.Subgroup.Actions
-import Mathlib.GroupTheory.QuotientGroup.Basic
+import Mathlib.GroupTheory.Coset.Basic
 
 open Set
 open scoped Pointwise
