@@ -20,7 +20,6 @@ import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.LittlewoodOfford
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Card
-import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.LocallyFinite
 import LeanCamCombi.Mathlib.Analysis.Convex.Between
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
@@ -43,6 +42,7 @@ import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.AffineMap
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.AffineSubspace
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
+import LeanCamCombi.Mathlib.Order.Interval.Finset.Defs
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.Sublattice
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
