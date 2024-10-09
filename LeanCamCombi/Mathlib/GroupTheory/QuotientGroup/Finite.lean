@@ -1,16 +1,5 @@
-/-
-Copyright (c) 2023 Mantas Bakšys, Yaël Dillies. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Mantas Bakšys, Yaël Dillies
--/
 import Mathlib.GroupTheory.QuotientGroup.Finite
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
-
-/-!
-# For mathlib
-
-A few things to move. If they are here, it's because they have no obvious home in mathlib.
--/
 
 open scoped Pointwise
 
@@ -37,5 +26,3 @@ lemma subgroup_mul_card_eq_mul (s : Subgroup α) (t : Set α) :
     apply Set.mul_mem_mul hxy (by simpa)
 
 end Subgroup
-
-#min_imports

@@ -5,7 +5,6 @@ import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
 import Mathlib.Topology.Order.Monotone
 import Mathlib.Tactic.Module
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Card
-import LeanCamCombi.Mathlib.Analysis.Convex.Between
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.AffineSubspace
 
 open AffineMap Filter Finset Set
