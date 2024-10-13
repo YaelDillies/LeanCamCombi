@@ -7,8 +7,7 @@ import Mathlib.Algebra.Pointwise.Stabilizer
 import Mathlib.GroupTheory.Coset.Card
 import Mathlib.GroupTheory.GroupAction.Quotient
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
-import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup
-import LeanCamCombi.Kneser.Mathlib
+import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup.Finite
 
 /-!
 # Stabilizer of a finset
@@ -134,7 +133,7 @@ lemma smul_mulStab (ha : a ∈ s.mulStab) : a • s.mulStab = s.mulStab := by
   obtain rfl | hs := s.eq_empty_or_nonempty
   · simp
   rw [← mem_coe, coe_mulStab hs, SetLike.mem_coe] at ha
-  rw [← coe_inj, coe_smul_finset, coe_mulStab hs, Subgroup.smul_coe ha]
+  rw [← coe_inj, coe_smul_finset, coe_mulStab hs, smul_coe_set ha]
 
 @[to_additive (attr := simp)]
 lemma mulStab_mul_mulStab (s : Finset α) : s.mulStab * s.mulStab = s.mulStab := by
@@ -211,9 +210,7 @@ lemma mulStab_image_coe_quotient (hs : s.Nonempty) :
 @[to_additive]
 lemma preimage_image_quotientMk_stabilizer_eq_mul_mulStab (ht : t.Nonempty) (s : Finset α) :
     QuotientGroup.mk ⁻¹' (s +ˢ stabilizer α t) = s * t.mulStab := by
-  rw [QuotientGroup.preimage_image_mk_eq_iUnion_smul, mul_comm, Set.iUnion_subtype]
-  simp_rw [Subgroup.mk_smul, ← SetLike.mem_coe, ← coe_mulStab ht, ← coe_smul_finset, ← coe_biUnion,
-    biUnion_smul_finset, smul_eq_mul, coe_mul]
+  rw [QuotientGroup.preimage_image_mk_eq_mul, coe_mulStab ht]
 
 @[to_additive]
 lemma preimage_image_quotientMk_mulStabilizer (s : Finset α) :
