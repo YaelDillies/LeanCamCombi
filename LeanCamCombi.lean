@@ -17,7 +17,6 @@ import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.LittlewoodOfford
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Card
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
@@ -42,12 +41,10 @@ import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.Order.Interval.Finset.Defs
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
-import LeanCamCombi.Mathlib.SetTheory.Cardinal.Basic
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.OrderShatter
 import LeanCamCombi.PhD.VCDim.Basic
-import LeanCamCombi.Sight.Sight
 import LeanCamCombi.SimplicialComplex.Basic
 import LeanCamCombi.SimplicialComplex.Finite
 import LeanCamCombi.SimplicialComplex.Pure

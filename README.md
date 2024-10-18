@@ -71,6 +71,7 @@ The following topics have been upstreamed to mathlib and no longer live in LeanC
 * Sublattices
 * Strongly convex functions
 * The Marica-Schönheim proof of the squarefree special case of Graham's conjecture
+* Visibility of a point through a set
 
 ## Interacting with the project
 
