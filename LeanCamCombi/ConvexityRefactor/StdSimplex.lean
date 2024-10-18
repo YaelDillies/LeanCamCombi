@@ -3,7 +3,7 @@ import Mathlib.Algebra.BigOperators.GroupWithZero.Action
 import Mathlib.Algebra.Module.BigOperators
 import Mathlib.Algebra.Order.Module.OrderedSMul
 import Mathlib.Data.Countable.Small
-import LeanCamCombi.Mathlib.Data.Finsupp.Order
+import Mathlib.Data.Finsupp.Order
 
 noncomputable section
 

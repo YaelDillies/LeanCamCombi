@@ -101,7 +101,7 @@ lemma compl : IsBernoulliSeq (fun ω ↦ (X ω)ᶜ) (1 - p) μ where
   map a := by
     have : Measurable Not := fun _ _ ↦ trivial
     refine (this.aemeasurable.map_map_of_aemeasurable (hX.aemeasurable _)).symm.trans ?_
-    rw [hX.map, PMF.map_toMeasure _ this, PMF.map_not_bernoulli']
+    rw [hX.map, PMF.toMeasure_map _ _ this, PMF.map_not_bernoulli']
 
 variable [IsProbabilityMeasure (μ : Measure Ω)]
 

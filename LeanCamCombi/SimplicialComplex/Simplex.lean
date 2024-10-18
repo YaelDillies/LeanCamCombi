@@ -258,7 +258,7 @@ lemma subset_closure_combiInterior (hs : AffineIndependent ℝ ((↑) : s → E)
               rwa [Finset.card_pos]
           · split_ifs
             · rw [sub_nonneg]
-              apply inv_le_one
+              apply inv_le_one_of_one_le₀
               norm_cast
               apply Nat.succ_pos
             · rfl

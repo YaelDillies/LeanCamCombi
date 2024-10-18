@@ -1,12 +1,10 @@
 import Mathlib.Analysis.Convex.Between
 import Mathlib.Analysis.Convex.Combination
+import Mathlib.Tactic.Module
 import Mathlib.Topology.Algebra.Affine
 import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
 import Mathlib.Topology.Order.Monotone
-import Mathlib.Tactic.Module
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Card
-import LeanCamCombi.Mathlib.Analysis.Convex.Between
-import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.AffineSubspace
 
 open AffineMap Filter Finset Set
 open scoped Cardinal Pointwise Topology
@@ -161,7 +159,7 @@ lemma rank_le_card_isInSight (hs : IsClosed (convexHull ℝ s)) (hx : x ∉ conv
           span ℝ (-x +ᵥ {y ∈ s | IsInSight ℝ (convexHull ℝ s) x y}) by
         rw [AffineSubspace.coe_pointwise_vadd, h, span_span]
       simp [← AffineSubspace.coe_pointwise_vadd, AffineSubspace.pointwise_vadd_span,
-        vadd_set_insert, -coe_affineSpan]
+        vadd_set_insert, -coe_affineSpan, affineSpan_insert_zero]
     _ ≤ #(-x +ᵥ {y ∈ s | IsInSight ℝ (convexHull ℝ s) x y}) := rank_span_le _
     _ = #{y ∈ s | IsInSight ℝ (convexHull ℝ s) x y} := by simp
 
