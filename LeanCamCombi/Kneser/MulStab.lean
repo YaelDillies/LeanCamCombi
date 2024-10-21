@@ -7,6 +7,7 @@ import Mathlib.Algebra.Pointwise.Stabilizer
 import Mathlib.GroupTheory.Coset.Card
 import Mathlib.GroupTheory.GroupAction.Quotient
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
+import LeanCamCombi.Mathlib.Data.Set.Pointwise.Finite
 import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup.Finite
 
 /-!
