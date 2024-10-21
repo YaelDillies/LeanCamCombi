@@ -155,7 +155,7 @@ variable [Fintype β]
 /-- `G.copyCount H` is the number of unlabelled copies of `G` in `H`.
 See `SimpleGraph.labelledCopyCount` for the number of labelled copies. -/
 noncomputable def copyCount (G : SimpleGraph α) (H : SimpleGraph β) : ℕ :=
-  (univ.filter fun H' : H.Subgraph ↦ Nonempty (G ≃g H'.coe)).card
+  #{H' : H.Subgraph | Nonempty (G ≃g H'.coe)}
 
 @[simp] lemma copyCount_bot (H : SimpleGraph β) : copyCount (⊥ : SimpleGraph β) H = 1 := by
   rw [copyCount]
@@ -308,14 +308,14 @@ noncomputable instance kill.EdgeSet.fintype : Fintype (G.kill H).edgeSet :=
 /-- Removing an edge from `H` for each subgraph isomorphic to `G` means that the number of edges
 we've removed is at most the number of copies of `G` in `H`. -/
 lemma le_card_edgeFinset_kill [Fintype β] :
-    H.edgeFinset.card - G.copyCount H ≤ (G.kill H).edgeFinset.card := by
+    #H.edgeFinset - G.copyCount H ≤ (G.kill H).edgeFinset.card := by
   obtain rfl | hG := eq_or_ne G ⊥
   · simp
   let f (H' : {H' : H.Subgraph // Nonempty (G ≃g H'.coe)}) := (aux hG H'.2).some
   calc
-    _ = H.edgeFinset.card - card {H' : H.Subgraph // Nonempty (G ≃g H'.coe)} := ?_
-    _ ≤ H.edgeFinset.card - (univ.image f).card := Nat.sub_le_sub_left card_image_le _
-    _ = H.edgeFinset.card - (Set.range f).toFinset.card := by rw [Set.toFinset_range]
+    _ = #H.edgeFinset - card {H' : H.Subgraph // Nonempty (G ≃g H'.coe)} := ?_
+    _ ≤ #H.edgeFinset - (univ.image f).card := Nat.sub_le_sub_left card_image_le _
+    _ = #H.edgeFinset - (Set.range f).toFinset.card := by rw [Set.toFinset_range]
     _ ≤ (H.edgeFinset \ (Set.range f).toFinset).card := le_card_sdiff ..
     _ = (G.kill H).edgeFinset.card := ?_
   · simp only [Set.toFinset_card]

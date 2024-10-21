@@ -19,10 +19,8 @@ variable {ι E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {𝒜 : Finse
 
 lemma exists_littlewood_offord_partition [DecidableEq ι] (hr : 0 < r) (hf : ∀ i ∈ s, r ≤ ‖f i‖) :
     ∃ P : Finpartition s.powerset,
-      P.parts.card = s.card.choose (s.card / 2) ∧
-        (∀ 𝒜 ∈ P.parts, ∀ t ∈ 𝒜, t ⊆ s) ∧
-          ∀ 𝒜 ∈ P.parts,
-            (𝒜 : Set (Finset ι)).Pairwise fun u v ↦ r ≤ dist (∑ i in u, f i) (∑ i in v, f i) := by
+      #P.parts = (#s).choose (#s / 2) ∧ (∀ 𝒜 ∈ P.parts, ∀ t ∈ 𝒜, t ⊆ s) ∧ ∀ 𝒜 ∈ P.parts,
+        (𝒜 : Set (Finset ι)).Pairwise fun u v ↦ r ≤ dist (∑ i in u, f i) (∑ i in v, f i) := by
   classical
   induction' s using Finset.induction with i s hi ih
   · exact ⟨Finpartition.indiscrete $ singleton_ne_empty _, by simp⟩
@@ -37,7 +35,7 @@ lemma exists_littlewood_offord_partition [DecidableEq ι] (hr : 0 < r) (hf : ∀
 /-- **Kleitman's lemma** -/
 lemma card_le_of_forall_dist_sum_le (hr : 0 < r) (h𝒜 : ∀ t ∈ 𝒜, t ⊆ s) (hf : ∀ i ∈ s, r ≤ ‖f i‖)
     (h𝒜r : ∀ u, u ∈ 𝒜 → ∀ v, v ∈ 𝒜 → dist (∑ i in u, f i) (∑ i in v, f i) < r) :
-    𝒜.card ≤ s.card.choose (s.card / 2) := by
+    #𝒜 ≤ (#s).choose (#s / 2) := by
   classical
   obtain ⟨P, hP, _hs, hr⟩ := exists_littlewood_offord_partition hr hf
   rw [← hP]

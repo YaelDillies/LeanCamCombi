@@ -22,7 +22,7 @@ independent Bernoulli random variables.
 -/
 
 open Fintype MeasureTheory Set
-open scoped MeasureTheory ProbabilityTheory ENNReal NNReal
+open scoped Finset MeasureTheory ProbabilityTheory ENNReal NNReal
 
 namespace ProbabilityTheory
 variable {α Ω : Type*} [MeasurableSpace Ω]
@@ -73,7 +73,7 @@ protected lemma identDistrib (a j : α) : IdentDistrib (fun ω ↦ a ∈ X ω) (
     simp
 
 protected lemma meas [IsProbabilityMeasure (μ : Measure Ω)] [Fintype α] (s : Finset α) :
-    μ {ω | {a | a ∈ X ω} = s} = (p : ℝ≥0∞) ^ s.card * (1 - p : ℝ≥0∞) ^ (card α - s.card) := by
+    μ {ω | {a | a ∈ X ω} = s} = (p : ℝ≥0∞) ^ #s * (1 - p : ℝ≥0∞) ^ (card α - #s) := by
   classical
   simp_rw [Set.ext_iff, setOf_forall]
   rw [hX.iIndepFun.meas_iInter, ← s.prod_mul_prod_compl, Finset.prod_eq_pow_card,

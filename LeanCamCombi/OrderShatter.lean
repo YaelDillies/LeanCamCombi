@@ -42,14 +42,14 @@ def OrderShatters : Finset (Finset α) → List α → Prop
   | 𝒜, [] => 𝒜.Nonempty
   | 𝒜, a :: l => (𝒜.nonMemberSubfamily a).OrderShatters l ∧ (𝒜.memberSubfamily a).OrderShatters l
       ∧ ∀ ⦃s : Finset α⦄, s ∈ 𝒜.nonMemberSubfamily a → ∀ ⦃t⦄, t ∈ 𝒜.memberSubfamily a →
-        s.filter (a < ·) = t.filter (a < ·)
+        {x ∈ s | a < x} = {x ∈ t | a < x}
 
 instance : DecidablePred 𝒜.OrderShatters
   | [] => decidableNonempty
   | a :: l => by unfold OrderShatters; sorry
 
 def orderShatterser (𝒜 : Finset (Finset α)) : Finset (Finset α) :=
-  (𝒜.biUnion powerset).filter fun s ↦ 𝒜.OrderShatters $ s.sort (· ≤ ·)
+  {s ∈ 𝒜.biUnion powerset | 𝒜.OrderShatters $ s.sort (· ≤ ·)}
 
 end order
 

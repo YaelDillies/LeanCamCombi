@@ -13,7 +13,7 @@ In this file, we define the Erdős–Rényi model through its marginals.
 -/
 
 open MeasureTheory ProbabilityTheory
-open scoped MeasureTheory ProbabilityTheory ENNReal NNReal
+open scoped Finset ENNReal NNReal
 
 variable {α Ω : Type*} [MeasurableSpace Ω]
 
@@ -52,7 +52,7 @@ lemma meas_edge (e : Sym2 α) : μ {ω | e ∈ (G ω).edgeSet} = p := hG.meas_ap
 protected nonrec lemma meas [IsProbabilityMeasure μ] [Fintype α] [DecidableEq α]
     [DecidableRel H.Adj] :
     μ {ω | G ω = H} =
-      p ^ H.edgeFinset.card * (1 - p) ^ (Fintype.card (Sym2 α) - H.edgeFinset.card) := by
+      p ^ #H.edgeFinset * (1 - p) ^ (Fintype.card (Sym2 α) - #H.edgeFinset) := by
   simpa using hG.meas H.edgeFinset
 
 end ErdosRenyi

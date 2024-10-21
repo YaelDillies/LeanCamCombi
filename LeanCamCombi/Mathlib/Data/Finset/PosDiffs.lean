@@ -71,7 +71,7 @@ section Finset
 variable [DecidableEq α] {𝒜 ℬ : Finset (Finset α)}
 
 lemma card_posDiffs_self_le (h𝒜 : (𝒜 : Set (Finset α)).OrdConnected) :
-    (𝒜 \₊ 𝒜).card ≤ 𝒜.card := by
+    #(𝒜 \₊ 𝒜) ≤ #𝒜 := by
   revert h𝒜
   refine Finset.memberFamily_induction_on 𝒜 ?_ ?_ ?_
   · simp
@@ -82,7 +82,7 @@ lemma card_posDiffs_self_le (h𝒜 : (𝒜 : Set (Finset α)).OrdConnected) :
 
 /-- A **reverse Kleitman inequality**. -/
 lemma le_card_upper_inter_lower (h𝒜 : IsLowerSet (𝒜 : Set (Finset α)))
-    (hℬ : IsUpperSet (ℬ : Set (Finset α))) : (𝒜 \₊ ℬ).card ≤ (𝒜 ∩ ℬ).card := by
+    (hℬ : IsUpperSet (ℬ : Set (Finset α))) : #(𝒜 \₊ ℬ) ≤ #(𝒜 ∩ ℬ) := by
   refine (card_le_card ?_).trans (card_posDiffs_self_le ?_)
   · simp_rw [subset_iff, mem_posDiffs, mem_inter]
     rintro _ ⟨s, hs, t, ht, hts, rfl⟩
@@ -114,7 +114,7 @@ lemma mem_posSub : a ∈ s -₊ t ↔ ∃ b ∈ s, ∃ c ∈ t, c ≤ b ∧ b - 
 lemma posSub_subset_sub : s -₊ t ⊆ s - t := fun x ↦ by
   rw [mem_posSub, mem_sub]; exact fun ⟨b, hb, c, hc, _, h⟩ ↦ ⟨b, hb, c, hc, h⟩
 
-lemma card_posSub_self_le (hs : (s : Set α).OrdConnected) : (s -₊ s).card ≤ s.card := sorry
+lemma card_posSub_self_le (hs : (s : Set α).OrdConnected) : #(s -₊ s) ≤ #s := sorry
 
 end posSub
 end Finset

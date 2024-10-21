@@ -37,8 +37,7 @@ namespace Finset
 -- Lemma 3.3 in Ruzsa's notes
 @[to_additive]
 lemma le_card_union_add_card_mulStab_union :
-    min (s.card + s.mulStab.card) (t.card + t.mulStab.card) ≤
-      (s ∪ t).card + (s ∪ t).mulStab.card := by
+    min (#s + #s.mulStab) (#t + #t.mulStab) ≤ #(s ∪ t) + #(s ∪ t).mulStab := by
   obtain rfl | hs := s.eq_empty_or_nonempty
   · simp [-zero_le']
   -- TODO: `to_additive` chokes on `zero_le'`
@@ -81,31 +80,30 @@ lemma le_card_union_add_card_mulStab_union :
     simp only [image_nonempty, mulStab_nonempty, mul_nonempty, and_imp,
       forall_true_left, hs, ht, h1] at this
     calc
-    min (card s + card Hs) (card t + card Ht) =
-      min (Nat.card N * card (s.image (QuotientGroup.mk (s := N))) +
-      Nat.card N * card (Hs.image (QuotientGroup.mk (s := N))))
-      (Nat.card N * card (t.image (QuotientGroup.mk (s := N))) +
-      Nat.card N * card (Ht.image (QuotientGroup.mk (s := N)))) := by
+    min (#s + #Hs) (#t + #Ht) =
+      min (Nat.card N * #(s.image (QuotientGroup.mk (s := N))) +
+      Nat.card N * #(Hs.image (QuotientGroup.mk (s := N))))
+      (Nat.card N * #(t.image (QuotientGroup.mk (s := N))) +
+      Nat.card N * #(Ht.image (QuotientGroup.mk (s := N)))) := by
         rw [← subgroup_mul_card_eq_mul_of_mul_stab_subset N s,
         ← subgroup_mul_card_eq_mul_of_mul_stab_subset N t,
         ← subgroup_mul_card_eq_mul_of_mul_stab_subset N Hs,
         ← subgroup_mul_card_eq_mul_of_mul_stab_subset N Ht]
         all_goals { aesop }
-    _ = Nat.card N * min (card (s.image (QuotientGroup.mk (s := N))) +
-      card (Hs.image (QuotientGroup.mk (s := N)))) (card (t.image (QuotientGroup.mk (s := N))) +
-      card (Ht.image (QuotientGroup.mk (s := N)))) := by
+    _ = Nat.card N * min
+          (#(s.image (QuotientGroup.mk (s := N))) + #(Hs.image (QuotientGroup.mk (s := N))))
+          (#(t.image (QuotientGroup.mk (s := N))) + #(Ht.image (QuotientGroup.mk (s := N)))) := by
         rw [← mul_add, ← mul_add, Nat.mul_min_mul_left]
-    _ = Nat.card N * min (card (image (QuotientGroup.mk (s := N)) s) +
-      card (mulStab (image (QuotientGroup.mk (s := N)) s)))
-      (card (image (QuotientGroup.mk (s := N)) t) +
-      card (mulStab (image (QuotientGroup.mk (s := N)) t))) := by
+    _ = Nat.card N * min
+          (#(image (QuotientGroup.mk (s := N)) s) + #(image (QuotientGroup.mk (s := N)) s).mulStab)
+          (#(image (QuotientGroup.mk (s := N)) t) + #(image (QuotientGroup.mk (s := N)) t).mulStab) := by
         rw [mulStab_quotient_commute_subgroup N t, mulStab_quotient_commute_subgroup N s]
         all_goals simp [*]
-    _ ≤ Nat.card N * (card (image (QuotientGroup.mk (s := N)) s ∪
+    _ ≤ Nat.card N * (#(image (QuotientGroup.mk (s := N)) s ∪
       image (QuotientGroup.mk (s := N)) t) +
-      card (mulStab (image (QuotientGroup.mk (s := N)) s ∪
+      #(mulStab (image (QuotientGroup.mk (s := N)) s ∪
       image (QuotientGroup.mk (s := N)) t))) := Nat.mul_le_mul_left _ this
-    _ ≤ card (s ∪ t) + card (s ∪ t).mulStab := by
+    _ ≤ #(s ∪ t) + #(s ∪ t).mulStab := by
       rw [mul_add, ← image_union, subgroup_mul_card_eq_mul_of_mul_stab_subset N (s ∪ t),
           ← mulStab_quotient_commute_subgroup N (s ∪ t),
           subgroup_mul_card_eq_mul_of_mul_stab_subset N (s ∪ t).mulStab]
@@ -115,7 +113,7 @@ lemma le_card_union_add_card_mulStab_union :
   -- · simp [hst.symm]
   -- obtain hts | hts := (subset_union_right s t).eq_or_ssubset
   -- · simp [hts.symm]
-  -- have : H.card = Hs.card * Ht.card := by
+  -- have : #H = #Hs * #Ht := by
   --   refine card_mul_iff.2 fun a ha b hb hab => _
   --   replace hab : a.2 * b.2⁻¹ = a.1⁻¹ * b.1 := by
   --     rw [mul_inv_eq_iff_eq_mul, mul_assoc, ← inv_mul_eq_iff_eq_mul, inv_inv]
@@ -134,8 +132,8 @@ lemma le_card_union_add_card_mulStab_union :
   --   · rw [← inv_mul_eq_one, this]
   --   · rw [← mul_inv_eq_one, hab, this]
   -- mistake in proof sketch, need to interchange `Hs` and `Ht`
-  -- suffices h2 : Hs.card - (s ∪ t).mulStab.card ≤ (s \ t).card ∨
-  --               Ht.card - (s ∪ t).mulStab.card ≤ (t \ s).card by
+  -- suffices h2 : #Hs - #(s ∪ t).mulStab ≤ #(s \ t) ∨
+  --               #Ht - #(s ∪ t).mulStab ≤ #(t \ s) by
   --   simp only [min_le_iff]
   --   cases' h2 with h2 h2
   --   · left
@@ -144,16 +142,16 @@ lemma le_card_union_add_card_mulStab_union :
   --     sorry
   -- have Hst : (s ∪ t).mulStab.Nonempty := ht.inr.mulStab
   -- set k : α → ℕ := fun a =>
-  --   card ((a • H).image (QuotientGroup.mk (s := stabilizer α s)) ∩ s.image QuotientGroup.mk)
+  --   #((a • H).image (QuotientGroup.mk (s := stabilizer α s)) ∩ s.image QuotientGroup.mk)
   sorry
   -- set l : α → ℕ := fun a =>
-  --   card ((a • H).image (QuotientGroup.mk (s := stabilizer α t)) ∩ t.image QuotientGroup.mk)
-  -- have hkt : ∀ a, k a ≤ Ht.card := sorry
-  -- have hls : ∀ a, l a ≤ Hs.card := sorry
-  -- have hk : ∀ a, (s \ t ∩ a • H).card = k a * (Hs.card - l a) := by sorry
-  -- have hl : ∀ a, (t \ s ∩ a • H).card = l a * (Ht.card - k a) := by sorry
+  --   #((a • H).image (QuotientGroup.mk (s := stabilizer α t)) ∩ t.image QuotientGroup.mk)
+  -- have hkt : ∀ a, k a ≤ #Ht := sorry
+  -- have hls : ∀ a, l a ≤ #Hs := sorry
+  -- have hk : ∀ a, #(s \ t ∩ a • H) = k a * (#Hs - l a) := by sorry
+  -- have hl : ∀ a, #(t \ s ∩ a • H) = l a * (#Ht - k a) := by sorry
   -- by_cases hkl :
-  --   (∀ a, k a = 0 ∨ k a = Ht.card ∨ l a = 0 ∨ l a = Hs.card) ∧
+  --   (∀ a, k a = 0 ∨ k a = #Ht ∨ l a = 0 ∨ l a = #Hs) ∧
   --     ((∀ a, k a = 0 → l a = 0) ∨ ∀ a, l a = 0 → k a = 0)
   -- · obtain ⟨hkl, hkl' | hkl'⟩ := hkl
   --   · refine Or.inl ((tsub_eq_zero_of_le $ card_mono _).trans_le $ zero_le _)
@@ -162,7 +160,7 @@ lemma le_card_union_add_card_mulStab_union :
   --     sorry
   -- -- the remaining sketch is flawed since `H` is defined to be `Hbar` in Ruzsa's notes and
   -- -- `mulStab (s ∪ t) = H` in the notes
-  -- suffices hHst : (Hs.card - 1) * (Ht.card - 1) ≤ (s \ t).card * (t \ s).card by
+  -- suffices hHst : (#Hs - 1) * (#Ht - 1) ≤ #(s \ t) * #(t \ s) by
   --   by_contra!
   --   exact hHst.not_lt $ CanonicallyOrderedCommSemiring.mul_lt_mul_of_lt_of_lt (this.1.trans_le $
   --     tsub_le_tsub_left (one_le_card.2 Hst) _) $ this.2.trans_le $
@@ -189,8 +187,7 @@ lemma le_card_union_add_card_mulStab_union :
 @[to_additive]
 lemma le_card_sup_add_card_mulStab_sup {ι : Type*} {s : Finset ι} {f : ι → Finset α}
     (hs : s.Nonempty) :
-    (s.inf' hs fun i => (f i).card + (f i).mulStab.card) ≤
-      (s.sup f).card + (s.sup f).mulStab.card := by
+    s.inf' hs (fun i ↦ #(f i) + #(f i).mulStab) ≤ #(s.sup f) + #(s.sup f).mulStab := by
   induction' s using Finset.cons_induction with i s hi ih
   · cases not_nonempty_empty hs
   obtain rfl | hs := s.eq_empty_or_nonempty
@@ -202,7 +199,7 @@ lemma le_card_sup_add_card_mulStab_sup {ι : Type*} {s : Finset ι} {f : ι → 
 
 @[to_additive]
 lemma le_card_mul_add_card_mulStab_mul (hs : s.Nonempty) (ht : t.Nonempty) :
-    s.card + t.card ≤ (s * t).card + (s * t).mulStab.card := by
+    #s + #t ≤ #(s * t) + #(s * t).mulStab := by
   -- For every `b ∈ t`, consider sets `s_b, t_b` such that
   -- * `b ∈ s_b`
   -- * `s ⊆ s_b`
@@ -210,11 +207,8 @@ lemma le_card_mul_add_card_mulStab_mul (hs : s.Nonempty) (ht : t.Nonempty) :
   -- * `|s_b| + |t_b| = |s| + |t|`
   -- Such sets exist because we can take `s_b = s, t_b = t`. So pick `s_b, t_b` such that `|t_b|` is
   -- minimal among such sets.
-  have :
-    ∀ b : t,
-      ∃ n s' t',
-        ↑b ∈ t' ∧ s ⊆ s' ∧ s' * t' ⊆ s * t ∧ s'.card + t'.card = s.card + t.card ∧ n = t'.card :=
-    fun b => ⟨_, s, t, b.2, Subset.rfl, Subset.rfl, rfl, rfl⟩
+  have (b : t) : ∃ n s' t', ↑b ∈ t' ∧ s ⊆ s' ∧ s' * t' ⊆ s * t ∧ #s' + #t' = #s + #t ∧ n = #t' :=
+    ⟨_, s, t, b.2, Subset.rfl, Subset.rfl, rfl, rfl⟩
   choose s' t' hbt' hs' hst' hstcard ht' using fun b => Nat.find_spec (this b)
   -- We have  `⋃ b ∈ t, s_b * t_b = s * t` because `s_b * t_b ⊆ s * t` and
   -- `∀ b ∈ t, s • b ⊆ s * t_b ⊆ s_b * t_b`.
@@ -251,8 +245,7 @@ stabilizer. -/
 @[to_additive "**Kneser's addition lemma**: A lower bound on the size of `s + t` in terms of its
 stabilizer."]
 lemma mul_kneser' (s t : Finset α) :
-    (s * (s * t).mulStab).card + (t * (s * t).mulStab).card ≤
-      (s * t).card + (s * t).mulStab.card := by
+    #(s * (s * t).mulStab) + #(t * (s * t).mulStab) ≤ #(s * t) + #(s * t).mulStab := by
   -- The cases `s = ∅` and `t = ∅` are easily taken care of.
   obtain rfl | hs := s.eq_empty_or_nonempty
   · simp
@@ -267,10 +260,8 @@ does not equal the RHS, then it is in fact much smaller. -/
 @[to_additive "The strict version of **Kneser's addition theorem**. If the LHS of
 `Finset.add_kneser` does not equal the RHS, then it is in fact much smaller."]
 lemma mul_strict_kneser'
-    (h :
-      (s * (s * t).mulStab).card + (t * (s * t).mulStab).card <
-        (s * t).card + (s * t).mulStab.card) :
-    (s * (s * t).mulStab).card + (t * (s * t).mulStab).card ≤ (s * t).card :=
+    (h : #(s * (s * t).mulStab) + #(t * (s * t).mulStab) < #(s * t) + #(s * t).mulStab) :
+    #(s * (s * t).mulStab) + #(t * (s * t).mulStab) ≤ #(s * t) :=
   Nat.le_of_lt_add_of_dvd h
       ((card_mulStab_dvd_card_mul_mulStab _ _).add $ card_mulStab_dvd_card_mul_mulStab _ _) $
     card_mulStab_dvd_card _

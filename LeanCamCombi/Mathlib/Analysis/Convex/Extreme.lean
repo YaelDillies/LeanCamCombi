@@ -124,14 +124,14 @@ lemma IsExtreme.subset_frontier (hAB : IsExtreme 𝕜 s t) (hBA : ¬s ⊆ t) : t
           ... = -(1 • x) + x + (1/n.succ : ℝ) • y : by rw h
           ... = (1/n.succ : ℝ) • y : by simp } },
     rw ← sub_zero x,
-    apply filter.tendsto.sub,
+    apply Filter.tendsto.sub,
     { nth_rewrite 0 ← one_smul _ x,
-      apply filter.tendsto.smul_const,
+      apply Filter.tendsto.smul_const,
       nth_rewrite 0 ← add_zero (1 : ℝ), --weirdly skips the first two `1`. Might break in the future
-      apply filter.tendsto.const_add,
+      apply Filter.tendsto.const_add,
       sorry },
     rw ← zero_smul _ y,
-    apply filter.tendsto.smul_const,-/
+    apply Filter.tendsto.smul_const,-/
   sorry
 
 /-{E : Type*} [add_comm_group E] [module ℝ E] [topological_space E]

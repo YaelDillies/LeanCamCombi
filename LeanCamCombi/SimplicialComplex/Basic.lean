@@ -23,12 +23,12 @@ variable [OrderedRing 𝕜] [AddCommGroup E] [Module 𝕜 E] {K K₁ K₂ : Simp
 /-- The cells of a simplicial complex are its simplices whose dimension matches the one of the
 space. -/
 def cells (K : SimplicialComplex 𝕜 E) : Set (Finset E) :=
-  {s | s ∈ K ∧ s.card = finrank 𝕜 E + 1}
+  {s | s ∈ K ∧ #s = finrank 𝕜 E + 1}
 
 /-- The subcells of a simplicial complex are its simplices whose cardinality matches the dimension
 of the space. They are thus one smaller than cells. -/
 def subcells (K : SimplicialComplex 𝕜 E) : Set (Finset E) :=
-  {s | s ∈ K ∧ s.card = finrank 𝕜 E}
+  {s | s ∈ K ∧ #s = finrank 𝕜 E}
 
 lemma disjoint_interiors (hs : s ∈ K) (ht : t ∈ K) (hxs : x ∈ combiInterior 𝕜 s)
     (hxt : x ∈ combiInterior 𝕜 t) : s = t := by
@@ -116,7 +116,7 @@ lemma simplex_combiInteriors_split_interiors (ht : AffineIndependent 𝕜 ((↑)
     ∃ u, u ⊆ t ∧ combiInterior 𝕜 s ⊆ combiInterior 𝕜 u := by
   classical
   let K := SimplicialComplex.ofSimplex ht
-  let F := t.powerset.filter fun v : Finset E => (s : Set E) ⊆ convexHull 𝕜 ↑v
+  let F := {v ∈ t.powerset | (s : Set E) ⊆ convexHull 𝕜 v.toSet}
   sorry
 /-obtain ⟨u, hu, humin⟩ := inf' _
   (begin

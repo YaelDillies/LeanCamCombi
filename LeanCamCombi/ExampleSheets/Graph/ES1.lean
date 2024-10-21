@@ -177,12 +177,11 @@ Let $$G = (V, E)$$ be a graph. Show that there is a partition $$V = A ∪ B$$ so
 the graphs $$G[A]$$ and $$G[B]$$ are of even degree.
 -/
 
--- Note: This is a bit general than the statement, because we allow partitioning any set of vertices
+-- Note: This is a bit more general than the statement, because we allow partitioning any set of
+-- vertices
 lemma q12 [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.Adj] (s : Finset α) :
-    ∃ u v,
-      Disjoint u v ∧
-        u ∪ v = s ∧
-          (∀ a ∈ u, Even (u.filter $ G.Adj a).card) ∧ ∀ a ∈ v, Even (v.filter $ G.Adj a).card :=
+    ∃ u v, Disjoint u v ∧ u ∪ v = s ∧
+      (∀ a ∈ u, Even #{b ∈ u | G.Adj a b}) ∧ ∀ a ∈ v, Even #{b ∈ v | G.Adj a b} :=
   sorry
 
 /-!

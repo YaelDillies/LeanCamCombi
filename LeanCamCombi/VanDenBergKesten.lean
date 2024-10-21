@@ -34,8 +34,8 @@ section BooleanAlgebra
 variable [BooleanAlgebra α] (s t u : Finset α) {a : α}
 
 noncomputable def certificator : Finset α :=
-  (s ∩ t).filter fun a ↦
-    ∃ x y, IsCompl x y ∧ (∀ ⦃b⦄, a ⊓ x = b ⊓ x → b ∈ s) ∧ ∀ ⦃b⦄, a ⊓ y = b ⊓ y → b ∈ t
+  {a ∈ s ∩ t |
+    ∃ x y, IsCompl x y ∧ (∀ ⦃b⦄, a ⊓ x = b ⊓ x → b ∈ s) ∧ ∀ ⦃b⦄, a ⊓ y = b ⊓ y → b ∈ t}
 
 scoped[FinsetFamily] infixl:70 " □ " => Finset.certificator
 
@@ -94,6 +94,6 @@ variable [DecidableEq α] [Fintype α] {𝒜 ℬ 𝒞 : Finset (Finset α)}
 
 /-- The **Van den Berg-Kesten-Reimer Inequality**: The probability that `𝒜` and `ℬ` occur
 "disjointly" is less than the product of their probabilities. -/
-lemma card_certificator_le : 2 ^ Fintype.card α * (𝒜 □ ℬ).card ≤ 𝒜.card * ℬ.card := sorry
+lemma card_certificator_le : 2 ^ Fintype.card α * #(𝒜 □ ℬ) ≤ #𝒜 * #ℬ := sorry
 
 end Finset

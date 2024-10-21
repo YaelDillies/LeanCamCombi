@@ -34,7 +34,7 @@ variable [Group α] [DecidableEq α] {s t : Finset α} {a : α}
 
 /-- The stabilizer of `s` as a finset. As an exception, this sends `∅` to `∅`.-/
 @[to_additive "The stabilizer of `s` as a finset. As an exception, this sends `∅` to `∅`."]
-def mulStab (s : Finset α) : Finset α := (s / s).filter fun a ↦ a • s = s
+def mulStab (s : Finset α) : Finset α := {a ∈ s / s | a • s = s}
 
 @[to_additive (attr := simp)]
 lemma mem_mulStab (hs : s.Nonempty) : a ∈ s.mulStab ↔ a • s = s := by
@@ -92,7 +92,7 @@ lemma Nonempty.mulStab (h : s.Nonempty) : s.mulStab.Nonempty := ⟨_, h.one_mem_
 lemma mulStab_nonempty : s.mulStab.Nonempty ↔ s.Nonempty := ⟨Nonempty.of_mulStab, Nonempty.mulStab⟩
 
 @[to_additive (attr := simp)]
-lemma card_mulStab_eq_one : s.mulStab.card = 1 ↔ s.mulStab = 1 := by
+lemma card_mulStab_eq_one : #s.mulStab = 1 ↔ s.mulStab = 1 := by
   refine ⟨fun h ↦ ?_, fun h ↦ by rw [h, card_one]⟩
   obtain ⟨a, ha⟩ := card_eq_one.1 h
   rw [ha]
@@ -239,16 +239,16 @@ lemma disjoint_smul_finset_mulStab_mul_mulStab :
   exact subset_biUnion_of_mem (· • mulStab s) hb
 
 @[to_additive]
-lemma card_mulStab_dvd_card_mul_mulStab (s t : Finset α) : t.mulStab.card ∣ (s * t.mulStab).card :=
+lemma card_mulStab_dvd_card_mul_mulStab (s t : Finset α) : #t.mulStab ∣ #(s * t.mulStab) :=
   card_dvd_card_smul_right <|
     t.pairwiseDisjoint_smul_finset_mulStab.subset <| Set.image_subset_range _ _
 
 @[to_additive]
-lemma card_mulStab_dvd_card (s : Finset α) : s.mulStab.card ∣ s.card := by
+lemma card_mulStab_dvd_card (s : Finset α) : #s.mulStab ∣ #s := by
   simpa only [mul_mulStab] using s.card_mulStab_dvd_card_mul_mulStab s
 
 @[to_additive]
-lemma card_mulStab_le_card : s.mulStab.card ≤ s.card := by
+lemma card_mulStab_le_card : #s.mulStab ≤ #s := by
   obtain rfl | hs := s.eq_empty_or_nonempty
   · rfl
   · exact Nat.le_of_dvd hs.card_pos s.card_mulStab_dvd_card
@@ -264,7 +264,7 @@ private def fintypeStabilizerOfMulStab (hs : s.Nonempty) : Fintype (stabilizer �
 
 @[to_additive]
 lemma card_mulStab_dvd_card_mulStab (hs : s.Nonempty) (h : s.mulStab ⊆ t.mulStab) :
-    s.mulStab.card ∣ t.mulStab.card := by
+    #s.mulStab ∣ #t.mulStab := by
   obtain rfl | ht := t.eq_empty_or_nonempty
   · simp
   rw [← coe_subset, coe_mulStab hs, coe_mulStab ht, SetLike.coe_subset_coe] at h
@@ -272,18 +272,18 @@ lemma card_mulStab_dvd_card_mulStab (hs : s.Nonempty) (h : s.mulStab ⊆ t.mulSt
   letI : Fintype (stabilizer α t) := fintypeStabilizerOfMulStab ht
   convert Subgroup.card_dvd_of_le h using 1
   simp [-mem_stabilizer_iff]
-  change _ = (s.mulStab.attach.map
-    ⟨Subtype.map id fun _ ↦ (mem_mulStab hs).1, Subtype.map_injective _ injective_id⟩).card
+  change _ = #(s.mulStab.attach.map
+    ⟨Subtype.map id fun _ ↦ (mem_mulStab hs).1, Subtype.map_injective _ injective_id⟩)
   simp
   simp [-mem_stabilizer_iff]
-  change _ = (t.mulStab.attach.map
-    ⟨Subtype.map id fun _ ↦ (mem_mulStab ht).1, Subtype.map_injective _ injective_id⟩).card
+  change _ = #(t.mulStab.attach.map
+    ⟨Subtype.map id fun _ ↦ (mem_mulStab ht).1, Subtype.map_injective _ injective_id⟩)
   simp
 
 /-- A version of Lagrange's theorem. -/
 @[to_additive "A version of Lagrange's theorem."]
 lemma card_mulStab_mul_card_image_coe' (s t : Finset α) :
-    t.mulStab.card * (s +ₛ stabilizer α t).card = (s * t.mulStab).card := by
+    #t.mulStab * #(s +ₛ stabilizer α t) = #(s * t.mulStab) := by
   obtain rfl | ht := t.eq_empty_or_nonempty
   · simp
   have := QuotientGroup.preimageMkEquivSubgroupProdSet _ (s +ˢ stabilizer α t)
@@ -297,7 +297,7 @@ lemma card_mulStab_mul_card_image_coe' (s t : Finset α) :
 
 @[to_additive]
 lemma card_mul_card_eq_mulStab_card_mul_coe (s t : Finset α) :
-    (s * t).card = (s * t).mulStab.card * ((s * t) +ₛ stabilizer α (s * t)).card := by
+    #(s * t) = #(s * t).mulStab * #((s * t) +ₛ stabilizer α (s * t)) := by
   obtain rfl | hs := s.eq_empty_or_nonempty
   · simp
   obtain rfl | ht := t.eq_empty_or_nonempty
@@ -312,8 +312,7 @@ lemma card_mul_card_eq_mulStab_card_mul_coe (s t : Finset α) :
 /-- A version of Lagrange's theorem. -/
 @[to_additive "A version of Lagrange's theorem."]
 lemma card_mulStab_mul_card_image_coe (s t : Finset α) :
-    (s * t).mulStab.card * ((s +ₛ stabilizer α (s * t)) * (t +ₛ stabilizer α (s * t))).card =
-      (s * t).card := by
+    #(s * t).mulStab * #((s +ₛ stabilizer α (s * t)) * (t +ₛ stabilizer α (s * t))) = #(s * t) := by
   obtain rfl | hs := s.eq_empty_or_nonempty
   · simp
   obtain rfl | ht := t.eq_empty_or_nonempty
@@ -347,7 +346,7 @@ lemma card_mulStab_mul_card_image_coe (s t : Finset α) :
 
 @[to_additive]
 lemma subgroup_mul_card_eq_mul_of_mul_stab_subset (s : Subgroup α) (t : Finset α)
-    (hst : (s : Set α) ⊆ t.mulStab) : Nat.card s * card (t +ₛ s) = card t := by
+    (hst : (s : Set α) ⊆ t.mulStab) : Nat.card s * #(t +ₛ s) = #t := by
   have h : (t : Set α) * s = t := by
     apply Set.Subset.antisymm (Set.Subset.trans (Set.mul_subset_mul_left hst) _)
     · intro x

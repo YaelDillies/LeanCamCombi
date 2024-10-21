@@ -33,7 +33,7 @@ lemma mem_support_bernoulli'_iff : b ∈ (bernoulli' p hp).support ↔ if b then
   simp
 
 @[simp] lemma map_not_bernoulli' : (bernoulli' p hp).map Not = bernoulli' (1 - p) tsub_le_self := by
-  have : ∀ p : Prop, (Finset.univ.filter fun q : Prop ↦ ¬ q ↔ p) = {¬ p} := by
+  have : ∀ p : Prop, ({q | ¬ q ↔ p} : Finset _) = {¬ p} := by
     rintro p
     ext q
     by_cases p <;> by_cases q <;> simp [*]

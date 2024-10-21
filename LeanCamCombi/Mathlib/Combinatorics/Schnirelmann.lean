@@ -16,11 +16,11 @@ lemma one_le_schnirelmannDensity_iff_of_zero_mem (hA : 0 ∈ A) :
   rw [schnirelmannDensity_le_one.ge_iff_eq, schnirelmannDensity_eq_one_iff_of_zero_mem hA]
 
 noncomputable def countelements (A : Set ℕ) (n : ℕ) : ℕ := -- for teaching purposes,
-  Finset.card ((Icc 1 n).filter (· ∈ A))      -- writing this is better
+  #{x ∈ Icc 1 n | x ∈ A}     -- writing this is better
 
 lemma countelements_nonneg (A : Set ℕ) (n : ℕ) : (0 ≤ countelements A n) := by positivity
 
-lemma card_Icc_one_n_n (n : ℕ) : card (Icc 1 n) = n := by
+lemma card_Icc_one_n_n (n : ℕ) : #(Icc 1 n) = n := by
   rw [Nat.card_Icc 1 n, add_tsub_cancel_right]
 
 lemma countelements_le_n  (A : Set ℕ) (n : ℕ) : countelements A n ≤ n := by
@@ -47,39 +47,36 @@ lemma sumset_contains_n (hA : 0 ∈ A) (hB : 0 ∈ B) (hc : n ≤ countelements 
   obtain rfl | hn1 := n.eq_zero_or_pos
   · contradiction
   apply h
-  have lem1 : ((Ioo 0 n).filter (· ∈ {n} - B)).card = countelements B (n - 1) := by
+  have lem1 : #{x ∈ Ioo 0 n | x ∈ {n} - B} = countelements B (n - 1) := by
     rw [countelements]
-    have hfim :
-      (filter (fun x ↦ x ∈ B) (Ioo 0 n)).image (n - ·) =
-        (filter (fun x ↦ x ∈ {n} - B) (Ioo 0 n)) := by ext; aesop
+    have hfim : {x ∈ Ioo 0 n | x ∈ B}.image (n - ·) = {x ∈ Ioo 0 n | x ∈ {n} - B} := by ext; aesop
     rw [← hfim, card_image_of_injOn]
     congr
     exact (tsub_add_cancel_of_le $ Nat.succ_le_iff.2 hn1).symm
     · exact Set.InjOn.mono (fun x hx ↦ (mem_Ioo.1 (mem_filter.1 hx).1).2.le) $
         fun x hx y hy ↦ tsub_inj_right hx hy
-  have lem3 : ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)).Nonempty := by
+  have lem3 : ({x ∈ Ioo 0 n | x ∈ A} ∩ {x ∈ Ioo 0 n | x ∈ {n} - B}).Nonempty := by
     rw [← hca, ← hcb] at hc
-    have hun : Finset.card ((Ioo 0 n).filter (· ∈ A) ∪ (Ioo 0 n).filter (· ∈ {n} - B)) ≤ n - 1 := by
+    have hun : #({x ∈ Ioo 0 n | x ∈ A} ∪ {x ∈ Ioo 0 n | x ∈ {n} - B}) ≤ n - 1 := by
       rw [← filter_or, ← tsub_zero n, ← Nat.card_Ioo]
       exact card_filter_le _ _
-    have hui : ((Ioo 0 n).filter (· ∈ A) ∪ (Ioo 0 n).filter (· ∈ {n} - B)).card +
-        ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)).card =
+    have hui : #({x ∈ Ioo 0 n | x ∈ A} ∪ {x ∈ Ioo 0 n | x ∈ {n} - B}) +
+        #({x ∈ Ioo 0 n | x ∈ A} ∩ {x ∈ Ioo 0 n | x ∈ {n} - B}) =
           countelements A (n - 1) + countelements B (n - 1) := by
       rw [card_union_add_card_inter, ← lem1, countelements]
       congr
       exact (tsub_add_cancel_of_le $ Nat.succ_le_iff.2 hn1).symm
-    have hin : 0 < Finset.card ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)) := by
+    have hin : 0 < #({x ∈ Ioo 0 n | x ∈ A} ∩ {x ∈ Ioo 0 n | x ∈ {n} - B}) := by
       rw [← hui] at hc
-      -- have hip : 0 ≤ Finset.card ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)) := by positivity
-      have hun1 : Finset.card ((Ioo 0 n).filter (· ∈ A) ∪ (Ioo 0 n).filter (· ∈ {n} - B))
-        + Finset.card ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)) ≤ (n - 1)
-        + Finset.card ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)) :=
+      have hun1 : #({x ∈ Ioo 0 n | x ∈ A} ∪ {x ∈ Ioo 0 n | x ∈ {n} - B})
+        + #({x ∈ Ioo 0 n | x ∈ A} ∩ {x ∈ Ioo 0 n | x ∈ {n} - B}) ≤ n - 1
+        + #({x ∈ Ioo 0 n | x ∈ A} ∩ {x ∈ Ioo 0 n | x ∈ {n} - B}) :=
         add_le_add hun le_rfl
-      have hip0 : n ≤ (n - 1) + ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)).card :=
+      have hip0 : n ≤ n - 1 + #({x ∈ Ioo 0 n | x ∈ A} ∩ {x ∈ Ioo 0 n | x ∈ {n} - B}) :=
         le_trans hc hun1
       by_contra! hip
       have hip1 :
-        (n - 1) + Finset.card ((Ioo 0 n).filter (· ∈ A) ∩ (Ioo 0 n).filter (· ∈ {n} - B)) ≤ n - 1 :=
+        n - 1 + #({x ∈ Ioo 0 n | x ∈ A} ∩ {x ∈ Ioo 0 n | x ∈ {n} - B}) ≤ n - 1 :=
         add_le_add le_rfl hip
       have hnn : n ≤ (n - 1) := le_trans hip0 hip1
       rw [← not_lt] at hnn
@@ -108,7 +105,7 @@ theorem sum_schnirelmannDensity_ge_one_sumset_nat (hA : 0 ∈ A) (hB : 0 ∈ B)
     _ = _ := by push_cast; rw [add_div]; rfl
 
 noncomputable def next_elm (A : Set ℕ) (a : A) (n : ℕ) : ℕ :=
-  if h : ((Ioc ↑a n).filter (· ∈ A)).Nonempty then ((Ioc ↑a n).filter (· ∈ A)).min' h else n
+  if h : {x ∈ Ioc ↑a n | x ∈ A}.Nonempty then {x ∈ Ioc ↑a n | x ∈ A}.min' h else n
 
 /-- **Schnirelmann's theorem** -/
 theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B) :

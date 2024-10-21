@@ -150,7 +150,7 @@ lemma mem_ofSimplex (hs : AffineIndependent 𝕜 ((↑) : s → E)) :
 
 -- Corollary of `affine_independent.card_le_finrank_succ`
 lemma face_dimension_le_space_dimension [FiniteDimensional 𝕜 E] (hs : s ∈ K) :
-    s.card ≤ finrank 𝕜 E + 1 := by
+    #s ≤ finrank 𝕜 E + 1 := by
   simpa using (K.indep hs).card_le_finrank_succ.trans (add_le_add_right (Submodule.finrank_le _) _)
 
 lemma subfacet [FiniteDimensional 𝕜 E] (hs : s ∈ K) : ∃ t, t ∈ K.facets ∧ s ⊆ t := by

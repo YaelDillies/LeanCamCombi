@@ -8,7 +8,7 @@ variable {α : Type*} [Fintype α] [DecidableEq α] (G : SimpleGraph α) [Decida
   {s t : Finset α} {a : α}
 
 /-- Number of vertices of `s` adjacent to `a`. -/
-def degOn (s : Finset α) (a : α) : ℕ := (s ∩ G.neighborFinset a).card
+def degOn (s : Finset α) (a : α) : ℕ := #(s ∩ G.neighborFinset a)
 
 lemma degOn_mono (hst : s ⊆ t) (a : α) : G.degOn s a ≤ G.degOn t a :=
   card_mono <| inter_subset_inter_right hst

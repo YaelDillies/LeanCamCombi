@@ -35,9 +35,8 @@ def extend' [DistribLattice α] [OrderBot α] {a b c : α} (P : Finpartition a) 
     (hc : a ⊔ b = c) : Finpartition c :=
   if hb : b = ⊥ then P.copy (by rw [← hc, hb, sup_bot_eq]) else P.extend hb hab hc
 
-def modPartitions (s d : ℕ) (hd : d ≠ 0) (h : d ≤ s) : Finpartition (range s)
-    where
-  parts := (range d).image fun i ↦ (range s).filter fun j ↦ j % d = i
+def modPartitions (s d : ℕ) (hd : d ≠ 0) (h : d ≤ s) : Finpartition (range s) where
+  parts := (range d).image fun i ↦ {j ∈ range s | j % d = i}
   supIndep := by
     rw [supIndep_iff_pairwiseDisjoint, coe_image, Set.InjOn.pairwiseDisjoint_image]
     · simp only [Set.PairwiseDisjoint, Function.onFun, Set.Pairwise, mem_coe, mem_range,
@@ -46,7 +45,7 @@ def modPartitions (s d : ℕ) (hd : d ≠ 0) (h : d ≤ s) : Finpartition (range
       exact hxy
     simp only [Set.InjOn, coe_range, Set.mem_Iio]
     intro x₁ hx₁ x₂ _ h'
-    have : x₁ ∈ (range s).filter fun j ↦ j % d = x₂ := by
+    have : x₁ ∈ {j ∈ range s | j % d = x₂} := by
       rw [← h', mem_filter, mem_range, Nat.mod_eq_of_lt hx₁]
       simp only [hx₁.trans_le h, eq_self_iff_true, and_self_iff]
     rw [mem_filter, Nat.mod_eq_of_lt hx₁] at this
@@ -73,7 +72,7 @@ lemma modPartitions_parts_eq (s d : ℕ) (hd : d ≠ 0) (h : d ≤ s) :
   simp only [mem_image, mem_range]
   refine exists_congr fun i ↦ and_congr_right fun hi ↦ ?_
   suffices
-    ((range ((s - i - 1) / d + 1)).image fun x ↦ i + d * x) = (range s).filter fun j ↦ j % d = i
+    ((range ((s - i - 1) / d + 1)).image fun x ↦ i + d * x) = {j ∈ range s | j % d = i}
     by rw [this]
   clear x
   ext j

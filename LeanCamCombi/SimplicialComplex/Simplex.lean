@@ -15,7 +15,7 @@ These are phrased in terms of finite sets of points, and the assumption of affin
 -/
 
 open Module Set
-open scoped BigOperators Classical
+open scoped Finset Classical
 
 variable {𝕜 E ι : Type*}
 
@@ -203,13 +203,13 @@ lemma isClosed_combiFrontier : IsClosed (combiFrontier ℝ s) := by
 
 /-- `combiInterior 𝕜 s` is the topological interior iff `s` is of dimension `m`. -/
 lemma interiors_agree_of_full_dimensional [FiniteDimensional ℝ E]
-    (hs : AffineIndependent ℝ ((↑) : s → E)) (hscard : s.card = finrank ℝ E + 1) :
+    (hs : AffineIndependent ℝ ((↑) : s → E)) (hscard : #s = finrank ℝ E + 1) :
     combiInterior ℝ s = interior (convexHull ℝ ↑s) := by
   unfold combiInterior
   sorry
 
 lemma frontiers_agree_of_full_dimensional [FiniteDimensional ℝ E]
-    (hscard : s.card = finrank ℝ E + 1) :
+    (hscard : #s = finrank ℝ E + 1) :
     combiFrontier ℝ s = frontier (convexHull ℝ ↑s) := by
   ext x
   constructor
