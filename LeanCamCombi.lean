@@ -8,8 +8,8 @@ import LeanCamCombi.ErdosRenyi.Basic
 import LeanCamCombi.ErdosRenyi.BollobasContainment
 import LeanCamCombi.ErdosRenyi.Connectivity
 import LeanCamCombi.ErdosRenyi.GiantComponent
-import LeanCamCombi.ExampleSheets.Graph.ES1
-import LeanCamCombi.ExampleSheets.Graph.ES2
+import LeanCamCombi.GraphTheory.ExampleSheet1
+import LeanCamCombi.GraphTheory.ExampleSheet2
 import LeanCamCombi.GrowthInGroups.Lecture1
 import LeanCamCombi.GrowthInGroups.Lecture2
 import LeanCamCombi.GrowthInGroups.SmallTripling
