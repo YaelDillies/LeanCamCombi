@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Kneser.Kneser
 
 /-!
@@ -30,7 +29,7 @@ lemma ZMod.cauchy_davenport' {p : ℕ} (hp : p.Prime) {s t : Finset (ZMod p)} (h
   haveI : Fact p.Prime := ⟨hp⟩
   obtain h | h := eq_bot_or_eq_top (AddAction.stabilizer (ZMod p) (s + t))
   · refine min_le_of_right_le ?_
-    rw [← AddSubgroup.coe_set_eq_zero, ← coe_addStab (hs.add ht), coe_eq_zero] at h
+    rw [← coe_set_eq_zero, ← coe_addStab (hs.add ht), coe_eq_zero] at h
     simpa [*] using add_kneser s t
   · rw [← AddSubgroup.coe_eq_univ, ← coe_addStab (hs.add ht), coe_eq_univ] at h
     refine card_addStab_le_card.trans' ?_

@@ -1,14 +1,11 @@
-
-import Mathlib.Combinatorics.Additive.DoublingConst
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Fin.VecNotation
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.NormNum
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.GrowthInGroups.SmallTripling
 
 open Fin Finset List
-open scoped Combinatorics.Additive Pointwise
+open scoped Pointwise
 
 namespace GrowthInGroups.Lecture2
 variable {G : Type*} [DecidableEq G] [CommGroup G] {A : Finset G} {k K : ℝ} {m : ℕ}

@@ -1,4 +1,4 @@
-import Mathlib.Order.SuccPred.Relation
+import Mathlib.Order.SuccPred.Archimedean
 
 namespace Order
 variable {α β : Type*} [Preorder α] [Preorder β] [SuccOrder α] [IsSuccArchimedean α]

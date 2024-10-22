@@ -5,7 +5,6 @@ import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Positivity.Finset
 import Mathlib.Tactic.Ring
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 
 /-!
 # Small tripling implies small powers

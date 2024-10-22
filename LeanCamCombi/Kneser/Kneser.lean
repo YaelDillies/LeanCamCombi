@@ -62,9 +62,7 @@ lemma mulStab_mul_ssubset_mulStab (hs₁ : (s ∩ a • C.mulStab).Nonempty)
       rw [smul_mulStab hd, smul_mulStab hc, mem_mulStab hCne, ← smul_smul,
         (mem_mulStab hCne).mp hy, (mem_mulStab hCne).mp hx]
     apply subset_trans (div_subset_div_right this) _
-    have hsing : (x * y) • C.mulStab = {x * y} * C.mulStab := by rw [singleton_mul]; rfl
-    simp_rw [hsing, singleton_mul, div_singleton, image_image, div_eq_mul_inv, mul_comm, comp_def,
-      mul_inv_cancel_right, image_id', subset_refl]
+    simp [singleton_mul, div_eq_inv_mul, smul_smul, mul_assoc]
   have : (a * b) • C.mulStab = (a * c * (b * d)) • C.mulStab := by
     rw [smul_eq_iff_eq_inv_smul, ← smul_assoc, smul_eq_mul, mul_assoc, mul_comm c _, ← mul_assoc, ←
       mul_assoc, ← mul_assoc, mul_assoc _ a b, inv_mul_cancel (a * b), one_mul, ← smul_eq_mul,
@@ -302,7 +300,7 @@ theorem mul_kneser :
   obtain hstab | hstab := ne_or_eq (s * t).mulStab 1
   · have image_coe_mul :
       ((s * t).image (↑) : Finset (α ⧸ stabilizer α (s * t))) = s.image (↑) * t.image (↑) :=
-      sorry -- image_mul (QuotientGroup.mk' _ : α →* α ⧸ stabilizer α (s * t))
+      image_mul (QuotientGroup.mk' _ : α →* α ⧸ stabilizer α (s * t))
     suffices hineq :
       #(s * t).mulStab *
           (#(s.image (↑) : Finset (α ⧸ stabilizer α (s * t))) +
@@ -390,10 +388,10 @@ theorem mul_kneser :
   have hbt₁ : b ∈ t₁ := mem_inter.mpr ⟨hb, mem_smul_finset.2 ⟨1, one_mem_mulStab.2 hC, mul_one _⟩⟩
   have hs₁ne : s₁.Nonempty := ⟨_, has₁⟩
   have ht₁ne : t₁.Nonempty := ⟨_, hbt₁⟩
-  set C₁ := C ∪ s₁ * t₁ with hC₁
-  set C₂ := C ∪ s₂ * t₂ with hC₂
+  set C₁ := C ∪ s₁ * t₁
+  set C₂ := C ∪ s₂ * t₂
   set H₁ := (s₁ * t₁).mulStab with hH₁
-  set H₂ := (s₂ * t₂).mulStab with hH₂
+  set H₂ := (s₂ * t₂).mulStab
   have hC₁st : C₁ ⊆ s * t := union_subset hCst (mul_subset_mul hs₁s ht₁t)
   have hC₂st : C₂ ⊆ s * t := union_subset hCst (mul_subset_mul hs₂s ht₂t)
   have hstabH₁ : s₁ * t₁ ⊆ (a * b) • H := by

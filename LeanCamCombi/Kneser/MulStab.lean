@@ -5,14 +5,12 @@ Authors: Mantas Bakšys, Yaël Dillies
 -/
 import Mathlib.Algebra.Pointwise.Stabilizer
 import Mathlib.GroupTheory.Coset.Card
+import Mathlib.GroupTheory.GroupAction.Blocks
 import Mathlib.GroupTheory.GroupAction.Quotient
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.Finite
-import LeanCamCombi.Mathlib.GroupTheory.QuotientGroup.Finite
 
 /-!
 # Stabilizer of a finset
-
 
 This file defines the stabilizer of a finset of a group as a finset.
 
@@ -228,7 +226,7 @@ lemma pairwiseDisjoint_smul_finset_mulStab (s : Finset α) :
   rintro _ ⟨a, rfl⟩ _ ⟨b, rfl⟩
   simp only [onFun, id_eq]
   simp_rw [← disjoint_coe, ← coe_injective.ne_iff, coe_smul_finset, coe_mulStab hs]
-  exact Subgroup.pairwiseDisjoint_smul _ (Set.mem_range_self _) (Set.mem_range_self _)
+  exact fun h ↦ isBlock_subgroup h
 
 @[to_additive]
 lemma disjoint_smul_finset_mulStab_mul_mulStab :
@@ -336,27 +334,24 @@ lemma card_mulStab_mul_card_image_coe (s t : Finset α) :
   have h1 : Fintype.card ((s * t : Finset α) : Set α) = Fintype.card (s * t) := by congr
   have h2 : (s +ˢ stabilizer α (s * t)) * (t +ˢ stabilizer α (s * t)) =
     ↑((s +ₛ stabilizer α (s * t)) * (t +ₛ stabilizer α (s * t))) := by simp
-  sorry
-  -- have h3 :
-  --   Fintype.card (((s : Set α).image coe : Set (α ⧸ stabilizer α (s * t))) * coe '' (t : Set α)) =
-  --     Fintype.card ((s.image coe : Finset (α ⧸ stabilizer α (s * t))) * image coe t) := by
-  --   simp_rw [h2]
-  --   congr
-  -- simp only [h1, h3, Fintype.card_coe] at temp
-  -- rw [temp]
+  have h3 :
+    Fintype.card ((s +ˢ stabilizer α (s * t)) * (t +ˢ stabilizer α (s * t))) =
+      Fintype.card ((s +ₛ stabilizer α (s * t)) * (t +ₛ stabilizer α (s * t))) := by
+    simp_rw [h2]
+    congr
+  simp only [h1, h3, Fintype.card_coe] at temp
+  rw [temp]
 
 @[to_additive]
 lemma subgroup_mul_card_eq_mul_of_mul_stab_subset (s : Subgroup α) (t : Finset α)
     (hst : (s : Set α) ⊆ t.mulStab) : Nat.card s * #(t +ₛ s) = #t := by
-  have h : (t : Set α) * s = t := by
-    apply Set.Subset.antisymm (Set.Subset.trans (Set.mul_subset_mul_left hst) _)
-    · intro x
-      rw [Set.mem_mul]
-      aesop
-    · rw [← coe_mul, mul_mulStab]
-  have := s.subgroup_mul_card_eq_mul t
-  rw [h] at this
-  simpa
+  suffices h : (t : Set α) * s = t by
+    simpa [h, eq_comm] using s.card_mul_eq_card_subgroup_mul_card_quotient  t
+  apply Set.Subset.antisymm (Set.Subset.trans (Set.mul_subset_mul_left hst) _)
+  · intro x
+    rw [Set.mem_mul]
+    aesop
+  · rw [← coe_mul, mul_mulStab]
 
 @[to_additive]
 lemma mulStab_quotient_commute_subgroup (s : Subgroup α) (t : Finset α)
