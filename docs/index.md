@@ -20,10 +20,10 @@ The purpose of this repository is to *digitise* some mathematical definitions, t
 
 The definitions, theorems and proofs in this repository are (mostly) taken from five Cambridge courses, as well as a course from ETH Zürich:
 * Part II Graph Theory, Michaelmas 2022, lectured by Julian Sahasrabudhe
-* Part III Combinatorics, Michaelmas 2022 & Michaelmas 2023, lectured by Béla Bollobás
+* Part III Combinatorics, Michaelmas 2022 & [Michaelmas 2023](https://github.com/YaelDillies/maths-notes/blob/master/combinatorics.pdf), lectured by Béla Bollobás
 * Part III Extremal and Probabilistic Combinatorics, Michaelmas 2023, lectured by Julian Sahasrabudhe
-* Part III Ramsey Theory on Graphs, Michaelmas 2024, lectured by Julian Sahasrabudhe
-* Part III Additive Combinatorics, Lent 2024, lectured by Julia Wolf
+* Part III [Ramsey Theory on Graphs, Michaelmas 2024](https://github.com/YaelDillies/maths-notes/blob/master/ramsey_theory.pdf), lectured by Julian Sahasrabudhe
+* Part III [Additive Combinatorics, Lent 2024](https://github.com/YaelDillies/maths-notes/blob/master/additive_combinatorics.pdf), lectured by Julia Wolf
 * ETH Math-D Growth in Groups, Winter 2024, lectured by Simon Machado
 
 ### The target
