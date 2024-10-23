@@ -42,7 +42,6 @@ import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.Order.Interval.Finset.Defs
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
-import LeanCamCombi.Mathlib.Order.SuccPred.Relation
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
