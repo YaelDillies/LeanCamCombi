@@ -28,18 +28,17 @@ The definitions, theorems and proofs in this repository are (mostly) taken from 
 
 ### The target
 
-The formal system which we are using as a target is [Lean 4](https://github.com/leanprover/lean4). Lean is a dependently typed theorem prover and programming language based on the Calculus of Inductive Constructions. It is being developed at AWS and Microsoft Research by Leonardo de Moura and his team.
+The formal system which we are using as a target is [Lean 4](https://lean-lang.org). Lean is a dependently typed theorem prover and programming language based on the Calculus of Inductive Constructions. It is being developed at AWS and Microsoft Research by Leonardo de Moura and his team.
 
-Our project is backed by [mathlib](https://github.com/leanprover-community/mathlib4), the major classical maths library written in Lean 4.
+Our project is backed by [mathlib](https://leanprover-community.github.io), the major classical maths library written in Lean 4.
 
 ## Content
 
-The project contains
-
-* **Prerequisites** to be upstreamed to mathlib: Lemmas that belong in existing mathlib files and background theories. Those are located in the `Mathlib` subfolder.
-* **Formal translations of example sheets**: Every course in Cambridge comes with 3 or 4 "example sheets", which are lists of questions/exercises/problems for the students to solve. Those are located in the `ExampleSheets` subfolder.
-* **Theory developments**: Formalisation of the courses per se. The mathlib philosophy of proving the most general result accessible applies here as well. This means that not all proofs follow the lecture notes, and might instead derive a result from the lectures from a more general theorem. Those make up the other subfolders and standalone lemmas.
-* **Archived results**: It sometimes happens in mathlib that a long argument gets replaced by a shorter one, with a different proof. When the long argument was proved in a lecture, we salvage it to `LeanCamCombi` for conservation purposes. There is currently no archived result.
+The Lean code is located within the `LeanCamCombi` folder. Within it, one can find:
+* One subfolder for each course, containing **formal lecture transcripts** in the files named `Lecture1`, `Lecture2`, etc... and **formal example sheet translations** in the files named `ExampleSheet1`, `ExampleSheet2`, etc... We follow the mathlib philosophy of aiming for the most general result within reach. This means that not all proofs follow the lecture notes, and might instead derive a result proved in the lectures from a general theorem. Those general theorems and prerequisite lemmas are proved in other folders. Read below.
+* A `Mathlib` subfolder for the **prerequisites** to be upstreamed to mathlib. Lemmas that belong in an existing mathlib file `Mathlib.X` will be located in `LeanCamCombi.Mathlib.X`. We aim to preserve the property that `LeanCamCombi.Mathlib.X` only imports `Mathlib.X` and files of the form `LeanCamCombi.Mathlib.Y` where `Mathlib.X` (transitively) imports `Mathlib.Y`. Prerequisites that do not belong in any existing mathlib file are placed in subtheory folders. See below.
+* One folder for each **theory development**. The formal lecture transcripts only contain what was stated in the lectures, but sometimes it makes sense for a theory to be developed as a whole before being incorporated by the prerequisites or imported in the formal lecture transcripts.
+* An `Archive` subfolder for **archived results**. It sometimes happens in mathlib that a long argument gets replaced by a shorter one, with a different proof. When the long argument was proved in a lecture, we salvage it to `LeanCamCombi` for conservation purposes.
 
 ### Content under development
 
@@ -94,19 +93,13 @@ The following topics have been upstreamed to mathlib and no longer live in LeanC
 
 ### Getting the project
 
-At the moment, the recommended way of browsing this repository is by using a Lean development environment. Crucially, this will allow you to introspect Lean's "Goal state" during proofs, and easily jump to definitions or otherwise follow paths through the code.
+To build the Lean files of this project, you need to have a working version of Lean.
+See [the installation instructions](https://leanprover-community.github.io/get_started.html) (under Regular install).
+Alternatively, click on the button below to open a Gitpod workspace containing the project.
 
-We are looking into ways to setup an online interactive website that will provide the same experience without the hassle of installing a complete Lean development environment.
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/YaelDillies/LeanAPAP)
 
-For the time being: please use the [installation instructions](https://leanprover-community.github.io/get_started) to install Lean and a supporting toolchain. After that, download and open a copy of the repository by executing the following commands in a terminal:
-```
-git clone https://github.com/YaelDillies/LeanCamCombi
-cd LeanCamCombi
-lake exe cache get
-cd ../
-code LeanCamCombi
-```
-If you are interested, here are [detailed instructions on how to work with Lean projects](https://leanprover-community.github.io/install/project).
+In either case, run `lake exe cache get` and then `lake build` to build the project.
 
 ### Browsing the project
 
@@ -117,6 +110,6 @@ With the project opened in VScode, you are all set to start exploring the code. 
 
 ### Contributing
 
-This project is open to contribution. You are in fact encouraged to have a look at the example sheet formalisations and try your hand at one of the problems. If you manage to prove one of them, please open a PR!
+**This project is open to contribution**. You are in fact encouraged to have a look at the example sheet translations and try your hand at one of the problems. If you manage to prove one of them, please open a PR!
 
 If you want to contribute a theorem or theory development, please open a PR! Note however that the standard of code is pretty high and that is not because you have formalised a concept/proved a theorem that it can be included into LeanCamCombi as is. Nonetheless I am willing to review your code and put it in shape for incorporation.
