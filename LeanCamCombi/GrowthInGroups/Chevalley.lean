@@ -204,11 +204,52 @@ lemma exists_image_comap_of_monic (f g : R[X]) (hg : g.Monic) :
 
 universe u
 
-example {R} (n : ℕ) (f : Fin n → R) (a : R) : Fin (n + 1) → R := Fin.cons a f
+lemma Prod.Lex.lt_iff' {α β} [PartialOrder α] [Preorder β] (x y : α) (w z : β) :
+    toLex (x, w) < toLex (y, z) ↔ x ≤ y ∧ (x = y → w < z) := by
+  rw [Prod.Lex.lt_iff]
+  simp only [lt_iff_le_not_le, le_antisymm_iff]
+  tauto
 
 @[simp]
 lemma Ideal.span_singleton_zero : Ideal.span {0} = (⊥ : Ideal R) := by simp
 -- Fin n → ℕ × Prop
+
+lemma Polynomial.monic_unit_leadingCoeff_inv_smul
+    (p : R[X]) (h : IsUnit p.leadingCoeff) :
+    (((h.unit ⁻¹ : Rˣ) : R) • p).Monic := by
+  nontriviality R
+  rw [Monic.def, ← coeff_natDegree, Algebra.smul_def, algebraMap_eq,
+    natDegree_C_mul_eq_of_mul_ne_zero, coeff_C_mul, coeff_natDegree, IsUnit.val_inv_mul]
+  rw [IsUnit.val_inv_mul]
+  exact one_ne_zero
+
+lemma Ideal.span_range_update_divByMonic {ι : Type*} [DecidableEq ι]
+    (v : ι → R[X]) (i j : ι) (hij : i ≠ j) (h : IsUnit (v i).leadingCoeff) :
+    Ideal.span (Set.range (Function.update v j (v j %ₘ (((h.unit ⁻¹ : Rˣ) : R) • v i)))) =
+      Ideal.span (Set.range v) := by
+  have H : (((h.unit ⁻¹ : Rˣ) : R) • v i).Monic :=
+    Polynomial.monic_unit_leadingCoeff_inv_smul (v i) h
+  refine le_antisymm ?_ ?_ <;>
+    simp only [Ideal.span_le, Set.range_subset_iff, SetLike.mem_coe]
+  · intro k
+    by_cases hjk : j = k
+    · subst hjk
+      rw [Function.update_same, modByMonic_eq_sub_mul_div (v j) H, Algebra.smul_def]
+      apply sub_mem (Ideal.subset_span ?_) (Ideal.mul_mem_right _ _
+        (Ideal.mul_mem_left _ _ <| Ideal.subset_span ?_))
+      · exact ⟨j, rfl⟩
+      · exact ⟨i, rfl⟩
+    exact Ideal.subset_span ⟨k, (Function.update_noteq (.symm hjk) _ _).symm⟩
+  · intro k
+    by_cases hjk : j = k
+    · subst hjk
+      nth_rw 2 [← modByMonic_add_div (v j) H]
+      rw [Algebra.smul_def]
+      apply add_mem (Ideal.subset_span ?_) (Ideal.mul_mem_right _ _
+        (Ideal.mul_mem_left _ _ <| Ideal.subset_span ?_))
+      · exact ⟨j, Function.update_same _ _ _⟩
+      · exact ⟨i, Function.update_noteq hij _ _⟩
+    exact Ideal.subset_span ⟨k, Function.update_noteq (.symm hjk) _ _⟩
 
 lemma foo_induction
     (P : ∀ (R : Type u) [CommRing R], Ideal R[X] → Prop)
@@ -224,26 +265,106 @@ lemma foo_induction
     exact ⟨s.card, Fin.cons 0 (Subtype.val ∘ s.equivFin.symm),
       by simp [← Set.union_singleton, Ideal.span_union]⟩
   clear hI
-  set v : Lex ((Fin (n + 1) → ℕ) × ℕ) := toLex
-    (natDegree ∘ e, (Finset.univ.filter (fun i ↦ IsUnit (e i).leadingCoeff)).card) with hv
+  set v : (Fin (n + 1) → WithBot ℕ) ×ₗ Prop := toLex
+    (degree ∘ e, ¬ ∃ i, IsUnit (e i).leadingCoeff ∧ ∀ j, e j ≠ 0 →
+      (e i).degree ≤ (e j).degree) with hv
   clear_value v
-  have : WellFoundedLT (Lex ((Fin (n + 1) → ℕ) × ℕ)) := inferInstance
-  induction v using wellFounded_lt (α := Lex ((Fin (n + 1) → ℕ) × ℕ)).induction generalizing R with
+  induction v using wellFounded_lt (α := (Fin (n + 1) → WithBot ℕ) ×ₗ Prop).induction generalizing R with
   | h v H_IH =>
     by_cases he0 : e = 0
     · rw [he0, Set.range_zero, Ideal.span_singleton_zero]; exact hP₁ R
     simp only [funext_iff, Pi.zero_apply, not_forall] at he0
-    obtain ⟨i, hi, H⟩ : ∃ i, e i ≠ 0 ∧ ∀ j, e j ≠ 0 → (e i).natDegree ≤ (e j).natDegree := by
-      have : ∃ n : ℕ, ∃ i, (e i).natDegree = n ∧ (e i) ≠ 0 := by rw [exists_comm]; simpa
-      let m := Nat.find this
-      obtain ⟨i, hi, hi'⟩ : ∃ i, (e i).natDegree = m ∧ (e i) ≠ 0 := Nat.find_spec this
-      exact ⟨i, hi', fun j hj ↦ hi.trans_le (Nat.find_min' _ ⟨j, rfl, hj⟩)⟩
-    by_cases hi' : (e i).Monic; swap
-    · apply hP _ (e i).leadingCoeff
-      · rw [Ideal.map_span, ← Set.range_comp]
+    by_cases H : ∃ i, IsUnit (e i).leadingCoeff ∧ ∀ j, e j ≠ 0 →
+      (e i).degree ≤ (e j).degree
+    · obtain ⟨i, hi, i_min⟩ := H
+      cases subsingleton_or_nontrivial R
+      · rw [Subsingleton.elim (Ideal.span (Set.range e)) ⊥]; exact hP₁ R
+      by_cases H' : ∀ j ≠ i, e j = 0
+      · convert hP₀ R (((hi.unit ⁻¹ : Rˣ) : R) • e i) ?_ using 1
+        · refine le_antisymm ?_ ?_ <;>
+            simp only [Ideal.span_le, Set.range_subset_iff, Set.singleton_subset_iff]
+          · intro j
+            by_cases hij : i = j
+            · simp only [SetLike.mem_coe, Ideal.mem_span_singleton]
+              use algebraMap _ _ (e i).leadingCoeff
+              rw [mul_comm, ← Algebra.smul_def, ← mul_smul, IsUnit.mul_val_inv, one_smul, hij]
+            · rw [H' j (.symm hij)]
+              exact Ideal.zero_mem _
+          · rw [Algebra.smul_def]
+            apply Ideal.mul_mem_left _ _ (Ideal.subset_span (Set.mem_range_self i))
+        exact Polynomial.monic_unit_leadingCoeff_inv_smul _ _
+      · cases subsingleton_or_nontrivial R
+        · rw [Subsingleton.elim (Ideal.span (Set.range e)) ⊥]; exact hP₁ R
+        simp only [ne_eq, not_forall, Classical.not_imp] at H'
+        obtain ⟨j, hj, hj'⟩ := H'
+        replace i_min := i_min j hj'
+        rw [← Ideal.span_range_update_divByMonic e i j (.symm hj) hi]
         refine H_IH _ ?_ _ rfl
-        sorry
-      · sorry
-    by_cases h' : ∃ j ≠ i, (e j) ≠ 0
-    · sorry
-    · sorry
+        have h_deg : (((hi.unit ⁻¹ : Rˣ) : R) • e i).degree = (e i).degree := by
+          rw [degree_eq_natDegree (p := e i) (fun e ↦ by simp [e] at hi),
+            degree_eq_iff_natDegree_eq, Algebra.smul_def, algebraMap_eq,
+            natDegree_C_mul_eq_of_mul_ne_zero]
+          · rw [IsUnit.val_inv_mul]; exact one_ne_zero
+          · exact (Polynomial.monic_unit_leadingCoeff_inv_smul (e i) hi).ne_zero
+        refine .left _ _ (lt_of_le_of_ne ?_ ?_)
+        · show _ ≤ (ofLex v).1
+          intro k
+          simp only [Function.comp_apply, Function.update_apply, hv, ne_eq, not_exists, not_and,
+            not_forall, Classical.not_imp, not_le, ofLex_toLex]
+          split_ifs with hjk
+          · rw [hjk]
+            exact (degree_modByMonic_le _
+              (Polynomial.monic_unit_leadingCoeff_inv_smul _ _)).trans (h_deg.trans_le i_min)
+          · exact le_rfl
+        · show _ ≠ (ofLex v).1
+          simp only [hv, ne_eq, not_exists, not_and, not_forall, not_le, funext_iff,
+            Function.comp_apply, exists_prop, ofLex_toLex]
+          use j
+          simp only [Function.update_same]
+          exact ((degree_modByMonic_lt _
+              (Polynomial.monic_unit_leadingCoeff_inv_smul _ _)).trans_le (h_deg.trans_le i_min)).ne
+    obtain ⟨i, hi, i_min⟩ : ∃ i, e i ≠ 0 ∧ ∀ j, e j ≠ 0 → (e i).degree ≤ (e j).degree := by
+      have : ∃ n : ℕ, ∃ i, (e i).degree = n ∧ (e i) ≠ 0 := by
+        obtain ⟨i, hi⟩ := he0; exact ⟨(e i).natDegree, i, degree_eq_natDegree hi, hi⟩
+      let m := Nat.find this
+      obtain ⟨i, hi, hi'⟩ : ∃ i, (e i).degree = m ∧ (e i) ≠ 0 := Nat.find_spec this
+      refine ⟨i, hi', fun j hj ↦ ?_⟩
+      refine hi.le.trans ?_
+      rw [degree_eq_natDegree hj, Nat.cast_le]
+      exact Nat.find_min' _ ⟨j, degree_eq_natDegree hj, hj⟩
+    have : ¬ IsUnit (e i).leadingCoeff := fun HH ↦ H ⟨i, HH, i_min⟩
+    apply hP _ (e i).leadingCoeff
+    · rw [Ideal.map_span, ← Set.range_comp]
+      refine H_IH _ ?_ _ rfl
+      rw [hv, Prod.Lex.lt_iff']
+      constructor
+      · intro j; simpa using degree_map_le _ _
+      simp only [coe_mapRingHom, Function.comp_apply, ne_eq, hv, ofLex_toLex,
+        not_exists, not_and, not_forall, Classical.not_imp, not_le, H, not_false_eq_true]
+      intro h_eq
+      rw [lt_iff_le_not_le]
+      simp only [exists_prop, le_Prop_eq, implies_true, true_implies, not_forall, Classical.not_imp,
+        not_exists, not_and, not_lt, true_and]
+      refine ⟨i, ?_, ?_⟩
+      · replace h_eq := congr_fun h_eq i
+        simp only [Function.comp_apply] at h_eq
+        have := IsLocalization.Away.algebraMap_isUnit (S := Localization.Away (e i).leadingCoeff)
+          (e i).leadingCoeff
+        convert this
+        nth_rw 2 [← coeff_natDegree]
+        rw [natDegree_eq_of_degree_eq h_eq, coeff_map, coeff_natDegree]
+      · intro j hj
+        refine le_trans ?_ ((i_min j (fun e ↦ hj (by simp [e]))).trans_eq (congr_fun h_eq j).symm)
+        simpa using degree_map_le _ _
+    · rw [Ideal.map_span, ← Set.range_comp]
+      refine H_IH _ ?_ _ rfl
+      rw [hv]
+      refine .left _ _ (lt_of_le_of_ne ?_ ?_)
+      · intro j; simpa using degree_map_le _ _
+      simp only [coe_mapRingHom, Function.comp_apply, ne_eq, hv, ofLex_toLex,
+        not_exists, not_and, not_forall, Classical.not_imp, not_le, H, not_false_eq_true]
+      intro h_eq
+      replace h_eq := congr_fun h_eq i
+      simp only [Ideal.Quotient.algebraMap_eq, Function.comp_apply, degree_map_eq_iff,
+        Ideal.Quotient.mk_singleton_self, ne_eq, not_true_eq_false, false_or] at h_eq
+      exact hi h_eq
