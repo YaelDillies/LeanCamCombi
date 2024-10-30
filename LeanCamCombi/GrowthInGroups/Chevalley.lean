@@ -212,29 +212,35 @@ lemma Prod.Lex.lt_iff' {α β} [PartialOrder α] [Preorder β] (x y : α) (w z :
 
 @[simp]
 lemma Ideal.span_singleton_zero : Ideal.span {0} = (⊥ : Ideal R) := by simp
--- Fin n → ℕ × Prop
+
+lemma Polynomial.degree_C_mul_eq_of_mul_ne_zero
+    (r : R) (p : R[X]) (h : r * p.leadingCoeff ≠ 0) : (C r * p).degree = p.degree := by
+  by_cases hp : p = 0
+  · simp [hp]
+  rw [degree_eq_natDegree hp, degree_eq_natDegree, natDegree_C_mul_eq_of_mul_ne_zero h]
+  exact fun e ↦ h (by simpa using congr(($e).coeff p.natDegree))
 
 lemma Polynomial.monic_unit_leadingCoeff_inv_smul
     (p : R[X]) (h : IsUnit p.leadingCoeff) :
-    (((h.unit ⁻¹ : Rˣ) : R) • p).Monic := by
+    (C ((h.unit⁻¹ : Rˣ) : R) * p).Monic := by
   nontriviality R
-  rw [Monic.def, ← coeff_natDegree, Algebra.smul_def, algebraMap_eq,
-    natDegree_C_mul_eq_of_mul_ne_zero, coeff_C_mul, coeff_natDegree, IsUnit.val_inv_mul]
+  rw [Monic.def, ← coeff_natDegree, natDegree_C_mul_eq_of_mul_ne_zero, coeff_C_mul,
+    coeff_natDegree, IsUnit.val_inv_mul]
   rw [IsUnit.val_inv_mul]
   exact one_ne_zero
 
 lemma Ideal.span_range_update_divByMonic {ι : Type*} [DecidableEq ι]
     (v : ι → R[X]) (i j : ι) (hij : i ≠ j) (h : IsUnit (v i).leadingCoeff) :
-    Ideal.span (Set.range (Function.update v j (v j %ₘ (((h.unit ⁻¹ : Rˣ) : R) • v i)))) =
+    Ideal.span (Set.range (Function.update v j (v j %ₘ (C ((h.unit⁻¹ : Rˣ) : R) * v i)))) =
       Ideal.span (Set.range v) := by
-  have H : (((h.unit ⁻¹ : Rˣ) : R) • v i).Monic :=
+  have H : (C ((h.unit⁻¹ : Rˣ) : R) * v i).Monic :=
     Polynomial.monic_unit_leadingCoeff_inv_smul (v i) h
   refine le_antisymm ?_ ?_ <;>
     simp only [Ideal.span_le, Set.range_subset_iff, SetLike.mem_coe]
   · intro k
     by_cases hjk : j = k
     · subst hjk
-      rw [Function.update_same, modByMonic_eq_sub_mul_div (v j) H, Algebra.smul_def]
+      rw [Function.update_same, modByMonic_eq_sub_mul_div (v j) H]
       apply sub_mem (Ideal.subset_span ?_) (Ideal.mul_mem_right _ _
         (Ideal.mul_mem_left _ _ <| Ideal.subset_span ?_))
       · exact ⟨j, rfl⟩
@@ -244,7 +250,6 @@ lemma Ideal.span_range_update_divByMonic {ι : Type*} [DecidableEq ι]
     by_cases hjk : j = k
     · subst hjk
       nth_rw 2 [← modByMonic_add_div (v j) H]
-      rw [Algebra.smul_def]
       apply add_mem (Ideal.subset_span ?_) (Ideal.mul_mem_right _ _
         (Ideal.mul_mem_left _ _ <| Ideal.subset_span ?_))
       · exact ⟨j, Function.update_same _ _ _⟩
@@ -273,56 +278,56 @@ lemma foo_induction
   | h v H_IH =>
     by_cases he0 : e = 0
     · rw [he0, Set.range_zero, Ideal.span_singleton_zero]; exact hP₁ R
+    cases subsingleton_or_nontrivial R
+    · rw [Subsingleton.elim (Ideal.span (Set.range e)) ⊥]; exact hP₁ R
     simp only [funext_iff, Pi.zero_apply, not_forall] at he0
-    by_cases H : ∃ i, IsUnit (e i).leadingCoeff ∧ ∀ j, e j ≠ 0 →
-      (e i).degree ≤ (e j).degree
+    -- Case I : The `e i ≠ 0` with minimal degree has invertible leading coefficient
+    by_cases H : ∃ i, IsUnit (e i).leadingCoeff ∧ ∀ j, e j ≠ 0 → (e i).degree ≤ (e j).degree
     · obtain ⟨i, hi, i_min⟩ := H
-      cases subsingleton_or_nontrivial R
-      · rw [Subsingleton.elim (Ideal.span (Set.range e)) ⊥]; exact hP₁ R
+      -- Case I.ii : `e j = 0` for all `j ≠ i`.
       by_cases H' : ∀ j ≠ i, e j = 0
-      · convert hP₀ R (((hi.unit ⁻¹ : Rˣ) : R) • e i) ?_ using 1
+      -- then `I = Ideal.span {e i}`
+      · convert hP₀ R (C ((hi.unit⁻¹ : Rˣ) : R) * e i) ?_ using 1
         · refine le_antisymm ?_ ?_ <;>
             simp only [Ideal.span_le, Set.range_subset_iff, Set.singleton_subset_iff]
           · intro j
             by_cases hij : i = j
             · simp only [SetLike.mem_coe, Ideal.mem_span_singleton]
-              use algebraMap _ _ (e i).leadingCoeff
-              rw [mul_comm, ← Algebra.smul_def, ← mul_smul, IsUnit.mul_val_inv, one_smul, hij]
+              use C (e i).leadingCoeff
+              rw [mul_comm, ← mul_assoc, ← map_mul, IsUnit.mul_val_inv, map_one, one_mul, hij]
             · rw [H' j (.symm hij)]
               exact Ideal.zero_mem _
-          · rw [Algebra.smul_def]
-            apply Ideal.mul_mem_left _ _ (Ideal.subset_span (Set.mem_range_self i))
+          · exact Ideal.mul_mem_left _ _ (Ideal.subset_span (Set.mem_range_self i))
         exact Polynomial.monic_unit_leadingCoeff_inv_smul _ _
-      · cases subsingleton_or_nontrivial R
-        · rw [Subsingleton.elim (Ideal.span (Set.range e)) ⊥]; exact hP₁ R
-        simp only [ne_eq, not_forall, Classical.not_imp] at H'
+      -- Case I.i : There is another `e j ≠ 0`
+      · simp only [ne_eq, not_forall, Classical.not_imp] at H'
         obtain ⟨j, hj, hj'⟩ := H'
         replace i_min := i_min j hj'
+        -- then we can replace `e j` with `e j %ₘ (C h.unit⁻¹ * e i) `
+        -- with `h : IsUnit (e i).leadingCoeff`.
         rw [← Ideal.span_range_update_divByMonic e i j (.symm hj) hi]
         refine H_IH _ ?_ _ rfl
-        have h_deg : (((hi.unit ⁻¹ : Rˣ) : R) • e i).degree = (e i).degree := by
-          rw [degree_eq_natDegree (p := e i) (fun e ↦ by simp [e] at hi),
-            degree_eq_iff_natDegree_eq, Algebra.smul_def, algebraMap_eq,
-            natDegree_C_mul_eq_of_mul_ne_zero]
-          · rw [IsUnit.val_inv_mul]; exact one_ne_zero
-          · exact (Polynomial.monic_unit_leadingCoeff_inv_smul (e i) hi).ne_zero
-        refine .left _ _ (lt_of_le_of_ne ?_ ?_)
-        · show _ ≤ (ofLex v).1
-          intro k
+        refine .left _ _ (lt_of_le_of_ne (b := (ofLex v).1) ?_ ?_)
+        · intro k
           simp only [Function.comp_apply, Function.update_apply, hv, ne_eq, not_exists, not_and,
             not_forall, Classical.not_imp, not_le, ofLex_toLex]
           split_ifs with hjk
           · rw [hjk]
-            exact (degree_modByMonic_le _
-              (Polynomial.monic_unit_leadingCoeff_inv_smul _ _)).trans (h_deg.trans_le i_min)
+            refine (degree_modByMonic_le _
+              (monic_unit_leadingCoeff_inv_smul _ _)).trans
+                ((degree_C_mul_eq_of_mul_ne_zero _ _ ?_).trans_le i_min)
+            rw [IsUnit.val_inv_mul]
+            exact one_ne_zero
           · exact le_rfl
-        · show _ ≠ (ofLex v).1
-          simp only [hv, ne_eq, not_exists, not_and, not_forall, not_le, funext_iff,
+        · simp only [hv, ne_eq, not_exists, not_and, not_forall, not_le, funext_iff,
             Function.comp_apply, exists_prop, ofLex_toLex]
           use j
           simp only [Function.update_same]
-          exact ((degree_modByMonic_lt _
-              (Polynomial.monic_unit_leadingCoeff_inv_smul _ _)).trans_le (h_deg.trans_le i_min)).ne
+          refine ((degree_modByMonic_lt _ (monic_unit_leadingCoeff_inv_smul _ _)).trans_le
+            ((degree_C_mul_eq_of_mul_ne_zero _ _ ?_).trans_le i_min)).ne
+          rw [IsUnit.val_inv_mul]
+          exact one_ne_zero
+    -- Case II : The `e i ≠ 0` with minimal degree has non-invertible leading coefficient
     obtain ⟨i, hi, i_min⟩ : ∃ i, e i ≠ 0 ∧ ∀ j, e j ≠ 0 → (e i).degree ≤ (e j).degree := by
       have : ∃ n : ℕ, ∃ i, (e i).degree = n ∧ (e i) ≠ 0 := by
         obtain ⟨i, hi⟩ := he0; exact ⟨(e i).natDegree, i, degree_eq_natDegree hi, hi⟩
@@ -333,6 +338,8 @@ lemma foo_induction
       rw [degree_eq_natDegree hj, Nat.cast_le]
       exact Nat.find_min' _ ⟨j, degree_eq_natDegree hj, hj⟩
     have : ¬ IsUnit (e i).leadingCoeff := fun HH ↦ H ⟨i, HH, i_min⟩
+    -- We replace `R` by `R ⧸ Ideal.span {(e i).leadingCoeff}` where `(e i).degree` is lowered
+    -- and `Localization.Away (e i).leadingCoeff` where `(e i).leadingCoeff` becomes invertible.
     apply hP _ (e i).leadingCoeff
     · rw [Ideal.map_span, ← Set.range_comp]
       refine H_IH _ ?_ _ rfl
@@ -368,3 +375,45 @@ lemma foo_induction
       simp only [Ideal.Quotient.algebraMap_eq, Function.comp_apply, degree_map_eq_iff,
         Ideal.Quotient.mk_singleton_self, ne_eq, not_true_eq_false, false_or] at h_eq
       exact hi h_eq
+
+universe v
+
+lemma RingHom.FinitePresentation.polynomial_induction
+    (P : ∀ (R : Type u) [CommRing R] (S : Type u) [CommRing S], (R →+* S) → Prop)
+    (Q : ∀ (R : Type u) [CommRing R] (S : Type v) [CommRing S], (R →+* S) → Prop)
+    (h₁ : ∀ (R) [CommRing R], P R R[X] C)
+    (h₂ : ∀ (R : Type u) [CommRing R] (S : Type v) [CommRing S] (f : R →+* S),
+      Function.Surjective f → (RingHom.ker f).FG → Q R S f)
+    (h₃ : ∀ (R) [CommRing R] (S) [CommRing S] (T) [CommRing T] (f : R →+* S) (g : S →+* T),
+      P R S f → Q S T g → Q R T (g.comp f))
+    {R S} [CommRing R] [CommRing S] (f : R →+* S) (hf : RingHom.FinitePresentation f) :
+    Q R S f := by
+  obtain ⟨n, g, hg, hg'⟩ := hf
+  let g' := letI := f.toAlgebra; g.toRingHom
+  replace hg : Function.Surjective g' := hg
+  replace hg' : (RingHom.ker g').FG := hg'
+  have : g'.comp (MvPolynomial.C) = f := letI := f.toAlgebra; g.comp_algebraMap
+  clear_value g'
+  subst this
+  clear g
+  induction n generalizing R S with
+  | zero =>
+    refine h₂ _ _ _ (hg.comp (MvPolynomial.C_surjective (Fin 0))) ?_
+    rw [← RingHom.comap_ker]
+    convert hg'.map (MvPolynomial.isEmptyRingEquiv R (Fin 0)).toRingHom using 1
+    simp only [RingEquiv.toRingHom_eq_coe]
+    exact Ideal.comap_symm (RingHom.ker g') (MvPolynomial.isEmptyRingEquiv R (Fin 0))
+  | succ n IH =>
+    let e : MvPolynomial (Fin (n + 1)) R ≃ₐ[R] MvPolynomial (Fin n) R[X] :=
+      (MvPolynomial.renameEquiv R (_root_.finSuccEquiv n)).trans
+        (MvPolynomial.optionEquivRight R (Fin n))
+    have he : (RingHom.ker (g'.comp <| RingHomClass.toRingHom e.symm)).FG := by
+      rw [← RingHom.comap_ker]
+      convert hg'.map e.toAlgHom.toRingHom using 1
+      exact Ideal.comap_symm (RingHom.ker g') e.toRingEquiv
+    have := IH (R := R[X]) (S := S) (g'.comp e.symm) (hg.comp e.symm.surjective) he
+    convert h₃ _ _ _ _ _ (h₁ _) this using 1
+    rw [RingHom.comp_assoc, RingHom.comp_assoc]
+    congr 1
+    ext : 1
+    simp [e]
