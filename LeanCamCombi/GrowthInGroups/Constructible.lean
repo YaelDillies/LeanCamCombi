@@ -5,7 +5,7 @@ Authors: Yaël Dillies
 -/
 import Mathlib.Topology.Compactness.Compact
 import Mathlib.Topology.Separation.Basic
-import LeanCamCombi.GrowthInGroups.SubbooleanAlgebra
+import LeanCamCombi.GrowthInGroups.BooleanSubalgebra
 
 /-!
 # Constructible sets
