@@ -1,5 +1,6 @@
 import Mathlib
 import LeanCamCombi.Mathlib.Data.Prod.Lex
+import LeanCamCombi.GrowthInGroups.ConstructibleSorries
 
 variable {R M A} [CommRing R] [AddCommGroup M] [Module R M] [CommRing A] [Algebra R A]
 
@@ -127,6 +128,16 @@ lemma image_comap_C_basicOpen (f : R[X]) :
     rw [mem_image_comap_basicOpen_iff_map_ne_zero, ← not_iff_not]
     simp [Polynomial.ext_iff, Set.range_subset_iff]
 
+lemma isOpenMap_comap_C : IsOpenMap (comap (R := R) C) := by
+  intro U hU
+  obtain ⟨S, hS, rfl⟩ := isTopologicalBasis_basic_opens.open_eq_sUnion hU
+  rw [Set.image_sUnion]
+  apply isOpen_sUnion
+  rintro _ ⟨t, ht, rfl⟩
+  obtain ⟨r, rfl⟩ := hS ht
+  simp only [image_comap_C_basicOpen]
+  exact (isClosed_zeroLocus _).isOpen_compl
+
 
 open Module in
 lemma LinearMap.nilpotent_iff_charpoly {R M} [CommRing R] [IsDomain R] [AddCommGroup M]
@@ -202,6 +213,19 @@ lemma exists_image_comap_of_monic (f g : R[X]) (hg : g.Monic) :
   · exact .of_basis (AdjoinRoot.powerBasis' hg).basis
   · exact .of_basis (AdjoinRoot.powerBasis' hg).basis
 
+lemma isCompact_image_comap_of_monic (f g : R[X]) (hg : g.Monic) :
+    IsCompact (comap C '' (zeroLocus {g} \ zeroLocus {f})) := by
+  obtain ⟨t, ht⟩ := exists_image_comap_of_monic f g hg
+  rw [ht, ← t.toSet.iUnion_of_singleton_coe, zeroLocus_iUnion, Set.compl_iInter]
+  apply isCompact_iUnion
+  exact fun _ ↦ by simpa using isCompact_basicOpen _
+
+lemma isOpen_image_comap_of_monic (f g : R[X]) (hg : g.Monic) :
+    IsOpen (comap C '' (zeroLocus {g} \ zeroLocus {f})) := by
+  obtain ⟨t, ht⟩ := exists_image_comap_of_monic f g hg
+  rw [ht]
+  exact (isClosed_zeroLocus (R := R) t).isOpen_compl
+
 universe u
 
 lemma Prod.Lex.lt_iff' {α β} [PartialOrder α] [Preorder β] (x y : α) (w z : β) :
@@ -258,11 +282,11 @@ lemma Ideal.span_range_update_divByMonic {ι : Type*} [DecidableEq ι]
 
 lemma foo_induction
     (P : ∀ (R : Type u) [CommRing R], Ideal R[X] → Prop)
+    (hP₀ : ∀ (R) [CommRing R] (g : R[X]), g.Monic → P R (Ideal.span {g}))
+    (hP₁ : ∀ (R) [CommRing R], P R ⊥)
     (hP : ∀ (R) [CommRing R] (c : R) (I : Ideal R[X]),
       P (Localization.Away c) (I.map (mapRingHom (algebraMap _ _))) →
       P (R ⧸ Ideal.span {c}) (I.map (mapRingHom (algebraMap _ _))) → P R I)
-    (hP₀ : ∀ (R) [CommRing R] (g : R[X]), g.Monic → P R (Ideal.span {g}))
-    (hP₁ : ∀ (R) [CommRing R], P R ⊥)
     {R} [CommRing R] (I : Ideal R[X]) (hI : I.FG) : P R I := by
   classical
   obtain ⟨n, e, rfl⟩ : ∃ (n : ℕ) (e : Fin (n + 1) → R[X]), I = Ideal.span (Set.range e) := by
@@ -417,3 +441,130 @@ lemma RingHom.FinitePresentation.polynomial_induction
     congr 1
     ext : 1
     simp [e]
+
+lemma PrimeSpectrum.isRetroCompact_iff {U : Set (PrimeSpectrum R)} (hU : IsOpen U) :
+    IsRetroCompact U ↔ IsCompact U := by
+  refine isRetroCompact_iff_isCompact_of_isTopologicalBasis _ isTopologicalBasis_basic_opens ?_ hU
+  intro i j
+  rw [← TopologicalSpace.Opens.coe_inf, ← basicOpen_mul]
+  exact isCompact_basicOpen _
+
+lemma Polynomial.ker_mapRingHom' {R S} [CommRing R] [CommRing S] (f : R →+* S) :
+    RingHom.ker (mapRingHom f) = (RingHom.ker f).map C := by
+  rw [← Polynomial.ker_mapRingHom]
+  rfl
+
+lemma mapRingHom_comp_C {R S} [CommRing R] [CommRing S] (f : R →+* S) :
+    (mapRingHom f).comp C = C.comp f := by ext; simp
+
+lemma Polynomial.isLocalization {R} [CommRing R] (S : Submonoid R) (A) [CommRing A] [Algebra R A]
+    [IsLocalization S A] :
+    letI := (mapRingHom (algebraMap R A)).toAlgebra; IsLocalization (S.map C) A[X] := by
+  letI := (mapRingHom (algebraMap R A)).toAlgebra
+  constructor
+  · rintro ⟨_, r, hr, rfl⟩
+    simpa [RingHom.algebraMap_toAlgebra] using (IsLocalization.map_units A ⟨r, hr⟩).map C
+  · intro z
+    obtain ⟨b, hb⟩ := IsLocalization.integerNormalization_spec S z
+    refine ⟨⟨IsLocalization.integerNormalization S z, _, b, b.2, rfl⟩, ?_⟩
+    ext i
+    simp only [RingHom.algebraMap_toAlgebra, coe_mapRingHom, map_C, coeff_mul_C, coeff_map, hb,
+      mul_comm, Algebra.smul_def]
+  · intros x y e
+    rw [← sub_eq_zero, ← map_sub, RingHom.algebraMap_toAlgebra, ← RingHom.mem_ker,
+      Polynomial.ker_mapRingHom', Ideal.mem_map_C_iff] at e
+    simp only [coeff_sub, RingHom.mem_ker, map_sub, sub_eq_zero,
+      IsLocalization.eq_iff_exists S] at e
+    choose c hc using e
+    refine ⟨⟨_, _, ((x.support ∪ y.support).prod c).2, rfl⟩, ?_⟩
+    ext i
+    simp only [coeff_C_mul]
+    by_cases hi : i ∈ x.support ∪ y.support
+    · obtain ⟨k, e⟩ := Finset.dvd_prod_of_mem c hi
+      simp only [e, mul_comm _ k, Submonoid.coe_mul _ k, mul_assoc, hc]
+    · simp only [Finset.mem_union, mem_support_iff, ne_eq, not_or, not_not] at hi
+      simp [hi.1, hi.2]
+
+lemma comap_C_eq_comap_quotient_union_comap_localization (s : Set (PrimeSpectrum R[X])) (c : R) :
+    comap C '' s =
+      comap (Ideal.Quotient.mk (.span {c})) '' (comap C ''
+        (comap (mapRingHom (Ideal.Quotient.mk _)) ⁻¹' s)) ∪
+      comap (algebraMap R (Localization.Away c)) '' (comap C ''
+        (comap (mapRingHom (algebraMap R (Localization.Away c))) ⁻¹' s)) := by
+  simp_rw [← Set.image_comp, ← ContinuousMap.coe_comp, ← comap_comp, ← mapRingHom_comp_C,
+    comap_comp, ContinuousMap.coe_comp, Set.image_comp, Set.image_preimage_eq_inter_range,
+    ← Set.image_union, ← Set.inter_union_distrib_left]
+  letI := (mapRingHom (algebraMap R (Localization.Away c))).toAlgebra
+  suffices Set.range (comap (mapRingHom (Ideal.Quotient.mk (.span {c})))) =
+      (Set.range (comap (algebraMap R[X] (Localization.Away c)[X])))ᶜ by
+    rw [this, RingHom.algebraMap_toAlgebra, Set.compl_union_self, Set.inter_univ]
+  have := Polynomial.isLocalization (.powers c) (Localization.Away c)
+  rw [Submonoid.map_powers] at this
+  have surj : Function.Surjective (mapRingHom (Ideal.Quotient.mk (.span {c}))) :=
+    Polynomial.map_surjective _ Ideal.Quotient.mk_surjective
+  rw [range_comap_of_surjective _ _ surj, localization_away_comap_range _ (C c)]
+  simp [Polynomial.ker_mapRingHom', Ideal.map_span]
+
+lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus {R} [CommRing R]
+    (I : Ideal R[X]) (hI : I.FG) (f : R[X]) :
+    IsConstructible (comap C '' (zeroLocus I \ zeroLocus {f})) := by
+  revert f
+  apply foo_induction (hI := hI)
+  · intros R _ g hg f
+    simp only [zeroLocus_span]
+    exact ((isRetroCompact_iff (isOpen_image_comap_of_monic f g hg)).mpr
+      (isCompact_image_comap_of_monic f g hg)).isConstructible (isOpen_image_comap_of_monic f g hg)
+  · intro R _ f
+    simp only [Submodule.bot_coe, zeroLocus_singleton_zero, ← Set.compl_eq_univ_diff,
+      ← basicOpen_eq_zeroLocus_compl]
+    exact ((isRetroCompact_iff (isOpenMap_comap_C _ (basicOpen f).2)).mpr
+      ((isCompact_basicOpen f).image (comap C).2)).isConstructible
+      (isOpenMap_comap_C _ (basicOpen f).2)
+  · intro R _ c I H₁ H₂ f
+    replace H₁ := (H₁ (mapRingHom (algebraMap _ _) f)).image_of_isOpenEmbedding
+      _ (localization_away_isOpenEmbedding (Localization.Away c) c)
+      (by rw [localization_away_comap_range _ c]
+          exact (isRetroCompact_iff (basicOpen c).2).mpr (isCompact_basicOpen c))
+    replace H₂ := (H₂ (mapRingHom (Ideal.Quotient.mk _) f)).image_of_isClosedEmbedding
+      _ (isClosedEmbedding_comap_of_surjective _ _ Ideal.Quotient.mk_surjective)
+      (by rw [range_comap_of_surjective _ _ Ideal.Quotient.mk_surjective]
+          simp only [Ideal.mk_ker, zeroLocus_span, ← basicOpen_eq_zeroLocus_compl]
+          exact (isRetroCompact_iff (basicOpen c).2).mpr (isCompact_basicOpen c))
+    rw [comap_C_eq_comap_quotient_union_comap_localization _ c]
+    simp_rw [Set.preimage_diff, preimage_comap_zeroLocus, Set.image_singleton]
+    convert H₂.union H₁ using 5 <;>
+      simp only [Ideal.map, zeroLocus_span, coe_mapRingHom, Ideal.Quotient.algebraMap_eq]
+
+lemma isConstructible_image_comap_C {R} [CommRing R] (s : Set (PrimeSpectrum R[X]))
+    (hs : IsConstructible s) :
+    IsConstructible (comap C '' s) := by
+  apply hs.induction_of_isTopologicalBasis _ isTopologicalBasis_basic_opens
+  · intros i s hs
+    simp only [basicOpen_eq_zeroLocus_compl, ← Set.compl_iInter₂,
+      compl_sdiff_compl, ← zeroLocus_iUnion₂, Set.biUnion_of_singleton]
+    rw [← zeroLocus_span]
+    apply isConstructible_comap_C_zeroLocus_sdiff_zeroLocus
+    exact ⟨hs.toFinset, by simp⟩
+  · intros s t hs ht
+    rw [Set.image_union]
+    exact hs.union ht
+
+lemma isConstructible_image_comap {R S} [CommRing R] [CommRing S] (f : R →+* S)
+    (hf : RingHom.FinitePresentation f)
+    (s : Set (PrimeSpectrum S)) (hs : IsConstructible s) :
+    IsConstructible (comap f '' s) := by
+  apply hf.polynomial_induction
+    (P := fun _ _ _ _ f ↦ ∀ s, IsConstructible s → IsConstructible (comap f '' s))
+    (Q := fun _ _ _ _ f ↦ ∀ s, IsConstructible s → IsConstructible (comap f '' s))
+  · exact fun _ ↦ isConstructible_image_comap_C
+  · intro R _ S _ f hf hf' s hs
+    refine hs.image_of_isClosedEmbedding _ (isClosedEmbedding_comap_of_surjective _ _ hf) ?_
+    rw [range_comap_of_surjective _ _ hf, isRetroCompact_iff (isClosed_zeroLocus _).isOpen_compl]
+    obtain ⟨t, ht⟩ := hf'
+    rw [← ht, ← t.toSet.iUnion_of_singleton_coe, zeroLocus_span, zeroLocus_iUnion, Set.compl_iInter]
+    apply isCompact_iUnion
+    exact fun _ ↦ by simpa using isCompact_basicOpen _
+  · intro R _ S _ T _ f g hf hg s hs
+    simp only [comap_comp, ContinuousMap.coe_comp, Set.image_comp]
+    exact hf _ (hg _ hs)
+  · exact hs
