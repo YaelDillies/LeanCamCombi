@@ -15,12 +15,10 @@ open List hiding tail
 open scoped Pointwise
 
 namespace Finset
-variable {G : Type*} [DecidableEq G] [CommGroup G] {A : Finset G} {k K : ℝ} {m : ℕ}
+variable {G : Type*} [DecidableEq G] [Group G] {A : Finset G} {k K : ℝ} {m : ℕ}
 
--- TODO: Generalise to non-commutative groups
-private lemma pluennecke_ruzsa (U V W : Finset G) : #U * #(V⁻¹ * W) ≤ #(U * V) * #(U * W) := by
-  rw [mul_comm, inv_mul_eq_div, mul_comm _ W, mul_comm #(U * V)]
-  exact ruzsa_triangle_inequality_div_mul_mul ..
+private lemma pluennecke_ruzsa (U V W : Finset G) : #U * #(V⁻¹ * W) ≤ #(U * V) * #(U * W) :=
+  ruzsa_triangle_inequality_invMul_mul_mul V U W
 
 private lemma inductive_claim (hm : 3 ≤ m)
     (h : ∀ ε : Fin 3 → ℤ, (∀ i, |ε i| = 1) → #((finRange 3).map fun i ↦ A ^ ε i).prod ≤ k * #A)

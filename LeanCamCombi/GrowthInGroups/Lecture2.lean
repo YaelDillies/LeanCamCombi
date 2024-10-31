@@ -8,12 +8,11 @@ open Fin Finset List
 open scoped Pointwise
 
 namespace GrowthInGroups.Lecture2
-variable {G : Type*} [DecidableEq G] [CommGroup G] {A : Finset G} {k K : ℝ} {m : ℕ}
+variable {G : Type*} [DecidableEq G] [Group G] {A : Finset G} {k K : ℝ} {m : ℕ}
 
 -- TODO: Genealise to non-commutative groups
 lemma lemma_4_2 (U V W : Finset G) : #U * #(V⁻¹ * W) ≤ #(U * V) * #(U * W) := by
-  rw [mul_comm, inv_mul_eq_div, mul_comm _ W, mul_comm #(U * V)]
-  exact ruzsa_triangle_inequality_div_mul_mul ..
+  exact ruzsa_triangle_inequality_invMul_mul_mul ..
 
 lemma lemma_4_3_2 (hA : #(A ^ 2) ≤ K * #A) : #(A⁻¹ * A) ≤ K ^ 2 * #A := by
   obtain rfl | hA₀ := A.eq_empty_or_nonempty

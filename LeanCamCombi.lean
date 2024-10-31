@@ -10,6 +10,9 @@ import LeanCamCombi.ErdosRenyi.Connectivity
 import LeanCamCombi.ErdosRenyi.GiantComponent
 import LeanCamCombi.GraphTheory.ExampleSheet1
 import LeanCamCombi.GraphTheory.ExampleSheet2
+import LeanCamCombi.GrowthInGroups.BooleanSubalgebra
+import LeanCamCombi.GrowthInGroups.Chevalley
+import LeanCamCombi.GrowthInGroups.Constructible
 import LeanCamCombi.GrowthInGroups.Lecture1
 import LeanCamCombi.GrowthInGroups.Lecture2
 import LeanCamCombi.GrowthInGroups.SmallTripling
@@ -35,6 +38,7 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
+import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.Finite
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
@@ -42,6 +46,7 @@ import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.Order.Interval.Finset.Defs
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
+import LeanCamCombi.Mathlib.RingTheory.Ideal.Span
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.OrderShatter

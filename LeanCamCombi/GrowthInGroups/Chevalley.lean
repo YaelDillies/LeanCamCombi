@@ -1,6 +1,7 @@
 import Mathlib
 import LeanCamCombi.Mathlib.Data.Prod.Lex
-import LeanCamCombi.GrowthInGroups.ConstructibleSorries
+import LeanCamCombi.Mathlib.RingTheory.Ideal.Span
+import LeanCamCombi.GrowthInGroups.Constructible
 
 variable {R M A} [CommRing R] [AddCommGroup M] [Module R M] [CommRing A] [Algebra R A]
 
@@ -228,15 +229,6 @@ lemma isOpen_image_comap_of_monic (f g : R[X]) (hg : g.Monic) :
 
 universe u
 
-lemma Prod.Lex.lt_iff' {α β} [PartialOrder α] [Preorder β] (x y : α) (w z : β) :
-    toLex (x, w) < toLex (y, z) ↔ x ≤ y ∧ (x = y → w < z) := by
-  rw [Prod.Lex.lt_iff]
-  simp only [lt_iff_le_not_le, le_antisymm_iff]
-  tauto
-
-@[simp]
-lemma Ideal.span_singleton_zero : Ideal.span {0} = (⊥ : Ideal R) := by simp
-
 lemma Polynomial.degree_C_mul_eq_of_mul_ne_zero
     (r : R) (p : R[X]) (h : r * p.leadingCoeff ≠ 0) : (C r * p).degree = p.degree := by
   by_cases hp : p = 0
@@ -426,7 +418,7 @@ lemma RingHom.FinitePresentation.polynomial_induction
     rw [← RingHom.comap_ker]
     convert hg'.map (MvPolynomial.isEmptyRingEquiv R (Fin 0)).toRingHom using 1
     simp only [RingEquiv.toRingHom_eq_coe]
-    exact Ideal.comap_symm (RingHom.ker g') (MvPolynomial.isEmptyRingEquiv R (Fin 0))
+    exact Ideal.comap_symm (MvPolynomial.isEmptyRingEquiv R (Fin 0))
   | succ n IH =>
     let e : MvPolynomial (Fin (n + 1)) R ≃ₐ[R] MvPolynomial (Fin n) R[X] :=
       (MvPolynomial.renameEquiv R (_root_.finSuccEquiv n)).trans
@@ -434,7 +426,7 @@ lemma RingHom.FinitePresentation.polynomial_induction
     have he : (RingHom.ker (g'.comp <| RingHomClass.toRingHom e.symm)).FG := by
       rw [← RingHom.comap_ker]
       convert hg'.map e.toAlgHom.toRingHom using 1
-      exact Ideal.comap_symm (RingHom.ker g') e.toRingEquiv
+      exact Ideal.comap_symm e.toRingEquiv
     have := IH (R := R[X]) (S := S) (g'.comp e.symm) (hg.comp e.symm.surjective) he
     convert h₃ _ _ _ _ _ (h₁ _) this using 1
     rw [RingHom.comp_assoc, RingHom.comp_assoc]
