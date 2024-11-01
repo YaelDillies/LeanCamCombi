@@ -3,6 +3,7 @@ import Mathlib.Combinatorics.Additive.DoublingConst
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
 import Mathlib.Tactic.Positivity.Finset
+import LeanCamCombi.GrowthInGroups.VerySmallDoubling
 
 open Finset Fintype Group Matrix MulOpposite Real
 open scoped Combinatorics.Additive MatrixGroups Pointwise
@@ -84,12 +85,14 @@ lemma theorem_3_9 :
         (hAgen : Subgroup.closure (A : Set SL(n, k)) = ⊤),
           #A ^ (1 + δ) ≤ #(A ^ 3) ∨ card SL(n, k) ^ (1 - ε) ≤ #A := sorry
 
+open scoped RightActions in
 lemma fact_3_10 (hA : σₘ[A] ≤ 1) :
-    ∃ H : Subgroup G, ∀ a ∈ A, a • (H : Set G) = A ∧ op a • (H : Set G) = A := sorry
+    ∃ H : Subgroup G, ∀ a ∈ A, a • (H : Set G) = A ∧ (H : Set G) <• a = A := sorry
 
-open scoped Classical in
-lemma lemma_3_11 (hA : σₘ[A] < 3 / 2) :
+open scoped Classical RightActions in
+lemma lemma_3_11 (hA : #(A * A) < (3 / 2 : ℚ) * #A) :
     ∃ (H : Subgroup G) (_ : Fintype H),
-      card H < 3 / 2 * #A ∧ ∀ a ∈ A, (A : Set G) ⊆ a • H ∧ a • (H : Set G) = op a • H := sorry
+      (card H : ℚ≥0) < 3 / 2 * #A ∧ ∀ a ∈ A, (A : Set G) ⊆ a • H ∧ a • (H : Set G) = H <• a :=
+  very_small_doubling hA
 
 end GrowthInGroups.Lecture1

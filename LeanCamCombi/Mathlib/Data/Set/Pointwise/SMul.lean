@@ -18,3 +18,10 @@ lemma mul_singleton' (s : Set α) (a : α) : s * {a} = op a • s := mul_singlet
 
 end Mul
 end Set
+
+namespace Set
+variable {α : Type*} [Mul α] {s t : Set α} {a : α}
+
+lemma smul_set_subset_mul : a ∈ s → a • t ⊆ s * t := image_subset_image2_right
+
+end Set

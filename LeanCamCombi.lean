@@ -16,12 +16,15 @@ import LeanCamCombi.GrowthInGroups.Constructible
 import LeanCamCombi.GrowthInGroups.Lecture1
 import LeanCamCombi.GrowthInGroups.Lecture2
 import LeanCamCombi.GrowthInGroups.SmallTripling
+import LeanCamCombi.GrowthInGroups.VerySmallDoubling
 import LeanCamCombi.Impact
 import LeanCamCombi.Incidence
 import LeanCamCombi.Kneser.Kneser
 import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.LittlewoodOfford
+import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
+import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
