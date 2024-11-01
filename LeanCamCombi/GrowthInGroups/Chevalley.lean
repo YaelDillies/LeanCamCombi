@@ -436,8 +436,7 @@ lemma RingHom.FinitePresentation.polynomial_induction
 
 lemma PrimeSpectrum.isRetroCompact_iff {U : Set (PrimeSpectrum R)} (hU : IsOpen U) :
     IsRetroCompact U ↔ IsCompact U := by
-  refine isRetroCompact_iff_isCompact_of_isTopologicalBasis _ isTopologicalBasis_basic_opens ?_ hU
-  intro i j
+  refine isTopologicalBasis_basic_opens.isRetroCompact_iff_isCompact (fun i j ↦ ?_) hU
   rw [← TopologicalSpace.Opens.coe_inf, ← basicOpen_mul]
   exact isCompact_basicOpen _
 
@@ -514,11 +513,11 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus {R} [CommRing R]
       (isOpenMap_comap_C _ (basicOpen f).2)
   · intro R _ c I H₁ H₂ f
     replace H₁ := (H₁ (mapRingHom (algebraMap _ _) f)).image_of_isOpenEmbedding
-      _ (localization_away_isOpenEmbedding (Localization.Away c) c)
+      (localization_away_isOpenEmbedding (Localization.Away c) c)
       (by rw [localization_away_comap_range _ c]
           exact (isRetroCompact_iff (basicOpen c).2).mpr (isCompact_basicOpen c))
     replace H₂ := (H₂ (mapRingHom (Ideal.Quotient.mk _) f)).image_of_isClosedEmbedding
-      _ (isClosedEmbedding_comap_of_surjective _ _ Ideal.Quotient.mk_surjective)
+      (isClosedEmbedding_comap_of_surjective _ _ Ideal.Quotient.mk_surjective)
       (by rw [range_comap_of_surjective _ _ Ideal.Quotient.mk_surjective]
           simp only [Ideal.mk_ker, zeroLocus_span, ← basicOpen_eq_zeroLocus_compl]
           exact (isRetroCompact_iff (basicOpen c).2).mpr (isCompact_basicOpen c))
@@ -530,16 +529,20 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus {R} [CommRing R]
 lemma isConstructible_image_comap_C {R} [CommRing R] (s : Set (PrimeSpectrum R[X]))
     (hs : IsConstructible s) :
     IsConstructible (comap C '' s) := by
-  apply hs.induction_of_isTopologicalBasis _ isTopologicalBasis_basic_opens
-  · intros i s hs
+  induction s, hs using
+    IsConstructible.induction_of_isTopologicalBasis _ isTopologicalBasis_basic_opens with
+  | compact_inter i j =>
+    rw [← TopologicalSpace.Opens.coe_inf, ← basicOpen_mul]
+    exact isCompact_basicOpen _
+  | union s hs t ht hs' ht' =>
+    rw [Set.image_union]
+    exact hs'.union ht'
+  | sdiff i s hs =>
     simp only [basicOpen_eq_zeroLocus_compl, ← Set.compl_iInter₂,
       compl_sdiff_compl, ← zeroLocus_iUnion₂, Set.biUnion_of_singleton]
     rw [← zeroLocus_span]
     apply isConstructible_comap_C_zeroLocus_sdiff_zeroLocus
     exact ⟨hs.toFinset, by simp⟩
-  · intros s t hs ht
-    rw [Set.image_union]
-    exact hs.union ht
 
 lemma isConstructible_image_comap {R S} [CommRing R] [CommRing S] (f : R →+* S)
     (hf : RingHom.FinitePresentation f)
@@ -550,7 +553,7 @@ lemma isConstructible_image_comap {R S} [CommRing R] [CommRing S] (f : R →+* S
     (Q := fun _ _ _ _ f ↦ ∀ s, IsConstructible s → IsConstructible (comap f '' s))
   · exact fun _ ↦ isConstructible_image_comap_C
   · intro R _ S _ f hf hf' s hs
-    refine hs.image_of_isClosedEmbedding _ (isClosedEmbedding_comap_of_surjective _ _ hf) ?_
+    refine hs.image_of_isClosedEmbedding (isClosedEmbedding_comap_of_surjective _ _ hf) ?_
     rw [range_comap_of_surjective _ _ hf, isRetroCompact_iff (isClosed_zeroLocus _).isOpen_compl]
     obtain ⟨t, ht⟩ := hf'
     rw [← ht, ← t.toSet.iUnion_of_singleton_coe, zeroLocus_span, zeroLocus_iUnion, Set.compl_iInter]
