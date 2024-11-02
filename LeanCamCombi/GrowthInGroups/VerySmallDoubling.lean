@@ -10,7 +10,6 @@ import Mathlib.Data.Set.Card
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Qify
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 
 open Finset MulOpposite
