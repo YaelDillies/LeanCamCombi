@@ -137,8 +137,7 @@ lemma mul_aux1
     (hconv : #(s ∩ t) + #((s ∪ t) * C.mulStab) ≤ #C + #C.mulStab)
     (hnotconv :
       #(C ∪ s' * t') + #(C ∪ s' * t').mulStab < #(s ∩ t) + #((s ∪ t) * (C ∪ s' * t').mulStab))
-    (hCun : (C ∪ s' * t').mulStab = (s' * t').mulStab) (hsub : (s' * t').mulStab ⊆ C.mulStab)
-    (hdisj : Disjoint C (s' * t')) :
+    (hCun : (C ∪ s' * t').mulStab = (s' * t').mulStab) (hdisj : Disjoint C (s' * t')) :
     (#((s ∪ t) * C.mulStab) - #((s ∪ t) * (s' * t').mulStab) : ℤ) <
       #C.mulStab - #(s' * (s' * t').mulStab) - #(t' * (s' * t').mulStab) := by
   set H := C.mulStab
@@ -410,7 +409,7 @@ theorem mul_kneser :
   have hH₁H : H₁ ⊂ H := mulStab_mul_ssubset_mulStab hs₁ne ht₁ne hab
   have aux1₁ :=
     mul_aux1 (ih _ _ hst₁) hCcard
-      (not_le.1 fun h => hCmin _ (hC₁stab.trans_ssubset hH₁H) ⟨hC₁st, h⟩) hC₁stab hH₁H.subset hCst₁
+      (not_le.1 fun h => hCmin _ (hC₁stab.trans_ssubset hH₁H) ⟨hC₁st, h⟩) hC₁stab hCst₁
   obtain ht₂ | ht₂ne := t₂.eq_empty_or_nonempty
   · have aux₁_contr :=
       disjoint_mul_sub_card_le b (hs₁s has₁) (disjoint_iff_inter_eq_empty.2 ht₂) hH₁H.subset
@@ -425,7 +424,7 @@ theorem mul_kneser :
   have hH₂H : H₂ ⊂ H := mulStab_mul_ssubset_mulStab hs₂ne ht₂ne (by rwa [mul_comm])
   have aux1₂ :=
     mul_aux1 (ih _ _ hst₂) hCcard
-      (not_le.1 fun h => hCmin _ (hC₂stab.trans_ssubset hH₂H) ⟨hC₂st, h⟩) hC₂stab hH₂H.subset hCst₂
+      (not_le.1 fun h => hCmin _ (hC₂stab.trans_ssubset hH₂H) ⟨hC₂st, h⟩) hC₂stab hCst₂
   obtain habH | habH := eq_or_ne (a • H) (b • H)
   · simp only [← habH] at aux1₁
     rw [hH₁, hs₁, ht₁, ← habH, hH] at hH₁H
