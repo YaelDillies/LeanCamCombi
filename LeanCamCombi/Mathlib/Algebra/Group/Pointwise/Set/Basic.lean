@@ -1,18 +1,9 @@
-import Mathlib.Algebra.Group.Pointwise.Finset.Basic
+import Mathlib.Algebra.Group.Pointwise.Set.Basic
 
 open scoped Pointwise
 
-namespace Finset
-variable {α : Type*} [DecidableEq α] [Mul α] {s t : Finset α} {a : α}
-
-lemma smul_finset_subset_mul : a ∈ s → a • t ⊆ s * t := image_subset_image₂_right
-
-attribute [gcongr] mul_subset_mul_left mul_subset_mul_right div_subset_div_left div_subset_div_right
-
-end Finset
-
-namespace Finset
-variable {α : Type*} [DecidableEq α] [Monoid α] {s t : Finset α}
+namespace Set
+variable {α : Type*} [Monoid α] {s t : Set α}
 
 attribute [simp] one_nonempty
 
@@ -33,4 +24,13 @@ lemma pow_subset_pow_mul_of_sq_subset_mul (hst : s ^ 2 ⊆ t * s) :
       _ ⊆ t ^ (n + 1) * (t * s) := by gcongr
       _ = t ^ (n + 2) * s := by rw [← mul_assoc, ← pow_succ]
 
-end Finset
+end Set
+
+namespace Set
+variable {ι : Type*} {α : ι → Type*} [∀ i, InvolutiveInv (α i)]
+
+@[to_additive (attr := simp)]
+lemma inv_pi (s : Set ι) (t : ∀ i, Set (α i)) : (s.pi t)⁻¹ = s.pi fun i ↦ (t i)⁻¹ := by
+  simp_rw [← image_inv]; exact piMap_image_pi (fun _ _ ↦ inv_surjective) _
+
+end Set
