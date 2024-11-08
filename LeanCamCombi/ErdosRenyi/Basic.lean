@@ -18,12 +18,11 @@ open scoped Finset ENNReal NNReal
 variable {α Ω : Type*} [MeasurableSpace Ω]
 
 /-- A sequence iid. real valued Bernoulli random variables with parameter `p ≤ 1`. -/
-abbrev ErdosRenyi (G : Ω → SimpleGraph α) [∀ ω, DecidableRel (G ω).Adj] (p : ℝ≥0)
-    (μ : Measure Ω := by volume_tac) : Prop :=
+abbrev ErdosRenyi (G : Ω → SimpleGraph α) (p : ℝ≥0) (μ : Measure Ω := by volume_tac) : Prop :=
   IsBernoulliSeq (fun ω ↦ (G ω).edgeSet) p μ
 
-variable {G : Ω → SimpleGraph α} {H : SimpleGraph α} [∀ ω, DecidableRel (G ω).Adj] {p : ℝ≥0}
-  (μ : Measure Ω) (hG : ErdosRenyi G p μ)
+variable {G : Ω → SimpleGraph α} {H : SimpleGraph α} {p : ℝ≥0} (μ : Measure Ω)
+  (hG : ErdosRenyi G p μ)
 
 namespace ErdosRenyi
 include hG

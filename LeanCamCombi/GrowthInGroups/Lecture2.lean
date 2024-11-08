@@ -1,6 +1,6 @@
+import Mathlib.Combinatorics.Additive.SmallTripling
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.Interval
 import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
-import LeanCamCombi.GrowthInGroups.SmallTripling
 
 open Fin Finset List
 open scoped Pointwise

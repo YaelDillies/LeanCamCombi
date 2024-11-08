@@ -146,12 +146,6 @@ lemma LinearMap.charpoly_baseChange {R M} [CommRing R] [AddCommGroup M] [Module 
   ext i j
   simp [Matrix.map_apply, LinearMap.toMatrix_apply, ← Algebra.algebraMap_eq_smul_one]
 
-lemma Algebra.baseChange_lmul {R B} [CommRing R] [CommRing B] [Algebra R B]
-    {A} [CommRing A] [Algebra R A] (f : B) :
-    (Algebra.lmul R B f).baseChange A = Algebra.lmul A (A ⊗[R] B) (1 ⊗ₜ f) := by
-  ext i
-  simp
-
 lemma isNilpotent_tensor_residueField_iff
     [Module.Free R A] [Module.Finite R A] (f : A) (I : Ideal R) [I.IsPrime] :
     IsNilpotent (algebraMap A (A ⊗[R] I.ResidueField) f) ↔

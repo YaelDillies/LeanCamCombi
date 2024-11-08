@@ -17,7 +17,6 @@ import LeanCamCombi.GrowthInGroups.Constructible
 import LeanCamCombi.GrowthInGroups.Lecture1
 import LeanCamCombi.GrowthInGroups.Lecture2
 import LeanCamCombi.GrowthInGroups.Lecture3
-import LeanCamCombi.GrowthInGroups.SmallTripling
 import LeanCamCombi.GrowthInGroups.VerySmallDoubling
 import LeanCamCombi.Impact
 import LeanCamCombi.Incidence
@@ -32,7 +31,6 @@ import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
 import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
-import LeanCamCombi.Mathlib.Combinatorics.Additive.PluenneckeRuzsa
 import LeanCamCombi.Mathlib.Combinatorics.Schnirelmann
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Containment

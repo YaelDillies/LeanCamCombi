@@ -86,7 +86,7 @@ lemma modPartitions_parts_eq (s d : ℕ) (hd : d ≠ 0) (h : d ≤ s) :
     exact Nat.sub_pos_of_lt (hi.trans_le h)
   · rintro ⟨hj, rfl⟩
     refine ⟨j / d, ?_, Nat.mod_add_div _ _⟩
-    rwa [Nat.le_div_iff_mul_le' hd.bot_lt, Nat.le_sub_iff_add_le, Nat.le_sub_iff_add_le',
+    rwa [Nat.le_div_iff_mul_le hd.bot_lt, Nat.le_sub_iff_add_le, Nat.le_sub_iff_add_le',
       ← add_assoc, mul_comm, Nat.mod_add_div, Nat.add_one_le_iff]
     · exact hi.le.trans h
     rw [Nat.succ_le_iff]

@@ -138,8 +138,8 @@ protected lemma union (h : IndepFun X Y μ) :
   convert (hX.compl.inter hY.compl _).compl using 1
   · simp [compl_inter]
   · rw [mul_tsub, mul_one, tsub_tsub, tsub_tsub_cancel_of_le, tsub_mul, one_mul,
-      add_tsub_assoc_of_le (mul_le_of_le_one_left' $ hX.le_one)]
-    · exact (add_le_add_left (mul_le_of_le_one_right' $ hY.le_one) _).trans_eq
+      add_tsub_assoc_of_le (mul_le_of_le_one_left' hX.le_one)]
+    · exact (add_le_add_left (mul_le_of_le_one_right' hY.le_one) _).trans_eq
         (add_tsub_cancel_of_le hX.le_one)
   · rwa [IndepFun_iff, MeasurableSpace.comap_compl measurable_compl,
       MeasurableSpace.comap_compl measurable_compl, ← IndepFun_iff]
