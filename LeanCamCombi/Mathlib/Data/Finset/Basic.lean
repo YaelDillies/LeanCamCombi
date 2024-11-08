@@ -1,4 +1,9 @@
 import Mathlib.Data.Finset.Basic
 
-nonrec lemma Finset.Nontrivial.nonempty {α} {X : Finset α} (hX : X.Nontrivial) : X.Nonempty :=
-  hX.nonempty
+namespace Finset
+
+nonrec lemma Nontrivial.nonempty {α} {X : Finset α} (hX : X.Nontrivial) : X.Nonempty := hX.nonempty
+
+attribute [simp] subset_empty
+
+end Finset

@@ -1,13 +1,11 @@
-import Mathlib.Algebra.BigOperators.Ring
-import Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Combinatorics.Additive.RuzsaCovering
-import Mathlib.Data.Fintype.BigOperators
-import Mathlib.Data.Real.Basic
+import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
+import LeanCamCombi.Mathlib.Combinatorics.Additive.RuzsaCovering
+import LeanCamCombi.Mathlib.Combinatorics.Additive.SmallTripling
+import LeanCamCombi.Mathlib.Data.Finset.Basic
 
 open scoped Finset Pointwise
-
 
 variable {G : Type*} [Group G] {S : Set G} {K L : ℝ} {n : ℕ}
 
@@ -65,14 +63,18 @@ lemma pi {ι : Type*} {G : ι → Type*} [Fintype ι] [∀ i, Group (G i)] {S : 
         _ ≤ ∏ i, K i := by gcongr; exact hF _
     · sorry
 
+open Finset in
 @[to_additive]
-lemma of_small_tripling [DecidableEq G] {s : Finset G} (hs₀ : s.Nonempty) (hsymm : s⁻¹ = s)
-    (hs : #(s ^ 3) ≤ K * #s) : IsApproximateSubgroup (s ^ 2 : Set G) (K ^ 2) where
-  nonempty := hs₀.to_set.pow
-  inv_eq_self := by simp [← inv_pow, hsymm, ← Finset.coe_inv]
+lemma of_small_tripling [DecidableEq G] {A : Finset G} (hA₀ : A.Nonempty) (hAsymm : A⁻¹ = A)
+    (hA : #(A ^ 3) ≤ K * #A) : IsApproximateSubgroup (A ^ 2 : Set G) (K ^ 3) where
+  nonempty := hA₀.to_set.pow
+  inv_eq_self := by simp [← inv_pow, hAsymm, ← coe_inv]
   exists_sq_subset_mul := by
-    sorry
-
-
+    replace hA := calc (#(A ^ 4 * A) : ℝ)
+      _ = #(A ^ 5) := by rw [← pow_succ]
+      _ ≤ K ^ 3 * #A := small_pow_of_small_tripling' (by omega) hA hAsymm
+    obtain ⟨F, -, hF, hAF⟩ := ruzsa_covering_mul hA₀ hA
+    have hF₀ : F.Nonempty := nonempty_iff_ne_empty.2 <| by rintro rfl; simp [hA₀.ne_empty] at hAF
+    exact ⟨F, hF, by norm_cast; simpa [div_eq_mul_inv, pow_succ, mul_assoc, hAsymm] using hAF⟩
 
 end IsApproximateSubgroup

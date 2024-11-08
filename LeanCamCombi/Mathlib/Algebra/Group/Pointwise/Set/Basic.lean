@@ -3,7 +3,10 @@ import Mathlib.Algebra.Group.Pointwise.Set.Basic
 open scoped Pointwise
 
 namespace Set
-variable {α : Type*} [Monoid α] {s t : Set α}
+variable {α : Type*}
+
+section Monoid
+variable [Monoid α] {s t : Set α} {n : ℕ}
 
 attribute [simp] one_nonempty
 
@@ -11,6 +14,16 @@ attribute [simp] one_nonempty
 lemma Nonempty.pow (hs : s.Nonempty) : ∀ {n}, (s ^ n).Nonempty
   | 0 => by simp
   | n + 1 => by rw [pow_succ]; exact hs.pow.mul hs
+
+set_option push_neg.use_distrib true in
+@[to_additive (attr := simp)] lemma pow_eq_empty : s ^ n = ∅ ↔ s = ∅ ∧ n ≠ 0 := by
+  constructor
+  · contrapose!
+    rintro (hs | rfl)
+    · exact hs.pow
+    · simp
+  · rintro ⟨rfl, hn⟩
+    exact empty_pow hn
 
 @[to_additive]
 lemma pow_subset_pow_mul_of_sq_subset_mul (hst : s ^ 2 ⊆ t * s) :
@@ -24,6 +37,27 @@ lemma pow_subset_pow_mul_of_sq_subset_mul (hst : s ^ 2 ⊆ t * s) :
       _ ⊆ t ^ (n + 1) * (t * s) := by gcongr
       _ = t ^ (n + 2) * s := by rw [← mul_assoc, ← pow_succ]
 
+end Monoid
+
+section DivisionMonoid
+variable [DivisionMonoid α] {s t : Set α} {n : ℤ}
+
+@[to_additive]
+lemma Nonempty.zpow (hs : s.Nonempty) : ∀ {n : ℤ}, (s ^ n).Nonempty
+  | (n : ℕ) => hs.pow
+  | .negSucc n => by simpa using hs.pow
+
+set_option push_neg.use_distrib true in
+@[to_additive (attr := simp)] lemma zpow_eq_empty : s ^ n = ∅ ↔ s = ∅ ∧ n ≠ 0 := by
+  constructor
+  · contrapose!
+    rintro (hs | rfl)
+    · exact hs.zpow
+    · simp
+  · rintro ⟨rfl, hn⟩
+    exact empty_zpow hn
+
+end DivisionMonoid
 end Set
 
 namespace Set

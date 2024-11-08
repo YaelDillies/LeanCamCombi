@@ -31,6 +31,8 @@ import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
 import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
+import LeanCamCombi.Mathlib.Combinatorics.Additive.RuzsaCovering
+import LeanCamCombi.Mathlib.Combinatorics.Additive.SmallTripling
 import LeanCamCombi.Mathlib.Combinatorics.Schnirelmann
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Containment
