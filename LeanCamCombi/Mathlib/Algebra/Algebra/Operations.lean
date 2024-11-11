@@ -1,5 +1,4 @@
-import Mathlib
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
+import Mathlib.Algebra.Algebra.Operations
 
 namespace Submodule
 
@@ -18,11 +17,10 @@ lemma GCongr.pow_right_mono (hs : 1 ≤ s) {m n : ℕ} (hmn : m ≤ n) : s ^ m �
   Submodule.pow_right_mono hs hmn
 
 @[gcongr]
-lemma pow_left_mono (hst : s ≤ t) : ∀ {n : ℕ}, s ^ n ≤ t ^ n := by exact fun {n} ↦ pow_le_pow_left' hst n
+lemma pow_left_mono (hst : s ≤ t) : ∀ {n : ℕ}, s ^ n ≤ t ^ n := fun {n} ↦ pow_le_pow_left' hst n
 
 @[gcongr]
-lemma pow_mono (hst : s ≤ t) (ht : 1 ≤ t) {m n : ℕ} (hmn : m ≤ n) :
-    s ^ m ≤ t ^ n :=
+lemma pow_mono (hst : s ≤ t) (ht : 1 ≤ t) {m n : ℕ} (hmn : m ≤ n) : s ^ m ≤ t ^ n :=
   (pow_le_pow_left' hst _).trans (pow_le_pow_right' ht hmn)
 
 end Submodule

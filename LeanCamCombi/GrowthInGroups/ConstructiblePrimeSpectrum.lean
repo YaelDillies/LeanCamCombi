@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.Algebra.Polynomial.Degree.Definitions
+import Mathlib.RingTheory.PrimeSpectrum
 
 
 variable (R) {n : ℕ} [CommRing R]
