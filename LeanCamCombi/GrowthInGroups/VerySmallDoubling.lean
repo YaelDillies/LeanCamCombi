@@ -127,8 +127,8 @@ def symmetricSubgroup (A : Finset G) (h : #(A * A) < (3 / 2 : ℚ) * #A) : Subgr
     rw [← coe_mul_comm_of_doubling (weaken_doubling h)]
     exact ⟨a * b * t, by simp [ht, mul_assoc], ((c * d)⁻¹ * t)⁻¹, by simp [ht, mul_assoc]⟩
 
-lemma coe_symmetricSubgroup (A : Finset G) (h) : (symmetricSubgroup A h : Set G) = A * A⁻¹ := by
-  rw [symmetricSubgroup_coe, eq_comm]
+lemma coe_symmetricSubgroup' (A : Finset G) (h) : (symmetricSubgroup A h : Set G) = A * A⁻¹ := by
+  rw [coe_symmetricSubgroup, eq_comm]
   norm_cast
   exact mul_comm_of_doubling (by qify at h ⊢; linarith)
 
@@ -180,7 +180,7 @@ lemma A_subset_aH (a : G) (ha : a ∈ A) : A ⊆ a • (A⁻¹ * A) := by
 lemma subgroup_strong_bound_left (h : #(A * A) < (3 / 2 : ℚ) * #A) (a : G) (ha : a ∈ A) :
     A * A ⊆ a • op a • (A⁻¹ * A) := by
   have h₁ : (A⁻¹ * A) * (A⁻¹ * A) = A⁻¹ * A := by
-    rw [← coe_inj, coe_mul, coe_mul, ← symmetricSubgroup_coe _ h, coe_mul_coe]
+    rw [← coe_inj, coe_mul, coe_mul, ← coe_symmetricSubgroup _ h, coe_mul_coe]
   have h₂ : a • op a • (A⁻¹ * A) = (a • (A⁻¹ * A)) * (op a • (A⁻¹ * A)) := by
     rw [mul_smul_comm, smul_mul_assoc, h₁, smul_comm]
   rw [h₂]
@@ -246,19 +246,19 @@ theorem very_small_doubling (h : #(A * A) < (3 / 2 : ℚ) * #A) :
   refine ⟨H, inferInstance, ?_, fun a ha ↦ ⟨?_, subset_antisymm ?_ ?_⟩⟩
   · simp [← Nat.card_eq_fintype_card, symmetricSubgroup, ← coe_mul, ← coe_inv, H]
     rwa [Nat.card_eq_finsetCard, subgroup_strong_bound h]
-  · rw [symmetricSubgroup_coe]
+  · rw [coe_symmetricSubgroup]
     exact_mod_cast A_subset_aH a ha
   · rw [Set.subset_set_smul_iff, ← op_inv]
     calc
       a •> (H : Set G) <• a⁻¹ ⊆ a •> (H : Set G) * A⁻¹ := Set.op_smul_set_subset_mul (by simpa)
       _ ⊆ A * (H : Set G) * A⁻¹ := by gcongr; exact Set.smul_set_subset_mul (by simpa)
       _ = H := by
-        rw [symmetricSubgroup_coe, ← mul_assoc, ← coe_symmetricSubgroup _ h, mul_assoc,
-          ← coe_symmetricSubgroup _ h, ← symmetricSubgroup_coe _ h, coe_mul_coe]
+        rw [coe_symmetricSubgroup, ← mul_assoc, ← coe_symmetricSubgroup' _ h, mul_assoc,
+          ← coe_symmetricSubgroup' _ h, ← coe_symmetricSubgroup _ h, coe_mul_coe]
   · rw [Set.subset_set_smul_iff]
     calc
       a⁻¹ •> ((H : Set G) <• a) ⊆ A⁻¹ * (H : Set G) <• a := Set.smul_set_subset_mul (by simpa)
       _ ⊆ A⁻¹ * ((H : Set G) * A) := by gcongr; exact Set.op_smul_set_subset_mul (by simpa)
       _ = H := by
-        rw [coe_symmetricSubgroup, mul_assoc, ← symmetricSubgroup_coe _ h, ← mul_assoc,
-          ← symmetricSubgroup_coe _ h, ← coe_symmetricSubgroup _ h, coe_mul_coe]
+        rw [coe_symmetricSubgroup', mul_assoc, ← coe_symmetricSubgroup _ h, ← mul_assoc,
+          ← coe_symmetricSubgroup _ h, ← coe_symmetricSubgroup' _ h, coe_mul_coe]

@@ -3,19 +3,15 @@ Copyright (c) 2024 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
-import Mathlib.Tactic.StacksAttribute
-import Mathlib.Topology.Compactness.Compact
-import Mathlib.Topology.Separation.Basic
 import Mathlib.Topology.Spectral.Hom
-import LeanCamCombi.Mathlib.Data.Set.Image
-import LeanCamCombi.Mathlib.Topology.Defs.Induced
 import LeanCamCombi.GrowthInGroups.BooleanSubalgebra
+import LeanCamCombi.Mathlib.Data.Set.Image
 
 /-!
 # Constructible sets
 -/
 
-open Set TopologicalSpace
+open Set TopologicalSpace Topology
 
 variable {ι : Sort*} {α β : Type*} [TopologicalSpace α] [TopologicalSpace β] {f : α → β}
   {s t U : Set α} {a : α}

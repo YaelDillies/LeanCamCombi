@@ -1,11 +1,11 @@
 import Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import Mathlib.LinearAlgebra.Dual
+import Mathlib.LinearAlgebra.Charpoly.BaseChange
 import Mathlib.LinearAlgebra.Eigenspace.Zero
 import Mathlib.LinearAlgebra.FreeModule.PID
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.AdjoinRoot
 import Mathlib.RingTheory.SimpleRing.Basic
-import LeanCamCombi.GrowthInGroups.CharPolyBaseChange
 import LeanCamCombi.Mathlib.RingTheory.LocalRing.ResidueField.Ideal
 
 open Polynomial TensorProduct PrimeSpectrum
@@ -149,4 +149,3 @@ lemma isOpen_image_comap_of_monic (f g : R[X]) (hg : g.Monic) :
   exact (isClosed_zeroLocus (R := R) t).isOpen_compl
 
 end PrimeSpectrum
-#min_imports

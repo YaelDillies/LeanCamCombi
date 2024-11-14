@@ -1,5 +1,6 @@
 import Batteries.Data.List.Perm
 import Mathlib.Data.List.DropRight
+import Mathlib.Data.List.Infix
 import Mathlib.Data.Nat.Defs
 
 namespace List
@@ -45,7 +46,7 @@ lemma rtake_suffix_rtake (h : m ≤ n) : l.rtake m <:+ l.rtake n :=
 lemma rdrop_prefix_rdrop (h : m ≤ n) : l.rdrop n <+: l.rdrop m :=
   take_prefix_take $ Nat.sub_le_sub_left h _
 
-protected lemma IsPrefix.take (hl : l <+: l') (h : l.length ≤ n) : l <+: l'.take n := by
+protected lemma IsPrefix.take_right (hl : l <+: l') (h : l.length ≤ n) : l <+: l'.take n := by
   rw [hl.eq_take]; exact take_prefix_take h
 
 protected lemma IsSuffix.rtake (hl : l <:+ l') (h : l.length ≤ n) : l <:+ l'.rtake n := by
@@ -62,7 +63,7 @@ lemma exists_sublist_length_eq (hn : n ≤ l.length) : ∃ l', l' <+ l ∧ l'.le
 
 lemma IsPrefix.exists_intermediate (hl : l₀ <+: l₂) (h₀ : l₀.length ≤ n) (h₂ : n ≤ l₂.length) :
     ∃ l₁, l₀ <+: l₁ ∧ l₁ <+: l₂ ∧ l₁.length = n :=
-  ⟨l₂.take n, hl.take h₀, take_prefix _ _, (length_take _ _).trans $ min_eq_left h₂⟩
+  ⟨l₂.take n, hl.take_right h₀, take_prefix _ _, (length_take _ _).trans $ min_eq_left h₂⟩
 
 lemma IsSuffix.exists_intermediate (hl : l₀ <:+ l₂) (h₀ : l₀.length ≤ n) (h₂ : n ≤ l₂.length) :
     ∃ l₁, l₀ <:+ l₁ ∧ l₁ <:+ l₂ ∧ l₁.length = n :=

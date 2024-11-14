@@ -81,10 +81,10 @@ instance instBotCoe : Bot L where bot := ⟨⊥, bot_mem⟩
 instance instTopCoe : Top L where top := ⟨⊤, top_mem⟩
 
 /-- A boolean subalgebra of a lattice inherits a supremum. -/
-instance instSupCoe : Sup L where sup a b := ⟨a ⊔ b, L.supClosed a.2 b.2⟩
+instance instSupCoe : Max L where max a b := ⟨a ⊔ b, L.supClosed a.2 b.2⟩
 
 /-- A boolean subalgebra of a lattice inherits an infimum. -/
-instance instInfCoe : Inf L where inf a b := ⟨a ⊓ b, L.infClosed a.2 b.2⟩
+instance instInfCoe : Min L where min a b := ⟨a ⊓ b, L.infClosed a.2 b.2⟩
 
 /-- A boolean subalgebra of a lattice inherits a complement. -/
 instance instHasComplCoe : HasCompl L where compl a := ⟨aᶜ, compl_mem a.2⟩
@@ -166,8 +166,8 @@ instance instBot : Bot (BooleanSubalgebra α) where
   bot.infClosed' _ := by aesop
 
 /-- The inf of two boolean subalgebras is their intersection. -/
-instance instInf : Inf (BooleanSubalgebra α) where
-  inf L M :=  { carrier := L ∩ M
+instance instInf : Min (BooleanSubalgebra α) where
+  min L M :=  { carrier := L ∩ M
                 bot_mem' := ⟨bot_mem, bot_mem⟩
                 compl_mem' := fun ha ↦ ⟨compl_mem ha.1, compl_mem ha.2⟩
                 supClosed' := L.supClosed.inter M.supClosed

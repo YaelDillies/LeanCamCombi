@@ -12,7 +12,6 @@ import LeanCamCombi.GraphTheory.ExampleSheet1
 import LeanCamCombi.GraphTheory.ExampleSheet2
 import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
 import LeanCamCombi.GrowthInGroups.BooleanSubalgebra
-import LeanCamCombi.GrowthInGroups.CharPolyBaseChange
 import LeanCamCombi.GrowthInGroups.Chevalley
 import LeanCamCombi.GrowthInGroups.ChevalleyComplex
 import LeanCamCombi.GrowthInGroups.Constructible
@@ -65,7 +64,6 @@ import LeanCamCombi.Mathlib.Data.Set.Pointwise.Interval
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
-import LeanCamCombi.Mathlib.Order.Interval.Finset.Defs
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.RelClasses
 import LeanCamCombi.Mathlib.Order.SupClosed
@@ -74,8 +72,6 @@ import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Ideal.Span
 import LeanCamCombi.Mathlib.RingTheory.LocalRing.ResidueField.Ideal
 import LeanCamCombi.Mathlib.RingTheory.Polynomial.Basic
-import LeanCamCombi.Mathlib.Topology.Defs.Induced
-import LeanCamCombi.Mathlib.Topology.Spectral.Hom
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.OrderShatter
