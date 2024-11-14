@@ -1,9 +1,5 @@
 import Mathlib.Algebra.Order.Star.Basic
-import Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import Mathlib.Data.DFinsupp.WellFounded
-import Mathlib.LinearAlgebra.Charpoly.Basic
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.AdjoinRoot
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Eval
 import LeanCamCombi.Mathlib.Data.Fintype.Card
 import LeanCamCombi.Mathlib.Data.Prod.Lex
@@ -11,46 +7,64 @@ import LeanCamCombi.Mathlib.Order.RelClasses
 import LeanCamCombi.GrowthInGroups.PolynomialLocalization
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 
-variable {R M A} [CommRing R] [AddCommGroup M] [Module R M] [CommRing A] [Algebra R A]
+variable {R S M A : Type*} [CommRing R] [CommRing S] [AddCommGroup M] [Module R M] [CommRing A]
+  [Algebra R A]
 
 open Polynomial TensorProduct PrimeSpectrum
+open scoped Pointwise
 
 @[ext]
 structure InductionObj (R) [CommRing R] (n : ℕ) where
   val : Fin n → R[X]
 
-variable {n : ℕ} (S T : InductionObj R n)
+variable {n : ℕ}
 
 instance : CoeFun (InductionObj R n) (fun _ ↦ Fin n → R[X]) := ⟨InductionObj.val⟩
 
 namespace InductionObj
 
-def coeffSubmodule : Submodule ℤ R := Submodule.span ℤ ({1} ∪ ⋃ i, Set.range (S.val i).coeff)
+def coeffSubmodule (e : InductionObj R n) : Submodule ℤ R :=
+  .span ℤ ({1} ∪ ⋃ i, Set.range (e.val i).coeff)
 
-lemma one_le_coeffSubmodule : 1 ≤ S.coeffSubmodule := by
+lemma coeffSubmodule_mapRingHom_comp (e : InductionObj R n) (f : R →+* S) :
+    ({ val := mapRingHom f ∘ e.val } : InductionObj S n).coeffSubmodule
+      = e.coeffSubmodule.map f.toIntAlgHom.toLinearMap := by
+  simp [coeffSubmodule, Submodule.map_span, Set.image_insert_eq, Set.image_iUnion, ← Set.range_comp,
+    coeff_map_eq_comp]
+
+variable {e T : InductionObj R n}
+
+lemma one_le_coeffSubmodule : 1 ≤ e.coeffSubmodule := by
   rw [Submodule.one_eq_span, Submodule.span_le, Set.singleton_subset_iff]
   exact Submodule.subset_span (.inl rfl)
 
 variable (n) in
 abbrev DegreeType := (Fin n → WithBot ℕ) ×ₗ Prop
 
+variable (S) in
 def degree : DegreeType n :=
-  toLex (Polynomial.degree ∘ S.val, ¬ ∃ i, (S.val i).Monic ∧
-    ∀ j, S.val j ≠ 0 → (S.val i).degree ≤ (S.val j).degree)
+  toLex (Polynomial.degree ∘ e.val, ¬ ∃ i, (e.val i).Monic ∧
+    ∀ j, e.val j ≠ 0 → (e.val i).degree ≤ (e.val j).degree)
 
-@[simp] lemma ofLex_degree_fst (i) : (ofLex S.degree).fst i = (S.val i).degree := rfl
-lemma ofLex_degree_snd : (ofLex S.degree).snd = ¬ ∃ i, (S.val i).Monic ∧
-    ∀ j, S.val j ≠ 0 → (S.val i).degree ≤ (S.val j).degree := rfl
+@[simp] lemma ofLex_degree_fst (i) : (ofLex e.degree).fst i = (e.val i).degree := rfl
+lemma ofLex_degree_snd : (ofLex e.degree).snd = ¬ ∃ i, (e.val i).Monic ∧
+    ∀ j, e.val j ≠ 0 → (e.val i).degree ≤ (e.val j).degree := rfl
 
-def degBound : ℕ := 2 ^ ∑ i, (S.val i).natDegree
+def degBound : ℕ := 2 ^ ∑ i, (e.val i).natDegree
 
-def exponentBound : ℕ := S.degBound ^ S.degBound
+def exponentBound : ℕ := e.degBound ^ e.degBound
 
-def InductionStatement (R) (n) [CommRing R] (S : InductionObj R n) : Prop :=
+def InductionStatement (R) (n) [CommRing R] (e : InductionObj R n) : Prop :=
   ∀ f, ∃ T : Finset (Σ n, R × (Fin n → R)),
-    comap C '' (zeroLocus (Set.range S.val) \ zeroLocus {f}) =
+    comap C '' (zeroLocus (Set.range e.val) \ zeroLocus {f}) =
       ⋃ C ∈ T, (zeroLocus (Set.range C.2.2) \ zeroLocus {C.2.1}) ∧
-    ∀ C ∈ T, C.1 ≤ S.degBound ∧ ∀ i, C.2.2 i ∈ S.coeffSubmodule ^ S.exponentBound
+    ∀ C ∈ T, C.1 ≤ e.degBound ∧ ∀ i, C.2.2 i ∈ e.coeffSubmodule ^ e.exponentBound
+
+open Submodule in
+lemma coeffSubmodule_smul (e : InductionObj R n) (f : R →+* S) (a : R) [Invertible (f a)] :
+    ({ val := ⅟(f a) • mapRingHom f ∘ e.val } : InductionObj S n).coeffSubmodule =
+      ⅟(f a) ^ e.degBound • (span ℤ ({a} ∪ ⋃ i, Set.range (e.val i).coeff)).map f.toIntAlgHom.toLinearMap := by
+  sorry -- probably useless
 
 universe u
 
@@ -150,7 +164,7 @@ lemma foo_induction (n : ℕ)
 universe v
 
 lemma comap_C_eq_comap_quotient_union_comap_localization (s : Set (PrimeSpectrum R[X])) (c : R) :
-    comap C '' s =
+    .comap C '' s =
       comap (Ideal.Quotient.mk (.span {c})) '' (comap C ''
         (comap (mapRingHom (Ideal.Quotient.mk _)) ⁻¹' s)) ∪
       comap (algebraMap R (Localization.Away c)) '' (comap C ''
@@ -198,6 +212,7 @@ lemma Ideal.span_range_update_divByMonic {ι : Type*} [DecidableEq ι]
       · exact ⟨i, Function.update_noteq hij _ _⟩
     exact Ideal.subset_span ⟨k, Function.update_noteq (.symm hjk) _ _⟩
 
+open Polynomial IsLocalization Localization in
 lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
       (hi : c = (e.1 i).leadingCoeff) :
       InductionStatement (Localization.Away c) n
@@ -206,9 +221,13 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
       InductionStatement (R ⧸ Ideal.span {c}) n ⟨mapRingHom (algebraMap _ _) ∘ e.val⟩ →
         InductionStatement R n e := by
   intro H₁ H₂ f
-  obtain ⟨T₁, hT₁, HT₁⟩ := H₁ (mapRingHom (algebraMap _ _) f)
-  obtain ⟨T₂, hT₂, HT₂⟩ := H₂ (mapRingHom (algebraMap _ _) f)
-  simp only [coe_mapRingHom] at HT₁
+  obtain ⟨T₁, hT₁⟩ := H₁ (mapRingHom (algebraMap _ _) f)
+  obtain ⟨T₂, hT₂⟩ := H₂ (mapRingHom (algebraMap _ _) f)
+  simp only [forall_and] at hT₁ hT₂
+  obtain ⟨hT₁, hT₁deg, hT₁span⟩ := hT₁
+  obtain ⟨hT₂, hT₂deg, hT₂span⟩ := hT₂
+  rw [coeffSubmodule_mapRingHom_comp, ← Submodule.map_pow] at hT₂span
+  choose l₂ hl₂ using hT₂span
   sorry
 
 lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus {R} [CommRing R] {n}
