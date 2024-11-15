@@ -33,7 +33,7 @@ lemma lemma_4_3_1 (hA : #(A ^ 2) ≤ K * #A) : #(A * A⁻¹) ≤ K ^ 2 * #A := b
 
 lemma lemma_4_4_1 (hm : 3 ≤ m) (hA : #(A ^ 3) ≤ K * #A) (ε : Fin m → ℤ) (hε : ∀ i, |ε i| = 1) :
     #((finRange m).map fun i ↦ A ^ ε i).prod ≤ K ^ (3 * (m - 2)) * #A :=
- small_alternating_pow_of_small_tripling' hm hA ε hε
+  small_alternating_pow_of_small_tripling' hm hA ε hε
 
 lemma lemma_4_4_2 (hm : 3 ≤ m) (hA : #(A ^ 3) ≤ K * #A) (hAsymm : A⁻¹ = A) :
     #(A ^ m) ≤ K ^ (m - 2) * #A := small_pow_of_small_tripling' hm hA hAsymm

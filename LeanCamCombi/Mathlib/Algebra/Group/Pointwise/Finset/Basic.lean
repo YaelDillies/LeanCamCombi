@@ -12,10 +12,10 @@ attribute [gcongr] mul_subset_mul_left mul_subset_mul_right div_subset_div_left 
 end Finset
 
 namespace Finset
-variable {α : Type*} [DecidableEq α]
+variable {F α β : Type*} [DecidableEq α] [DecidableEq β]
 
 section Monoid
-variable [Monoid α] {s t : Finset α} {n : ℕ}
+variable [Monoid α] [Monoid β] {s t : Finset α} {n : ℕ}
 
 attribute [simp] one_nonempty
 
@@ -50,6 +50,37 @@ lemma pow_subset_pow_mul_of_sq_subset_mul (hst : s ^ 2 ⊆ t * s) :
       _ ⊆ t ^ (n + 1) * (t * s) := by gcongr
       _ = t ^ (n + 2) * s := by rw [← mul_assoc, ← pow_succ]
 
+@[to_additive]
+lemma pow_right_mono (hs : 1 ∈ s) : Monotone (s ^ ·) := by
+  apply monotone_nat_of_le_succ
+  intro n
+  rw [pow_succ]
+  exact subset_mul_left _ hs
+
+@[to_additive (attr := gcongr)]
+lemma pow_subset_pow_right (hs : 1 ∈ s) {m n : ℕ} (hmn : m ≤ n) : s ^ m ⊆ s ^ n :=
+  pow_right_mono hs hmn
+
+-- TODO: Replace `pow_subset_pow`
+@[to_additive (attr := gcongr)]
+lemma pow_subset_pow_left (hst : s ⊆ t) : ∀ {n : ℕ}, s ^ n ⊆ t ^ n
+  | 0 => by simp
+  | n + 1 => by simp_rw [pow_succ]; gcongr; exact pow_subset_pow_left hst
+
+@[to_additive]
+lemma pow_left_mono : Monotone fun s : Finset α ↦ s ^ n := fun _s _t hst ↦ pow_subset_pow_left hst
+
+-- TODO: Replace `pow_subset_pow`
+@[to_additive (attr := gcongr)]
+lemma pow_subset_pow' (hst : s ⊆ t) (ht : 1 ∈ t) {m n : ℕ} (hmn : m ≤ n) : s ^ m ⊆ t ^ n :=
+  (pow_left_mono hst).trans (pow_subset_pow_right ht hmn)
+
+@[to_additive]
+lemma image_pow [FunLike F α β] [MonoidHomClass F α β] (f : F) (s : Finset α) :
+    ∀ n, (s ^ n).image f = s.image f ^ n
+  | 0 => by simp [singleton_one]
+  | n + 1 => by simp [image_mul, pow_succ, image_pow]
+
 end Monoid
 
 section DivisionMonoid
@@ -72,4 +103,17 @@ set_option push_neg.use_distrib true in
     exact empty_zpow hn
 
 end DivisionMonoid
+
+section Group
+variable [Group α] {s t : Finset α}
+
+@[to_additive (attr := simp)]
+lemma one_mem_inv_mul_iff : (1 : α) ∈ t⁻¹ * s ↔ ¬Disjoint s t := by
+  aesop (add simp [not_disjoint_iff_nonempty_inter, mem_mul, mul_eq_one_iff_eq_inv,
+    Finset.Nonempty])
+
+@[to_additive]
+lemma not_one_mem_inv_mul_iff : (1 : α) ∉ t⁻¹ * s ↔ Disjoint s t := one_mem_inv_mul_iff.not_left
+
+end Group
 end Finset
