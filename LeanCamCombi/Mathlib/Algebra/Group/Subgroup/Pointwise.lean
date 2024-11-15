@@ -1,5 +1,4 @@
 import Mathlib.Algebra.Group.Subgroup.Pointwise
-import LeanCamCombi.Mathlib.Data.Set.Lattice
 
 open Subgroup
 open scoped Pointwise

@@ -1,8 +1,9 @@
+import Mathlib.Algebra.Group.Subgroup.Defs
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+import Mathlib.Combinatorics.Additive.SmallTripling
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Combinatorics.Additive.RuzsaCovering
-import LeanCamCombi.Mathlib.Combinatorics.Additive.SmallTripling
 import LeanCamCombi.Mathlib.Data.Finset.Basic
 
 open scoped Finset Pointwise

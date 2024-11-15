@@ -6,7 +6,6 @@ import Mathlib.Tactic.Positivity.Finset
 import LeanCamCombi.GrowthInGroups.VerySmallDoubling
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
 import LeanCamCombi.Mathlib.Data.Finset.Basic
-import LeanCamCombi.Mathlib.Data.Set.Lattice
 
 open Finset Fintype Group Matrix MulOpposite Real
 open scoped Combinatorics.Additive MatrixGroups Pointwise

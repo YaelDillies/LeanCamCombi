@@ -43,7 +43,6 @@ import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
 import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
 import LeanCamCombi.Mathlib.Combinatorics.Additive.RuzsaCovering
-import LeanCamCombi.Mathlib.Combinatorics.Additive.SmallTripling
 import LeanCamCombi.Mathlib.Combinatorics.Schnirelmann
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Containment
@@ -59,7 +58,6 @@ import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Data.Set.Image
-import LeanCamCombi.Mathlib.Data.Set.Lattice
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.Finite
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.Interval
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
