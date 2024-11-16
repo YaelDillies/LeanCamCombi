@@ -24,6 +24,6 @@ variable {G S : Type*} [Group G] [SetLike S G] [SubgroupClass S G] {s : Set G} {
 
 set_option linter.unusedVariables false in
 @[to_additive (attr := simp)]
-lemma coe_pow : ∀ {n} (hn : n ≠ 0) (H : S), (H ^ n : Set G) = H
+lemma coe_set_pow : ∀ {n} (hn : n ≠ 0) (H : S), (H ^ n : Set G) = H
   | 1, _, H => by simp
-  | n + 2, _, H => by rw [pow_succ, coe_pow n.succ_ne_zero, coe_mul_coe]
+  | n + 2, _, H => by rw [pow_succ, coe_set_pow n.succ_ne_zero, coe_mul_coe]

@@ -1,14 +1,13 @@
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 import Mathlib.Combinatorics.Additive.SmallTripling
 import Mathlib.Tactic.Bound
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
 import LeanCamCombi.Mathlib.Combinatorics.Additive.RuzsaCovering
-import LeanCamCombi.Mathlib.Data.Finset.Basic
 import LeanCamCombi.Mathlib.Data.Set.Basic
 import LeanCamCombi.Mathlib.Data.Set.Lattice
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
+import LeanCamCombi.GrowthInGroups.SMulCover
 
 -- TODO: Unsimp in mathlib
 attribute [-simp] Set.image_subset_iff
@@ -20,19 +19,19 @@ variable {G : Type*} [Group G] {A B : Set G} {K L : ℝ} {m n : ℕ}
 structure IsApproximateAddSubgroup {G : Type*} [AddGroup G] (K : ℝ) (A : Set G) : Prop where
   nonempty : A.Nonempty
   neg_eq_self : -A = A
-  exists_two_nsmul_subset_add : ∃ F : Finset G, #F ≤ K ∧ 2 • A ⊆ F + A
+  two_nsmul_vaddCovered : VAddCovered G K (2 • A) A
 
 @[to_additive]
 structure IsApproximateSubgroup (K : ℝ) (A : Set G) : Prop where
   nonempty : A.Nonempty
   inv_eq_self : A⁻¹ = A
-  exists_sq_subset_mul : ∃ F : Finset G, #F ≤ K ∧ A ^ 2 ⊆ F * A
+  sq_smulCovered : SMulCovered G K (A ^ 2) A
 
 namespace IsApproximateSubgroup
 
 @[to_additive one_le]
 lemma one_le (hA : IsApproximateSubgroup K A) : 1 ≤ K := by
-  obtain ⟨F, hF, hSF⟩ := hA.exists_sq_subset_mul
+  obtain ⟨F, hF, hSF⟩ := hA.sq_smulCovered
   have hF₀ : F ≠ ∅ := by rintro rfl; simp [hA.nonempty.pow.ne_empty] at hSF
   exact hF.trans' <| by simpa [Finset.nonempty_iff_ne_empty]
 
@@ -40,7 +39,7 @@ lemma one_le (hA : IsApproximateSubgroup K A) : 1 ≤ K := by
 lemma mono (hKL : K ≤ L) (hA : IsApproximateSubgroup K A) : IsApproximateSubgroup L A where
   nonempty := hA.nonempty
   inv_eq_self := hA.inv_eq_self
-  exists_sq_subset_mul := let ⟨F, hF, hSF⟩ := hA.exists_sq_subset_mul; ⟨F, hF.trans hKL, hSF⟩
+  sq_smulCovered := hA.sq_smulCovered.mono hKL
 
 @[to_additive]
 lemma card_pow_le [DecidableEq G] {A : Finset G} (hA : IsApproximateSubgroup K (A : Set G)) :
@@ -48,7 +47,7 @@ lemma card_pow_le [DecidableEq G] {A : Finset G} (hA : IsApproximateSubgroup K (
   | 0 => by simpa using hA.nonempty
   | 1 => by simp
   | n + 2 => by
-    obtain ⟨F, hF, hSF⟩ := hA.exists_sq_subset_mul
+    obtain ⟨F, hF, hSF⟩ := hA.sq_smulCovered
     calc
       (#(A ^ (n + 2)) : ℝ) ≤ #(F ^ (n + 1) * A) := by
         gcongr; exact mod_cast Set.pow_subset_pow_mul_of_sq_subset_mul hSF (by omega)
@@ -61,14 +60,14 @@ lemma image {F H : Type*} [Group H] [FunLike F G H] [MonoidHomClass F G H] (f : 
     (hA : IsApproximateSubgroup K A) : IsApproximateSubgroup K (f '' A) where
   nonempty := hA.nonempty.image _
   inv_eq_self := by simp [← Set.image_inv', hA.inv_eq_self]
-  exists_sq_subset_mul := by
+  sq_smulCovered := by
     classical
-    obtain ⟨F, hF, hAF⟩ := hA.exists_sq_subset_mul
+    obtain ⟨F, hF, hAF⟩ := hA.sq_smulCovered
     refine ⟨F.image f, ?_, ?_⟩
     · calc
         (#(F.image f) : ℝ) ≤ #F := mod_cast F.card_image_le
         _ ≤ K := hF
-    · simp only [← Set.image_pow, Finset.coe_image, ← Set.image_mul]
+    · simp only [← Set.image_pow, Finset.coe_image, ← Set.image_mul, smul_eq_mul] at hAF ⊢
       gcongr
 
 @[to_additive]
@@ -77,8 +76,8 @@ lemma pi {ι : Type*} {G : ι → Type*} [Fintype ι] [∀ i, Group (G i)] {A : 
     IsApproximateSubgroup (∏ i, K i) (Set.univ.pi A) where
   nonempty := Set.univ_pi_nonempty_iff.2 fun i ↦ (hA i).nonempty
   inv_eq_self := by simp [(hA _).inv_eq_self]
-  exists_sq_subset_mul := by
-    choose F hF hFS using fun i ↦ (hA i).exists_sq_subset_mul
+  sq_smulCovered := by
+    choose F hF hFS using fun i ↦ (hA i).sq_smulCovered
     classical
     refine ⟨Fintype.piFinset F, ?_, ?_⟩
     · calc
@@ -91,7 +90,7 @@ lemma subgroup {S : Type*} [SetLike S G] [SubgroupClass S G] {H : S} :
     IsApproximateSubgroup 1 (H : Set G) where
   nonempty := .of_subtype
   inv_eq_self := inv_coe_set
-  exists_sq_subset_mul := ⟨{1}, by simp⟩
+  sq_smulCovered := ⟨{1}, by simp⟩
 
 open Finset in
 @[to_additive]
@@ -99,7 +98,7 @@ lemma of_small_tripling [DecidableEq G] {A : Finset G} (hA₀ : A.Nonempty) (hAs
     (hA : #(A ^ 3) ≤ K * #A) : IsApproximateSubgroup (K ^ 3) (A ^ 2 : Set G) where
   nonempty := hA₀.to_set.pow
   inv_eq_self := by simp [← inv_pow, hAsymm, ← coe_inv]
-  exists_sq_subset_mul := by
+  sq_smulCovered := by
     replace hA := calc (#(A ^ 4 * A) : ℝ)
       _ = #(A ^ 5) := by rw [← pow_succ]
       _ ≤ K ^ 3 * #A := small_pow_of_small_tripling' (by omega) hA hAsymm
@@ -113,8 +112,8 @@ lemma exists_pow_inter_pow_subset (hA : IsApproximateSubgroup K A) (hB : IsAppro
     (hm : 2 ≤ m) (hn : 2 ≤ n) :
     ∃ F : Finset G, #F ≤ K ^ (m - 1) * L ^ (n - 1) ∧ A ^ m ∩ B ^ n ⊆ F * (A ^ 2 ∩ B ^ 2) := by
   classical
-  obtain ⟨F₁, hF₁, hAF₁⟩ := hA.exists_sq_subset_mul
-  obtain ⟨F₂, hF₂, hBF₂⟩ := hB.exists_sq_subset_mul
+  obtain ⟨F₁, hF₁, hAF₁⟩ := hA.sq_smulCovered
+  obtain ⟨F₂, hF₂, hBF₂⟩ := hB.sq_smulCovered
   have := hA.one_le
   choose f hf using exists_smul_inter_smul_subset_smul_sq_inter_sq hA.inv_eq_self hB.inv_eq_self
   refine ⟨.image₂ f (F₁ ^ (m - 1)) (F₂ ^ (n - 1)), ?_, ?_⟩
@@ -140,7 +139,7 @@ lemma pow_inter_pow (hA : IsApproximateSubgroup K A) (hB : IsApproximateSubgroup
     IsApproximateSubgroup (K ^ (2 * m - 1) * L ^ (2 * n - 1)) (A ^ m ∩ B ^ n) where
   nonempty := hAB
   inv_eq_self := by simp_rw [inter_inv, ← inv_pow, hA.inv_eq_self, hB.inv_eq_self]
-  exists_sq_subset_mul := by
+  sq_smulCovered := by
     obtain ⟨F, hF, hABF⟩ := hA.exists_pow_inter_pow_subset hB hm hn
     sorry
 

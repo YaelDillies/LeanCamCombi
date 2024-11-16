@@ -21,6 +21,7 @@ import LeanCamCombi.GrowthInGroups.Lecture2
 import LeanCamCombi.GrowthInGroups.Lecture3
 import LeanCamCombi.GrowthInGroups.PolynomialLocalization
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
+import LeanCamCombi.GrowthInGroups.SMulCover
 import LeanCamCombi.GrowthInGroups.VerySmallDoubling
 import LeanCamCombi.Impact
 import LeanCamCombi.Incidence
@@ -56,8 +57,11 @@ import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.Fintype.Card
 import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
+import LeanCamCombi.Mathlib.Data.Nat.Cast.Order.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
+import LeanCamCombi.Mathlib.Data.Set.Basic
 import LeanCamCombi.Mathlib.Data.Set.Image
+import LeanCamCombi.Mathlib.Data.Set.Lattice
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.Finite
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.Interval
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul

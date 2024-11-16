@@ -12,10 +12,10 @@ attribute [gcongr] mul_subset_mul_left mul_subset_mul_right div_subset_div_left 
 end Finset
 
 namespace Finset
-variable {F α β : Type*} [DecidableEq α] [DecidableEq β]
+variable {F α β : Type*}
 
 section Monoid
-variable [Monoid α] [Monoid β] {s t : Finset α} {n : ℕ}
+variable [DecidableEq α] [DecidableEq β] [Monoid α] [Monoid β] {s t : Finset α} {n : ℕ}
 
 attribute [simp] one_nonempty
 
@@ -84,7 +84,7 @@ lemma image_pow [FunLike F α β] [MonoidHomClass F α β] (f : F) (s : Finset �
 end Monoid
 
 section DivisionMonoid
-variable [DivisionMonoid α] {s t : Finset α} {n : ℤ}
+variable [DecidableEq α] [DivisionMonoid α] {s t : Finset α} {n : ℤ}
 
 @[to_additive]
 lemma Nonempty.zpow (hs : s.Nonempty) : ∀ {n : ℤ}, (s ^ n).Nonempty
@@ -105,7 +105,7 @@ set_option push_neg.use_distrib true in
 end DivisionMonoid
 
 section Group
-variable [Group α] {s t : Finset α}
+variable [DecidableEq α] [Group α] {s t : Finset α}
 
 @[to_additive (attr := simp)]
 lemma one_mem_inv_mul_iff : (1 : α) ∈ t⁻¹ * s ↔ ¬Disjoint s t := by
@@ -116,4 +116,11 @@ lemma one_mem_inv_mul_iff : (1 : α) ∈ t⁻¹ * s ↔ ¬Disjoint s t := by
 lemma not_one_mem_inv_mul_iff : (1 : α) ∉ t⁻¹ * s ↔ Disjoint s t := one_mem_inv_mul_iff.not_left
 
 end Group
+
+section MulAction
+variable [DecidableEq β] [Monoid α] [MulAction α β] {s : Finset α} {t : Finset β}
+
+@[to_additive] lemma card_smul_le : #(s • t) ≤ #s * #t := card_image₂_le ..
+
+end MulAction
 end Finset

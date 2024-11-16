@@ -38,31 +38,31 @@ lemma lemma_4_4_1 (hm : 3 ≤ m) (hA : #(A ^ 3) ≤ K * #A) (ε : Fin m → ℤ)
 lemma lemma_4_4_2 (hm : 3 ≤ m) (hA : #(A ^ 3) ≤ K * #A) (hAsymm : A⁻¹ = A) :
     #(A ^ m) ≤ K ^ (m - 2) * #A := small_pow_of_small_tripling' hm hA hAsymm
 
-def def_4_5 (S : Set G) (K : ℝ) : Prop := IsApproximateSubgroup S K
+def def_4_5 (S : Set G) (K : ℝ) : Prop := IsApproximateSubgroup K S
 
 lemma two_nsmul_Icc_nat (k : ℕ) : (2 • .Icc (-k) k : Set ℤ) = {(-k : ℤ), (k : ℤ)} + .Icc (-k) k :=
   sorry
 
 lemma two_nsmul_Icc_real : (2 • .Icc (-1) 1 : Set ℝ) = {-1, 1} + .Icc (-1) 1 := sorry
 
-lemma remark_4_6_1 (k : ℕ) : IsApproximateAddSubgroup (.Icc (-k) k : Set ℤ) 2 where
+lemma remark_4_6_1 (k : ℕ) : IsApproximateAddSubgroup 2 (.Icc (-k) k : Set ℤ) where
   nonempty := ⟨0, by simp⟩
   neg_eq_self := by simp
-  exists_two_nsmul_subset_add :=
+  two_nsmul_vaddCovered :=
     ⟨{(-k : ℤ), (k : ℤ)}, mod_cast card_le_two, by simp [two_nsmul_Icc_nat]⟩
 
 lemma remark_4_6_2 {ι : Type*} [Fintype ι] (k : ι → ℕ) :
-    IsApproximateAddSubgroup (Set.univ.pi fun i ↦ .Icc (-k i) (k i) : Set (ι → ℤ))
-      (2 ^ Fintype.card ι) := by
+    IsApproximateAddSubgroup (2 ^ Fintype.card ι)
+      (Set.univ.pi fun i ↦ .Icc (-k i) (k i) : Set (ι → ℤ)) := by
   simpa using IsApproximateAddSubgroup.pi fun i ↦ remark_4_6_1 (k i)
 
-lemma remark_4_6_3 : IsApproximateAddSubgroup (.Icc (-1) 1 : Set ℝ) 2 where
+lemma remark_4_6_3 : IsApproximateAddSubgroup 2 (.Icc (-1) 1 : Set ℝ) where
   nonempty := ⟨0, by simp⟩
   neg_eq_self := by simp
-  exists_two_nsmul_subset_add := ⟨{-1, 1}, mod_cast card_le_two, by simp [two_nsmul_Icc_real]⟩
+  two_nsmul_vaddCovered := ⟨{-1, 1}, mod_cast card_le_two, by simp [two_nsmul_Icc_real]⟩
 
 lemma lemma_4_7 {A : Finset G} (hA₀ : A.Nonempty) (hsymm : A⁻¹ = A) (hA : #(A ^ 3) ≤ K * #A) :
-    IsApproximateSubgroup (A ^ 2 : Set G) (K ^ 3) := .of_small_tripling hA₀ hsymm hA
+    IsApproximateSubgroup (K ^ 3) (A ^ 2 : Set G) := .of_small_tripling hA₀ hsymm hA
 
 lemma lemma_4_8 {A B : Finset G} (hB : B.Nonempty) (hK : #(A * B) ≤ K * #B) :
     ∃ F ⊆ A, #F ≤ K ∧ A ⊆ F * B / B := ruzsa_covering_mul hB hK
