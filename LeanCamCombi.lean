@@ -55,6 +55,7 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Maps
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Multipartite
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Data.Finset.Basic
+import LeanCamCombi.Mathlib.Data.Finset.Lattice.Basic
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.Fintype.Card
 import LeanCamCombi.Mathlib.Data.List.DropRight

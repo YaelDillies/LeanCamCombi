@@ -7,9 +7,9 @@ open scoped Pointwise
 namespace GrowthInGroups.Lecture3
 variable {G H : Type*} [Group G] [Group H] {A B : Set G} {K L : ℝ} {m n : ℕ}
 
-lemma lemma_5_1 [DecidableEq G] {A : Finset G} (hA₀ : A.Nonempty) (hAsymm : A⁻¹ = A)
+lemma lemma_5_1 [DecidableEq G] {A : Finset G} (hA₁ : 1 ∈ A) (hAsymm : A⁻¹ = A)
     (hA : #(A ^ 3) ≤ K * #A) : IsApproximateSubgroup (K ^ 3) (A ^ 2 : Set G) :=
-  .of_small_tripling hA₀ hAsymm hA
+  .of_small_tripling hA₁ hAsymm hA
 
 lemma lemma_5_2 [DecidableEq G] {A B : Finset G} (hB : B.Nonempty) (hK : #(A * B) ≤ K * #B) :
     ∃ F ⊆ A, #F ≤ K ∧ A ⊆ F * B / B := ruzsa_covering_mul hB hK
@@ -26,12 +26,12 @@ lemma fact_5_5 {A : Set G} (hA : IsApproximateSubgroup K A) (π : G →* H) :
 lemma proposition_5_6_1 (hA : IsApproximateSubgroup K A) (hB : IsApproximateSubgroup L B)
     (hm : 2 ≤ m) (hn : 2 ≤ n) :
     ∃ F : Finset G, #F ≤ K ^ (m - 1) * L ^ (n - 1) ∧ A ^ m ∩ B ^ n ⊆ F * (A ^ 2 ∩ B ^ 2) :=
-  hA.exists_pow_inter_pow_subset hB hm hn
+  hA.pow_inter_pow_smulCovered_sq_inter_sq hB hm hn
 
 lemma proposition_5_6_2 (hA : IsApproximateSubgroup K A) (hB : IsApproximateSubgroup L B)
-    (hm : 2 ≤ m) (hn : 2 ≤ n) (hAB : (A ^ m ∩ B ^ n).Nonempty) :
+    (hm : 2 ≤ m) (hn : 2 ≤ n) :
     IsApproximateSubgroup (K ^ (2 * m - 1) * L ^ (2 * n - 1)) (A ^ m ∩ B ^ n) :=
-  hA.pow_inter_pow hB hm hn hAB
+  hA.pow_inter_pow hB hm hn
 
 lemma lemma_5_7 (hA : A⁻¹ = A) (hB : B⁻¹ = B) (x y : G) :
     ∃ z : G, x • A ∩ y • B ⊆ z • (A ^ 2 ∩ B ^ 2) :=

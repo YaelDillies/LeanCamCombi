@@ -5,7 +5,7 @@ import LeanCamCombi.Mathlib.Data.Nat.Cast.Order.Basic
 open scoped Finset Pointwise
 
 variable {M N X : Type*} [Monoid M] [Monoid N] [MulAction M X] [MulAction N X] {K L : ℝ}
-  {A B C : Set X}
+  {A A₁ A₂ B B₁ B₂ C : Set X}
 
 variable (M) in
 @[to_additive] def SMulCovered (K : ℝ) (A B : Set X) : Prop :=
@@ -41,3 +41,15 @@ lemma SMulCovered.mono (hKL : K ≤ L) : SMulCovered M K A B → SMulCovered M L
       A ⊆ (F₁ : Set M) • B := hFAB
       _ ⊆ (F₁ : Set M) • (F₂ : Set N) • C := by gcongr
       _ = (↑(F₁ • F₂) : Set N) • C := by simp
+
+@[to_additive]
+lemma SMulCovered.subset_left (hA : A₁ ⊆ A₂) (hAB : SMulCovered M K A₂ B) :
+    SMulCovered M K A₁ B := by simpa using (SMulCovered.of_subset (M := M) hA).trans hAB
+
+@[to_additive]
+lemma SMulCovered.subset_right (hB : B₁ ⊆ B₂) (hAB : SMulCovered M K A B₁) :
+    SMulCovered M K A B₂ := by simpa using hAB.trans (.of_subset (M := M) hB)
+
+@[to_additive]
+lemma SMulCovered.subset (hA : A₁ ⊆ A₂) (hB : B₁ ⊆ B₂) (hAB : SMulCovered M K A₂ B₁) :
+    SMulCovered M K A₁ B₂ := (hAB.subset_left hA).subset_right hB

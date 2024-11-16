@@ -1,4 +1,5 @@
 import Mathlib.Algebra.Group.Pointwise.Finset.Basic
+import LeanCamCombi.Mathlib.Data.Finset.Lattice.Basic
 
 open scoped Pointwise
 
@@ -80,6 +81,14 @@ lemma image_pow [FunLike F α β] [MonoidHomClass F α β] (f : F) (s : Finset �
     ∀ n, (s ^ n).image f = s.image f ^ n
   | 0 => by simp [singleton_one]
   | n + 1 => by simp [image_mul, pow_succ, image_pow]
+
+@[to_additive]
+lemma one_mem_pow (hs : 1 ∈ s) : ∀ {n}, 1 ∈ s ^ n
+  | 0 => by simp
+  | n + 1 => by simpa [pow_succ] using mul_mem_mul (one_mem_pow hs) hs
+
+@[to_additive]
+lemma inter_pow_subset : (s ∩ t) ^ n ⊆ s ^ n ∩ t ^ n := by apply subset_inter <;> gcongr <;> simp
 
 end Monoid
 

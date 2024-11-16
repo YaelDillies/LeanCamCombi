@@ -17,17 +17,20 @@ open scoped Finset Pointwise
 variable {G : Type*} [Group G] {A B : Set G} {K L : ℝ} {m n : ℕ}
 
 structure IsApproximateAddSubgroup {G : Type*} [AddGroup G] (K : ℝ) (A : Set G) : Prop where
-  nonempty : A.Nonempty
+  zero_mem : 0 ∈ A
   neg_eq_self : -A = A
   two_nsmul_vaddCovered : VAddCovered G K (2 • A) A
 
 @[to_additive]
 structure IsApproximateSubgroup (K : ℝ) (A : Set G) : Prop where
-  nonempty : A.Nonempty
+  one_mem : 1 ∈ A
   inv_eq_self : A⁻¹ = A
   sq_smulCovered : SMulCovered G K (A ^ 2) A
 
 namespace IsApproximateSubgroup
+
+@[to_additive]
+lemma nonempty (hA : IsApproximateSubgroup K A) : A.Nonempty := ⟨1, hA.one_mem⟩
 
 @[to_additive one_le]
 lemma one_le (hA : IsApproximateSubgroup K A) : 1 ≤ K := by
@@ -37,7 +40,7 @@ lemma one_le (hA : IsApproximateSubgroup K A) : 1 ≤ K := by
 
 @[to_additive]
 lemma mono (hKL : K ≤ L) (hA : IsApproximateSubgroup K A) : IsApproximateSubgroup L A where
-  nonempty := hA.nonempty
+  one_mem := hA.one_mem
   inv_eq_self := hA.inv_eq_self
   sq_smulCovered := hA.sq_smulCovered.mono hKL
 
@@ -58,7 +61,7 @@ lemma card_pow_le [DecidableEq G] {A : Finset G} (hA : IsApproximateSubgroup K (
 @[to_additive]
 lemma image {F H : Type*} [Group H] [FunLike F G H] [MonoidHomClass F G H] (f : F)
     (hA : IsApproximateSubgroup K A) : IsApproximateSubgroup K (f '' A) where
-  nonempty := hA.nonempty.image _
+  one_mem := ⟨1, hA.one_mem, map_one _⟩
   inv_eq_self := by simp [← Set.image_inv', hA.inv_eq_self]
   sq_smulCovered := by
     classical
@@ -74,7 +77,7 @@ lemma image {F H : Type*} [Group H] [FunLike F G H] [MonoidHomClass F G H] (f : 
 lemma pi {ι : Type*} {G : ι → Type*} [Fintype ι] [∀ i, Group (G i)] {A : ∀ i, Set (G i)} {K : ι → ℝ}
     (hA : ∀ i, IsApproximateSubgroup (K i) (A i)) :
     IsApproximateSubgroup (∏ i, K i) (Set.univ.pi A) where
-  nonempty := Set.univ_pi_nonempty_iff.2 fun i ↦ (hA i).nonempty
+  one_mem i _ := (hA i).one_mem
   inv_eq_self := by simp [(hA _).inv_eq_self]
   sq_smulCovered := by
     choose F hF hFS using fun i ↦ (hA i).sq_smulCovered
@@ -88,29 +91,30 @@ lemma pi {ι : Type*} {G : ι → Type*} [Fintype ι] [∀ i, Group (G i)] {A : 
 @[to_additive]
 lemma subgroup {S : Type*} [SetLike S G] [SubgroupClass S G] {H : S} :
     IsApproximateSubgroup 1 (H : Set G) where
-  nonempty := .of_subtype
+  one_mem := OneMemClass.one_mem H
   inv_eq_self := inv_coe_set
   sq_smulCovered := ⟨{1}, by simp⟩
 
 open Finset in
 @[to_additive]
-lemma of_small_tripling [DecidableEq G] {A : Finset G} (hA₀ : A.Nonempty) (hAsymm : A⁻¹ = A)
+lemma of_small_tripling [DecidableEq G] {A : Finset G} (hA₁ : 1 ∈ A) (hAsymm : A⁻¹ = A)
     (hA : #(A ^ 3) ≤ K * #A) : IsApproximateSubgroup (K ^ 3) (A ^ 2 : Set G) where
-  nonempty := hA₀.to_set.pow
+  one_mem := by rw [sq, ← one_mul 1]; exact Set.mul_mem_mul hA₁ hA₁
   inv_eq_self := by simp [← inv_pow, hAsymm, ← coe_inv]
   sq_smulCovered := by
     replace hA := calc (#(A ^ 4 * A) : ℝ)
       _ = #(A ^ 5) := by rw [← pow_succ]
       _ ≤ K ^ 3 * #A := small_pow_of_small_tripling' (by omega) hA hAsymm
+    have hA₀ : A.Nonempty := ⟨1, hA₁⟩
     obtain ⟨F, -, hF, hAF⟩ := ruzsa_covering_mul hA₀ hA
     have hF₀ : F.Nonempty := nonempty_iff_ne_empty.2 <| by rintro rfl; simp [hA₀.ne_empty] at hAF
     exact ⟨F, hF, by norm_cast; simpa [div_eq_mul_inv, pow_succ, mul_assoc, hAsymm] using hAF⟩
 
 open Set in
 @[to_additive]
-lemma exists_pow_inter_pow_subset (hA : IsApproximateSubgroup K A) (hB : IsApproximateSubgroup L B)
-    (hm : 2 ≤ m) (hn : 2 ≤ n) :
-    ∃ F : Finset G, #F ≤ K ^ (m - 1) * L ^ (n - 1) ∧ A ^ m ∩ B ^ n ⊆ F * (A ^ 2 ∩ B ^ 2) := by
+lemma pow_inter_pow_smulCovered_sq_inter_sq
+    (hA : IsApproximateSubgroup K A) (hB : IsApproximateSubgroup L B) (hm : 2 ≤ m) (hn : 2 ≤ n) :
+    SMulCovered G (K ^ (m - 1) * L ^ (n - 1)) (A ^ m ∩ B ^ n) (A ^ 2 ∩ B ^ 2) := by
   classical
   obtain ⟨F₁, hF₁, hAF₁⟩ := hA.sq_smulCovered
   obtain ⟨F₂, hF₂, hBF₂⟩ := hB.sq_smulCovered
@@ -135,13 +139,16 @@ lemma exists_pow_inter_pow_subset (hA : IsApproximateSubgroup K A) (hB : IsAppro
 open Set in
 @[to_additive]
 lemma pow_inter_pow (hA : IsApproximateSubgroup K A) (hB : IsApproximateSubgroup L B) (hm : 2 ≤ m)
-    (hn : 2 ≤ n) (hAB : (A ^ m ∩ B ^ n).Nonempty) :
+    (hn : 2 ≤ n) :
     IsApproximateSubgroup (K ^ (2 * m - 1) * L ^ (2 * n - 1)) (A ^ m ∩ B ^ n) where
-  nonempty := hAB
+  one_mem := ⟨Set.one_mem_pow hA.one_mem, Set.one_mem_pow hB.one_mem⟩
   inv_eq_self := by simp_rw [inter_inv, ← inv_pow, hA.inv_eq_self, hB.inv_eq_self]
   sq_smulCovered := by
-    obtain ⟨F, hF, hABF⟩ := hA.exists_pow_inter_pow_subset hB hm hn
-    sorry
+    refine (hA.pow_inter_pow_smulCovered_sq_inter_sq hB (by omega) (by omega)).subset ?_
+      (by gcongr; exacts [hA.one_mem, hB.one_mem])
+    calc
+      (A ^ m ∩ B ^ n) ^ 2 ⊆ (A ^ m) ^ 2 ∩ (B ^ n) ^ 2 := Set.inter_pow_subset
+      _ = A ^ (2 * m) ∩ B ^ (2 * n) := by simp [pow_mul']
 
 end IsApproximateSubgroup
 
