@@ -12,6 +12,7 @@ import LeanCamCombi.GraphTheory.ExampleSheet1
 import LeanCamCombi.GraphTheory.ExampleSheet2
 import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
 import LeanCamCombi.GrowthInGroups.BooleanSubalgebra
+import LeanCamCombi.GrowthInGroups.CardQuotient
 import LeanCamCombi.GrowthInGroups.Chevalley
 import LeanCamCombi.GrowthInGroups.ChevalleyComplex
 import LeanCamCombi.GrowthInGroups.Constructible
@@ -65,6 +66,7 @@ import LeanCamCombi.Mathlib.Data.Set.Lattice
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.Finite
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.Interval
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
+import LeanCamCombi.Mathlib.GroupTheory.Coset.Defs
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition

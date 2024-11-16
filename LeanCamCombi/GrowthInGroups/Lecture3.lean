@@ -1,5 +1,5 @@
-import LeanCamCombi.Mathlib.Data.Set.Pointwise.Interval
 import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
+import LeanCamCombi.GrowthInGroups.CardQuotient
 
 open Fin Finset List
 open scoped Pointwise
@@ -36,5 +36,15 @@ lemma proposition_5_6_2 (hA : IsApproximateSubgroup K A) (hB : IsApproximateSubg
 lemma lemma_5_7 (hA : A⁻¹ = A) (hB : B⁻¹ = B) (x y : G) :
     ∃ z : G, x • A ∩ y • B ⊆ z • (A ^ 2 ∩ B ^ 2) :=
   Set.exists_smul_inter_smul_subset_smul_sq_inter_sq hA hB x y
+
+open scoped Classical in
+lemma lemma_5_8_1 {H : Subgroup G} [H.Normal] {A : Finset G} :
+    #((A ^ m).image <| QuotientGroup.mk' H) * #{x ∈ A ^ n | x ∈ H} ≤ #(A ^ (m + n)) :=
+  card_pow_quotient_mul_pow_inter_subgroup
+
+open scoped Classical in
+lemma lemma_5_8_2 {H : Subgroup G} [H.Normal] {A : Finset G} (hAsymm : A⁻¹ = A) :
+    #A ≤ #(A.image <| QuotientGroup.mk' H) * #{x ∈ A ^ 2 | x ∈ H} :=
+  le_card_quotient_mul_sq_inter_subgroup hAsymm
 
 end GrowthInGroups.Lecture3
