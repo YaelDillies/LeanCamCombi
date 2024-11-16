@@ -2,10 +2,8 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Combinatorics.Additive.DoublingConst
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
-import Mathlib.Tactic.Positivity.Finset
 import LeanCamCombi.GrowthInGroups.VerySmallDoubling
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
-import LeanCamCombi.Mathlib.Data.Finset.Basic
 
 open Finset Fintype Group Matrix MulOpposite Real
 open scoped Combinatorics.Additive MatrixGroups Pointwise

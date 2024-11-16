@@ -1,7 +1,7 @@
 import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
 import LeanCamCombi.GrowthInGroups.CardQuotient
 
-open Fin Finset List
+open Finset
 open scoped Pointwise
 
 namespace GrowthInGroups.Lecture3
