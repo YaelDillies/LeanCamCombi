@@ -39,3 +39,11 @@ lemma exists_smul_inter_smul_subset_smul_sq_inter_sq (hs : s⁻¹ = s) (ht : t�
 
 end Group
 end Set
+
+namespace Set
+variable {α β : Type*} [Monoid α] [MulAction α β] {s : Set β} {a : α} {b : β}
+
+lemma mem_invOf_smul_set [Invertible a] : b ∈ ⅟a • s ↔ a • b ∈ s :=
+  mem_inv_smul_set_iff (a := unitOfInvertible a)
+
+end Set
