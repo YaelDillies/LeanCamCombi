@@ -1,4 +1,5 @@
 import Mathlib.Combinatorics.Schnirelmann
+import Mathlib.Data.Finset.Max
 
 open Finset
 open scoped Classical Pointwise

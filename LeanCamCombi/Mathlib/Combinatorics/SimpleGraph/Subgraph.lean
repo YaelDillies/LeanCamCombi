@@ -1,4 +1,5 @@
 import Mathlib.Combinatorics.SimpleGraph.Subgraph
+import Mathlib.Data.Fintype.Powerset
 
 -- attribute [protected] SimpleGraph.Subgraph.mem_edgeSet
 

@@ -1,10 +1,8 @@
 import Mathlib.Algebra.Order.Star.Basic
 import Mathlib.Data.DFinsupp.WellFounded
-import LeanCamCombi.Mathlib.Algebra.Polynomial.Eval
-import LeanCamCombi.Mathlib.Data.Fintype.Card
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Order.RelClasses
-import LeanCamCombi.GrowthInGroups.PolynomialLocalization
+import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 
 variable {R S M A : Type*} [CommRing R] [CommRing S] [AddCommGroup M] [Module R M] [CommRing A]
@@ -181,7 +179,7 @@ lemma comap_C_eq_comap_quotient_union_comap_localization (s : Set (PrimeSpectrum
   have surj : Function.Surjective (mapRingHom (Ideal.Quotient.mk (.span {c}))) :=
     Polynomial.map_surjective _ Ideal.Quotient.mk_surjective
   rw [range_comap_of_surjective _ _ surj, localization_away_comap_range _ (C c)]
-  simp [Polynomial.ker_mapRingHom', Ideal.map_span]
+  simp [Polynomial.ker_mapRingHom, Ideal.map_span]
 
 local notation "°" => Polynomial.natDegree
 

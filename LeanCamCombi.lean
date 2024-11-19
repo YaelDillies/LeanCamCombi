@@ -21,7 +21,6 @@ import LeanCamCombi.GrowthInGroups.Lecture1
 import LeanCamCombi.GrowthInGroups.Lecture2
 import LeanCamCombi.GrowthInGroups.Lecture3
 import LeanCamCombi.GrowthInGroups.Lecture4
-import LeanCamCombi.GrowthInGroups.PolynomialLocalization
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 import LeanCamCombi.GrowthInGroups.SMulCover
 import LeanCamCombi.GrowthInGroups.VerySmallDoubling
@@ -39,7 +38,6 @@ import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
 import LeanCamCombi.Mathlib.Algebra.Order.GroupWithZero.Unbundled
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Div
-import LeanCamCombi.Mathlib.Algebra.Polynomial.Eval
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
@@ -54,10 +52,8 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Maps
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Multipartite
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
-import LeanCamCombi.Mathlib.Data.Finset.Basic
 import LeanCamCombi.Mathlib.Data.Finset.Lattice.Basic
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
-import LeanCamCombi.Mathlib.Data.Fintype.Card
 import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Cast.Order.Basic
@@ -78,7 +74,7 @@ import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Ideal.Span
 import LeanCamCombi.Mathlib.RingTheory.LocalRing.ResidueField.Ideal
-import LeanCamCombi.Mathlib.RingTheory.Polynomial.Basic
+import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.OrderShatter

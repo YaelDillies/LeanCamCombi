@@ -1,7 +1,7 @@
 import Mathlib.Algebra.Polynomial.AlgebraMap
 import Mathlib.Algebra.Polynomial.BigOperators
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
-import Mathlib.Data.Finsupp.Notation
+import Mathlib
 
 open Finset
 open scoped BigOperators
@@ -58,7 +58,7 @@ lemma discConv_sub_weight (v w : R →₀ S) (P : R[X]) :
 
 @[simp] lemma eval_discConv (w : R →₀ S) (P : R[X]) (x : R) :
     (discConv w P).eval x = w.sum fun r s ↦ s • P.eval (x + r) := by
-  simp [discConv, Finsupp.sum,eval_finset_sum]
+  simp [discConv, Finsupp.sum, eval_finset_sum]
 
 @[simp] lemma eval_discForwardDiff (P : R[X]) (x : R) :
     (discForwardDiff P).eval x = P.eval (x + 1) - P.eval x := by

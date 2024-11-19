@@ -1,13 +1,11 @@
 import Mathlib.Data.DFinsupp.WellFounded
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import LeanCamCombi.Mathlib.Algebra.Polynomial.Eval
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
-import LeanCamCombi.Mathlib.Data.Fintype.Card
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Ideal.Span
+import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
 import LeanCamCombi.Mathlib.Order.RelClasses
-import LeanCamCombi.GrowthInGroups.PolynomialLocalization
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 
 open Polynomial TensorProduct PrimeSpectrum
@@ -179,7 +177,7 @@ lemma comap_C_eq_comap_quotient_union_comap_localization (s : Set (PrimeSpectrum
   have surj : Function.Surjective (mapRingHom (Ideal.Quotient.mk (.span {c}))) :=
     Polynomial.map_surjective _ Ideal.Quotient.mk_surjective
   rw [range_comap_of_surjective _ _ surj, localization_away_comap_range _ (C c)]
-  simp [Polynomial.ker_mapRingHom', Ideal.map_span]
+  simp [Polynomial.ker_mapRingHom, Ideal.map_span]
 
 lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus {R} [CommRing R]
     (I : Ideal R[X]) (hI : I.FG) (f : R[X]) :
