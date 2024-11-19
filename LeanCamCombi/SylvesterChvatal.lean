@@ -1,4 +1,5 @@
 import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Data.Set.Finite.List
 import LeanCamCombi.MetricBetween
 
 variable {V : Type*} [MetricSpace V]
