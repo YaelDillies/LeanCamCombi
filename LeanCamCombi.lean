@@ -63,14 +63,12 @@ import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Data.Set.Basic
 import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Lattice
-import LeanCamCombi.Mathlib.Data.Set.Pointwise.Finite
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.Interval
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.Coset.Defs
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
-import LeanCamCombi.Mathlib.Order.RelClasses
 import LeanCamCombi.Mathlib.Order.SupClosed
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation

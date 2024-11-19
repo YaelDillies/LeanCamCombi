@@ -5,7 +5,6 @@ import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Ideal.Span
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
-import LeanCamCombi.Mathlib.Order.RelClasses
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 
 open Polynomial TensorProduct PrimeSpectrum

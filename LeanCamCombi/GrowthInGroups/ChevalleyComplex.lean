@@ -1,7 +1,6 @@
 import Mathlib.Algebra.Order.Star.Basic
 import Mathlib.Data.DFinsupp.WellFounded
 import LeanCamCombi.Mathlib.Data.Prod.Lex
-import LeanCamCombi.Mathlib.Order.RelClasses
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 
@@ -82,7 +81,7 @@ lemma foo_induction (n : ℕ)
   classical
   set v := e.degree with hv
   clear_value v
-  induction v using WellFoundedLT.induction' generalizing R with
+  induction v using WellFoundedLT.induction generalizing R with
   | ind v H_IH =>
     by_cases he0 : e = ⟨0⟩
     · exact he0 ▸ hP₁ R

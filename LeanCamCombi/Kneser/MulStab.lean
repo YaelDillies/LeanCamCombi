@@ -7,7 +7,6 @@ import Mathlib.Algebra.Pointwise.Stabilizer
 import Mathlib.GroupTheory.Coset.Card
 import Mathlib.GroupTheory.GroupAction.Blocks
 import Mathlib.GroupTheory.GroupAction.Quotient
-import LeanCamCombi.Mathlib.Data.Set.Pointwise.Finite
 
 /-!
 # Stabilizer of a finset
