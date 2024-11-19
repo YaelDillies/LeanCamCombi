@@ -5,7 +5,7 @@ import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
 import LeanCamCombi.GrowthInGroups.VerySmallDoubling
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
 
-open Finset Fintype Group Matrix MulOpposite Real
+open Finset Fintype Group MulOpposite Real
 open scoped Combinatorics.Additive MatrixGroups Pointwise
 
 namespace GrowthInGroups.Lecture1
@@ -94,123 +94,31 @@ lemma theorem_3_9 :
         (hAgen : Subgroup.closure (A : Set SL(n, k)) = ⊤),
           #A ^ (1 + δ) ≤ #(A ^ 3) ∨ card SL(n, k) ^ (1 - ε) ≤ #A := sorry
 
+open MulAction in
 open scoped RightActions in
 lemma fact_3_10 (hA : #(A * A) ≤ #A) :
-    ∃ H : Subgroup G, ∀ a ∈ A, a • (H : Set G) = A ∧ (H : Set G) <• a = A := by
-    -- obtain ⟨x, hx⟩ := hA
-    have wtf : ∀ (g b : G) (B : Finset G), (b ∈ B) ↔ (g * b ∈ g • B) := fun g b B ↦ by
-      rw [mem_smul_finset]
-      simp only [smul_eq_mul, mul_right_inj, exists_eq_right]
-    have wtf' : ∀ (g b : G) (B : Set G), (b ∈ B) ↔ (b * g ∈ B <• g) := fun g b B ↦ by
-      refine ⟨fun hb ↦ mem_rightCoset g hb, fun hb ↦ Set.smul_mem_smul_set_iff.mp hb⟩
-
-    have hA2 : ∀ (a : G), (a ∈ A) → A * A = a • A := fun a ha ↦
-      (fun {α} {s t} hst ↦ (eq_iff_card_ge_of_superset hst).mp) (smul_finset_subset_mul ha) (by simpa)
-    have hA2' : ∀ (a : G), (a ∈ A) → A * A = A <• a := fun a ha ↦ by
-      have h1 : A <• a ⊆ A * A := op_smul_finset_subset_mul ha
-      have h2 : #A = #(A <• a) := Eq.symm (card_smul_finset (op a) A)
-      rw [h2] at hA
-      exact (eq_iff_card_ge_of_superset h1).mp hA
-    have hAcomm : ∀ a ∈ A, a • A = A <• a := fun a ha ↦ by rw [← hA2 a ha, hA2' a ha]
-    -- have trInv : ∀ (a : G), (a ∈ A) → a⁻¹ •> (A * A) <• a⁻¹ = a⁻¹ • A :=
-    --   fun a ha ↦ by
-    --     sorry
-    -- have trInv' : ∀ (a : G), (a ∈ A) → a⁻¹ •> (A * A) <• a⁻¹ = A <• a⁻¹ :=
-    --   fun a ha ↦ by simp only [op_inv, hA2 a ha, inv_smul_smul]
-    -- have normal : ∀ (a : G), (a ∈ A) → a⁻¹ • A = A <• a⁻¹ :=
-    --   fun a ha ↦ Eq.trans (trInv a ha).symm (trInv' a ha)
-    -- have : ∀ (a b : G), (a ∈ A) → (b ∈ A) → a⁻¹ • A = b⁻¹ • A := by
-    --   intros a b ha hb
-    --   sorry
-
-    -- have unfold : ∀ (m a : G), (a ∈ m • A) → ∃ g, (g ∈ A) ∧ a = m * g := by
-    --   intros m a ha
-
-    --   obtain ⟨c, ⟨hc1, hc2⟩⟩ := ha
-    --   refine ⟨c, ⟨hc1, Eq.symm (by simpa only [smul_eq_mul] using hc2)⟩⟩
-    -- have unfold' : ∀ (m a : G), (a ∈ (A : Set G) <• m) → ∃ g, (g ∈ A) ∧ a = g * m := by
-    --   intros m a ha
-    --   obtain ⟨c, ⟨hc1, hc2⟩⟩ := ha
-    --   refine ⟨c, ⟨hc1, Eq.symm (by simpa only [smul_eq_mul] using hc2)⟩⟩
-
-    -- let H : Subgroup G := {
-    --   carrier := x⁻¹ • A
-    --   mul_mem' := by
-    --     intros a b ha hb
-    --     obtain ⟨g, ⟨hg1, hg2⟩⟩ := unfold x⁻¹ a ha
-    --     obtain ⟨g', ⟨hg1', hg2'⟩⟩ := unfold' x⁻¹ b ?_
-    --     rw [trInv x hx]
-    --     refine ⟨g * g', ?_⟩
-    --     sorry
-    --   one_mem' := by sorry
-    --   inv_mem' := by
-    --     intros a ha
-    --     sorry
-    -- }
-    -- exact ⟨H, fun a ha ↦ ⟨leftCoset_mem_leftCoset H ha, rightCoset_mem_rightCoset H ha⟩⟩
-    let Hcar := {g : G | g • A = A}
-    have smuleq : ∀ (a b : G), (a ∈ A) → (b ∈ A) → a • A = b • A :=
-      fun a b ha hb ↦ (hA2 a ha).symm.trans (hA2 b hb)
-    have Hcarform : ∀ (a : G), (a ∈ A) → a⁻¹ • A = Hcar := fun a ha ↦ by
-      unfold Hcar
-      ext x
-      refine ⟨?_, fun hx ↦ ?_⟩
-      { rintro ⟨a', ha', ha''⟩
-        simp only [smul_eq_mul, Set.mem_setOf_eq] at ha'' ⊢
-        specialize smuleq a' a ha' ha
-        rw [← ha'', MulAction.mul_smul, smuleq, ← MulAction.mul_smul, inv_mul_cancel, one_smul] }
-      { simp only [Set.mem_setOf_eq] at hx ⊢
-        have : a •> (A <• a⁻¹) = (a •> A) <• a⁻¹ := smul_comm a (op a⁻¹) A
-        have : A = a •> (A <• a⁻¹) := by
-          rw [this, hAcomm a ha]
-          simp only [op_inv, inv_smul_smul]
-        rw [this, coe_smul_finset, coe_smul_finset, ← MulAction.mul_smul, inv_mul_cancel, one_smul]
-        have : x * a ∈ A := by
-          specialize wtf x a A
-          rwa [← hx, ← wtf]
-        rw [wtf' a]
-        simpa only [op_inv, smul_inv_smul, mem_coe] }
-
-    let H : Subgroup G := {
-      carrier := Hcar
-      mul_mem' := by
-        intros a b ha hb
-        rw [Set.mem_setOf_eq] at ha hb ⊢
-        rw [MulAction.mul_smul a b A, hb, ha]
-      one_mem' := by rw [Set.mem_setOf_eq, one_smul]
-      inv_mem' := fun x ↦ by
-        rw [Set.mem_setOf_eq, inv_smul_eq_iff]
-        exact Eq.symm ((fun {α} {s t} ↦ val_inj.mp) (congrArg val x))
-    }
-
-    refine ⟨H, fun a ha ↦ ⟨?_, ?_⟩⟩
-    { ext x
-      refine ⟨?_, fun hx ↦ ?_⟩
-      { rintro ⟨h, hh1, hh2⟩
-        have hh1 : h ∈ a⁻¹ • A := by
-          have : h ∈ Hcar := hh1
-          rw [← Hcarform a ha] at this
-          exact mem_smul_finset.mpr this
-        rw [← hh2]
-        have := (wtf a h (a⁻¹ • A)).mp
-        simp only [smul_inv_smul, smul_eq_mul, mem_coe] at this ⊢
-        exact this hh1 }
-      { unfold H
-        simp_rw [← Hcarform a ha]
-        simp only [Subgroup.coe_set_mk, smul_inv_smul, mem_coe]
-        exact hx } }
-    { ext x
-      refine ⟨?_, fun hx ↦ ?_⟩
-      { rintro ⟨h, hh1, hh2⟩
-        simp at hh1 hh2 ⊢
-        have : h • A = A := hh1
-        rw [← this, ← hh2]
-        exact (wtf h a A).mp ha }
-      { unfold H
-        simp only [Subgroup.coe_set_mk]
-        rw [← Hcarform a ha, ← coe_smul_finset, ← coe_smul_finset]
-        exact mem_coe.mpr (by rwa [smul_comm, ← hAcomm a ha, inv_smul_smul]) } }
-
+    ∃ H : Subgroup G, ∀ a ∈ A, a •> (H : Set G) = A ∧ (H : Set G) <• a = A := by
+  have smul_A {a} (ha : a ∈ A) : a •> A = A * A :=
+    eq_of_subset_of_card_le (smul_finset_subset_mul ha) (by simpa)
+  have op_smul_A {a} (ha : a ∈ A) : A <• a = A * A :=
+    eq_of_subset_of_card_le (op_smul_finset_subset_mul ha) (by simpa)
+  have smul_A_eq_op_smul_A {a} (ha : a ∈ A) : a •> A = A <• a := by rw [smul_A ha, op_smul_A ha]
+  have smul_A_eq_op_smul_A' {a} (ha : a ∈ A) : a⁻¹ •> A = A <• a⁻¹ := by
+    rw [inv_smul_eq_iff, smul_comm, smul_A_eq_op_smul_A ha, op_inv, inv_smul_smul]
+  let H := stabilizer G A
+  have inv_smul_A {a} (ha : a ∈ A) : a⁻¹ • (A : Set G) = H := by
+    ext x
+    refine ⟨?_, fun hx ↦ ?_⟩
+    · rintro ⟨b, hb, rfl⟩
+      simp [H, mul_smul, inv_smul_eq_iff, smul_A ha, smul_A hb]
+    · norm_cast
+      rwa [smul_A_eq_op_smul_A' ha, op_inv, mem_inv_smul_finset_iff, op_smul_eq_mul, ← smul_eq_mul,
+        ← mem_inv_smul_finset_iff, inv_mem hx]
+  refine ⟨H, fun a ha ↦ ⟨?_, ?_⟩⟩
+  · rw [← inv_smul_A ha, smul_inv_smul]
+  · rw [← inv_smul_A ha, smul_comm]
+    norm_cast
+    rw [← smul_A_eq_op_smul_A ha, inv_smul_smul]
 
 open scoped Classical RightActions in
 lemma lemma_3_11 (hA : #(A * A) < (3 / 2 : ℚ) * #A) :
