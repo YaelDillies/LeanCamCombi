@@ -12,6 +12,7 @@ import LeanCamCombi.GraphTheory.ExampleSheet1
 import LeanCamCombi.GraphTheory.ExampleSheet2
 import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
 import LeanCamCombi.GrowthInGroups.BooleanSubalgebra
+import LeanCamCombi.GrowthInGroups.CardPowGeneratingSet
 import LeanCamCombi.GrowthInGroups.CardQuotient
 import LeanCamCombi.GrowthInGroups.Chevalley
 import LeanCamCombi.GrowthInGroups.ChevalleyComplex
@@ -21,6 +22,7 @@ import LeanCamCombi.GrowthInGroups.Lecture1
 import LeanCamCombi.GrowthInGroups.Lecture2
 import LeanCamCombi.GrowthInGroups.Lecture3
 import LeanCamCombi.GrowthInGroups.Lecture4
+import LeanCamCombi.GrowthInGroups.NoDoubling
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 import LeanCamCombi.GrowthInGroups.SMulCover
 import LeanCamCombi.GrowthInGroups.VerySmallDoubling

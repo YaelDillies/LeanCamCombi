@@ -2,8 +2,10 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Combinatorics.Additive.DoublingConst
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
-import LeanCamCombi.GrowthInGroups.VerySmallDoubling
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
+import LeanCamCombi.GrowthInGroups.CardPowGeneratingSet
+import LeanCamCombi.GrowthInGroups.NoDoubling
+import LeanCamCombi.GrowthInGroups.VerySmallDoubling
 
 open Finset Fintype Group MulOpposite Real
 open scoped Combinatorics.Additive MatrixGroups Pointwise
@@ -11,39 +13,9 @@ open scoped Combinatorics.Additive MatrixGroups Pointwise
 namespace GrowthInGroups.Lecture1
 variable {G : Type*} [Group G] [DecidableEq G] {A X : Finset G} {n : ℕ} {K : ℝ}
 
-lemma card_pow_lt_card_pow_succ_of_pow_ne_closure (hX : X.Nontrivial)
-    (hXclosure : (X ^ n : Set G) ≠ Subgroup.closure (X : Set G)) : #(X ^ n) < #(X ^ (n + 1)) := by
-  refine (hX.nonempty.card_pow_mono <| Order.le_succ _).lt_of_ne fun h ↦ hXclosure ?_
-  dsimp at h
-  sorry
-
-lemma card_pow_strictMonoOn (hX : X.Nontrivial) :
-    StrictMonoOn (fun n ↦ #(X ^ n))
-      {n | (X ^ (n - 1) : Set G) ≠ Subgroup.closure (X : Set G)} := by
-  refine strictMonoOn_of_lt_add_one ⟨?_⟩ fun n _ _ hn ↦
-    card_pow_lt_card_pow_succ_of_pow_ne_closure hX hn
-  rintro - - n hn m ⟨-, hmn⟩ hm
-  apply hn
-  obtain rfl | hm₀ := m.eq_zero_or_pos
-  · simp at hm
-    rw [← hm]
-    rw [eq_comm, coe_set_eq_one, Subgroup.closure_eq_bot_iff] at hm
-    cases hX.not_subset_singleton hm
-  calc (X : Set G) ^ (n - 1) = X ^ (n - m) * X ^ (m - 1) := by rw [← pow_add]; congr 1; omega
-  _ = Subgroup.closure (X : Set G) := by rw [hm, Set.mul_subgroupClosure_pow hX.nonempty.to_set]
-
-lemma card_pow_strictMono (hXclosure : (Subgroup.closure (X : Set G) : Set G).Infinite)
-    (hX : X.Nontrivial) : StrictMono fun n ↦ #(X ^ n) := by
-  have h n : (X ^ (n - 1) : Set G) ≠ Subgroup.closure (X : Set G) :=
-    fun h ↦ by simp [← h, ← coe_pow] at hXclosure
-  simpa [h] using card_pow_strictMonoOn hX
-
-/-- The growth of a generating set in an infinite group is at least linear. -/
-lemma fact_3_1_1 [Infinite G] (hXgen : Subgroup.closure (X : Set G) = ⊤) (hX : X.Nontrivial) :
-    ∀ n, n + 1 ≤ #(X ^ n)
-  | 0 => by simp
-  | n + 1 => (fact_3_1_1 hXgen hX _).trans_lt <|
-    card_pow_strictMono (by simp [hXgen, Set.infinite_univ]) hX n.lt_succ_self
+/-- The growth of a set generating an infinite group is at least linear. -/
+lemma fact_3_1_1 [Infinite G] (hXgen : Subgroup.closure (X : Set G) = ⊤) (hX : X.Nontrivial)
+    (n : ℕ) : n + 1 ≤ #(X ^ n) := add_one_le_card_pow (by simp [hXgen, Set.infinite_univ]) hX _
 
 /-- The growth of a set is at most exponential. -/
 lemma fact_3_1_2 : #(X ^ n) ≤ #X ^ n := card_pow_le
