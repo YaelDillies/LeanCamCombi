@@ -18,6 +18,13 @@ lemma mul_singleton' (s : Set α) (a : α) : s * {a} = op a • s := mul_singlet
 @[to_additive]
 lemma smul_set_subset_mul : a ∈ s → a • t ⊆ s * t := image_subset_image2_right
 
+@[to_additive] lemma pair_mul (a b : α) (s : Set α) : {a, b} * s = a • s ∪ b • s := by
+  rw [insert_eq, union_mul, singleton_mul', singleton_mul']
+
+open scoped RightActions
+@[to_additive] lemma mul_pair (s : Set α) (a b : α) : s * {a, b} = s <• a ∪ s <• b := by
+  rw [insert_eq, mul_union, mul_singleton', mul_singleton']
+
 end Mul
 
 section Group
