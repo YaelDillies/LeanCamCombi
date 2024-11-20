@@ -40,10 +40,55 @@ lemma lemma_4_4_2 (hm : 3 ≤ m) (hA : #(A ^ 3) ≤ K * #A) (hAsymm : A⁻¹ = A
 
 def def_4_5 (S : Set G) (K : ℝ) : Prop := IsApproximateSubgroup K S
 
-lemma two_nsmul_Icc_nat (k : ℕ) : (2 • .Icc (-k) k : Set ℤ) = {(-k : ℤ), (k : ℤ)} + .Icc (-k) k :=
-  sorry
+lemma two_nsmul_Icc_nat (k : ℕ) : (2 • .Icc (-k) k : Set ℤ) = {(-k : ℤ), (k : ℤ)} + .Icc (-k) k := by
+  ext x
+  rw [two_nsmul]
+  refine ⟨fun hx ↦ ?_, fun hx ↦ ?_⟩
+  . obtain ⟨a, ⟨ha1, ha2⟩, b, ⟨hb1, hb2⟩, rfl⟩ := hx
+    obtain hx | hx := Int.lt_or_le (a + b) 0
+    . refine ⟨-k, by simp only [Set.mem_insert_iff, Set.mem_singleton_iff, true_or], a + b + k,
+          ⟨?_, ?_⟩, ?_⟩
+      . calc -(k : ℤ) = -k + (-k) + k := by rw [neg_add_cancel_right]
+        _ ≤ a + (-k) + k := by simp only [neg_add_cancel_right, ha1]
+        _ ≤ a + b + k := by rwa [neg_add_cancel_right, add_assoc, ← sub_le_iff_le_add', add_comm,
+              ← sub_le_iff_le_add', sub_self, zero_sub]
+      . simp only [add_le_iff_nonpos_left, hx, le_of_lt]
+      . simp only [neg_add_cancel_comm_assoc]
+    . refine ⟨k, by simp only [Set.mem_insert_iff, Set.mem_singleton_iff, or_true], a + b - k,
+          ⟨?_, ?_⟩, ?_⟩
+      . simp only [neg_le_sub_iff_le_add, le_add_iff_nonneg_left, hx]
+      . simp only [tsub_le_iff_right, add_le_add ha2 hb2]
+      . simp only [add_sub_cancel]
+  . obtain ⟨a, ha, b⟩ := hx
+    refine ⟨a, ?_, b⟩
+    obtain rfl | rfl := ha
+    . simp only [Set.mem_Icc, le_refl, neg_le_self_iff, Nat.cast_nonneg, and_self]
+    . simp only [Set.mem_Icc, neg_le_self_iff, Nat.cast_nonneg, le_refl, and_self]
 
-lemma two_nsmul_Icc_real : (2 • .Icc (-1) 1 : Set ℝ) = {-1, 1} + .Icc (-1) 1 := sorry
+lemma two_nsmul_Icc_real : (2 • .Icc (-1) 1 : Set ℝ) = {-1, 1} + .Icc (-1) 1 := by
+  ext x
+  rw [two_nsmul]
+  refine ⟨fun hx ↦ ?_, fun hx ↦ ?_⟩
+  . obtain ⟨a, ⟨ha1, ha2⟩, b, ⟨hb1, hb2⟩, rfl⟩ := hx
+    obtain hx | hx := lt_or_le (a + b) 0
+    . refine ⟨-1, by simp only [Set.mem_insert_iff, Set.mem_singleton_iff, true_or, Set.mem_Icc,
+      true_and], a + b + 1, ⟨?_, ?_⟩, ?_⟩
+      . calc -1 = -1 + (-1) + 1 := by { exact Eq.symm (neg_add_cancel_comm 1 (-1)) }
+              _ ≤ a + (-1) + 1 := by rwa [neg_add_cancel_right, neg_add_cancel_right]
+              _ ≤ a + b + 1 := by rwa [neg_add_cancel_right, add_assoc, ← sub_le_iff_le_add',
+                                       add_comm, ← sub_le_iff_le_add', sub_self, zero_sub]
+      . simp only [add_lt_iff_neg_right, hx, le_of_lt]
+      . simp only [neg_add_cancel_comm_assoc]
+    . refine ⟨1, by simp only [Set.mem_insert_iff, Set.mem_singleton_iff, or_true, Set.mem_Icc,
+      true_and], a + b - 1, ⟨?_, ?_⟩, ?_⟩
+      . simpa only [neg_le_sub_iff_le_add, le_add_iff_nonneg_left]
+      . simp only [tsub_le_iff_right, add_le_add ha2 hb2]
+      . simp only [add_sub_cancel]
+  . obtain ⟨a, rfl | rfl, b⟩ := hx
+    . exact ⟨-1, by simp only [Set.mem_Icc, le_refl, neg_le_self_iff, zero_le_one, and_self,
+      true_and], b⟩
+    . exact ⟨1, by simp only [Set.mem_Icc, neg_le_self_iff, zero_le_one, le_refl, and_self,
+      true_and], b⟩
 
 lemma remark_4_6_1 (k : ℕ) : IsApproximateAddSubgroup 2 (.Icc (-k) k : Set ℤ) where
   zero_mem := by simp
