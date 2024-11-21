@@ -1,6 +1,5 @@
 import Mathlib.Data.Real.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
-import LeanCamCombi.Mathlib.Data.Nat.Cast.Order.Basic
 
 open scoped Finset Pointwise
 

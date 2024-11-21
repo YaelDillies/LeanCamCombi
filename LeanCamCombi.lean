@@ -58,7 +58,6 @@ import LeanCamCombi.Mathlib.Data.Finset.Lattice.Basic
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
-import LeanCamCombi.Mathlib.Data.Nat.Cast.Order.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Data.Set.Basic
 import LeanCamCombi.Mathlib.Data.Set.Image
