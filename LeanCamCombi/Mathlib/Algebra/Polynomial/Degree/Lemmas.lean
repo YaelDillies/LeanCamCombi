@@ -18,4 +18,13 @@ lemma degree_C_mul_eq_of_mul_ne_zero (r : R) (p : R[X]) (h : r * p.leadingCoeff 
   rw [degree_eq_natDegree hp, degree_eq_natDegree, natDegree_C_mul_eq_of_mul_ne_zero h]
   exact fun e ↦ h (by simpa using congr(($e).coeff p.natDegree))
 
+lemma degree_C_mul_le (r : R) (p : R[X]) :
+    (C r * p).degree ≤ p.degree := by
+  by_cases hp : p = 0
+  · simp [hp]
+  by_cases hCp : C r * p = 0
+  · simp [hCp]
+  rw [degree_eq_natDegree hp, degree_eq_natDegree hCp]
+  simpa using natDegree_C_mul_le _ _
+
 end Polynomial

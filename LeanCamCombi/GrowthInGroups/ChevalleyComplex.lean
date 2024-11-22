@@ -1,13 +1,21 @@
 import Mathlib.Algebra.Order.Star.Basic
 import Mathlib.Data.DFinsupp.WellFounded
+import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.Group.Finset
+import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Operations
+import LeanCamCombi.Mathlib.Algebra.Polynomial.Div
+import LeanCamCombi.Mathlib.Algebra.Polynomial.Eval.Degree
+import LeanCamCombi.Mathlib.Data.Finset.Image
 import LeanCamCombi.Mathlib.Data.Prod.Lex
+import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
+import LeanCamCombi.GrowthInGroups.WithBotSucc
 
 variable {R S M A : Type*} [CommRing R] [CommRing S] [AddCommGroup M] [Module R M] [CommRing A]
   [Algebra R A]
 
-open Polynomial TensorProduct PrimeSpectrum
+open Localization Polynomial TensorProduct PrimeSpectrum
 open scoped Pointwise
 
 @[ext]
@@ -20,7 +28,9 @@ instance : CoeFun (InductionObj R n) (fun _ ↦ Fin n → R[X]) := ⟨InductionO
 
 namespace InductionObj
 
-def coeffSubmodule (e : InductionObj R n) : Submodule ℤ R :=
+attribute [-instance] AddCommGroup.toIntModule in
+attribute [-instance] Ring.toIntAlgebra in
+def coeffSubmodule [Algebra ℤ R] (e : InductionObj R n) : Submodule ℤ R :=
   .span ℤ ({1} ∪ ⋃ i, Set.range (e.val i).coeff)
 
 lemma coeffSubmodule_mapRingHom_comp (e : InductionObj R n) (f : R →+* S) :
@@ -38,7 +48,7 @@ lemma one_le_coeffSubmodule : 1 ≤ e.coeffSubmodule := by
 variable (n) in
 abbrev DegreeType := (Fin n → WithBot ℕ) ×ₗ Prop
 
-variable (S) in
+variable (e) in
 def degree : DegreeType n :=
   toLex (Polynomial.degree ∘ e.val, ¬ ∃ i, (e.val i).Monic ∧
     ∀ j, e.val j ≠ 0 → (e.val i).degree ≤ (e.val j).degree)
@@ -47,21 +57,23 @@ def degree : DegreeType n :=
 lemma ofLex_degree_snd : (ofLex e.degree).snd = ¬ ∃ i, (e.val i).Monic ∧
     ∀ j, e.val j ≠ 0 → (e.val i).degree ≤ (e.val j).degree := rfl
 
-def degBound : ℕ := 2 ^ ∑ i, (e.val i).natDegree
+variable (e) in
+def degBound : ℕ := ∑ i, (e.val i).degree.succ
 
-def exponentBound : ℕ := e.degBound ^ e.degBound
+variable (e) in
+def powBound : ℕ := e.degBound ^ e.degBound
 
-def InductionStatement (R) (n) [CommRing R] (e : InductionObj R n) : Prop :=
+attribute [-instance] Ring.toIntAlgebra in
+variable (R n e) in
+def InductionStatement [Algebra ℤ R] : Prop :=
   ∀ f, ∃ T : Finset (Σ n, R × (Fin n → R)),
     comap C '' (zeroLocus (Set.range e.val) \ zeroLocus {f}) =
       ⋃ C ∈ T, (zeroLocus (Set.range C.2.2) \ zeroLocus {C.2.1}) ∧
-    ∀ C ∈ T, C.1 ≤ e.degBound ∧ ∀ i, C.2.2 i ∈ e.coeffSubmodule ^ e.exponentBound
+    ∀ C ∈ T, C.1 ≤ e.degBound ∧ ∀ i, C.2.2 i ∈ e.coeffSubmodule ^ e.powBound
 
-open Submodule in
-lemma coeffSubmodule_smul (e : InductionObj R n) (f : R →+* S) (a : R) [Invertible (f a)] :
-    ({ val := ⅟(f a) • mapRingHom f ∘ e.val } : InductionObj S n).coeffSubmodule =
-      ⅟(f a) ^ e.degBound • (span ℤ ({a} ∪ ⋃ i, Set.range (e.val i).coeff)).map f.toIntAlgHom.toLinearMap := by
-  sorry -- probably useless
+local notation "°" => Polynomial.natDegree
+local notation "↝" => Polynomial.leadingCoeff
+local notation3 "coeff("p")" => Set.range (Polynomial.coeff p)
 
 universe u
 
@@ -74,7 +86,8 @@ lemma foo_induction (n : ℕ)
       (e.1 i).Monic → (e.1 i).degree ≤ (e.1 j).degree → i ≠ j →
       P R ⟨Function.update e.1 j (e.1 j %ₘ e.1 i)⟩ → P R e)
     (hP : ∀ (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n), c = (e.1 i).leadingCoeff →
-      P (Localization.Away c) ⟨C (IsLocalization.Away.invSelf (S := Localization.Away c) c) •
+      c ≠ 0 →
+      P (Away c) ⟨C (IsLocalization.Away.invSelf (S := Away c) c) •
         mapRingHom (algebraMap _ _) ∘ e.val⟩ →
       P (R ⧸ Ideal.span {c}) ⟨mapRingHom (algebraMap _ _) ∘ e.val⟩ → P R e)
     {R} [CommRing R] (e : InductionObj R n) : P R e := by
@@ -127,8 +140,8 @@ lemma foo_induction (n : ℕ)
       exact Nat.find_min' _ ⟨j, degree_eq_natDegree hj, hj⟩
     have : ¬ (e.1 i).Monic := fun HH ↦ H ⟨i, HH, i_min⟩
     -- We replace `R` by `R ⧸ Ideal.span {(e i).leadingCoeff}` where `(e i).degree` is lowered
-    -- and `Localization.Away (e i).leadingCoeff` where `(e i).leadingCoeff` becomes invertible.
-    apply hP _ _ i e rfl (H_IH _ ?_ _ rfl) (H_IH _ ?_ _ rfl)
+    -- and `Away (e i).leadingCoeff` where `(e i).leadingCoeff` becomes invertible.
+    apply hP _ _ i e rfl (by simpa using hi) (H_IH _ ?_ _ rfl) (H_IH _ ?_ _ rfl)
     · rw [hv, Prod.Lex.lt_iff'']
       constructor
       · intro j
@@ -160,72 +173,132 @@ lemma foo_induction (n : ℕ)
 
 universe v
 
-lemma comap_C_eq_comap_quotient_union_comap_localization (s : Set (PrimeSpectrum R[X])) (c : R) :
+lemma comap_C_eq_comap_localization_union_comap_quotient (s : Set (PrimeSpectrum R[X])) (c : R) :
     .comap C '' s =
+      comap (algebraMap R (Away c)) '' (comap C ''
+        (comap (mapRingHom (algebraMap R (Away c))) ⁻¹' s)) ∪
       comap (Ideal.Quotient.mk (.span {c})) '' (comap C ''
-        (comap (mapRingHom (Ideal.Quotient.mk _)) ⁻¹' s)) ∪
-      comap (algebraMap R (Localization.Away c)) '' (comap C ''
-        (comap (mapRingHom (algebraMap R (Localization.Away c))) ⁻¹' s)) := by
+        (comap (mapRingHom (Ideal.Quotient.mk _)) ⁻¹' s)) := by
+  rw [Set.union_comm]
   simp_rw [← Set.image_comp, ← ContinuousMap.coe_comp, ← comap_comp, ← mapRingHom_comp_C,
     comap_comp, ContinuousMap.coe_comp, Set.image_comp, Set.image_preimage_eq_inter_range,
     ← Set.image_union, ← Set.inter_union_distrib_left]
-  letI := (mapRingHom (algebraMap R (Localization.Away c))).toAlgebra
+  letI := (mapRingHom (algebraMap R (Away c))).toAlgebra
   suffices Set.range (comap (mapRingHom (Ideal.Quotient.mk (.span {c})))) =
-      (Set.range (comap (algebraMap R[X] (Localization.Away c)[X])))ᶜ by
+      (Set.range (comap (algebraMap R[X] (Away c)[X])))ᶜ by
     rw [this, RingHom.algebraMap_toAlgebra, Set.compl_union_self, Set.inter_univ]
-  have := Polynomial.isLocalization (.powers c) (Localization.Away c)
+  have := Polynomial.isLocalization (.powers c) (Away c)
   rw [Submonoid.map_powers] at this
   have surj : Function.Surjective (mapRingHom (Ideal.Quotient.mk (.span {c}))) :=
     Polynomial.map_surjective _ Ideal.Quotient.mk_surjective
   rw [range_comap_of_surjective _ _ surj, localization_away_comap_range _ (C c)]
   simp [Polynomial.ker_mapRingHom, Ideal.map_span]
 
-local notation "°" => Polynomial.natDegree
+attribute [-instance] AddCommGroup.toIntModule
 
-local notation "↝" => Polynomial.leadingCoeff
-
-local notation3 "coeff("p")" => Set.range (Polynomial.coeff p)
-
-lemma Ideal.span_range_update_divByMonic {ι : Type*} [DecidableEq ι]
-    (v : ι → R[X]) (i j : ι) (hij : i ≠ j) (H : (v i).Monic) :
-    Ideal.span (Set.range (Function.update v j (v j %ₘ v i))) =
-      Ideal.span (Set.range v) := by
-  refine le_antisymm ?_ ?_ <;>
-    simp only [Ideal.span_le, Set.range_subset_iff, SetLike.mem_coe]
-  · intro k
-    by_cases hjk : j = k
-    · subst hjk
-      rw [Function.update_same, modByMonic_eq_sub_mul_div (v j) H]
-      apply sub_mem (Ideal.subset_span ?_) (Ideal.mul_mem_right _ _ (Ideal.subset_span ?_))
-      · exact ⟨j, rfl⟩
-      · exact ⟨i, rfl⟩
-    exact Ideal.subset_span ⟨k, (Function.update_noteq (.symm hjk) _ _).symm⟩
-  · intro k
-    by_cases hjk : j = k
-    · subst hjk
-      nth_rw 2 [← modByMonic_add_div (v j) H]
-      apply add_mem (Ideal.subset_span ?_) (Ideal.mul_mem_right _ _ (Ideal.subset_span ?_))
-      · exact ⟨j, Function.update_same _ _ _⟩
-      · exact ⟨i, Function.update_noteq hij _ _⟩
-    exact Ideal.subset_span ⟨k, Function.update_noteq (.symm hjk) _ _⟩
-
-open Polynomial IsLocalization Localization in
+open IsLocalization in
+open Submodule hiding comap in
 lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
-      (hi : c = (e.1 i).leadingCoeff) :
-      InductionStatement (Localization.Away c) n
-        ⟨C (IsLocalization.Away.invSelf (S := Localization.Away c) c) •
+      (hi : c = (e.1 i).leadingCoeff) (hc : c ≠ 0) :
+      InductionStatement (Away c) n
+        ⟨C (IsLocalization.Away.invSelf (S := Away c) c) •
           mapRingHom (algebraMap _ _) ∘ e.val⟩ →
       InductionStatement (R ⧸ Ideal.span {c}) n ⟨mapRingHom (algebraMap _ _) ∘ e.val⟩ →
         InductionStatement R n e := by
-  intro H₁ H₂ f
-  obtain ⟨T₁, hT₁⟩ := H₁ (mapRingHom (algebraMap _ _) f)
-  obtain ⟨T₂, hT₂⟩ := H₂ (mapRingHom (algebraMap _ _) f)
+  set q₁ := IsScalarTower.toAlgHom ℤ R (Away c)
+  set q₂ := Ideal.Quotient.mk (.span {c})
+  set e₁ : InductionObj (Away c) n :=
+    ⟨C (IsLocalization.Away.invSelf (S := Away c) c) • mapRingHom q₁ ∘ e.val⟩
+  set e₂ : InductionObj (R ⧸ Ideal.span {c}) n := ⟨mapRingHom q₂ ∘ e.val⟩
+  intro (H₁ : InductionStatement _ _ e₁) (H₂ : InductionStatement _ _ e₂) f
+  obtain ⟨T₁, hT₁⟩ := H₁ (mapRingHom q₁ f)
+  obtain ⟨T₂, hT₂⟩ := H₂ (mapRingHom q₂ f)
   simp only [forall_and] at hT₁ hT₂
   obtain ⟨hT₁, hT₁deg, hT₁span⟩ := hT₁
   obtain ⟨hT₂, hT₂deg, hT₂span⟩ := hT₂
+  -- Lift the tuples of `T₁` from `Away c` to `R`
+  let _ : Invertible (q₁ c) :=
+    -- TODO(Andrew): add API for `IsLocalization.Away.invSelf`
+    ⟨IsLocalization.Away.invSelf c, by simp [q₁, IsLocalization.Away.invSelf], by
+      simp [q₁, IsLocalization.Away.invSelf]⟩
+  have he₁span :
+      e₁.coeffSubmodule ^ e₁.powBound = ⅟(q₁ c ^ e₁.powBound) •
+        (span ℤ ({c} ∪ ⋃ i, coeff(e.val i)) ^ e₁.powBound).map q₁.toLinearMap := by
+    unfold coeffSubmodule
+    rw [Submodule.map_pow, map_span, invOf_pow, ← smul_pow, ← span_smul]
+    simp [Set.image_insert_eq, Set.smul_set_insert, Set.image_iUnion, Set.smul_set_iUnion, q₁]
+    congr! with i
+    change _ = IsLocalization.Away.invSelf c • _
+    simp [← Set.range_comp, Set.smul_set_range, funext fun _ ↦ coeff_C_mul _]
+    ext
+    simp [q₁]
+  replace hT₁span x hx i :=
+    smul_mem_pointwise_smul _ (q₁ c ^ e₁.powBound) _ (hT₁span x hx i)
+  simp only [he₁span, smul_invOf_smul, smul_eq_mul] at hT₁span
+  choose g₁ hg₁ using hT₁span
+  -- Lift the constants of `T₁` from `Away c` to `R`
+  choose n₁ f₁ hf₁ using Away.surj (S := Away c) c
+  -- Lift the tuples of `T₂` from `R ⧸ Ideal.span {c}` to `R`
+  let _ : Algebra ℤ R := Ring.toIntAlgebra _
   rw [coeffSubmodule_mapRingHom_comp, ← Submodule.map_pow] at hT₂span
-  choose l₂ hl₂ using hT₂span
-  sorry
+  choose g₂ hg₂ using hT₂span
+  -- Lift the constants of `T₂` from `R ⧸ Ideal.span {c}` to `R`
+  choose f₂ hf₂ using Ideal.Quotient.mk_surjective (I := .span {c})
+  -- Lift everything together
+  classical
+  let S₁ : Finset (Σ n, R × (Fin n → R)) :=
+    T₁.attach.image fun x ↦ ⟨_, (f₁ x.1.2.1, g₁ x.1 x.2)⟩
+  let S₂ : Finset (Σ n, R × (Fin n → R)) :=
+    T₂.attach.image fun x ↦ ⟨_, (c * f₂ x.1.2.1, Fin.cons c (g₂ x.1 x.2))⟩
+  refine ⟨S₁ ∪ S₂, ?_, ?_⟩
+  · calc
+      comap C '' (zeroLocus (.range e.val) \ zeroLocus {f})
+        = comap q₁ '' (comap C ''
+            (comap (mapRingHom q₁.toRingHom) ⁻¹' (zeroLocus (.range e.val) \ zeroLocus {f}))) ∪
+          comap q₂ '' (comap C ''
+            (comap (mapRingHom q₂) ⁻¹' (zeroLocus (.range e.val) \ zeroLocus {f}))) :=
+        comap_C_eq_comap_localization_union_comap_quotient _ c
+      _ = (⋃ C ∈ S₁, zeroLocus (Set.range C.snd.2) \ zeroLocus {C.snd.1}) ∪
+          ⋃ C ∈ S₂, zeroLocus (Set.range C.snd.2) \ zeroLocus {C.snd.1} := ?_
+      _ = ⋃ C ∈ S₁ ∪ S₂, zeroLocus (Set.range C.snd.2) \ zeroLocus {C.snd.1} := by
+        simpa using (Set.biUnion_union S₁.toSet S₂ _).symm
+    congr 1
+    · convert congr(comap q₁.toRingHom '' $hT₁)
+      · rw [Set.preimage_diff, preimage_comap_zeroLocus, preimage_comap_zeroLocus,
+          Set.image_singleton, Pi.smul_def, ← Set.smul_set_range, Set.range_comp]
+        congr 1
+        -- not Yaël-trivial, but Andrew-trivial
+        sorry
+      · rw [Set.image_iUnion₂]
+        simp_rw [← Finset.mem_coe, S₁, Finset.coe_image, Set.biUnion_image]
+        -- `attach` nonsense + some actual math
+        sorry
+    · convert congr(comap q₂ '' $hT₂)
+      · rw [Set.preimage_diff, preimage_comap_zeroLocus, preimage_comap_zeroLocus,
+          Set.image_singleton, Set.range_comp]
+      · rw [Set.image_iUnion₂]
+        simp_rw [← Finset.mem_coe, S₂, Finset.coe_image, Set.biUnion_image]
+        -- `attach` nonsense + some actual math
+        sorry
+  · simp only [Finset.mem_union, Finset.forall_mem_image, Finset.mem_attach, true_and, forall_and,
+      or_imp, forall_exists_index, S₁, S₂, Subtype.forall, forall_const]
+    -- `attach` nonsense here
+    refine ⟨⟨fun x hx ↦ ?_, fun x hx ↦ ?_⟩, fun x hx ↦ ?_, fun x hx ↦ ?_⟩
+    · calc
+        x.1 ≤ e₁.degBound := hT₁deg _ hx
+        _ ≤ e.degBound := by
+          simp [InductionObj.degBound]
+          gcongr with j
+          exact (degree_C_mul_le _ _).trans (degree_map_le _ _)
+    · calc
+        x.1 + 1 ≤ e₂.degBound + 1 := by gcongr; exact hT₂deg _ hx
+        _ ≤ e.degBound := by
+          simp [InductionObj.degBound, Nat.succ_le_iff]
+          refine Fintype.sum_lt_sum (fun j ↦ by gcongr; exact degree_map_le _ _) ⟨i, ?_⟩
+          gcongr
+          refine degree_map_lt (by simp [q₂, ← hi]) (by simpa [hi] using hc)
+    · sorry
+    · sorry
 
 lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus {R} [CommRing R] {n}
     (S : InductionObj R n) : InductionStatement R n S := by
@@ -249,100 +322,99 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus {R} [CommRing R] {n}
         IsScalarTower.algebraMap_apply R[X] M, isNilpotent_tensor_residueField_iff]
       simp [Set.subset_def, M]
     · simp
-  · intro R _ f; sorry
-    -- refine ⟨(Finset.range (f.natDegree + 2)).image fun j ↦ ⟨0, f.coeff j, 0⟩, ?_, ?_⟩
-    -- · convert image_comap_C_basicOpen f
-    --   · simp only [basicOpen_eq_zeroLocus_compl, Set.compl_eq_univ_diff]
-    --     congr 1
-    --     rw [← Set.univ_subset_iff]
-    --     rintro x _ _ ⟨_, rfl⟩
-    --     exact zero_mem x.asIdeal
-    --   · suffices Set.range f.coeff = ⋃ i < f.natDegree + 2, {f.coeff i} by
-    --       simp [← Set.compl_eq_univ_diff, eq_compl_comm (y := zeroLocus _),
-    --         ← zeroLocus_iUnion₂, this]
-    --     trans f.coeff '' (Set.Iio (f.natDegree + 2))
-    --     · refine ((Set.image_subset_range _ _).antisymm ?_).symm
-    --       rintro _ ⟨i, rfl⟩
-    --       by_cases hi : i ≤ f.natDegree
-    --       · exact ⟨i, hi.trans_lt (by simp), rfl⟩
-    --       · exact ⟨f.natDegree + 1, by simp,
-    --           by simp [f.coeff_eq_zero_of_natDegree_lt (lt_of_not_le hi)]⟩
-    --     · ext; simp [eq_comm]
-    -- · simp
+  · intro R _ f
+    refine ⟨(Finset.range (f.natDegree + 2)).image fun j ↦ ⟨0, f.coeff j, 0⟩, ?_, ?_⟩
+    · convert image_comap_C_basicOpen f
+      · simp only [basicOpen_eq_zeroLocus_compl, Set.compl_eq_univ_diff]
+        congr 1
+        rw [← Set.univ_subset_iff]
+        rintro x _ _ ⟨_, rfl⟩
+        exact zero_mem x.asIdeal
+      · suffices Set.range f.coeff = ⋃ i < f.natDegree + 2, {f.coeff i} by
+          simp [← Set.compl_eq_univ_diff, eq_compl_comm (y := zeroLocus _),
+            ← zeroLocus_iUnion₂, this]
+        trans f.coeff '' (Set.Iio (f.natDegree + 2))
+        · refine ((Set.image_subset_range _ _).antisymm ?_).symm
+          rintro _ ⟨i, rfl⟩
+          by_cases hi : i ≤ f.natDegree
+          · exact ⟨i, hi.trans_lt (by simp), rfl⟩
+          · exact ⟨f.natDegree + 1, by simp,
+              by simp [f.coeff_eq_zero_of_natDegree_lt (lt_of_not_le hi)]⟩
+        · ext; simp [eq_comm]
+    · simp
   · intro R _ c i j hi hle hne H f
+    cases subsingleton_or_nontrivial R
+    · use ∅
+      simp [Subsingleton.elim f 0]
     obtain ⟨S, hS, hS'⟩ := H f
     refine ⟨S, Eq.trans ?_ hS, ?_⟩
     · rw [← zeroLocus_span (Set.range _), ← zeroLocus_span (Set.range _),
         Ideal.span_range_update_divByMonic _ _ _ hne hi]
-    · intro C hC; sorry
-      -- let c' : InductionObj _ _ := ⟨Function.update c.val j (c.val j %ₘ c.val i)⟩
-      -- have deg_bound₁ : c'.degBound ≤ c.degBound := by
-      --   dsimp [InductionObj.degBound]
-      --   gcongr with k
-      --   · exact Nat.le_succ _
-      --   · rw [Function.update_apply]
-      --     split_ifs with hkj
-      --     · subst hkj; exact (natDegree_modByMonic_le _ hi).trans (natDegree_le_natDegree hle)
-      --     · rfl
-      -- refine ⟨(hS' C hC).1.trans deg_bound₁, fun k ↦ SetLike.le_def.mp ?_ ((hS' C hC).2 k)⟩
-      -- show c'.coeffSubmodule ^ c'.exponentBound ≤ _
-      -- delta exponentBound
-      -- suffices hij : c'.coeffSubmodule ≤ c.coeffSubmodule ^ (2 ^ (c.val j).natDegree) by
-      --   by_cases hi' : c.val i = 1
-      --   · gcongr
-      --     · exact c.one_le_coeffSubmodule
-      --     · refine Submodule.span_le.mpr (Set.union_subset ?_ ?_)
-      --       · exact Set.subset_union_left.trans Submodule.subset_span
-      --       · refine Set.iUnion_subset fun k ↦ ?_
-      --         simp only [Function.update_apply, hi', modByMonic_one]
-      --         split_ifs
-      --         · rintro _ ⟨_, rfl⟩
-      --           exact zero_mem _
-      --         · exact (Set.subset_iUnion (fun i ↦ coeff(c.val i)) k).trans
-      --             (Set.subset_union_right.trans Submodule.subset_span)
-      --     refine (pow_le_pow_left' deg_bound₁ _).trans (pow_le_pow_right' ?_ deg_bound₁)
-      --     rw [Nat.one_le_iff_ne_zero, ← Nat.pos_iff_ne_zero, InductionObj.degBound]
-      --     positivity
-      --   refine (pow_le_pow_left' hij _).trans ?_
-      --   rw [← pow_mul]
-      --   apply pow_le_pow_right' c.one_le_coeffSubmodule
-      --   have deg_bound₂ : c'.degBound < c.degBound := by
-      --     dsimp [InductionObj.degBound]
-      --     gcongr 2 ^ ?_
-      --     · exact Nat.lt_succ_self _
-      --     apply Finset.sum_lt_sum ?_ ⟨j, Finset.mem_univ _, ?_⟩
-      --     · intro k _
-      --       rw [Function.update_apply]
-      --       split_ifs with hkj
-      --       · subst hkj; exact (natDegree_modByMonic_le _ hi).trans (natDegree_le_natDegree hle)
-      --       · rfl
-      --     · simpa using (natDegree_modByMonic_lt _ hi hi').trans_le (natDegree_le_natDegree hle)
-      --   calc  2 ^ (c.val j).natDegree * c'.degBound ^ c'.degBound
-      --     _ ≤ c.degBound * c.degBound ^ c'.degBound := by
-      --       gcongr
-      --       delta InductionObj.degBound
-      --       gcongr
-      --       · exact Nat.le_succ _
-      --       · exact Finset.single_le_sum (f := fun i ↦ ° (c.val i))
-      --           (by intros; positivity) (Finset.mem_univ _)
-      --     _ = c.degBound ^ (c'.degBound + 1) := by rw [pow_succ']
-      --     _ ≤ c.degBound ^ c.degBound := by gcongr <;> omega
-      -- rw [coeffSubmodule]
-      -- simp only [Submodule.span_le, Set.union_subset_iff, Set.singleton_subset_iff, SetLike.mem_coe,
-      --   Set.iUnion_subset_iff, Set.range_subset_iff]
-      -- constructor
-      -- · apply one_le_pow_of_one_le' c.one_le_coeffSubmodule
-      --   rw [Submodule.one_eq_span]
-      --   exact Submodule.subset_span rfl
-      -- · intro l m
-      --   rw [Function.update_apply]
-      --   split_ifs with hlj
-      --   · refine SetLike.le_def.mp ?_ (modByMonic_mem_span_coeff_pow _ _ _)
-      --     gcongr
-      --     · apply Submodule.span_mono
-      --       refine Set.union_subset_union subset_rfl (Set.union_subset ?_ ?_)
-      --       · exact Set.subset_iUnion (fun i ↦ coeff(c.val i)) j
-      --       · exact Set.subset_iUnion (fun i ↦ coeff(c.val i)) i
-      --   · refine le_self_pow₀ c.one_le_coeffSubmodule (by positivity) ?_
-      --     exact Submodule.subset_span (.inr (Set.mem_iUnion_of_mem l ⟨m, rfl⟩))
-  · exact induction_aux
+    · intro C hC
+      let c' : InductionObj _ _ := ⟨Function.update c.val j (c.val j %ₘ c.val i)⟩
+      have deg_bound₁ : c'.degBound ≤ c.degBound := by
+        dsimp [InductionObj.degBound]
+        gcongr with k
+        · rw [Function.update_apply]
+          split_ifs with hkj
+          · subst hkj; exact (degree_modByMonic_le _ hi).trans hle
+          · rfl
+      refine ⟨(hS' C hC).1.trans deg_bound₁, fun k ↦ SetLike.le_def.mp ?_ ((hS' C hC).2 k)⟩
+      show c'.coeffSubmodule ^ c'.powBound ≤ _
+      delta powBound
+      suffices hij : c'.coeffSubmodule ≤ c.coeffSubmodule ^ (c.val j).degree.succ by
+        by_cases hi' : c.val i = 1
+        · gcongr
+          · exact c.one_le_coeffSubmodule
+          · refine Submodule.span_le.mpr (Set.union_subset ?_ ?_)
+            · exact Set.subset_union_left.trans Submodule.subset_span
+            · refine Set.iUnion_subset fun k ↦ ?_
+              simp only [Function.update_apply, hi', modByMonic_one]
+              split_ifs
+              · rintro _ ⟨_, rfl⟩
+                exact zero_mem _
+              · exact (Set.subset_iUnion (fun i ↦ coeff(c.val i)) k).trans
+                  (Set.subset_union_right.trans Submodule.subset_span)
+          rw [Nat.one_le_iff_ne_zero, ← Nat.pos_iff_ne_zero, InductionObj.degBound]
+          refine Fintype.sum_pos (Pi.lt_def.mpr ⟨by positivity, i, by simp [hi']⟩)
+        refine (pow_le_pow_left' hij _).trans ?_
+        rw [← pow_mul]
+        apply pow_le_pow_right' c.one_le_coeffSubmodule
+        have deg_bound₂ : c'.degBound < c.degBound := by
+          dsimp [InductionObj.degBound]
+          apply Finset.sum_lt_sum ?_ ⟨j, Finset.mem_univ _, ?_⟩
+          · intro k _
+            rw [Function.update_apply]
+            split_ifs with hkj
+            · subst hkj; gcongr; exact (degree_modByMonic_le _ hi).trans hle
+            · rfl
+          · gcongr; simpa using (degree_modByMonic_lt _ hi).trans_le hle
+        calc  (c.val j).degree.succ * c'.degBound ^ c'.degBound
+          _ ≤ c.degBound * c.degBound ^ c'.degBound := by
+            gcongr
+            delta InductionObj.degBound
+            exact Finset.single_le_sum (f := fun i ↦ (c.val i).degree.succ)
+              (by intros; positivity) (Finset.mem_univ _)
+          _ = c.degBound ^ (c'.degBound + 1) := by rw [pow_succ']
+          _ ≤ c.degBound ^ c.degBound := by gcongr <;> omega
+      rw [coeffSubmodule]
+      simp only [Submodule.span_le, Set.union_subset_iff, Set.singleton_subset_iff, SetLike.mem_coe,
+        Set.iUnion_subset_iff, Set.range_subset_iff]
+      constructor
+      · apply one_le_pow_of_one_le' c.one_le_coeffSubmodule
+        rw [Submodule.one_eq_span]
+        exact Submodule.subset_span rfl
+      · intro l m
+        rw [Function.update_apply]
+        split_ifs with hlj
+        · refine SetLike.le_def.mp ?_ (modByMonic_mem_span_coeff_pow' _ _ _)
+          unfold coeffSubmodule
+          gcongr
+          · refine Set.union_subset ?_ ?_
+            · exact Set.subset_iUnion (fun i ↦ coeff(c.val i)) j
+            · exact Set.subset_iUnion (fun i ↦ coeff(c.val i)) i
+        · refine le_self_pow₀ c.one_le_coeffSubmodule (by sorry) ?_
+          exact Submodule.subset_span (.inr (Set.mem_iUnion_of_mem l ⟨m, rfl⟩))
+  · convert induction_aux (n := n) -- Andrew: this is absolutely fine if you ignore it
+    ext
+    exact (OreLocalization.zsmul_eq_zsmul _ _).symm

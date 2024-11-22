@@ -56,7 +56,7 @@ variable {α β : Type*}
 section Monoid
 variable [Monoid α] [MulAction α β] {s : Set β} {a : α} {b : β}
 
-lemma mem_invOf_smul_set [Invertible a] : b ∈ ⅟a • s ↔ a • b ∈ s :=
+@[simp] lemma mem_invOf_smul_set [Invertible a] : b ∈ ⅟a • s ↔ a • b ∈ s :=
   mem_inv_smul_set_iff (a := unitOfInvertible a)
 
 end Monoid
