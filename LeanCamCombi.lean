@@ -36,8 +36,10 @@ import LeanCamCombi.Mathlib.Algebra.Algebra.Operations
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.BigOperators
+import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Card
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
 import LeanCamCombi.Mathlib.Algebra.Order.GroupWithZero.Unbundled
+import LeanCamCombi.Mathlib.Algebra.Pointwise.Stabilizer
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Div
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
@@ -60,11 +62,13 @@ import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Data.Set.Basic
+import LeanCamCombi.Mathlib.Data.Set.Card
 import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Lattice
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.Interval
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.Coset.Defs
+import LeanCamCombi.Mathlib.GroupTheory.GroupAction.Blocks
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition

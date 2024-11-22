@@ -1,10 +1,13 @@
+import Mathlib.Algebra.Group.Action.Basic
+import Mathlib.Algebra.Group.Action.Opposite
+import Mathlib.Algebra.Group.Pointwise.Set.Basic
 import Mathlib.Data.Set.Pointwise.SMul
 
 open MulOpposite
 open scoped Pointwise
 
 namespace Set
-variable {α : Type*}
+variable {α β : Type*}
 
 section Mul
 variable [Mul α] {s t : Set α} {a : α}
@@ -48,9 +51,22 @@ end Group
 end Set
 
 namespace Set
-variable {α β : Type*} [Monoid α] [MulAction α β] {s : Set β} {a : α} {b : β}
+variable {α β : Type*}
+
+section Monoid
+variable [Monoid α] [MulAction α β] {s : Set β} {a : α} {b : β}
 
 lemma mem_invOf_smul_set [Invertible a] : b ∈ ⅟a • s ↔ a • b ∈ s :=
   mem_inv_smul_set_iff (a := unitOfInvertible a)
 
+end Monoid
+
+section Group
+variable [Group α] [MulAction α β] {s : Set β} {t : Set β} {a : α}
+
+@[to_additive (attr := simp)]
+lemma smul_set_subset_smul_set_iff : a • s ⊆ a • t ↔ s ⊆ t :=
+  image_subset_image_iff <| MulAction.injective _
+
+end Group
 end Set
