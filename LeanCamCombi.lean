@@ -18,6 +18,7 @@ import LeanCamCombi.Impact
 import LeanCamCombi.Kneser.Kneser
 import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.MulStab
+import LeanCamCombi.Kneser.OldKneser
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
