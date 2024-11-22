@@ -28,6 +28,7 @@ import LeanCamCombi.Impact
 import LeanCamCombi.Kneser.Kneser
 import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.MulStab
+import LeanCamCombi.Kneser.OldKneser
 import LeanCamCombi.Mathlib.Algebra.Algebra.Operations
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.BigOperators
