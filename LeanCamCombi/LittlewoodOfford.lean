@@ -28,7 +28,7 @@ lemma exists_littlewood_offord_partition [DecidableEq ι] (hr : 0 < r) (hf : ∀
   clear ih
   obtain ⟨g, hg, hgf⟩ :=
     exists_dual_vector ℝ (f i) (norm_pos_iff.1 $ hr.trans_le $ hf _ $ mem_insert_self _ _)
-  choose t ht using fun 𝒜 (h𝒜 : 𝒜 ∈ P.parts) ↦
+  choose! t ht using fun 𝒜 (h𝒜 : 𝒜 ∈ P.parts) ↦
     Finset.exists_max_image _ (fun t ↦ g (∑ i in t, f i)) (P.nonempty_of_mem_parts h𝒜)
   sorry
 

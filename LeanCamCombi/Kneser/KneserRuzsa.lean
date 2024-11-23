@@ -207,37 +207,31 @@ lemma le_card_mul_add_card_mulStab_mul (hs : s.Nonempty) (ht : t.Nonempty) :
   -- * `|s_b| + |t_b| = |s| + |t|`
   -- Such sets exist because we can take `s_b = s, t_b = t`. So pick `s_b, t_b` such that `|t_b|` is
   -- minimal among such sets.
-  have (b : t) : ∃ n s' t', ↑b ∈ t' ∧ s ⊆ s' ∧ s' * t' ⊆ s * t ∧ #s' + #t' = #s + #t ∧ n = #t' :=
-    ⟨_, s, t, b.2, Subset.rfl, Subset.rfl, rfl, rfl⟩
-  choose s' t' hbt' hs' hst' hstcard ht' using fun b => Nat.find_spec (this b)
+  have (b : α) (hb : b ∈ t) :
+      ∃ n s' t', b ∈ t' ∧ s ⊆ s' ∧ s' * t' ⊆ s * t ∧ #s' + #t' = #s + #t ∧ n = #t' :=
+    ⟨_, s, t, hb, Subset.rfl, Subset.rfl, rfl, rfl⟩
+  choose! s' t' hbt' hs' hst' hstcard ht' using fun b hb => Nat.find_spec (this b hb)
   -- We have  `⋃ b ∈ t, s_b * t_b = s * t` because `s_b * t_b ⊆ s * t` and
   -- `∀ b ∈ t, s • b ⊆ s * t_b ⊆ s_b * t_b`.
-  have : s * t = univ.sup fun b => s' b * t' b := by
-    refine le_antisymm ?_ (Finset.sup_le_iff.2 fun _ _ => hst' _)
-    exact
-      mul_subset_iff_right.2 fun b hb =>
-        (smul_finset_subset_smul_finset $ hs' ⟨b, hb⟩).trans $
-          (op_smul_finset_subset_mul $ hbt' ⟨b, hb⟩).trans $
-            @le_sup _ _ _ _ _ (fun b => s' b * t' b) _ $ mem_univ _
+  have : s * t = t.sup fun b => s' b * t' b := by
+    refine le_antisymm ?_ (Finset.sup_le_iff.2 hst')
+    exact mul_subset_iff_right.2 fun b hb ↦ (smul_finset_subset_smul_finset $ hs' b hb).trans $
+      (op_smul_finset_subset_mul $ hbt' b hb).trans $ le_sup (f := s' * t') hb
   rw [this]
-  refine (le_inf' ht.attach _ fun b _ => ?_).trans (le_card_sup_add_card_mulStab_sup _)
-  rw [← hstcard b]
-  refine
-    add_le_add (card_le_card_mul_right _ ⟨_, hbt' _⟩)
-      ((card_mono $ subset_mulStab_mul_left ⟨_, hbt' _⟩).trans' ?_)
+  refine (le_inf' ht _ fun b hb ↦ ?_).trans (le_card_sup_add_card_mulStab_sup _)
+  rw [← hstcard b hb]
+  refine add_le_add (card_le_card_mul_right _ ⟨_, hbt' _ hb⟩)
+    ((card_mono $ subset_mulStab_mul_left ⟨_, hbt' _ hb⟩).trans' ?_)
   rw [← card_smul_finset (b : α)⁻¹ (t' _)]
-  refine card_mono ((mul_subset_left_iff $ hs.mono $ hs' _).1 ?_)
+  refine card_mono ((mul_subset_left_iff $ hs.mono $ hs' _ hb).1 ?_)
   refine mul_subset_iff_left.2 fun c hc => ?_
   rw [← mul_smul]
-  refine
-    smul_finset_subset_iff.2
-      (inter_eq_left.1 $ eq_of_subset_of_card_le inter_subset_left ?_)
-  rw [← ht']
-  refine
-    Nat.find_min' _
-      ⟨_, _, mem_inter.2 ⟨hbt' _, ?_⟩, (hs' _).trans subset_union_left,
-        (mulDysonETransform.subset _ (s' b, t' b)).trans $ hst' _,
-        (mulDysonETransform.card _ _).trans $ hstcard _, rfl⟩
+  refine smul_finset_subset_iff.2 (inter_eq_left.1 $ eq_of_subset_of_card_le inter_subset_left ?_)
+  rw [← ht' _ hb]
+  refine Nat.find_min' _
+    ⟨_, _, mem_inter.2 ⟨hbt' _ hb, ?_⟩, (hs' _ hb).trans subset_union_left,
+      (mulDysonETransform.subset _ (s' b, t' b)).trans $ hst' _ hb,
+      (mulDysonETransform.card _ _).trans $ hstcard _ hb, rfl⟩
   rwa [mem_inv_smul_finset_iff, smul_eq_mul, inv_mul_cancel_right]
 
 /-- **Kneser's multiplication lemma**: A lower bound on the size of `s * t` in terms of its

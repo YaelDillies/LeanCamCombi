@@ -15,12 +15,12 @@ import LeanCamCombi.GrowthInGroups.WithBotSucc
 variable {R S M A : Type*} [CommRing R] [CommRing S] [AddCommGroup M] [Module R M] [CommRing A]
   [Algebra R A]
 
-open Localization Polynomial TensorProduct PrimeSpectrum
+open Function Localization Polynomial TensorProduct PrimeSpectrum
 open scoped Pointwise
 
+variable (R) in
 @[ext]
-structure InductionObj (R) [CommRing R] (n : ℕ) where
-  val : Fin n → R[X]
+structure InductionObj (n : ℕ) where val : Fin n → R[X]
 
 variable {n : ℕ}
 
@@ -71,8 +71,6 @@ def InductionStatement [Algebra ℤ R] : Prop :=
       ⋃ C ∈ T, (zeroLocus (Set.range C.2.2) \ zeroLocus {C.2.1}) ∧
     ∀ C ∈ T, C.1 ≤ e.degBound ∧ ∀ i, C.2.2 i ∈ e.coeffSubmodule ^ e.powBound
 
-local notation "°" => Polynomial.natDegree
-local notation "↝" => Polynomial.leadingCoeff
 local notation3 "coeff("p")" => Set.range (Polynomial.coeff p)
 
 universe u
@@ -207,6 +205,7 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
         InductionStatement R n e := by
   set q₁ := IsScalarTower.toAlgHom ℤ R (Away c)
   set q₂ := Ideal.Quotient.mk (.span {c})
+  have q₂_surjective : Surjective q₂ := Ideal.Quotient.mk_surjective
   set e₁ : InductionObj (Away c) n :=
     ⟨C (IsLocalization.Away.invSelf (S := Away c) c) • mapRingHom q₁ ∘ e.val⟩
   set e₂ : InductionObj (R ⧸ Ideal.span {c}) n := ⟨mapRingHom q₂ ∘ e.val⟩
@@ -235,21 +234,19 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
   replace hT₁span x hx i :=
     smul_mem_pointwise_smul _ (q₁ c ^ e₁.powBound) _ (hT₁span x hx i)
   simp only [he₁span, smul_invOf_smul, smul_eq_mul] at hT₁span
-  choose g₁ hg₁ using hT₁span
+  choose! g₁ hg₁ hq₁g₁ using hT₁span
   -- Lift the constants of `T₁` from `Away c` to `R`
-  choose n₁ f₁ hf₁ using Away.surj (S := Away c) c
+  choose! n₁ f₁ hf₁ using Away.surj (S := Away c) c
   -- Lift the tuples of `T₂` from `R ⧸ Ideal.span {c}` to `R`
   let _ : Algebra ℤ R := Ring.toIntAlgebra _
   rw [coeffSubmodule_mapRingHom_comp, ← Submodule.map_pow] at hT₂span
-  choose g₂ hg₂ using hT₂span
+  choose! g₂ hg₂ hq₂g₂ using hT₂span
   -- Lift the constants of `T₂` from `R ⧸ Ideal.span {c}` to `R`
-  choose f₂ hf₂ using Ideal.Quotient.mk_surjective (I := .span {c})
+  choose! f₂ hf₂ using Ideal.Quotient.mk_surjective (I := .span {c})
   -- Lift everything together
   classical
-  let S₁ : Finset (Σ n, R × (Fin n → R)) :=
-    T₁.attach.image fun x ↦ ⟨_, (f₁ x.1.2.1, g₁ x.1 x.2)⟩
-  let S₂ : Finset (Σ n, R × (Fin n → R)) :=
-    T₂.attach.image fun x ↦ ⟨_, (c * f₂ x.1.2.1, Fin.cons c (g₂ x.1 x.2))⟩
+  let S₁ : Finset (Σ n, R × (Fin n → R)) := T₁.image fun x ↦ ⟨_, (f₁ x.2.1, g₁ x)⟩
+  let S₂ : Finset (Σ n, R × (Fin n → R)) := T₂.image fun x ↦ ⟨_, (c * f₂ x.2.1, Fin.cons c (g₂ x))⟩
   refine ⟨S₁ ∪ S₂, ?_, ?_⟩
   · calc
       comap C '' (zeroLocus (.range e.val) \ zeroLocus {f})
@@ -271,19 +268,23 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
         sorry
       · rw [Set.image_iUnion₂]
         simp_rw [← Finset.mem_coe, S₁, Finset.coe_image, Set.biUnion_image]
-        -- `attach` nonsense + some actual math
+        -- some actual math
         sorry
     · convert congr(comap q₂ '' $hT₂)
       · rw [Set.preimage_diff, preimage_comap_zeroLocus, preimage_comap_zeroLocus,
           Set.image_singleton, Set.range_comp]
       · rw [Set.image_iUnion₂]
-        simp_rw [← Finset.mem_coe, S₂, Finset.coe_image, Set.biUnion_image]
-        -- `attach` nonsense + some actual math
-        sorry
-  · simp only [Finset.mem_union, Finset.forall_mem_image, Finset.mem_attach, true_and, forall_and,
-      or_imp, forall_exists_index, S₁, S₂, Subtype.forall, forall_const]
-    -- `attach` nonsense here
-    refine ⟨⟨fun x hx ↦ ?_, fun x hx ↦ ?_⟩, fun x hx ↦ ?_, fun x hx ↦ ?_⟩
+        simp_rw [← Finset.mem_coe, S₂, Finset.coe_image, Set.biUnion_image,
+          Set.image_diff <| comap_injective_of_surjective _ q₂_surjective]
+        congr! with k
+        · rw [eq_comm, ← zeroLocus_span, image_comap_zeroLocus_eq_zeroLocus_comap _ _ q₂_surjective]
+        -- some actual math
+          sorry
+        · rw [eq_comm, ← zeroLocus_span, image_comap_zeroLocus_eq_zeroLocus_comap _ _ q₂_surjective]
+        -- some actual math
+          sorry
+  · simp only [Finset.mem_union, forall_and, or_imp, Finset.forall_mem_image, S₁, S₂]
+    refine ⟨⟨fun x hx ↦ ?_, fun x hx ↦ ?_⟩, fun x hx k ↦ ?_, fun x hx k ↦ ?_⟩
     · calc
         x.1 ≤ e₁.degBound := hT₁deg _ hx
         _ ≤ e.degBound := by
@@ -297,8 +298,8 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
           refine Fintype.sum_lt_sum (fun j ↦ by gcongr; exact degree_map_le _ _) ⟨i, ?_⟩
           gcongr
           refine degree_map_lt (by simp [q₂, ← hi]) (by simpa [hi] using hc)
-    · sorry
-    · sorry
+    · sorry -- use `hg₁`
+    · sorry -- use `hg₂`
 
 lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus {R} [CommRing R] {n}
     (S : InductionObj R n) : InductionStatement R n S := by
