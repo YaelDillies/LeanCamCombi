@@ -1,16 +1,12 @@
 import Mathlib.Algebra.Order.Star.Basic
 import Mathlib.Data.DFinsupp.WellFounded
-import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.Group.Finset
+import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Operations
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Div
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Eval.Degree
 import LeanCamCombi.Mathlib.Data.Finset.Image
 import LeanCamCombi.Mathlib.Data.Prod.Lex
-import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
-import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
-import LeanCamCombi.GrowthInGroups.WithBotSucc
 
 variable {R S M A : Type*} [CommRing R] [CommRing S] [AddCommGroup M] [Module R M] [CommRing A]
   [Algebra R A]
@@ -295,9 +291,12 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
         x.1 + 1 ≤ e₂.degBound + 1 := by gcongr; exact hT₂deg _ hx
         _ ≤ e.degBound := by
           simp [InductionObj.degBound, Nat.succ_le_iff]
-          refine Fintype.sum_lt_sum (fun j ↦ by gcongr; exact degree_map_le _ _) ⟨i, ?_⟩
-          gcongr
-          refine degree_map_lt (by simp [q₂, ← hi]) (by simpa [hi] using hc)
+          refine Fintype.sum_strictMono <| Pi.lt_def.2 ⟨fun j ↦ ?_, i, ?_⟩
+          · dsimp
+            gcongr
+            exact degree_map_le _ _
+          · gcongr
+            exact degree_map_lt (by simp [q₂, ← hi]) (by simpa [hi] using hc)
     · sorry -- use `hg₁`
     · sorry -- use `hg₂`
 

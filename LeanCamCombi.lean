@@ -38,7 +38,6 @@ import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.BigOperators
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Card
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
-import LeanCamCombi.Mathlib.Algebra.Order.BigOperators.Group.Finset
 import LeanCamCombi.Mathlib.Algebra.Order.GroupWithZero.Unbundled
 import LeanCamCombi.Mathlib.Algebra.Pointwise.Stabilizer
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
