@@ -1,5 +1,4 @@
 import Mathlib.Algebra.Polynomial.Eval.Degree
-import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Operations
 
 variable {R S : Type*} [CommRing R] [CommRing S]
 
@@ -15,6 +14,6 @@ lemma degree_map_lt (hp : f p.leadingCoeff = 0) (hp₀ : p ≠ 0) : (p.map f).de
 -- TODO: There is a version of this where we assume `p` nonconstant instead of `map f p ≠ 0`
 lemma natDegree_map_lt (hp : f p.leadingCoeff = 0) (hp₀ : map f p ≠ 0) :
     (p.map f).natDegree < p.natDegree :=
-  natDegree_lt_natDegree' hp₀ <| degree_map_lt hp <| by rintro rfl; simp at hp₀
+  natDegree_lt_natDegree hp₀ <| degree_map_lt hp <| by rintro rfl; simp at hp₀
 
 end Polynomial

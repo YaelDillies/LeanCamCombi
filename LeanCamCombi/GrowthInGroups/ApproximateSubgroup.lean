@@ -4,7 +4,6 @@ import Mathlib.Tactic.Bound
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
 import LeanCamCombi.Mathlib.Combinatorics.Additive.RuzsaCovering
-import LeanCamCombi.Mathlib.Data.Set.Basic
 import LeanCamCombi.Mathlib.Data.Set.Lattice
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.GrowthInGroups.SMulCover

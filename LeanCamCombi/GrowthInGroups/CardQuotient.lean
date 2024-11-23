@@ -1,7 +1,6 @@
 import Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import Mathlib.Combinatorics.Enumerative.DoubleCounting
 import Mathlib.GroupTheory.QuotientGroup.Defs
-import LeanCamCombi.Mathlib.GroupTheory.Coset.Defs
 
 open Finset Function
 open scoped Pointwise

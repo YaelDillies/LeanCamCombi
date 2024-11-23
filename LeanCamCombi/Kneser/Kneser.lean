@@ -298,12 +298,12 @@ theorem mul_kneser :
   -- We distinguish whether `s * t` has trivial stabilizer.
   obtain hstab | hstab := ne_or_eq (s * t).mulStab 1
   · have image_coe_mul :
-      ((s * t).image (↑) : Finset (α ⧸ stabilizer α (s * t))) = s.image (↑) * t.image (↑) :=
-      image_mul (QuotientGroup.mk' _ : α →* α ⧸ stabilizer α (s * t))
+      ((s * t).image (↑) : Finset (α ⧸ stabilizer α (s * t).toSet)) = s.image (↑) * t.image (↑) :=
+      image_mul (QuotientGroup.mk' _ : α →* α ⧸ stabilizer α (s * t).toSet)
     suffices hineq :
       #(s * t).mulStab *
-          (#(s.image (↑) : Finset (α ⧸ stabilizer α (s * t))) +
-              #(t.image (↑) : Finset (α ⧸ stabilizer α (s * t))) -  1) ≤
+          (#(s.image (↑) : Finset (α ⧸ stabilizer α (s * t).toSet)) +
+              #(t.image (↑) : Finset (α ⧸ stabilizer α (s * t).toSet)) -  1) ≤
         #(s * t) by
     -- now to prove that `#(s * (s * t).mulStab) = #(s * t).mulStab * #(s.image (↑))` and
     -- the analogous statement for `s` and `t` interchanged
@@ -313,9 +313,10 @@ theorem mul_kneser :
       convert hineq using 1
       exact add_comm _ _
     refine le_of_le_of_eq (mul_le_mul_left' ?_ _) (card_mul_card_eq_mulStab_card_mul_coe s t).symm
-    have := ih _ ?_ (s.image (↑) : Finset (α ⧸ stabilizer α (s * t))) (t.image (↑)) rfl
-    simpa only [← image_coe_mul, mulStab_image_coe_quotient (hs.mul ht), mul_one,
-      tsub_le_iff_right, card_one] using this
+    have := ih _ ?_ (s.image (↑) : Finset (α ⧸ stabilizer α (s * t).toSet)) (t.image (↑)) rfl
+    · classical
+      simpa only [← image_coe_mul, mulStab_image_coe_quotient (hs.mul ht), mul_one,
+        tsub_le_iff_right, card_one] using this
     rw [← image_coe_mul, card_mul_card_eq_mulStab_card_mul_coe]
     exact
       add_lt_add_of_lt_of_le

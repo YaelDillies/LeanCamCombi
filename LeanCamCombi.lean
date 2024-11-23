@@ -41,7 +41,6 @@ import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
 import LeanCamCombi.Mathlib.Algebra.Order.GroupWithZero.Unbundled
 import LeanCamCombi.Mathlib.Algebra.Pointwise.Stabilizer
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Operations
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Div
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Eval.Degree
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
@@ -64,7 +63,6 @@ import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
-import LeanCamCombi.Mathlib.Data.Set.Basic
 import LeanCamCombi.Mathlib.Data.Set.Card
 import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Lattice
