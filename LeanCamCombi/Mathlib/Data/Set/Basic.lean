@@ -1,0 +1,12 @@
+import Mathlib.Data.Set.Basic
+
+namespace Set
+variable {α : Type*} {s : Set α} {a : α}
+
+lemma insert_diff_self_of_mem (ha : a ∈ s) : insert a (s \ {a}) = s := by aesop
+
+lemma insert_erase_invOn :
+    InvOn (insert a) (fun s ↦ s \ {a}) {s : Set α | a ∈ s} {s : Set α | a ∉ s} :=
+  ⟨fun _s ha ↦ insert_diff_self_of_mem ha, fun _s ↦ insert_diff_self_of_not_mem⟩
+
+end Set
