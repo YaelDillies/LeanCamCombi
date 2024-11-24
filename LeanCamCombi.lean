@@ -105,6 +105,7 @@ import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.MonovaryOrder
 import LeanCamCombi.OrderShatter
 import LeanCamCombi.PhD.VCDim.Basic
+import LeanCamCombi.RuzsaSzemeredi
 import LeanCamCombi.SimplicialComplex.Basic
 import LeanCamCombi.SimplicialComplex.Finite
 import LeanCamCombi.SimplicialComplex.Pure
