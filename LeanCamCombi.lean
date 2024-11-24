@@ -1,5 +1,6 @@
 import LeanCamCombi.Archive.CauchyDavenportFromKneser
 import LeanCamCombi.BernoulliSeq
+import LeanCamCombi.CauchyFunctionalEquation
 import LeanCamCombi.ConvexityRefactor.Defs
 import LeanCamCombi.ConvexityRefactor.StdSimplex
 import LeanCamCombi.Corners.CombiDegen
