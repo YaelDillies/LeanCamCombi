@@ -190,6 +190,11 @@ lemma comap_C_eq_comap_localization_union_comap_quotient (s : Set (PrimeSpectrum
 
 attribute [-instance] AddCommGroup.toIntModule
 
+lemma PrimeSpectrum.zeroLocus_smul_of_isUnit {R} [CommRing R] (s : Set R) {r : R} (hr : IsUnit r) :
+    zeroLocus (r • s) = zeroLocus s := by
+  ext
+  simp [Set.subset_def, ← Set.image_smul, Ideal.unit_mul_mem_iff_mem _ hr]
+
 open IsLocalization in
 open Submodule hiding comap in
 lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
@@ -233,16 +238,18 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
   choose! g₁ hg₁ hq₁g₁ using hT₁span
   -- Lift the constants of `T₁` from `Away c` to `R`
   choose! n₁ f₁ hf₁ using Away.surj (S := Away c) c
+  change (∀ _, _ * q₁ _ ^ _ = q₁ _) at hf₁
   -- Lift the tuples of `T₂` from `R ⧸ Ideal.span {c}` to `R`
   let _ : Algebra ℤ R := Ring.toIntAlgebra _
   rw [coeffSubmodule_mapRingHom_comp, ← Submodule.map_pow] at hT₂span
   choose! g₂ hg₂ hq₂g₂ using hT₂span
   -- Lift the constants of `T₂` from `R ⧸ Ideal.span {c}` to `R`
   choose! f₂ hf₂ using Ideal.Quotient.mk_surjective (I := .span {c})
+  change (∀ _, q₂ _ = _) at hf₂
   -- Lift everything together
   classical
-  let S₁ : Finset (Σ n, R × (Fin n → R)) := T₁.image fun x ↦ ⟨_, (f₁ x.2.1, g₁ x)⟩
-  let S₂ : Finset (Σ n, R × (Fin n → R)) := T₂.image fun x ↦ ⟨_, (c * f₂ x.2.1, Fin.cons c (g₂ x))⟩
+  let S₁ : Finset (Σ n, R × (Fin n → R)) := T₁.image fun x ↦ ⟨_, (c * f₁ x.2.1, g₁ x)⟩
+  let S₂ : Finset (Σ n, R × (Fin n → R)) := T₂.image fun x ↦ ⟨_, (f₂ x.2.1, Fin.cons c (g₂ x))⟩
   refine ⟨S₁ ∪ S₂, ?_, ?_⟩
   · calc
       comap C '' (zeroLocus (.range e.val) \ zeroLocus {f})
@@ -260,25 +267,51 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
       · rw [Set.preimage_diff, preimage_comap_zeroLocus, preimage_comap_zeroLocus,
           Set.image_singleton, Pi.smul_def, ← Set.smul_set_range, Set.range_comp]
         congr 1
-        -- not Yaël-trivial, but Andrew-trivial
-        sorry
+        refine (PrimeSpectrum.zeroLocus_smul_of_isUnit _ ?_).symm
+        apply IsUnit.map
+        exact isUnit_iff_exists_inv'.mpr ⟨_, IsLocalization.Away.mul_invSelf c⟩
       · rw [Set.image_iUnion₂]
         simp_rw [← Finset.mem_coe, S₁, Finset.coe_image, Set.biUnion_image]
-        -- some actual math
-        sorry
+        congr! with x hxT₁
+        apply Set.injOn_preimage subset_rfl (f := comap q₁.toRingHom)
+        · erw [localization_away_comap_range (S := Localization.Away c) (r := c)]
+          rw [sdiff_eq, ← basicOpen_eq_zeroLocus_compl, basicOpen_mul]
+          exact Set.inter_subset_right.trans Set.inter_subset_left
+        · exact Set.image_subset_range _ _
+        · rw [Set.preimage_diff, preimage_comap_zeroLocus, preimage_comap_zeroLocus,
+            Set.preimage_image_eq]
+          swap; · exact (localization_specComap_injective _ (.powers c))
+          simp only [AlgHom.toLinearMap_apply] at hq₁g₁
+          simp_rw [← Set.range_comp, Function.comp_def]
+          simp only [AlgHom.toRingHom_eq_coe, RingHom.coe_coe, hq₁g₁ _ hxT₁, Set.image_singleton,
+            map_mul, ← hf₁]
+          rw [mul_comm x.2.1, ← mul_assoc, ← pow_succ']
+          conv_rhs => rw [← PrimeSpectrum.zeroLocus_smul_of_isUnit _
+            ((isUnit_of_invertible (q₁ c)).pow e₁.powBound),
+            ← PrimeSpectrum.zeroLocus_smul_of_isUnit {_}
+            ((isUnit_of_invertible (q₁ c)).pow (n₁ x.2.1 + 1))]
+          simp only [Set.smul_set_singleton, smul_eq_mul]
+          simp only [← Set.image_smul, ← Set.range_comp]
+          rfl
     · convert congr(comap q₂ '' $hT₂)
       · rw [Set.preimage_diff, preimage_comap_zeroLocus, preimage_comap_zeroLocus,
           Set.image_singleton, Set.range_comp]
       · rw [Set.image_iUnion₂]
-        simp_rw [← Finset.mem_coe, S₂, Finset.coe_image, Set.biUnion_image,
-          Set.image_diff <| comap_injective_of_surjective _ q₂_surjective]
-        congr! with k
-        · rw [eq_comm, ← zeroLocus_span, image_comap_zeroLocus_eq_zeroLocus_comap _ _ q₂_surjective]
-        -- some actual math
-          sorry
-        · rw [eq_comm, ← zeroLocus_span, image_comap_zeroLocus_eq_zeroLocus_comap _ _ q₂_surjective]
-        -- some actual math
-          sorry
+        simp_rw [← Finset.mem_coe, S₂, Finset.coe_image, Set.biUnion_image]
+        congr! 3 with x hxT₂
+        apply Set.injOn_preimage subset_rfl (f := comap q₂)
+        · rw [range_comap_of_surjective _ _ q₂_surjective]
+          simp only [Ideal.mk_ker, zeroLocus_span, q₂]
+          exact Set.diff_subset.trans (zeroLocus_anti_mono (by simp))
+        · exact Set.image_subset_range _ _
+        · simp only [AlgHom.toLinearMap_apply, RingHom.toIntAlgHom_coe] at hq₂g₂
+          have : q₂ c = 0 := by simp [q₂]
+          simp only [Set.preimage_diff, preimage_comap_zeroLocus, preimage_comap_zeroLocus,
+            Set.preimage_image_eq _ (comap_injective_of_surjective _ q₂_surjective)]
+          simp only [Fin.range_cons, Set.image_singleton, hf₂, Set.image_insert_eq,
+            ← Set.range_comp, Function.comp_def, hq₂g₂ _ hxT₂]
+          rw [← Set.union_singleton, zeroLocus_union, this,
+            zeroLocus_singleton_zero, Set.inter_univ]
   · simp only [Finset.mem_union, forall_and, or_imp, Finset.forall_mem_image, S₁, S₂]
     refine ⟨⟨fun x hx ↦ ?_, fun x hx ↦ ?_⟩, fun x hx k ↦ ?_, fun x hx k ↦ ?_⟩
     · calc
@@ -413,7 +446,14 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus {R} [CommRing R] {n}
           · refine Set.union_subset ?_ ?_
             · exact Set.subset_iUnion (fun i ↦ coeff(c.val i)) j
             · exact Set.subset_iUnion (fun i ↦ coeff(c.val i)) i
-        · refine le_self_pow₀ c.one_le_coeffSubmodule (by sorry) ?_
+        · have : (c.val j).degree.succ ≠ 0 := by
+            rw [← Nat.pos_iff_ne_zero]
+            apply WithBot.succ_lt_succ (a := ⊥)
+            refine lt_of_lt_of_le ?_ hle
+            rw [bot_lt_iff_ne_bot, ne_eq, degree_eq_bot]
+            intro e
+            simp [e] at hi
+          refine le_self_pow₀ c.one_le_coeffSubmodule this ?_
           exact Submodule.subset_span (.inr (Set.mem_iUnion_of_mem l ⟨m, rfl⟩))
   · convert induction_aux (n := n) -- Andrew: this is absolutely fine if you ignore it
     ext

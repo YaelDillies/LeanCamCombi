@@ -82,11 +82,22 @@ lemma divByMonic_mem_pow_natDegree_mul (p q : R[X]) (i) :
   · exact (divModByMonicAux_mem_pow_natDegree_mul p q H i).1
   · simp
 
+example {n : ℕ} : Nat.cast n = WithBot.some n := exact?%
+
 open Submodule Set Polynomial in
 lemma modByMonic_mem_span_coeff_pow' (p q : R[X]) (i) :
     (p %ₘ q).coeff i ∈ span ℤ ({1} ∪ (coeff(p) ∪ coeff(q))) ^ p.degree.succ := by
-  apply modByMonic_mem_pow_natDegree_mul
-  sorry
+  refine SetLike.le_def.mp ?_ (modByMonic_mem_pow_natDegree_mul p q i)
+  by_cases hp : p = 0
+  · have : (coeff(0) : Set R) = {0} := by ext; simp [eq_comm]
+    simp [hp, this]
+  simp_rw [degree_eq_natDegree hp, show Nat.cast (° p) = WithBot.some (° p) from rfl,
+    WithBot.succ_coe', Nat.succ_eq_succ, pow_succ]
+  gcongr
+  · refine sup_le ?_ (span_mono (Set.subset_union_right.trans Set.subset_union_right))
+    exact one_eq_span.trans_le (span_mono Set.subset_union_left)
+  · refine sup_le ?_ (span_mono (Set.subset_union_left.trans Set.subset_union_right))
+    exact one_eq_span.trans_le (span_mono Set.subset_union_left)
 
 end mem_pow_natDegree_mul
 
