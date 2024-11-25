@@ -1,4 +1,4 @@
-import LeanCamCombi.Mathlib.Data.Set.Pointwise.Interval
+import Mathlib.Algebra.Order.Group.Pointwise.Interval
 import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
 
 open Fin Finset List
