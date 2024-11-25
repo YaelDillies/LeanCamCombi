@@ -1,5 +1,5 @@
-import Mathlib.Data.Set.Pointwise.BigOperators
-import Mathlib.Data.Set.Pointwise.ListOfFn
+import Mathlib.Algebra.Group.Pointwise.Set.BigOperators
+import Mathlib.Algebra.Group.Pointwise.Set.ListOfFn
 
 open scoped Pointwise
 
