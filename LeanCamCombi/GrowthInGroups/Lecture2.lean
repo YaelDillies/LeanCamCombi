@@ -43,7 +43,7 @@ def def_4_5 (S : Set G) (K : ℝ) : Prop := IsApproximateSubgroup K S
 lemma remark_4_6_1 (k : ℕ) : IsApproximateAddSubgroup 2 (.Icc (-k) k : Set ℤ) where
   zero_mem := by simp
   neg_eq_self := by simp
-  two_nsmul_vaddCovered :=
+  two_nsmul_covByVAdd :=
     ⟨{(-k : ℤ), (k : ℤ)}, mod_cast card_le_two, by simp [two_nsmul, Set.Icc_add_Icc, Set.pair_add]⟩
 
 lemma remark_4_6_2 {ι : Type*} [Fintype ι] (k : ι → ℕ) :
@@ -54,7 +54,7 @@ lemma remark_4_6_2 {ι : Type*} [Fintype ι] (k : ι → ℕ) :
 lemma remark_4_6_3 : IsApproximateAddSubgroup 2 (.Icc (-1) 1 : Set ℝ) where
   zero_mem := by simp
   neg_eq_self := by simp
-  two_nsmul_vaddCovered :=
+  two_nsmul_covByVAdd :=
     ⟨{-1, 1}, mod_cast card_le_two, by simp [two_nsmul, Set.Icc_add_Icc, Set.pair_add]⟩
 
 lemma lemma_4_7 {A : Finset G} (hA₁ : 1 ∈ A) (hsymm : A⁻¹ = A) (hA : #(A ^ 3) ≤ K * #A) :
