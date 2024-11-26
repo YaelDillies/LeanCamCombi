@@ -8,6 +8,8 @@ import LeanCamCombi.Mathlib.Data.Finset.Image
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
 
+@[gcongr] protected alias ⟨_, GCongr.singleton_subset_singleton⟩ := Set.singleton_subset_singleton
+
 variable {R S M A : Type*} [CommRing R] [CommRing S] [AddCommGroup M] [Module R M] [CommRing A]
   [Algebra R A]
 
@@ -58,6 +60,12 @@ def degBound : ℕ := ∑ i, (e.val i).degree.succ
 
 variable (e) in
 def powBound : ℕ := e.degBound ^ e.degBound
+
+lemma powBound_ne_zero : e.powBound ≠ 0 := by
+  unfold powBound
+  match h : e.degBound with
+  | 0 => decide
+  | n + 1 => exact (Nat.pow_pos n.succ_pos).ne'
 
 attribute [-instance] Ring.toIntAlgebra in
 variable (R n e) in
@@ -210,6 +218,16 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
   set e₁ : InductionObj (Away c) n :=
     ⟨C (IsLocalization.Away.invSelf (S := Away c) c) • mapRingHom q₁ ∘ e.val⟩
   set e₂ : InductionObj (R ⧸ Ideal.span {c}) n := ⟨mapRingHom q₂ ∘ e.val⟩
+  have degBound_e₁_le : e₁.degBound ≤ e.degBound := by
+    unfold degBound; gcongr with j; exact (degree_C_mul_le _ _).trans (degree_map_le _ _)
+  have degBound_e₂_lt : e₂.degBound < e.degBound := by
+    unfold degBound
+    refine Fintype.sum_strictMono <| Pi.lt_def.2 ⟨fun j ↦ ?_, i, ?_⟩
+    · dsimp
+      gcongr
+      exact degree_map_le _ _
+    · gcongr
+      exact degree_map_lt (by simp [q₂, ← hi]) (by simpa [hi] using hc)
   intro (H₁ : InductionStatement _ _ e₁) (H₂ : InductionStatement _ _ e₂) f
   obtain ⟨T₁, hT₁⟩ := H₁ (mapRingHom q₁ f)
   obtain ⟨T₂, hT₂⟩ := H₂ (mapRingHom q₂ f)
@@ -313,30 +331,31 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
           rw [← Set.union_singleton, zeroLocus_union, this,
             zeroLocus_singleton_zero, Set.inter_univ]
   · simp only [Finset.mem_union, forall_and, or_imp, Finset.forall_mem_image, S₁, S₂]
-    refine ⟨⟨fun x hx ↦ ?_, fun x hx ↦ ?_⟩, fun x hx k ↦ ?_, fun x hx k ↦ ?_⟩
-    · calc
-        x.1 ≤ e₁.degBound := hT₁deg _ hx
-        _ ≤ e.degBound := by
-          simp [InductionObj.degBound]
-          gcongr with j
-          exact (degree_C_mul_le _ _).trans (degree_map_le _ _)
-    · calc
-        x.1 + 1 ≤ e₂.degBound + 1 := by gcongr; exact hT₂deg _ hx
-        _ ≤ e.degBound := by
-          simp [InductionObj.degBound, Nat.succ_le_iff]
-          refine Fintype.sum_strictMono <| Pi.lt_def.2 ⟨fun j ↦ ?_, i, ?_⟩
-          · dsimp
-            gcongr
-            exact degree_map_le _ _
-          · gcongr
-            exact degree_map_lt (by simp [q₂, ← hi]) (by simpa [hi] using hc)
-    · sorry -- use `hg₁`
-    · sorry -- use `hg₂`
+    refine ⟨⟨fun x hx ↦ (hT₁deg _ hx).trans degBound_e₁_le,
+      fun x hx ↦ (hT₂deg _ hx).trans_lt degBound_e₂_lt⟩,
+      fun x hx k ↦ SetLike.mem_of_subset ?_ (hg₁ _ hx _),
+      fun x hx ↦ Fin.cons ?_ fun k ↦ SetLike.mem_of_subset ?_ (hg₂ _ hx _)⟩
+    · norm_cast
+      calc
+        span ℤ ({c} ∪ ⋃ i, coeff(e.val i)) ^ e₁.powBound
+        _ ≤ span ℤ (⋃ i, coeff(e.val i)) ^ e₁.powBound := by
+          gcongr; simpa [Set.insert_subset_iff] using ⟨_, _, hi.symm⟩
+        _ ≤ e.coeffSubmodule ^ e.powBound := by
+          unfold coeffSubmodule powBound
+          gcongr
+          · exact one_le_coeffSubmodule
+          · exact Set.subset_union_right
+          · omega
+    · exact le_self_pow₀ one_le_coeffSubmodule powBound_ne_zero <| subset_span <| .inr <| by
+        simpa using ⟨_, _, hi.symm⟩
+    · unfold powBound
+      gcongr
+      · exact one_le_coeffSubmodule
+      · omega
 
-lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus {R} [CommRing R] {n}
-    (S : InductionObj R n) : InductionStatement R n S := by
+lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
+    ∀ S : InductionObj R n, InductionStatement R n S := by
   classical
-  revert S
   apply foo_induction
   · intros R _ g i hi hi_min f
     let M := R[X] ⧸ Ideal.span {g.1 i}
