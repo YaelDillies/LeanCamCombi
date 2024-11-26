@@ -9,4 +9,6 @@ lemma insert_erase_invOn :
     InvOn (insert a) (fun s ↦ s \ {a}) {s : Set α | a ∈ s} {s : Set α | a ∉ s} :=
   ⟨fun _s ha ↦ insert_diff_self_of_mem ha, fun _s ↦ insert_diff_self_of_not_mem⟩
 
+@[gcongr] protected alias ⟨_, GCongr.singleton_subset_singleton⟩ := singleton_subset_singleton
+
 end Set

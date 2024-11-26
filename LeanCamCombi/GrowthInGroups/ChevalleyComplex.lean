@@ -1,14 +1,20 @@
-import Mathlib.Algebra.Order.Star.Basic
+import Mathlib.Algebra.Group.Submonoid.Operations
+import Mathlib.Algebra.NoZeroSMulDivisors.Defs
+import Mathlib.Algebra.Order.Group.Defs
+import Mathlib.Algebra.Order.Group.Nat
+import Mathlib.Algebra.Star.SelfAdjoint
+import Mathlib.Algebra.Star.StarRingHom
+import Mathlib.Tactic.ContinuousFunctionalCalculus
 import Mathlib.Data.DFinsupp.WellFounded
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
+import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Div
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Eval.Degree
 import LeanCamCombi.Mathlib.Data.Finset.Image
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
-
-@[gcongr] protected alias ⟨_, GCongr.singleton_subset_singleton⟩ := Set.singleton_subset_singleton
+import LeanCamCombi.GrowthInGroups.ConstructibleSetData
 
 variable {R S M A : Type*} [CommRing R] [CommRing S] [AddCommGroup M] [Module R M] [CommRing A]
   [Algebra R A]
@@ -478,18 +484,6 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
     ext
     exact (OreLocalization.zsmul_eq_zsmul _ _).symm
 
-variable (R) in
-abbrev ConstructibleSetData := Finset (Σ n, R × (Fin n → R))
-
-def ConstructibleSetData.toSet (S : ConstructibleSetData R) : Set (PrimeSpectrum R) :=
-  ⋃ x ∈ S, zeroLocus (Set.range x.2.2) \ zeroLocus {x.2.1}
-
-def ConstructibleSetData.degBound (S : ConstructibleSetData R[X]) : ℕ :=
-  S.sup fun e ↦ ∑ i, (e.2.2 i).degree.succ
-
-def ConstructibleSetData.mvDegBound {σ} (S : ConstructibleSetData (MvPolynomial σ R)) : ℕ :=
-  S.sup fun e ↦ ∑ i, (e.2.2 i).totalDegree.succ
-
 lemma exists_constructibleSetData_comap_C_toSet_eq_toSet {R} [CommRing R]
     (M : Submodule ℤ R) (hM : 1 ∈ M)
     (S : ConstructibleSetData R[X]) (hS : ∀ x ∈ S, ∀ j k, (x.2.2 j).coeff k ∈ M) :
@@ -497,17 +491,15 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet {R} [CommRing R]
       comap C '' S.toSet = T.toSet ∧ ∀ C ∈ T, C.1 ≤ S.degBound ∧
       ∀ i, C.2.2 i ∈ M ^ S.degBound ^ S.degBound := by
   classical
-  have H (x) (hx : x ∈ S) := isConstructible_comap_C_zeroLocus_sdiff_zeroLocus ⟨x.2.2⟩ x.2.1
-  choose! f hf₁ hf₂ hf₃ using H
-  refine ⟨Finset.biUnion S f, ?_, ?_⟩
-  · simp only [ConstructibleSetData.toSet, Set.image_iUnion, Finset.set_biUnion_biUnion]
-    congr! with x hx
-    exact hf₁ x hx
+  choose f hf₁ hf₂ hf₃ using fun x : Σ n, R[X] × (Fin n → R[X]) ↦
+    isConstructible_comap_C_zeroLocus_sdiff_zeroLocus ⟨x.2.2⟩ x.2.1
+  refine ⟨S.biUnion f, ?_, ?_⟩
+  · simp only [ConstructibleSetData.toSet, Set.image_iUnion, Finset.set_biUnion_biUnion, hf₁]
   · simp only [Finset.mem_biUnion, Prod.exists, forall_exists_index, and_imp]
     intros x y hy hx
     have H : degBound ⟨y.snd.2⟩ ≤ S.degBound :=
       Finset.le_sup (f := fun e ↦ ∑ i, (e.2.2 i).degree.succ) hy
-    refine ⟨(hf₂ y hy x hx).trans H, fun i ↦ SetLike.le_def.mp ?_ (hf₃ y hy x hx i)⟩
+    refine ⟨(hf₂ y x hx).trans H, fun i ↦ SetLike.le_def.mp ?_ (hf₃ y x hx i)⟩
     gcongr
     · simpa [Submodule.one_eq_span]
     · refine Submodule.span_le.mpr ?_
@@ -519,9 +511,17 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet {R} [CommRing R]
       gcongr
       rwa [Nat.one_le_iff_ne_zero]
 
-lemma exists_constructibleSetData_comap_C_toSet_eq_toSet' {R σ} [CommRing R]
-    (M : Submodule ℤ R) (hM : 1 ∈ M)
-    (S : ConstructibleSetData (MvPolynomial σ R)) (hS : ∀ x ∈ S, ∀ j k, (x.2.2 j).coeff k ∈ M) :
+lemma exists_constructibleSetData_comap_C_toSet_eq_toSet' {M : Submodule ℤ R} (hM : 1 ∈ M)
+    (S : ConstructibleSetData (MvPolynomial (Fin n) R))
+    (hS : ∀ x ∈ S, ∀ j k, (x.2.2 j).coeff k ∈ M) :
     ∃ T : ConstructibleSetData R,
       comap MvPolynomial.C '' S.toSet = T.toSet ∧ ∀ C ∈ T, C.1 ≤ S.mvDegBound ∧
-      ∀ i, C.2.2 i ∈ M ^ S.mvDegBound ^ S.mvDegBound := sorry
+      ∀ i, C.2.2 i ∈ M ^ S.mvDegBound ^ S.mvDegBound := by
+  classical
+  induction' n with n hn ih
+  · refine ⟨S.map (MvPolynomial.isEmptyRingEquiv _ _).toRingHom, ?_, ?_⟩
+    · rw [ConstructibleSetData.toSet_map]
+      sorry -- Do we not have `PrimeSpectrum.comap` as an iso?
+    · rw [ConstructibleSetData.map, Finset.forall_mem_image]
+      sorry
+  sorry

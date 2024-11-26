@@ -20,6 +20,7 @@ import LeanCamCombi.GrowthInGroups.Chevalley
 import LeanCamCombi.GrowthInGroups.ChevalleyComplex
 import LeanCamCombi.GrowthInGroups.Constructible
 import LeanCamCombi.GrowthInGroups.ConstructiblePrimeSpectrum
+import LeanCamCombi.GrowthInGroups.ConstructibleSetData
 import LeanCamCombi.GrowthInGroups.Lecture1
 import LeanCamCombi.GrowthInGroups.Lecture2
 import LeanCamCombi.GrowthInGroups.Lecture3
@@ -39,11 +40,13 @@ import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.BigOperators
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
+import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Algebra.Order.GroupWithZero.Unbundled
 import LeanCamCombi.Mathlib.Algebra.Pointwise.Stabilizer
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Div
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Eval.Degree
+import LeanCamCombi.Mathlib.Algebra.Ring.Hom.Defs
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
