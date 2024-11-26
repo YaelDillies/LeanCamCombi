@@ -458,3 +458,51 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus {R} [CommRing R] {n}
   · convert induction_aux (n := n) -- Andrew: this is absolutely fine if you ignore it
     ext
     exact (OreLocalization.zsmul_eq_zsmul _ _).symm
+
+variable (R) in
+abbrev ConstructibleSetData := Finset (Σ n, R × (Fin n → R))
+
+def ConstructibleSetData.toSet (S : ConstructibleSetData R) : Set (PrimeSpectrum R) :=
+  ⋃ x ∈ S, zeroLocus (Set.range x.2.2) \ zeroLocus {x.2.1}
+
+def ConstructibleSetData.degBound (S : ConstructibleSetData R[X]) : ℕ :=
+  S.sup fun e ↦ ∑ i, (e.2.2 i).degree.succ
+
+def ConstructibleSetData.mvDegBound {σ} (S : ConstructibleSetData (MvPolynomial σ R)) : ℕ :=
+  S.sup fun e ↦ ∑ i, (e.2.2 i).totalDegree.succ
+
+lemma exists_constructibleSetData_comap_C_toSet_eq_toSet {R} [CommRing R]
+    (M : Submodule ℤ R) (hM : 1 ∈ M)
+    (S : ConstructibleSetData R[X]) (hS : ∀ x ∈ S, ∀ j k, (x.2.2 j).coeff k ∈ M) :
+    ∃ T : ConstructibleSetData R,
+      comap C '' S.toSet = T.toSet ∧ ∀ C ∈ T, C.1 ≤ S.degBound ∧
+      ∀ i, C.2.2 i ∈ M ^ S.degBound ^ S.degBound := by
+  classical
+  have H (x) (hx : x ∈ S) := isConstructible_comap_C_zeroLocus_sdiff_zeroLocus ⟨x.2.2⟩ x.2.1
+  choose! f hf₁ hf₂ hf₃ using H
+  refine ⟨Finset.biUnion S f, ?_, ?_⟩
+  · simp only [ConstructibleSetData.toSet, Set.image_iUnion, Finset.set_biUnion_biUnion]
+    congr! with x hx
+    exact hf₁ x hx
+  · simp only [Finset.mem_biUnion, Prod.exists, forall_exists_index, and_imp]
+    intros x y hy hx
+    have H : degBound ⟨y.snd.2⟩ ≤ S.degBound :=
+      Finset.le_sup (f := fun e ↦ ∑ i, (e.2.2 i).degree.succ) hy
+    refine ⟨(hf₂ y hy x hx).trans H, fun i ↦ SetLike.le_def.mp ?_ (hf₃ y hy x hx i)⟩
+    gcongr
+    · simpa [Submodule.one_eq_span]
+    · refine Submodule.span_le.mpr ?_
+      simp [Set.subset_def, hM, forall_comm (α := R), hS y hy]
+    · delta powBound
+      by_cases h : S.degBound = 0
+      · have : degBound ⟨y.snd.2⟩ = 0 := by nlinarith
+        rw [h, this]
+      gcongr
+      rwa [Nat.one_le_iff_ne_zero]
+
+lemma exists_constructibleSetData_comap_C_toSet_eq_toSet' {R σ} [CommRing R]
+    (M : Submodule ℤ R) (hM : 1 ∈ M)
+    (S : ConstructibleSetData (MvPolynomial σ R)) (hS : ∀ x ∈ S, ∀ j k, (x.2.2 j).coeff k ∈ M) :
+    ∃ T : ConstructibleSetData R,
+      comap MvPolynomial.C '' S.toSet = T.toSet ∧ ∀ C ∈ T, C.1 ≤ S.mvDegBound ∧
+      ∀ i, C.2.2 i ∈ M ^ S.mvDegBound ^ S.mvDegBound := sorry
