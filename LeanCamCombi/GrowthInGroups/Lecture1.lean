@@ -2,7 +2,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Combinatorics.Additive.DoublingConst
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
-import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
 import LeanCamCombi.GrowthInGroups.CardPowGeneratingSet
 import LeanCamCombi.GrowthInGroups.NoDoubling
 import LeanCamCombi.GrowthInGroups.VerySmallDoubling
@@ -14,8 +13,8 @@ namespace GrowthInGroups.Lecture1
 variable {G : Type*} [Group G] [DecidableEq G] {A X : Finset G} {n : ℕ} {K : ℝ}
 
 /-- The growth of a set generating an infinite group is at least linear. -/
-lemma fact_3_1_1 [Infinite G] (hXgen : Subgroup.closure (X : Set G) = ⊤) (hX : X.Nontrivial)
-    (n : ℕ) : n + 1 ≤ #(X ^ n) := add_one_le_card_pow (by simp [hXgen, Set.infinite_univ]) hX _
+lemma fact_3_1_1 [Infinite G] (hX₁ : 1 ∈ X) (hXgen : Subgroup.closure (X : Set G) = ⊤) (n : ℕ) :
+    n + 1 ≤ #(X ^ n) := add_one_le_card_pow hX₁ (by simp [hXgen, Set.infinite_univ]) _
 
 /-- The growth of a set is at most exponential. -/
 lemma fact_3_1_2 : #(X ^ n) ≤ #X ^ n := card_pow_le
@@ -69,28 +68,8 @@ lemma theorem_3_9 :
 open MulAction in
 open scoped RightActions in
 lemma fact_3_10 (hA : #(A * A) ≤ #A) :
-    ∃ H : Subgroup G, ∀ a ∈ A, a •> (H : Set G) = A ∧ (H : Set G) <• a = A := by
-  have smul_A {a} (ha : a ∈ A) : a •> A = A * A :=
-    eq_of_subset_of_card_le (smul_finset_subset_mul ha) (by simpa)
-  have op_smul_A {a} (ha : a ∈ A) : A <• a = A * A :=
-    eq_of_subset_of_card_le (op_smul_finset_subset_mul ha) (by simpa)
-  have smul_A_eq_op_smul_A {a} (ha : a ∈ A) : a •> A = A <• a := by rw [smul_A ha, op_smul_A ha]
-  have smul_A_eq_op_smul_A' {a} (ha : a ∈ A) : a⁻¹ •> A = A <• a⁻¹ := by
-    rw [inv_smul_eq_iff, smul_comm, smul_A_eq_op_smul_A ha, op_inv, inv_smul_smul]
-  let H := stabilizer G A
-  have inv_smul_A {a} (ha : a ∈ A) : a⁻¹ • (A : Set G) = H := by
-    ext x
-    refine ⟨?_, fun hx ↦ ?_⟩
-    · rintro ⟨b, hb, rfl⟩
-      simp [H, mul_smul, inv_smul_eq_iff, smul_A ha, smul_A hb]
-    · norm_cast
-      rwa [smul_A_eq_op_smul_A' ha, op_inv, mem_inv_smul_finset_iff, op_smul_eq_mul, ← smul_eq_mul,
-        ← mem_inv_smul_finset_iff, inv_mem hx]
-  refine ⟨H, fun a ha ↦ ⟨?_, ?_⟩⟩
-  · rw [← inv_smul_A ha, smul_inv_smul]
-  · rw [← inv_smul_A ha, smul_comm]
-    norm_cast
-    rw [← smul_A_eq_op_smul_A ha, inv_smul_smul]
+    ∃ H : Subgroup G, ∀ a ∈ A, a •> (H : Set G) = A ∧ (H : Set G) <• a = A := 
+  exists_subgroup_of_no_doubling hA
 
 open scoped Classical RightActions in
 lemma lemma_3_11 (hA : #(A * A) < (3 / 2 : ℚ) * #A) :

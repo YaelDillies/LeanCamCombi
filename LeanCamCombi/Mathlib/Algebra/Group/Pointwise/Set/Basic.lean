@@ -1,22 +1,12 @@
-import Mathlib.Algebra.Group.Pointwise.Finset.Basic
+import Mathlib.Algebra.Group.Pointwise.Set.Basic
 
 open scoped Pointwise
 
-namespace Finset
-variable {α : Type*} [DecidableEq α]
-
-section Mul
-variable [Mul α] {s t : Finset α} {a : α}
-
-@[to_additive]
-lemma smul_finset_subset_mul : a ∈ s → a • t ⊆ s * t := image_subset_image₂_right
-
-attribute [gcongr] div_subset_div_left div_subset_div_right
-
-end Mul
+namespace Set
+variable {α : Type*}
 
 section Monoid
-variable [Monoid α] {s t : Finset α} {a : α} {n : ℕ}
+variable [Monoid α] {s t : Set α} {a : α} {n : ℕ}
 
 @[to_additive]
 lemma subset_pow (hs : 1 ∈ s) (hn : n ≠ 0) : s ⊆ s ^ n := by
@@ -25,7 +15,7 @@ lemma subset_pow (hs : 1 ∈ s) (hn : n ≠ 0) : s ⊆ s ^ n := by
 end Monoid
 
 section CancelMonoid
-variable [CancelMonoid α] {s t : Finset α} {a : α} {n : ℕ}
+variable [CancelMonoid α] {s t : Set α} {a : α} {n : ℕ}
 
 @[to_additive]
 lemma Nontrivial.mul_right : s.Nontrivial → t.Nonempty → (s * t).Nontrivial := by
@@ -47,4 +37,4 @@ lemma Nontrivial.pow (hs : s.Nontrivial) : ∀ {n}, n ≠ 0 → (s ^ n).Nontrivi
   | n + 2, _ => by simpa [pow_succ] using (hs.pow n.succ_ne_zero).mul hs
 
 end CancelMonoid
-end Finset
+end Set

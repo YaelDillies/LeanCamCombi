@@ -37,8 +37,12 @@ import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.LittlewoodOfford
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
+import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.BigOperators
+import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Lattice
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
+import LeanCamCombi.Mathlib.Algebra.Group.Submonoid.Basic
+import LeanCamCombi.Mathlib.Algebra.Group.Submonoid.Pointwise
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Algebra.Order.GroupWithZero.Unbundled
 import LeanCamCombi.Mathlib.Algebra.Pointwise.Stabilizer
