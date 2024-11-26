@@ -1,7 +1,6 @@
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 import Mathlib.Combinatorics.Additive.SmallTripling
 import Mathlib.Tactic.Bound
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
 import LeanCamCombi.Mathlib.Combinatorics.Additive.RuzsaCovering
 import LeanCamCombi.Mathlib.Data.Set.Lattice
@@ -61,7 +60,7 @@ lemma card_pow_le [DecidableEq G] {A : Finset G} (hA : IsApproximateSubgroup K (
 lemma image {F H : Type*} [Group H] [FunLike F G H] [MonoidHomClass F G H] (f : F)
     (hA : IsApproximateSubgroup K A) : IsApproximateSubgroup K (f '' A) where
   one_mem := ⟨1, hA.one_mem, map_one _⟩
-  inv_eq_self := by simp [← Set.image_inv', hA.inv_eq_self]
+  inv_eq_self := by simp [← Set.image_inv, hA.inv_eq_self]
   sq_covBySMul := by
     classical
     obtain ⟨F, hF, hAF⟩ := hA.sq_covBySMul
@@ -127,7 +126,7 @@ lemma pow_inter_pow_covBySMul_sq_inter_sq
       _ ≤ K ^ (m - 1) * L ^ (n - 1) := by gcongr
   · calc
       A ^ m ∩ B ^ n ⊆ (F₁ ^ (m - 1) * A) ∩ (F₂ ^ (n - 1) * B) := by
-        gcongr <;> apply pow_subset_pow_mul_of_sq_subset_mul <;> assumption
+        gcongr <;> apply pow_subset_pow_mul_of_sq_subset_mul <;> norm_cast <;> omega
       _ = ⋃ (a ∈ F₁ ^ (m - 1)) (b ∈ F₂ ^ (n - 1)), a • A ∩ b • B := by
         simp_rw [← smul_eq_mul, ← iUnion_smul_set, iUnion₂_inter_iUnion₂]; norm_cast
       _ ⊆ ⋃ (a ∈ F₁ ^ (m - 1)) (b ∈ F₂ ^ (n - 1)), f a b • (A ^ 2 ∩ B ^ 2) := by gcongr; exact hf ..

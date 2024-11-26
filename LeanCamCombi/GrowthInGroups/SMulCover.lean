@@ -34,7 +34,7 @@ lemma CovBySMul.mono (hKL : K ≤ L) : CovBySMul M K A B → CovBySMul M L A B :
   obtain ⟨F₂, hF₂, hFBC⟩ := hBC
   refine ⟨F₁ • F₂, ?_, ?_⟩
   · calc
-      (#(F₁ • F₂) : ℝ) ≤ #F₁ * #F₂ := mod_cast Finset.smul_card_le
+      (#(F₁ • F₂) : ℝ) ≤ #F₁ * #F₂ := mod_cast Finset.card_smul_le
       _ ≤ K * L := by gcongr
   · calc
       A ⊆ (F₁ : Set M) • B := hFAB
