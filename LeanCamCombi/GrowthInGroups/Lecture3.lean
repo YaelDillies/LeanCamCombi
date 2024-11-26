@@ -26,7 +26,7 @@ lemma fact_5_5 {A : Set G} (hA : IsApproximateSubgroup K A) (π : G →* H) :
 lemma proposition_5_6_1 (hA : IsApproximateSubgroup K A) (hB : IsApproximateSubgroup L B)
     (hm : 2 ≤ m) (hn : 2 ≤ n) :
     ∃ F : Finset G, #F ≤ K ^ (m - 1) * L ^ (n - 1) ∧ A ^ m ∩ B ^ n ⊆ F * (A ^ 2 ∩ B ^ 2) :=
-  hA.pow_inter_pow_smulCovered_sq_inter_sq hB hm hn
+  hA.pow_inter_pow_covBySMul_sq_inter_sq hB hm hn
 
 lemma proposition_5_6_2 (hA : IsApproximateSubgroup K A) (hB : IsApproximateSubgroup L B)
     (hm : 2 ≤ m) (hn : 2 ≤ n) :
