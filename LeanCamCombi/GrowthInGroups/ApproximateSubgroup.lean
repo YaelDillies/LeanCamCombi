@@ -163,7 +163,16 @@ lemma exists_isApproximateSubgroup_of_small_doubling [DecidableEq G] {A : Finset
     (hA₀ : A.Nonempty) (hA : #(A ^ 2) ≤ K * #A) :
     ∃ S ⊆ (A⁻¹ * A) ^ 2, IsApproximateSubgroup (2 ^ 12 * K ^ 36) (S : Set G) ∧
       #S ≤ 16 * K ^ 12 * #A ∧ ∃ a ∈ A, #A / (2 * K) ≤ #(A ∩ S <• a) := by
-  have hK : 1 ≤ K := sorry
+  have hK : 1 ≤ K := by
+    have : (#A : ℝ) ≤ #(A^2) := by simp only [pow_two A, Nat.cast_le.mpr <| card_le_card_mul_self']
+    have : #A ≤ K * #A := le_trans this hA
+    have : (#A > 0) → 1 ≤ K := fun hA ↦ by
+      obtain ⟨x, hx₁, hx₂⟩ : ∃ (a : ℝ), a > 0 ∧ a * #A = 1 := by sorry
+      sorry
+    exact this <| card_pos.mpr hA₀
+  -- wlog hK : 1 ≤ K with hK'
+  -- . have : #(A^2) ≤ (1 : ℝ) * #A := by sorry
+  --   obtain ⟨S, hS₁, hS₂⟩ := hK' hA₀ this (le_of_eq rfl)
   let S : Finset G := {g ∈ A⁻¹ * A | #A / (2 * K) ≤ #(A <• g ∩ A)}
   have hS₀ : S.Nonempty := ⟨1, by simp [S, hA₀.ne_empty]; bound⟩
   have hSA : S ⊆ A⁻¹ * A := filter_subset ..
