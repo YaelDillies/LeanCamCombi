@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
 import Mathlib.Data.Set.Pointwise.SMul
+import Mathlib.Order.Chain
 import Mathlib.Order.Grade
-import LeanCamCombi.Mathlib.Order.Chain
 import LeanCamCombi.Mathlib.Order.RelIso.Group
 
 /-!
@@ -92,16 +92,16 @@ theorem isMin_coe {a : s} : IsMin (a : α) ↔ IsMin a :=
 variable [Preorder 𝕆]
 
 instance [GradeOrder 𝕆 α] (s : Flag α) : GradeOrder 𝕆 s :=
-  .liftRight (↑) (Subtype.strictMono_coe _) fun _ _ => coe_covby_coe.2
+  .liftRight _ (Subtype.strictMono_coe _) fun _ _ => coe_covby_coe.2
 
 instance [GradeMinOrder 𝕆 α] (s : Flag α) : GradeMinOrder 𝕆 s :=
-  .liftRight (↑) (Subtype.strictMono_coe _) (fun _ _ => coe_covby_coe.2) fun _ => isMin_coe.2
+  .liftRight _ (Subtype.strictMono_coe _) (fun _ _ => coe_covby_coe.2) fun _ => isMin_coe.2
 
 instance [GradeMaxOrder 𝕆 α] (s : Flag α) : GradeMaxOrder 𝕆 s :=
-  .liftRight (↑) (Subtype.strictMono_coe _) (fun _ _ => coe_covby_coe.2) fun _ => isMax_coe.2
+  .liftRight _ (Subtype.strictMono_coe _) (fun _ _ => coe_covby_coe.2) fun _ => isMax_coe.2
 
 instance [GradeBoundedOrder 𝕆 α] (s : Flag α) : GradeBoundedOrder 𝕆 s :=
-  .liftRight (↑) (Subtype.strictMono_coe _) (fun _ _ => coe_covby_coe.2) (fun _ => isMin_coe.2)
+  .liftRight _ (Subtype.strictMono_coe _) (fun _ _ => coe_covby_coe.2) (fun _ => isMin_coe.2)
     fun _ => isMax_coe.2
 
 @[simp, norm_cast]

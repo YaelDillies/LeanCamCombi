@@ -1,5 +1,4 @@
 import Mathlib.Algebra.Group.Submonoid.Pointwise
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Submonoid.Basic
 
 open Set

@@ -68,7 +68,7 @@ lemma card_pow_strictMonoOn (hX₁ : 1 ∈ X) (hX : X.Nontrivial) :
     rw [eq_comm, coe_set_eq_one, closure_eq_bot_iff] at hm
     cases hX.not_subset_singleton hm
   calc (X : Set G) ^ (n - 1) = X ^ (n - m) * X ^ (m - 1) := by rw [← pow_add]; congr 1; omega
-  _ = closure (X : Set G) := by rw [hm, Set.mul_subgroupClosure_pow hX.nonempty.to_set]
+  _ = closure (X : Set G) := by rw [hm, Set.pow_mul_subgroupClosure hX.nonempty.to_set]
 
 @[to_additive]
 lemma card_pow_strictMono (hX₁ : 1 ∈ X) (hXclosure : (closure (X : Set G) : Set G).Infinite) :

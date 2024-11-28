@@ -10,7 +10,6 @@ import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Div
-import LeanCamCombi.Mathlib.Algebra.Polynomial.Eval.Degree
 import LeanCamCombi.Mathlib.Data.Finset.Image
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
@@ -155,7 +154,7 @@ lemma foo_induction (n : ℕ)
       · intro j
         simp only [coe_mapRingHom, InductionObj.ofLex_degree_fst, Pi.smul_apply,
           Function.comp_apply, smul_eq_mul]
-        refine ((degree_mul_le _ _).trans (add_le_add degree_C_le (degree_map_le _ _))).trans ?_
+        refine ((degree_mul_le _ _).trans (add_le_add degree_C_le degree_map_le)).trans ?_
         simp
       rw [lt_iff_le_not_le]
       simp only [coe_mapRingHom, funext_iff, InductionObj.ofLex_degree_fst, Pi.smul_apply,
@@ -170,7 +169,7 @@ lemma foo_induction (n : ℕ)
       · intro j hj; rw [h_eq, h_eq]; exact i_min j fun H ↦ (by simp [H] at hj)
     · rw [hv]
       refine .left _ _ (lt_of_le_of_ne ?_ ?_)
-      · intro j; simpa using degree_map_le _ _
+      · intro j; simpa using degree_map_le
       simp only [coe_mapRingHom, Function.comp_apply, ne_eq, hv, ofLex_toLex,
         not_exists, not_and, not_forall, Classical.not_imp, not_le, H, not_false_eq_true]
       intro h_eq
@@ -225,13 +224,13 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
     ⟨C (IsLocalization.Away.invSelf (S := Away c) c) • mapRingHom q₁ ∘ e.val⟩
   set e₂ : InductionObj (R ⧸ Ideal.span {c}) n := ⟨mapRingHom q₂ ∘ e.val⟩
   have degBound_e₁_le : e₁.degBound ≤ e.degBound := by
-    unfold degBound; gcongr with j; exact (degree_C_mul_le _ _).trans (degree_map_le _ _)
+    unfold degBound; gcongr with j; exact (degree_C_mul_le _ _).trans degree_map_le
   have degBound_e₂_lt : e₂.degBound < e.degBound := by
     unfold degBound
     refine Fintype.sum_strictMono <| Pi.lt_def.2 ⟨fun j ↦ ?_, i, ?_⟩
     · dsimp
       gcongr
-      exact degree_map_le _ _
+      exact degree_map_le
     · gcongr
       exact degree_map_lt (by simp [q₂, ← hi]) (by simpa [hi] using hc)
   intro (H₁ : InductionStatement _ _ e₁) (H₂ : InductionStatement _ _ e₂) f

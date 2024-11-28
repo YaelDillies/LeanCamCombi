@@ -12,7 +12,7 @@ lemma lemma_5_1 [DecidableEq G] {A : Finset G} (hA₁ : 1 ∈ A) (hAsymm : A⁻�
   .of_small_tripling hA₁ hAsymm hA
 
 lemma lemma_5_2 [DecidableEq G] {A B : Finset G} (hB : B.Nonempty) (hK : #(A * B) ≤ K * #B) :
-    ∃ F ⊆ A, #F ≤ K ∧ A ⊆ F * B / B := ruzsa_covering_mul hB hK
+    ∃ F ⊆ A, #F ≤ K ∧ A ⊆ F * (B / B) := ruzsa_covering_mul hB hK
 
 open scoped RightActions
 lemma proposition_5_3 [DecidableEq G] {A : Finset G} (hA₀ : A.Nonempty) (hA : #(A ^ 2) ≤ K * #A) :
@@ -34,8 +34,8 @@ lemma proposition_5_6_2 (hA : IsApproximateSubgroup K A) (hB : IsApproximateSubg
   hA.pow_inter_pow hB hm hn
 
 lemma lemma_5_7 (hA : A⁻¹ = A) (hB : B⁻¹ = B) (x y : G) :
-    ∃ z : G, x • A ∩ y • B ⊆ z • (A ^ 2 ∩ B ^ 2) :=
-  Set.exists_smul_inter_smul_subset_smul_sq_inter_sq hA hB x y
+    ∃ z : G, x • A ∩ y • B ⊆ z • (A ^ 2 ∩ B ^ 2) := by
+  simpa [hA, hB, sq] using Set.exists_smul_inter_smul_subset_smul_inv_mul_inter_inv_mul A B x y
 
 open scoped Classical in
 lemma lemma_5_8_1 {H : Subgroup G} [H.Normal] {A : Finset G} :

@@ -1,7 +1,7 @@
 import Mathlib.Algebra.Polynomial.AlgebraMap
 import Mathlib.Algebra.Polynomial.BigOperators
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
-import Mathlib
+import Mathlib.Algebra.Polynomial.Eval.SMul
+import Mathlib.Data.Finsupp.Notation
 
 open Finset
 open scoped BigOperators

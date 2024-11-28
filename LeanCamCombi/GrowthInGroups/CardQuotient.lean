@@ -57,7 +57,7 @@ lemma le_card_quotient_mul_sq_inter_subgroup (hAsymm : A⁻¹ = A) :
   calc
     #(bipartiteBelow (π · = ·) A (π a))
     _ ≤ #((bipartiteBelow (π · = ·) A (π a))⁻¹ * (bipartiteBelow (π · = ·) A (π a))) :=
-      card_le_card_mul_left _ ⟨a⁻¹, by simpa⟩
+      card_le_card_mul_left ⟨a⁻¹, by simpa⟩
     _ ≤ #{x ∈ A⁻¹ * A | x ∈ H} := by
       gcongr
       simp only [mul_subset_iff, mem_inv', mem_bipartiteBelow, map_inv, Finset.mem_filter, and_imp]

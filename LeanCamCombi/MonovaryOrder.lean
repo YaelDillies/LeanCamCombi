@@ -1,5 +1,5 @@
+import Mathlib.Order.Monotone.Monovary
 import Mathlib.SetTheory.Cardinal.Basic
-import LeanCamCombi.Mathlib.Order.Monotone.Monovary
 
 open Function Set
 

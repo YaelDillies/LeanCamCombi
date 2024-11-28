@@ -7,8 +7,8 @@ open scoped Pointwise
 namespace GrowthInGroups.Lecture2
 variable {G : Type*} [DecidableEq G] [Group G] {A : Finset G} {k K : ℝ} {m : ℕ}
 
-lemma lemma_4_2 (U V W : Finset G) : #U * #(V⁻¹ * W) ≤ #(U * V) * #(U * W) := by
-  exact ruzsa_triangle_inequality_invMul_mul_mul ..
+lemma lemma_4_2 (U V W : Finset G) : #U * #(V⁻¹ * W) ≤ #(U * V) * #(U * W) :=
+  ruzsa_triangle_inequality_invMul_mul_mul ..
 
 lemma lemma_4_3_2 (hA : #(A ^ 2) ≤ K * #A) : #(A⁻¹ * A) ≤ K ^ 2 * #A := by
   obtain rfl | hA₀ := A.eq_empty_or_nonempty
@@ -61,6 +61,6 @@ lemma lemma_4_7 {A : Finset G} (hA₁ : 1 ∈ A) (hsymm : A⁻¹ = A) (hA : #(A 
     IsApproximateSubgroup (K ^ 3) (A ^ 2 : Set G) := .of_small_tripling hA₁ hsymm hA
 
 lemma lemma_4_8 {A B : Finset G} (hB : B.Nonempty) (hK : #(A * B) ≤ K * #B) :
-    ∃ F ⊆ A, #F ≤ K ∧ A ⊆ F * B / B := ruzsa_covering_mul hB hK
+    ∃ F ⊆ A, #F ≤ K ∧ A ⊆ F * (B / B) := ruzsa_covering_mul hB hK
 
 end GrowthInGroups.Lecture2

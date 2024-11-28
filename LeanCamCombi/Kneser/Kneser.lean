@@ -469,8 +469,7 @@ theorem mul_kneser :
           (card_mulStab_dvd_card_mul_mulStab _ _).natCast) $
         (card_mulStab_dvd_card_mul_mulStab _ _).natCast).trans ?_
     rw [sub_sub]
-    exact sub_le_sub_left (add_le_add (Nat.cast_le.2 $ card_le_card_mul_right _ hH₁ne) $
-      Nat.cast_le.2 $ card_le_card_mul_right _ hH₁ne) _
+    gcongr _ - (Nat.cast ?_ + Nat.cast ?_) <;> exact card_le_card_mul_right hH₁ne
   have aux2₂ : (#s₂ : ℤ) + #t₂ + #H₂ ≤ #H := by
     rw [← le_sub_iff_add_le']
     refine (Int.le_of_dvd ((sub_nonneg_of_le $ Nat.cast_le.2 $ card_le_card $
@@ -479,8 +478,8 @@ theorem mul_kneser :
           (card_mulStab_dvd_card_mul_mulStab _ _).natCast) $
         (card_mulStab_dvd_card_mul_mulStab _ _).natCast).trans ?_
     rw [sub_sub]
-    exact sub_le_sub_left (add_le_add (Nat.cast_le.2 $ card_le_card_mul_right _ hH₂ne) $
-      Nat.cast_le.2 $ card_le_card_mul_right _ hH₂ne) _
+    exact sub_le_sub_left (add_le_add (Nat.cast_le.2 $ card_le_card_mul_right hH₂ne) $
+      Nat.cast_le.2 $ card_le_card_mul_right hH₂ne) _
   -- Now we deduce inequality (3) using the above lemma in addition to the facts that `s * t` is not
   -- convergent and then induction hypothesis applied to `sᵢ` and `tᵢ`
   have aux3₁ : (#S : ℤ) + #T + #s₁ + #t₁ - #H₁ < #H :=
@@ -488,7 +487,7 @@ theorem mul_kneser :
       (#S : ℤ) + #T + #s₁ + #t₁ - #H₁
         < #S + #T + #(s ∪ t) + #(s ∩ t) - #(s * t) + #(s₁ * t₁) := by
         have ih₁ :=
-          (add_le_add (card_le_card_mul_right _ hH₁ne) $ card_le_card_mul_right _ hH₁ne).trans
+          (add_le_add (card_le_card_mul_right hH₁ne) $ card_le_card_mul_right hH₁ne).trans
             (ih _ _ hst₁)
         zify at ih₁
         linarith [hstconv, ih₁]
@@ -505,7 +504,7 @@ theorem mul_kneser :
       (#S : ℤ) + #T + #s₂ + #t₂ - #H₂
        < #S + #T + #(s ∪ t) + #(s ∩ t) - #(s * t) + #(s₂ * t₂) := by
         have ih₂ :=
-          (add_le_add (card_le_card_mul_right _ hH₂ne) $ card_le_card_mul_right _ hH₂ne).trans
+          (add_le_add (card_le_card_mul_right hH₂ne) $ card_le_card_mul_right hH₂ne).trans
             (ih _ _ hst₂)
         zify at hstconv ih₂
         linarith [ih₂]

@@ -127,7 +127,7 @@ lemma foo_induction
     refine H_IH _ ?_ _ rfl
     rw [hv, Prod.Lex.lt_iff']
     constructor
-    · intro j; simpa using degree_map_le _ _
+    · intro j; simpa using degree_map_le
     simp only [coe_mapRingHom, Function.comp_apply, ne_eq, hv, ofLex_toLex,
       not_exists, not_and, not_forall, Classical.not_imp, not_le, H, not_false_eq_true]
     intro h_eq
@@ -144,12 +144,12 @@ lemma foo_induction
       rw [natDegree_eq_of_degree_eq h_eq, coeff_map, coeff_natDegree]
     · intro j hj
       refine le_trans ?_ ((i_min j (fun e ↦ hj (by simp [e]))).trans_eq (congr_fun h_eq j).symm)
-      simpa using degree_map_le _ _
+      simpa using degree_map_le
   · rw [Ideal.map_span, ← Set.range_comp]
     refine H_IH _ ?_ _ rfl
     rw [hv]
     refine .left _ _ (lt_of_le_of_ne ?_ ?_)
-    · intro j; simpa using degree_map_le _ _
+    · intro j; simpa using degree_map_le
     simp only [coe_mapRingHom, Function.comp_apply, ne_eq, hv, ofLex_toLex,
       not_exists, not_and, not_forall, Classical.not_imp, not_le, H, not_false_eq_true]
     intro h_eq

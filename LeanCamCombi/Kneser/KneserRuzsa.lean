@@ -220,7 +220,7 @@ lemma le_card_mul_add_card_mulStab_mul (hs : s.Nonempty) (ht : t.Nonempty) :
   rw [this]
   refine (le_inf' ht _ fun b hb ↦ ?_).trans (le_card_sup_add_card_mulStab_sup _)
   rw [← hstcard b hb]
-  refine add_le_add (card_le_card_mul_right _ ⟨_, hbt' _ hb⟩)
+  refine add_le_add (card_le_card_mul_right ⟨_, hbt' _ hb⟩)
     ((card_mono $ subset_mulStab_mul_left ⟨_, hbt' _ hb⟩).trans' ?_)
   rw [← card_smul_finset (b : α)⁻¹ (t' _)]
   refine card_mono ((mul_subset_left_iff $ hs.mono $ hs' _ hb).1 ?_)

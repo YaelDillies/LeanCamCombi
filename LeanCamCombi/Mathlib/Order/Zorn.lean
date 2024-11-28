@@ -1,5 +1,4 @@
 import Mathlib.Order.Zorn
-import LeanCamCombi.Mathlib.Order.Chain
 
 variable {α : Type}
 
@@ -17,7 +16,7 @@ theorem exists_mem (a : α) : ∃ s : Flag α, a ∈ s :=
   ⟨s, hs rfl⟩
 
 theorem exists_mem_mem (hab : a ≤ b) : ∃ s : Flag α, a ∈ s ∧ b ∈ s := by
-  simpa [Set.insert_subset_iff] using (isChain_pair _ hab).exists_subset_flag
+  simpa [Set.insert_subset_iff] using (IsChain.pair hab).exists_subset_flag
 
 instance : Nonempty (Flag α) := ⟨.ofIsMaxChain _ maxChain_spec⟩
 

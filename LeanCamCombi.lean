@@ -37,7 +37,6 @@ import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.LittlewoodOfford
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.BigOperators
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Lattice
 import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
@@ -45,18 +44,15 @@ import LeanCamCombi.Mathlib.Algebra.Group.Submonoid.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Submonoid.Pointwise
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Algebra.Order.GroupWithZero.Unbundled
-import LeanCamCombi.Mathlib.Algebra.Pointwise.Stabilizer
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Div
-import LeanCamCombi.Mathlib.Algebra.Polynomial.Eval.Degree
 import LeanCamCombi.Mathlib.Algebra.Ring.Hom.Defs
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
-import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
+  import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
 import LeanCamCombi.Mathlib.Analysis.Normed.Group.Basic
-import LeanCamCombi.Mathlib.Combinatorics.Additive.RuzsaCovering
 import LeanCamCombi.Mathlib.Combinatorics.Schnirelmann
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Containment
@@ -82,16 +78,11 @@ import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Lattice
 import LeanCamCombi.Mathlib.Data.Set.Pairwise.Lattice
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
-import LeanCamCombi.Mathlib.GroupTheory.Coset.Defs
-import LeanCamCombi.Mathlib.GroupTheory.GroupAction.Blocks
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.OpenPos
-import LeanCamCombi.Mathlib.NumberTheory.Fermat
-import LeanCamCombi.Mathlib.Order.Chain
 import LeanCamCombi.Mathlib.Order.Flag
-import LeanCamCombi.Mathlib.Order.Monotone.Monovary
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.RelIso.Group
 import LeanCamCombi.Mathlib.Order.SupClosed
@@ -101,7 +92,6 @@ import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Ideal.Span
 import LeanCamCombi.Mathlib.RingTheory.LocalRing.ResidueField.Ideal
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
-import LeanCamCombi.Mathlib.Topology.MetricSpace.Pseudo.Defs
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.MonovaryOrder

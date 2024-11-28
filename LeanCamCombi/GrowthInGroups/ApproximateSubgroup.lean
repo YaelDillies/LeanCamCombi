@@ -1,8 +1,8 @@
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+import Mathlib.Combinatorics.Additive.RuzsaCovering
 import Mathlib.Combinatorics.Additive.SmallTripling
 import Mathlib.Tactic.Bound
-import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
-import LeanCamCombi.Mathlib.Combinatorics.Additive.RuzsaCovering
+import Mathlib.Algebra.Group.Subgroup.Pointwise
 import LeanCamCombi.Mathlib.Data.Set.Lattice
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.GrowthInGroups.SMulCover
@@ -117,7 +117,7 @@ lemma pow_inter_pow_covBySMul_sq_inter_sq
   obtain ⟨F₁, hF₁, hAF₁⟩ := hA.sq_covBySMul
   obtain ⟨F₂, hF₂, hBF₂⟩ := hB.sq_covBySMul
   have := hA.one_le
-  choose f hf using exists_smul_inter_smul_subset_smul_sq_inter_sq hA.inv_eq_self hB.inv_eq_self
+  choose f hf using exists_smul_inter_smul_subset_smul_inv_mul_inter_inv_mul A B
   refine ⟨.image₂ f (F₁ ^ (m - 1)) (F₂ ^ (n - 1)), ?_, ?_⟩
   · calc
       (#(.image₂ f (F₁ ^ (m - 1)) (F₂ ^ (n - 1))) : ℝ)
@@ -129,8 +129,10 @@ lemma pow_inter_pow_covBySMul_sq_inter_sq
         gcongr <;> apply pow_subset_pow_mul_of_sq_subset_mul <;> norm_cast <;> omega
       _ = ⋃ (a ∈ F₁ ^ (m - 1)) (b ∈ F₂ ^ (n - 1)), a • A ∩ b • B := by
         simp_rw [← smul_eq_mul, ← iUnion_smul_set, iUnion₂_inter_iUnion₂]; norm_cast
-      _ ⊆ ⋃ (a ∈ F₁ ^ (m - 1)) (b ∈ F₂ ^ (n - 1)), f a b • (A ^ 2 ∩ B ^ 2) := by gcongr; exact hf ..
+      _ ⊆ ⋃ (a ∈ F₁ ^ (m - 1)) (b ∈ F₂ ^ (n - 1)), f a b • (A⁻¹ * A ∩ (B⁻¹ * B)) := by
+        gcongr; exact hf ..
       _ = (Finset.image₂ f (F₁ ^ (m - 1)) (F₂ ^ (n - 1))) * (A ^ 2 ∩ B ^ 2) := by
+        simp_rw [hA.inv_eq_self, hB.inv_eq_self, ← sq]
         rw [Finset.coe_image₂, ← smul_eq_mul, ← iUnion_smul_set, biUnion_image2]
         simp_rw [Finset.mem_coe]
 
