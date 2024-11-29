@@ -24,7 +24,7 @@ description: Formalisation of the Cambridge combinatorics courses
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://yaeldillies.github.io/LeanCamCombi/" # the base hostname & protocol for your site, e.g. http://example.com
 #twitter_username: jekyllrb
-github_username: leanprover-community
+github_username: YaelDillies
 repository: YaelDillies/LeanCamCombi
 
 # Build settings
