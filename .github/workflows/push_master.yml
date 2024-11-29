@@ -71,7 +71,7 @@ jobs:
       - name: Build documentation
         run: ~/.elan/bin/lake -Kenv=dev build LeanCamCombi:docs
 
-      # - name: Build blueprint and copy to `docs/blueprint`
+      # - name: Build blueprint and copy to `website/blueprint`
       #   uses: xu-cheng/texlive-action@v2
       #   with:
       #     scheme: full
@@ -87,25 +87,25 @@ jobs:
       #       python3 -m pip install invoke
       #       inv all
 
-      - name: Copy documentation to `docs/docs`
+      - name: Copy documentation to `website/docs`
         run: |
-          mv .lake/build/doc docs/docs
+          mv .lake/build/doc website/docs
 
       - name: Bundle dependencies
         uses: ruby/setup-ruby@v1
         with:
-          working-directory: docs
+          working-directory: website
           ruby-version: "3.0" # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
       - name: Bundle website
-        working-directory: docs
+        working-directory: website
         run: JEKYLL_ENV=production bundle exec jekyll build
 
       - name: Upload docs & blueprint artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: docs/_site
+          path: website/_site
 
       - name: Deploy to GitHub Pages
         id: deployment
@@ -113,4 +113,4 @@ jobs:
 
       - name: Make sure the cache works
         run: |
-          mv docs/docs .lake/build/doc
+          mv website/docs .lake/build/doc
