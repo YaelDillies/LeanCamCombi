@@ -39,16 +39,7 @@ jobs:
           cp README.md website/_includes/index.md
 
       - name: Print files to upstream
-        run: |
-          grep -r --exclude-dir=ExampleSheets --files-without-match 'import LeanCamCombi' LeanCamCombi | sort > 1.txt
-          grep -r --exclude-dir=ExampleSheets --files-with-match 'sorry' LeanCamCombi | sort > 2.txt
-          mkdir -p docs/_includes
-          comm -23 1.txt 2.txt | sed -e 's/^\(.*\)$/- [`\1`](https:\/\/github.com\/YaelDillies\/LeanCamCombi\/blob\/master\/\1)/' > docs/_includes/files_to_upstream.md
-          rm 1.txt 2.txt
-
-      - name: Count sorries
-        run: |
-          python scripts/count_sorry.py
+        run: python3 scripts/upstreaming_dashboard.py
 
       - name: Install elan
         run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.0.0
