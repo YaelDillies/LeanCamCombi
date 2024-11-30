@@ -33,6 +33,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Copy README.md to website/_includes/index.md
+        run: |
+          mkdir -p website/_includes
+          cp README.md website/_includes/index.md
+
       - name: Print files to upstream
         run: |
           grep -r --exclude-dir=ExampleSheets --files-without-match 'import LeanCamCombi' LeanCamCombi | sort > 1.txt
