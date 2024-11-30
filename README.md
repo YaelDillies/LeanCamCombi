@@ -17,7 +17,7 @@ The definitions, theorems and proofs in this repository are (mostly) taken from 
 * Part III Extremal and Probabilistic Combinatorics, Michaelmas 2023, lectured by Julian Sahasrabudhe
 * Part III [Ramsey Theory on Graphs, Michaelmas 2024](https://github.com/YaelDillies/maths-notes/blob/master/ramsey_theory.pdf), lectured by Julian Sahasrabudhe
 * Part III [Additive Combinatorics, Lent 2024](https://github.com/YaelDillies/maths-notes/blob/master/additive_combinatorics.pdf), lectured by Julia Wolf
-* ETH Math-D Growth in Groups, Winter 2024, lectured by Simon Machado
+* ETH Math-D [Growth in Groups, Winter 2024](https://sites.google.com/view/simonmachado/teaching), lectured by Simon Machado
 
 ### The target
 
@@ -45,15 +45,16 @@ The following topics are under active development in LeanCamCombi.
 * Discrete calculus
 * The Birkhoff representation theorem, categorical version
 * The Minkowski-Carathéodory theorem
+* Approximate subgroups
+* Chevalley's theorem about constructible sets
 
 ### Current content
 
-The following topics are covered in LeanCamCombi and could be upstreamed to mathlib.
+The following topics are covered in LeanCamCombi and could be upstreamed to Mathlib.
 
 * Kneser's addition theorem
 * The Sylvester-Chvatal theorem
 * Containment of graphs
-* Incidence algebras
 
 The following topics are archived because they are already covered by mathlib, but nevertheless display interesting proofs:
 * The Cauchy-Davenport theorem for `ℤ/pℤ` as a corollary of Kneser's theorem.
@@ -69,6 +70,7 @@ The following topics have been upstreamed to mathlib and no longer live in LeanC
 * The Erdős-Ginzburg-Ziv theorem
 * Shatterings of sets, the Sauer-Shelah lemma and the Vapnik-Chervonenkis dimension
 * Sublattices
+* Incidence algebras
 * Strongly convex functions
 * The Marica-Schönheim proof of the squarefree special case of Graham's conjecture
 * Visibility of a point through a set
