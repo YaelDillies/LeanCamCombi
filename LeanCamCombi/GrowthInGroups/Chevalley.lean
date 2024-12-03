@@ -12,7 +12,7 @@ open Polynomial TensorProduct PrimeSpectrum
 universe u v
 variable {R M A} [CommRing R] [AddCommGroup M] [Module R M] [CommRing A] [Algebra R A]
 
-lemma Ideal.span_range_update_divByMonic {ι : Type*} [DecidableEq ι]
+lemma Ideal.span_range_update_divByMonic' {ι : Type*} [DecidableEq ι]
     (v : ι → R[X]) (i j : ι) (hij : i ≠ j) (h : IsUnit (v i).leadingCoeff) :
     Ideal.span (Set.range (Function.update v j (v j %ₘ (C ((h.unit⁻¹ : Rˣ) : R) * v i)))) =
       Ideal.span (Set.range v) := by
@@ -87,7 +87,7 @@ lemma foo_induction
       replace i_min := i_min j hj'
       -- then we can replace `e j` with `e j %ₘ (C h.unit⁻¹ * e i) `
       -- with `h : IsUnit (e i).leadingCoeff`.
-      rw [← Ideal.span_range_update_divByMonic e i j (.symm hj) hi]
+      rw [← Ideal.span_range_update_divByMonic' e i j (.symm hj) hi]
       refine H_IH _ ?_ _ rfl
       refine .left _ _ (lt_of_le_of_ne (b := (ofLex v).1) ?_ ?_)
       · intro k

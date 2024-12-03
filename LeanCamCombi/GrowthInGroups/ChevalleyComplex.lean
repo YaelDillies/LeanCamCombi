@@ -8,12 +8,14 @@ import Mathlib.Tactic.ContinuousFunctionalCalculus
 import Mathlib.Data.DFinsupp.WellFounded
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
+import LeanCamCombi.Mathlib.Algebra.Order.Monoid.Unbundled.Pow
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import LeanCamCombi.Mathlib.Algebra.Polynomial.Div
 import LeanCamCombi.Mathlib.Data.Finset.Image
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
+import LeanCamCombi.GrowthInGroups.CoeffMem
 import LeanCamCombi.GrowthInGroups.ConstructibleSetData
+import LeanCamCombi.GrowthInGroups.SpanRangeUpdate
 
 variable {R S M A : Type*} [CommRing R] [CommRing S] [AddCommGroup M] [Module R M] [CommRing A]
   [Algebra R A]
@@ -208,6 +210,7 @@ lemma PrimeSpectrum.zeroLocus_smul_of_isUnit {R} [CommRing R] (s : Set R) {r : R
   ext
   simp [Set.subset_def, ← Set.image_smul, Ideal.unit_mul_mem_iff_mem _ hr]
 
+set_option maxHeartbeats 300000 in
 open IsLocalization in
 open Submodule hiding comap in
 lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
@@ -351,7 +354,7 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
           · exact one_le_coeffSubmodule
           · exact Set.subset_union_right
           · omega
-    · exact le_self_pow₀ one_le_coeffSubmodule powBound_ne_zero <| subset_span <| .inr <| by
+    · exact le_self_pow' one_le_coeffSubmodule powBound_ne_zero <| subset_span <| .inr <| by
         simpa using ⟨_, _, hi.symm⟩
     · unfold powBound
       gcongr
@@ -406,7 +409,7 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
     obtain ⟨S, hS, hS'⟩ := H f
     refine ⟨S, Eq.trans ?_ hS, ?_⟩
     · rw [← zeroLocus_span (Set.range _), ← zeroLocus_span (Set.range _),
-        Ideal.span_range_update_divByMonic _ _ _ hne hi]
+        Ideal.span_range_update_divByMonic _ hne hi]
     · intro C hC
       let c' : InductionObj _ _ := ⟨Function.update c.val j (c.val j %ₘ c.val i)⟩
       have deg_bound₁ : c'.degBound ≤ c.degBound := by
@@ -464,12 +467,17 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
       · intro l m
         rw [Function.update_apply]
         split_ifs with hlj
-        · refine SetLike.le_def.mp ?_ (modByMonic_mem_span_coeff_pow' _ _ _)
-          unfold coeffSubmodule
-          gcongr
-          · refine Set.union_subset ?_ ?_
-            · exact Set.subset_iUnion (fun i ↦ coeff(c.val i)) j
-            · exact Set.subset_iUnion (fun i ↦ coeff(c.val i)) i
+        · refine SetLike.le_def.mp ?_ (coeff_modByMonic_mem_span_pow_mul_span _ _ _)
+          calc
+            _ ≤ c.coeffSubmodule ^ (c.val j).natDegree * c.coeffSubmodule := by
+              gcongr
+              all_goals
+              · refine sup_le c.one_le_coeffSubmodule ?_
+                unfold coeffSubmodule
+                gcongr
+                exact Set.subset_union_of_subset_right
+                  (Set.subset_iUnion (fun i ↦ coeff(c.val i)) _) _
+            _ = c.coeffSubmodule ^ (c.val j).degree.succ := by rw [← pow_succ]; sorry
         · have : (c.val j).degree.succ ≠ 0 := by
             rw [← Nat.pos_iff_ne_zero]
             apply WithBot.succ_lt_succ (a := ⊥)
@@ -477,7 +485,7 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
             rw [bot_lt_iff_ne_bot, ne_eq, degree_eq_bot]
             intro e
             simp [e] at hi
-          refine le_self_pow₀ c.one_le_coeffSubmodule this ?_
+          refine le_self_pow' c.one_le_coeffSubmodule this ?_
           exact Submodule.subset_span (.inr (Set.mem_iUnion_of_mem l ⟨m, rfl⟩))
   · convert induction_aux (n := n) -- Andrew: this is absolutely fine if you ignore it
     ext

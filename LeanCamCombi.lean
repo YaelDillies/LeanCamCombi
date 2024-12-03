@@ -18,6 +18,7 @@ import LeanCamCombi.GrowthInGroups.CardPowGeneratingSet
 import LeanCamCombi.GrowthInGroups.CardQuotient
 import LeanCamCombi.GrowthInGroups.Chevalley
 import LeanCamCombi.GrowthInGroups.ChevalleyComplex
+import LeanCamCombi.GrowthInGroups.CoeffMem
 import LeanCamCombi.GrowthInGroups.Constructible
 import LeanCamCombi.GrowthInGroups.ConstructiblePrimeSpectrum
 import LeanCamCombi.GrowthInGroups.ConstructibleSetData
@@ -28,6 +29,7 @@ import LeanCamCombi.GrowthInGroups.Lecture4
 import LeanCamCombi.GrowthInGroups.NoDoubling
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 import LeanCamCombi.GrowthInGroups.SMulCover
+import LeanCamCombi.GrowthInGroups.SpanRangeUpdate
 import LeanCamCombi.GrowthInGroups.VerySmallDoubling
 import LeanCamCombi.GrowthInGroups.WithBotSucc
 import LeanCamCombi.Impact
@@ -38,20 +40,15 @@ import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.LittlewoodOfford
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.BigOperators
-import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Lattice
-import LeanCamCombi.Mathlib.Algebra.Group.Subgroup.Pointwise
-import LeanCamCombi.Mathlib.Algebra.Group.Submonoid.Basic
-import LeanCamCombi.Mathlib.Algebra.Group.Submonoid.Pointwise
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
-import LeanCamCombi.Mathlib.Algebra.Order.GroupWithZero.Unbundled
+import LeanCamCombi.Mathlib.Algebra.Order.Monoid.Unbundled.Pow
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import LeanCamCombi.Mathlib.Algebra.Polynomial.Div
 import LeanCamCombi.Mathlib.Algebra.Ring.Hom.Defs
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
-  import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
+import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
 import LeanCamCombi.Mathlib.Analysis.Normed.Group.Basic
 import LeanCamCombi.Mathlib.Combinatorics.Schnirelmann
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
@@ -64,7 +61,6 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Data.Finset.Basic
 import LeanCamCombi.Mathlib.Data.Finset.Image
 import LeanCamCombi.Mathlib.Data.Finset.Insert
-import LeanCamCombi.Mathlib.Data.Finset.Lattice.Basic
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.Finset.Powerset
 import LeanCamCombi.Mathlib.Data.List.DropRight
