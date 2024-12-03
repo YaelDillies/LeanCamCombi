@@ -75,7 +75,7 @@ jobs:
             MathlibDoc-
 
       - name: Build documentation
-        run: ~/.elan/bin/lake -Kenv=dev build LeanCamCombi:docs
+        run: ~/.elan/bin/lake -Kenv=dev build Batteries:docs
 
       # - name: Build blueprint and copy to `website/blueprint`
       #   uses: xu-cheng/texlive-action@v2
