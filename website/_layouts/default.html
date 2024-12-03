@@ -14,8 +14,12 @@
   {% if jekyll.environment == "production" %}
   <link rel="stylesheet"
     href="{{ 'LeanCamCombi/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+  <link rel="icon" type="image/x-icon"
+    href="{{ 'LeanCamCombi/assets/favicon.ico' | relative_url }}">
   {% else %}
   <link rel="stylesheet" href="{{ 'assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+  <link rel="icon" type="image/x-icon"
+    href="{{ 'assets/favicon.ico' | relative_url }}">
   {% endif %}
   {% include head-custom.html %}
 </head>
