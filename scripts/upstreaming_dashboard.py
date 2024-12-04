@@ -52,7 +52,6 @@ def main():
             module_name = file_path.replace('/','.')[:-5]
             text += f"* [`{module_name}`](https://github.com/YaelDillies/LeanCamCombi/blob/master/{file_path}) \n"
             for pr in project_files[file_path]["prs"]:
-                if pr["num_files"] > 15: continue
                 if pr["title"][:4] == "perf": continue
                 if pr["is_draft"]: continue
 
