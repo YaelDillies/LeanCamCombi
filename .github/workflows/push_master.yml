@@ -33,10 +33,10 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v2
 
-      - name: Copy README.md to website/_includes/index.md
+      - name: Copy README.md to website/index.md
         run: |
           mkdir -p website/_includes
-          cp README.md website/_includes/index.md
+          cp README.md website/index.md
 
       - name: Print files to upstream
         run: python3 scripts/upstreaming_dashboard.py
