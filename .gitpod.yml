@@ -10,3 +10,9 @@ tasks:
   - init: |
       elan self update
       lake exe cache get
+      sudo apt-get update
+      sudo apt install ruby ruby-dev -y
+      cd website
+      sudo gem install bundler
+      bundle install
+      cd ..
