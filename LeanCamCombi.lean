@@ -60,7 +60,6 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Multipartite
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Data.Finset.Basic
 import LeanCamCombi.Mathlib.Data.Finset.Image
-import LeanCamCombi.Mathlib.Data.Finset.Insert
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.Finset.Powerset
 import LeanCamCombi.Mathlib.Data.List.DropRight
@@ -82,7 +81,6 @@ import LeanCamCombi.Mathlib.Order.Flag
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.RelIso.Group
 import LeanCamCombi.Mathlib.Order.SupClosed
-import LeanCamCombi.Mathlib.Order.Zorn
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Ideal.Span
