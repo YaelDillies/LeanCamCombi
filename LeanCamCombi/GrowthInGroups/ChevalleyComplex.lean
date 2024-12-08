@@ -625,7 +625,9 @@ lemma _root_.MvPolynomial.degreesLE_zero {R σ : Type*} [CommSemiring R] :
   apply le_antisymm
   · intro x hx
     simp only [mem_degreesLE, nonpos_iff_eq_zero] at hx
-    sorry
+    have := (totalDegree_eq_zero_iff_eq_C (p := x)).mp
+      (Nat.eq_zero_of_le_zero (x.totalDegree_le_degrees_card.trans (by simp [hx])))
+    exact ⟨x.coeff 0, by simp [Algebra.smul_def, ← this]⟩
   · simp
 
 open _root_.MvPolynomial in
@@ -634,58 +636,6 @@ lemma _root_.MvPolynomial.degreesLE_pow {R σ : Type*} [CommSemiring R] {n : Mul
   induction' k with k IH
   · simp
   · simp only [pow_succ, IH, degreesLE_mul, add_smul, one_smul]
-
--- def _root_.MvPolynomial.totalDegreeLE (R σ : Type*) [CommSemiring R] (n : ℕ) :
---     Submodule R (MvPolynomial σ R) where
---   carrier := { x | x.totalDegree ≤ n }
---   add_mem' {a b} ha hb := (MvPolynomial.totalDegree_add a b).trans (Nat.max_le.mpr ⟨ha, hb⟩)
---   zero_mem' := by simp
---   smul_mem' c {x} hx := (MvPolynomial.totalDegree_smul_le _ _).trans hx
-
--- open _root_.MvPolynomial in
--- @[simp]
--- lemma _root_.MvPolynomial.mem_totalDegreeLE {R σ : Type*} [CommSemiring R] {n : ℕ} {x} :
---     x ∈ totalDegreeLE R σ n ↔ x.totalDegree ≤ n := Iff.rfl
-
--- open _root_.MvPolynomial in
--- lemma _root_.MvPolynomial.totalDegreeLE_mul {R σ : Type*} [CommSemiring R] {n m : ℕ} :
---     totalDegreeLE R σ m * totalDegreeLE R σ n = totalDegreeLE R σ (m + n) := by
---   classical
---   apply le_antisymm
---   · rw [Submodule.mul_le]
---     intro x hx y hy
---     exact (totalDegree_mul _ _).trans (add_le_add hx hy)
---   · intro x hx
---     rw [x.as_sum]
---     refine sum_mem fun i hi ↦ ?_
---     replace hx := (le_totalDegree hi).trans hx
---     let a := (Multiset.ofList (i.toMultiset.toList.take m)).toFinsupp
---     let b := (Multiset.ofList (i.toMultiset.toList.drop m)).toFinsupp
---     have : a + b = i := Multiset.toFinsupp.symm.injective (by simp [a, b])
---     have ha : (a.sum fun _ ↦ id) ≤ m := by simp [a]
---     have hb : (b.sum fun _ ↦ id) ≤ n := by simpa [b, n.add_comm m] using hx
---     have : monomial i (x.coeff i) = monomial a (x.coeff i) * monomial b 1 := by
---       simp [this]
---     rw [this]
---     exact Submodule.mul_mem_mul ((totalDegree_monomial_le _ _).trans ha)
---       ((totalDegree_monomial_le _ _).trans hb)
-
--- open _root_.MvPolynomial in
--- @[simp]
--- lemma _root_.MvPolynomial.totalDegreeLE_zero {R σ : Type*} [CommSemiring R] :
---     totalDegreeLE R σ 0 = 1 := by
---   apply le_antisymm
---   · intro x hx
---     simp only [mem_totalDegreeLE, nonpos_iff_eq_zero] at hx
---     sorry
---   · simp
-
--- open _root_.MvPolynomial in
--- lemma _root_.MvPolynomial.totalDegreeLE_pow {R σ : Type*} [CommSemiring R] {n k : ℕ} :
---     totalDegreeLE R σ n ^ k = totalDegreeLE R σ (k * n) := by
---   induction' k with k IH
---   · simp
---   · simp only [pow_succ, IH, totalDegreeLE_mul, add_mul, one_mul]
 
 lemma pow_inf_le_inf_pow {M : Type*} [Monoid M] [SemilatticeInf M] [MulLeftMono M] [MulRightMono M]
     (a b : M) (i : ℕ) : (a ⊓ b) ^ i ≤ a ^ i ⊓ b ^ i :=
@@ -704,48 +654,82 @@ lemma Submodule.restrictScalars_pow {A B C : Type*} [Semiring A] [Semiring B]
   | succ n IH =>
     simp only [Submodule.pow_succ (n := n + 1), Submodule.restrictScalars_mul, IH (by simp)]
 
-def δ (D : ℕ → ℕ) : ℕ → ℕ
+section
+
+mutual
+
+def δ (k : ℕ) (D : ℕ → ℕ) : ℕ → ℕ
   | 0 => 1
-  | n + 1 => (δ D n * D n) ^ (δ D n * D n) * δ D n
+  | n + 1 => ν k D (n + 1) ^ ν k D (n + 1) * δ k D n
 
-lemma δ_zero (D : ℕ → ℕ) : δ D 0 = 1 := rfl
-lemma δ_succ (D : ℕ → ℕ) (n) : δ D (n + 1) = (δ D n * D n) ^ (δ D n * D n) * δ D n := rfl
-
-lemma δ_casesOn_succ (k : ℕ) (D : ℕ → ℕ) :
-    ∀ n, δ (fun t ↦ Nat.casesOn t k D) (n + 1) = k ^ k * δ (k ^ k • D) n
-  | 0 => by simp [δ]
-  | (n + 1) => by
-    simp only [δ_succ (n := n + 1), δ_casesOn_succ k D n,
-      smul_eq_mul, δ_succ (k ^ k • D), Pi.smul_apply]
-    ring
-
-lemma δ_le_δ {D₁ D₂ : ℕ → ℕ} (n) (hD : ∀ i < n, D₁ i ≤ D₂ i) : δ D₁ n ≤ δ D₂ n := by
-  induction n with
-  | zero => simp [δ_zero]
-  | succ n IH =>
-    replace IH := IH fun i hi ↦ (hD i (hi.trans n.lt_succ_self))
-    exact Nat.mul_le_mul (Nat.pow_self_mono (Nat.mul_le_mul IH (hD n n.lt_succ_self))) IH
-
-def δ' (k : ℕ) (D : ℕ → ℕ) : ℕ → ℕ
+def ν (k : ℕ) (D : ℕ → ℕ) : ℕ → ℕ
   | 0 => k
-  | n + 1 => δ D n * D n
+  | n + 1 => ν k D n * δ k D n * D n
 
-lemma δ'_le_δ' {k₁ k₂ : ℕ} {D₁ D₂ : ℕ → ℕ} (hk : k₁ ≤ k₂) (n : ℕ) (hD : ∀ i < n, D₁ i ≤ D₂ i) :
-    δ' k₁ D₁ n ≤ δ' k₂ D₂ n := by
-  induction n with
-  | zero => simpa [δ']
-  | succ n IH =>
-    exact Nat.mul_le_mul
-      (δ_le_δ _ (fun i hi ↦ hD i (hi.trans n.lt_succ_self))) (hD _ n.lt_succ_self)
+end
 
-lemma δ'_casesOn_succ (k₀ k : ℕ) (D : ℕ → ℕ) :
-    ∀ n, δ' k₀ (fun t ↦ Nat.casesOn t k D) (n + 1) = δ' k (k ^ k • D) n
-  | 0 => by simp [δ', δ_casesOn_succ, δ_zero]
+@[simp]
+lemma δ_zero (k : ℕ) (D : ℕ → ℕ) : δ k D 0 = 1 := by delta δ; rfl
+
+@[simp]
+lemma δ_succ (k : ℕ) (D : ℕ → ℕ) (n) :
+    δ k D (n + 1) = ν k D (n + 1) ^ ν k D (n + 1) * δ k D n := by
+  delta δ ν; rfl
+
+@[simp]
+lemma ν_zero (k : ℕ) (D : ℕ → ℕ) : ν k D 0 = k := by delta ν; rfl
+
+@[simp]
+lemma ν_succ (k : ℕ) (D : ℕ → ℕ) (n) :
+    ν k D (n + 1) = ν k D n * δ k D n * D n := by
+  delta δ ν; rfl
+
+section
+
+mutual
+
+lemma δ_casesOn_succ (k₀ k : ℕ) (D : ℕ → ℕ) :
+    ∀ n, δ k₀ (fun t ↦ Nat.casesOn t k D) (n + 1) =
+      (k₀ * k) ^ (k₀ * k) * δ (k₀ * k) ((k₀ * k) ^ (k₀ * k) • D) n
+  | 0 => by simp
   | (n + 1) => by
-    dsimp only [δ']
-    rw [δ_casesOn_succ]
-    simp
+    rw [δ_succ, ν_casesOn_succ, δ_casesOn_succ, ν_succ, δ_succ, ν_succ]
     ring
+
+lemma ν_casesOn_succ (k₀ k : ℕ) (D : ℕ → ℕ) :
+    ∀ n, ν k₀ (fun t ↦ Nat.casesOn t k D) (n + 1) = ν (k₀ * k) ((k₀ * k) ^ (k₀ * k) • D) n
+  | 0 => by simp [mul_comm k]
+  | (n + 1) => by
+    rw [ν_succ (n := n + 1), ν_casesOn_succ k₀ k D n, ν_succ, δ_casesOn_succ]
+    dsimp
+    ring
+
+end
+
+section
+
+variable {k₁ k₂ : ℕ} (hk : k₁ ≤ k₂) {D₁ D₂ : ℕ → ℕ}
+
+mutual
+
+lemma δ_le_δ (hk : k₁ ≤ k₂) : ∀ (n) (_ : ∀ i < n, D₁ i ≤ D₂ i), δ k₁ D₁ n ≤ δ k₂ D₂ n
+  | 0, hD => by simp
+  | n + 1, hD => by
+    rw [δ_succ, δ_succ]
+    refine Nat.mul_le_mul (Nat.pow_self_mono (ν_le_ν hk _ hD)) (δ_le_δ hk _
+      fun i hi ↦ hD _ (hi.trans n.lt_succ_self))
+
+
+lemma ν_le_ν (hk : k₁ ≤ k₂) : ∀ (n) (_ : ∀ i < n, D₁ i ≤ D₂ i), ν k₁ D₁ n ≤ ν k₂ D₂ n
+  | 0, hD => by simpa using hk
+  | n + 1, hD => by
+    rw [ν_succ, ν_succ]
+    gcongr
+    · exact ν_le_ν hk _ fun i hi ↦ hD _ (hi.trans n.lt_succ_self)
+    · exact δ_le_δ hk _ fun i hi ↦ hD _ (hi.trans n.lt_succ_self)
+    · exact hD _ n.lt_succ_self
+
+end
 
 lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
     {M : Submodule ℤ R} (hM : 1 ∈ M) (k : ℕ) (d : Multiset (Fin n))
@@ -755,8 +739,8 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
       (MvPolynomial.degreesLE _ _ d).restrictScalars _) :
     ∃ T : ConstructibleSetData R,
       comap MvPolynomial.C '' S.toSet = T.toSet ∧ ∀ C ∈ T,
-        C.1 ≤ δ' k (fun i ↦ ((k • d).map Fin.val).count i) n ∧
-      ∀ i, C.2.2 i ∈ M ^ (δ (fun i ↦ ((k • d).map Fin.val).count i) n) := by
+        C.1 ≤ ν k (fun i ↦ 1 + (d.map Fin.val).count i) n ∧
+      ∀ i, C.2.2 i ∈ M ^ (δ k (fun i ↦ 1 + (d.map Fin.val).count i) n) := by
   classical
   induction' n with n IH generalizing k M
   · refine ⟨(S.map (MvPolynomial.isEmptyRingEquiv _ _).toRingHom), ?_, ?_⟩
@@ -764,12 +748,30 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
       sorry -- Do we not have `PrimeSpectrum.comap` as an iso?
     · simp only [Sigma.map, ne_eq, RingEquiv.toRingHom_eq_coe, Finset.mem_image,
         Prod.exists, forall_exists_index, and_imp, ConstructibleSetData.map, id_eq,
-        RingHom.coe_coe, δ, one_mul, pow_one, MvPolynomial.isEmptyRingEquiv_eq_coeff_zero,
+        RingHom.coe_coe, δ_zero, ν_zero, one_mul, pow_one, MvPolynomial.isEmptyRingEquiv_eq_coeff_zero,
         forall_apply_eq_imp_iff₂, comp_apply]
       exact fun a haS ↦ ⟨hSn a haS, fun i ↦ (hS a haS i).1 0⟩
   let e : MvPolynomial (Fin (n + 1)) R ≃ₐ[R] (MvPolynomial (Fin n) R)[X] :=
     MvPolynomial.finSuccEquiv R n
   let S' := S.map e.toRingHom
+  let hS' : S'.degBound ≤ k * (1 + d.count 0) := by
+    apply Finset.sup_le fun x hxS ↦ ?_
+    simp only [ConstructibleSetData.map, id_eq, AlgEquiv.toRingEquiv_eq_coe,
+      RingEquiv.toRingHom_eq_coe, AlgEquiv.toRingEquiv_toRingHom, RingHom.coe_coe,
+      Finset.mem_image, Sigma.map, Sigma.exists, Prod.exists, S'] at hxS
+    obtain ⟨i, f, g, hxS, rfl⟩ := hxS
+    trans ∑ i : Fin i, (1 + d.count 0)
+    · gcongr with j hj
+      simp only [e, Function.comp_apply]
+      by_cases hgj : g j = 0
+      · rw [hgj, map_zero]
+        simp
+      rw [MvPolynomial.degree_finSuccEquiv hgj, WithBot.succ_natCast, add_comm]
+      simp only [Nat.cast_id, add_le_add_iff_left, MvPolynomial.degreeOf_def]
+      exact Multiset.count_le_of_le _ (hS _ hxS _).2
+    · simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul]
+      gcongr
+      exact hSn _ hxS
   let B : Multiset (Fin n) :=
     (d.toFinsupp.comapDomain Fin.succ (Fin.succ_injective _).injOn).toMultiset
   obtain ⟨T, hT₁, hT₂⟩ := exists_constructibleSetData_comap_C_toSet_eq_toSet
@@ -802,33 +804,45 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
   replace this (C) (hCT) (k) := SetLike.le_def.mp
     (inf_le_inf (Submodule.mvPolynomial_pow_le _ _) le_rfl)
     (this C hCT k)
-  simp_rw [← Submodule.restrictScalars_pow (Nat.pow_self_pos _).ne',
-    MvPolynomial.degreesLE_pow] at this
+  let N := (k * (1 + d.count 0)) ^ (k * (1 + d.count 0))
+  have (C) (hCT : C ∈ T) (a) : C.snd.2 a ∈ (M ^ N).mvPolynomial (Fin n) ⊓
+        (MvPolynomial.degreesLE R (Fin n) (N • B)).restrictScalars ℤ := by
+    refine SetLike.le_def.mp ?_ ((hT₂ C hCT).2 a)
+    refine (pow_inf_le_inf_pow _ _ _).trans (inf_le_inf ?_ ?_)
+    · refine (pow_le_pow_right' ?_ (Nat.pow_self_mono hS')).trans
+        (Submodule.mvPolynomial_pow_le M N)
+      simpa [MvPolynomial.coeff_one, apply_ite] using hM
+    · rw [← MvPolynomial.degreesLE_pow,
+        Submodule.restrictScalars_pow (Nat.pow_self_pos _).ne']
+      refine pow_le_pow_right' ?_ (Nat.pow_self_mono hS')
+      simp
   have h1M : 1 ≤ M := Submodule.one_le_iff.mpr hM
-  obtain ⟨U, hU₁, hU₂⟩ := IH (M := M ^ S'.degBound ^ S'.degBound)
+  obtain ⟨U, hU₁, hU₂⟩ := IH (M := M ^ N)
     (SetLike.le_def.mp (le_self_pow' h1M (Nat.pow_self_pos _).ne') hM) _ _ T
     (fun C hCT ↦ (hT₂ C hCT).1)
     (fun C hCT k ↦ this C hCT k)
   simp only [Multiset.map_nsmul _ (_ ^ _), smul_comm _ (_ ^ _),
     Multiset.count_nsmul, ← pow_mul] at hU₂
-  have : ∀ i < n + 1, i.casesOn S'.degBound (((S'.degBound • B).map Fin.val).count <| ·) ≤
-      ((k • d).map Fin.val).count i := by
-    sorry
-    -- intro t ht
-    -- show _ ≤ ((k • d).map Fin.val).count (Fin.mk t ht).val
-    -- rw [Multiset.count_map_eq_count' _ _ Fin.val_injective]
-    -- cases' t with t
-    -- · dsimp
-    --   refine Finset.sup_le fun i hi ↦ ?_
-    -- · simp only [add_lt_add_iff_right] at ht
-    --   show ((S'.degBound • B).map Fin.val).count (Fin.mk t ht).val ≤ _
-    --   rw [Multiset.count_map_eq_count' _ _ Fin.val_injective]
-    --   simp [B]
+  have : ∀ i < n + 1, i.casesOn (1 + d.count 0) (1 + (B.map Fin.val).count ·) ≤
+      1 + (d.map Fin.val).count i := by
+    intro t ht
+    show _ ≤ 1 + (d.map Fin.val).count (Fin.mk t ht).val
+    rw [Multiset.count_map_eq_count' _ _ Fin.val_injective]
+    cases' t with t
+    · exact le_rfl
+    · simp only [add_lt_add_iff_right] at ht
+      show 1 + (B.map Fin.val).count (Fin.mk t ht).val ≤ _
+      rw [Multiset.count_map_eq_count' _ _ Fin.val_injective]
+      simp [B]
   refine ⟨U, ?_, fun C hCU ↦ ⟨(hU₂ C hCU).1.trans ?_,
     fun i ↦ pow_le_pow_right' h1M ?_ ((hU₂ C hCU).2 i)⟩⟩
   · unfold S' at hT₁
     rw [← hU₁, ← hT₁, ← Set.image_comp, ← ContinuousMap.coe_comp, ← comap_comp,
       ConstructibleSetData.toSet_map]
     sorry -- need `PrimeSpectrum.comap` as an iso
-  · refine (δ'_casesOn_succ k _ _ _).symm.trans_le (δ'_le_δ' le_rfl _ this)
-  · refine (δ_casesOn_succ _ _ _).symm.trans_le (δ_le_δ _ this)
+  · refine (ν_le_ν hS' _ fun _ _ ↦ ?_).trans
+      ((ν_casesOn_succ k _ _ _).symm.trans_le (ν_le_ν le_rfl _ this))
+    simp+contextual [mul_add, Nat.one_le_iff_ne_zero]
+  · refine (Nat.mul_le_mul le_rfl (δ_le_δ hS' _ fun _ _ ↦ ?_)).trans
+      ((δ_casesOn_succ k _ _ _).symm.trans_le (δ_le_δ le_rfl _ this))
+    simp+contextual [mul_add, Nat.one_le_iff_ne_zero]
