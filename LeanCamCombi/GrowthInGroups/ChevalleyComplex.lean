@@ -574,10 +574,13 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
   induction' n with n IH generalizing k M
   · refine ⟨(S.map (MvPolynomial.isEmptyRingEquiv _ _).toRingHom), ?_, ?_⟩
     · rw [ConstructibleSetData.toSet_map]
-      sorry -- Do we not have `PrimeSpectrum.comap` as an iso?
+      show _ = (comapEquiv (MvPolynomial.isEmptyRingEquiv _ _)).symm ⁻¹' _
+      rw [← Equiv.image_eq_preimage]
+      rfl
     · simp only [Sigma.map, ne_eq, RingEquiv.toRingHom_eq_coe, Finset.mem_image,
         Prod.exists, forall_exists_index, and_imp, ConstructibleSetData.map, id_eq,
-        RingHom.coe_coe, δ_zero, ν_zero, one_mul, pow_one, MvPolynomial.isEmptyRingEquiv_apply',
+        RingHom.coe_coe, δ_zero, ν_zero, one_mul, pow_one,
+        MvPolynomial.isEmptyRingEquiv_eq_coeff_zero,
         forall_apply_eq_imp_iff₂, comp_apply]
       exact fun a haS ↦ ⟨hSn a haS, fun i ↦ (hS a haS i).1 0⟩
   let e : MvPolynomial (Fin (n + 1)) R ≃ₐ[R] (MvPolynomial (Fin n) R)[X] :=
@@ -664,7 +667,11 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
   · unfold S' at hT₁
     rw [← hU₁, ← hT₁, ← Set.image_comp, ← ContinuousMap.coe_comp, ← comap_comp,
       ConstructibleSetData.toSet_map]
-    sorry -- need `PrimeSpectrum.comap` as an iso
+    show _ = _ '' ((comapEquiv e.toRingEquiv).symm ⁻¹' _)
+    rw [← Equiv.image_eq_preimage, Set.image_image]
+    simp only [comapEquiv_apply, ← comap_eq_specComap', ← comap_comp_apply]
+    congr!
+    exact e.symm.toAlgHom.comp_algebraMap.symm
   · refine (ν_le_ν hS' _ fun _ _ ↦ ?_).trans
       ((ν_casesOn_succ k _ _ _).symm.trans_le (ν_le_ν le_rfl _ this))
     simp+contextual [mul_add, Nat.one_le_iff_ne_zero]

@@ -2,10 +2,16 @@ import Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
 import LeanCamCombi.GrowthInGroups.Constructible
 
+variable {R S : Type*} [CommSemiring R] [CommSemiring S]
+
+lemma PrimeSpectrum.comap_eq_specComap (f : R →+* S) :
+  comap f = f.specComap := rfl
+
+lemma PrimeSpectrum.comap_eq_specComap' (f : R →+* S) (x) :
+  comap f x = f.specComap x := rfl
 open Polynomial
 
 namespace PrimeSpectrum
-variable {R : Type*} [CommRing R]
 
 lemma isRetroCompact_iff {U : Set (PrimeSpectrum R)} (hU : IsOpen U) :
     IsRetroCompact U ↔ IsCompact U := by
@@ -14,7 +20,8 @@ lemma isRetroCompact_iff {U : Set (PrimeSpectrum R)} (hU : IsOpen U) :
   exact isCompact_basicOpen _
 
 open Localization in
-lemma comap_C_eq_comap_localization_union_comap_quotient (s : Set (PrimeSpectrum R[X])) (c : R) :
+lemma comap_C_eq_comap_localization_union_comap_quotient
+    {R : Type*} [CommRing R] (s : Set (PrimeSpectrum R[X])) (c : R) :
     .comap C '' s =
       comap (algebraMap R (Away c)) '' (comap C ''
         (comap (mapRingHom (algebraMap R (Away c))) ⁻¹' s)) ∪
