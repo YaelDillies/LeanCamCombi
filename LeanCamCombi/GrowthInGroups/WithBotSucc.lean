@@ -37,15 +37,18 @@ end WithBot
 namespace WithBot
 variable {α : Type*} [Preorder α] [OrderBot α] [AddMonoidWithOne α] [SuccAddOrder α]
 
+lemma succ_natCast (n : ℕ) :
+    succ (n : WithBot α) = n + 1 := by
+  rw [← WithBot.coe_natCast, succ_coe', Order.succ_eq_add_one]
+
 @[simp]
-lemma succ_zero : succ (0 : WithBot α) = 1 := by
-  rw [← WithBot.coe_zero, succ_coe', Order.succ_eq_add_one, zero_add]
+lemma succ_zero : succ (0 : WithBot α) = 1 := by simpa using succ_natCast 0
 
 @[simp]
 lemma succ_one : succ (1 : WithBot α) = 2 := by
-  rw [← WithBot.coe_one, succ_coe', Order.succ_eq_add_one, one_add_one_eq_two]
+  simpa [one_add_one_eq_two] using succ_natCast 1
 
 @[simp]
 lemma succ_ofNat (n : ℕ) [n.AtLeastTwo] :
-    succ (no_index OfNat.ofNat n : WithBot α) = OfNat.ofNat n + 1 := by
-  rw [← WithBot.coe_ofNat, succ_coe', Order.succ_eq_add_one]
+    succ (no_index OfNat.ofNat n : WithBot α) = OfNat.ofNat n + 1 :=
+  succ_natCast n
