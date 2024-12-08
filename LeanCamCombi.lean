@@ -38,8 +38,12 @@ import LeanCamCombi.Kneser.Kneser
 import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.LittlewoodOfford
+import LeanCamCombi.Mathlib.Algebra.Algebra.Operations
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.BigOperators
+import LeanCamCombi.Mathlib.Algebra.Module.Submodule.Defs
+import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
+import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Algebra.Order.Monoid.Unbundled.Pow
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
@@ -86,12 +90,12 @@ import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Ideal.Span
 import LeanCamCombi.Mathlib.RingTheory.LocalRing.ResidueField.Ideal
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
+import LeanCamCombi.Mathlib.RingTheory.PrimeSpectrum
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.MonovaryOrder
 import LeanCamCombi.OrderShatter
 import LeanCamCombi.PhD.VCDim.Basic
-import LeanCamCombi.RuzsaSzemeredi
 import LeanCamCombi.SimplicialComplex.Basic
 import LeanCamCombi.SimplicialComplex.Finite
 import LeanCamCombi.SimplicialComplex.Pure

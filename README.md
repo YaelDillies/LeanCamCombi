@@ -78,6 +78,7 @@ The following topics have been upstreamed to mathlib and no longer live in LeanC
 * Strongly convex functions
 * The Marica-Schönheim proof of the squarefree special case of Graham's conjecture
 * Visibility of a point through a set
+* The upper bound on the Ruzsa-Szemerédi problem
 
 ## Interacting with the project
 

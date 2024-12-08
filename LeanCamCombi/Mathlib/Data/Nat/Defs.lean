@@ -1,22 +1,15 @@
 import Mathlib.Data.Nat.Defs
 
 namespace Nat
-variable {a b : ℕ}
+variable {m n : ℕ}
 
-@[simp] protected lemma div_eq_zero : a / b = 0 ↔ b = 0 ∨ a < b where
-  mp h := by
-    rw [← mod_add_div a b, h, Nat.mul_zero, Nat.add_zero, or_iff_not_imp_left]
-    exact mod_lt _ ∘ Nat.pos_iff_ne_zero.2
-  mpr := by
-    obtain rfl | hb := eq_or_ne b 0
-    · simp
-    simp only [hb, false_or]
-    rw [← Nat.mul_right_inj hb, ← Nat.add_left_cancel_iff, mod_add_div]
-    simp +contextual [mod_eq_of_lt]
+lemma pow_self_pos : ∀ n : ℕ, 0 < n ^ n
+  | 0 => Nat.zero_lt_one
+  | n + 1 => by simpa [Nat.pow_succ] using Nat.pow_pos n.succ_pos
 
-protected lemma div_ne_zero {a b : ℕ} : a / b ≠ 0 ↔ b ≠ 0 ∧ b ≤ a := by simp
-
-@[simp] protected lemma div_pos' {a b : ℕ} : 0 < a / b ↔ 0 < b ∧ b ≤ a := by
-  simp [Nat.pos_iff_ne_zero]
+lemma pow_self_mul_pow_self_le : m ^ m * n ^ n ≤ (m + n) ^ (m + n) := by
+  rw [Nat.pow_add]
+  exact Nat.mul_le_mul (Nat.pow_le_pow_left (le_add_right ..) _)
+    (Nat.pow_le_pow_left (le_add_left ..) _)
 
 end Nat

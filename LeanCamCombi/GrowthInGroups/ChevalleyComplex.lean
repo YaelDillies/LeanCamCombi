@@ -1,21 +1,17 @@
-import Mathlib.Algebra.Group.Submonoid.Operations
-import Mathlib.Algebra.MvPolynomial.Degrees
-import Mathlib.Algebra.NoZeroSMulDivisors.Defs
-import Mathlib.Algebra.Order.Group.Defs
-import Mathlib.Algebra.Order.Group.Nat
-import Mathlib.Algebra.Star.SelfAdjoint
-import Mathlib.Algebra.Star.StarRingHom
-import Mathlib.Tactic.ContinuousFunctionalCalculus
 import Mathlib.Data.DFinsupp.WellFounded
-import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
+import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
+import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Algebra.Order.Monoid.Unbundled.Pow
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import LeanCamCombi.Mathlib.Data.Finset.Image
+import LeanCamCombi.Mathlib.Data.Nat.Defs
 import LeanCamCombi.Mathlib.Data.Prod.Lex
-import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
+import LeanCamCombi.Mathlib.Order.Monotone.Basic
 import LeanCamCombi.GrowthInGroups.CoeffMem
 import LeanCamCombi.GrowthInGroups.ConstructibleSetData
+import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 import LeanCamCombi.GrowthInGroups.SpanRangeUpdate
 
 variable {R S M A : Type*} [CommRing R] [CommRing S] [AddCommGroup M] [Module R M] [CommRing A]
@@ -181,35 +177,7 @@ lemma foo_induction (n : ℕ)
         Ideal.Quotient.mk_singleton_self, ne_eq, not_true_eq_false, false_or] at h_eq
       exact hi h_eq
 
-universe v
-
-lemma comap_C_eq_comap_localization_union_comap_quotient (s : Set (PrimeSpectrum R[X])) (c : R) :
-    .comap C '' s =
-      comap (algebraMap R (Away c)) '' (comap C ''
-        (comap (mapRingHom (algebraMap R (Away c))) ⁻¹' s)) ∪
-      comap (Ideal.Quotient.mk (.span {c})) '' (comap C ''
-        (comap (mapRingHom (Ideal.Quotient.mk _)) ⁻¹' s)) := by
-  rw [Set.union_comm]
-  simp_rw [← Set.image_comp, ← ContinuousMap.coe_comp, ← comap_comp, ← mapRingHom_comp_C,
-    comap_comp, ContinuousMap.coe_comp, Set.image_comp, Set.image_preimage_eq_inter_range,
-    ← Set.image_union, ← Set.inter_union_distrib_left]
-  letI := (mapRingHom (algebraMap R (Away c))).toAlgebra
-  suffices Set.range (comap (mapRingHom (Ideal.Quotient.mk (.span {c})))) =
-      (Set.range (comap (algebraMap R[X] (Away c)[X])))ᶜ by
-    rw [this, RingHom.algebraMap_toAlgebra, Set.compl_union_self, Set.inter_univ]
-  have := Polynomial.isLocalization (.powers c) (Away c)
-  rw [Submonoid.map_powers] at this
-  have surj : Function.Surjective (mapRingHom (Ideal.Quotient.mk (.span {c}))) :=
-    Polynomial.map_surjective _ Ideal.Quotient.mk_surjective
-  rw [range_comap_of_surjective _ _ surj, localization_away_comap_range _ (C c)]
-  simp [Polynomial.ker_mapRingHom, Ideal.map_span]
-
 attribute [-instance] AddCommGroup.toIntModule
-
-lemma PrimeSpectrum.zeroLocus_smul_of_isUnit {R} [CommRing R] (s : Set R) {r : R} (hr : IsUnit r) :
-    zeroLocus (r • s) = zeroLocus s := by
-  ext
-  simp [Set.subset_def, ← Set.image_smul, Ideal.unit_mul_mem_iff_mem _ hr]
 
 set_option maxHeartbeats 300000 in
 open IsLocalization in
@@ -294,8 +262,7 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
       · rw [Set.preimage_diff, preimage_comap_zeroLocus, preimage_comap_zeroLocus,
           Set.image_singleton, Pi.smul_def, ← Set.smul_set_range, Set.range_comp]
         congr 1
-        refine (PrimeSpectrum.zeroLocus_smul_of_isUnit _ ?_).symm
-        apply IsUnit.map
+        refine (PrimeSpectrum.zeroLocus_smul_of_isUnit (.map _ ?_) _).symm
         exact isUnit_iff_exists_inv'.mpr ⟨_, IsLocalization.Away.mul_invSelf c⟩
       · rw [Set.image_iUnion₂]
         simp_rw [← Finset.mem_coe, S₁, Finset.coe_image, Set.biUnion_image]
@@ -304,22 +271,16 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
         · erw [localization_away_comap_range (S := Localization.Away c) (r := c)]
           rw [sdiff_eq, ← basicOpen_eq_zeroLocus_compl, basicOpen_mul]
           exact Set.inter_subset_right.trans Set.inter_subset_left
-        · exact Set.image_subset_range _ _
+        · exact Set.image_subset_range ..
         · rw [Set.preimage_diff, preimage_comap_zeroLocus, preimage_comap_zeroLocus,
             Set.preimage_image_eq]
-          swap; · exact (localization_specComap_injective _ (.powers c))
+          swap; · exact localization_specComap_injective _ (.powers c)
           simp only [AlgHom.toLinearMap_apply] at hq₁g₁
-          simp_rw [← Set.range_comp, Function.comp_def]
-          simp only [AlgHom.toRingHom_eq_coe, RingHom.coe_coe, hq₁g₁ _ hxT₁, Set.image_singleton,
-            map_mul, ← hf₁]
-          rw [mul_comm x.2.1, ← mul_assoc, ← pow_succ']
-          conv_rhs => rw [← PrimeSpectrum.zeroLocus_smul_of_isUnit _
-            ((isUnit_of_invertible (q₁ c)).pow e₁.powBound),
-            ← PrimeSpectrum.zeroLocus_smul_of_isUnit {_}
-            ((isUnit_of_invertible (q₁ c)).pow (n₁ x.2.1 + 1))]
-          simp only [Set.smul_set_singleton, smul_eq_mul]
-          simp only [← Set.image_smul, ← Set.range_comp]
-          rfl
+          simp only [← Set.range_comp, Function.comp_def, AlgHom.toRingHom_eq_coe, RingHom.coe_coe,
+            hq₁g₁ _ hxT₁, Set.image_singleton, map_mul, ← hf₁, mul_comm x.2.1, ← mul_assoc,
+            ← pow_succ']
+          simp only [← smul_eq_mul, ← Set.smul_set_range, ← Set.smul_set_singleton,
+            zeroLocus_smul_of_isUnit ((isUnit_of_invertible (q₁ c)).pow _)]
     · convert congr(comap q₂ '' $hT₂)
       · rw [Set.preimage_diff, preimage_comap_zeroLocus, preimage_comap_zeroLocus,
           Set.image_singleton, Set.range_comp]
@@ -522,138 +483,6 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet {R} [CommRing R]
       gcongr
       rwa [Nat.one_le_iff_ne_zero]
 
-lemma MvPolynomial.isEmptyRingEquiv_eq_coeff_zero {σ R : Type*} [CommSemiring R] [IsEmpty σ] {x} :
-    MvPolynomial.isEmptyRingEquiv R σ x = x.coeff 0 := by
-  obtain ⟨x, rfl⟩ := (MvPolynomial.isEmptyRingEquiv R σ).symm.surjective x
-  simp
-
-lemma Nat.pow_self_pos (n : ℕ) : 0 < n ^ n := by
-  cases n <;> positivity
-
-lemma Nat.pow_self_mono : Monotone (fun n : ℕ ↦ n ^ n) := by
-  intro n₁ n₂ h
-  cases n₂
-  · simp [show n₁ = 0 by simpa using h]
-  dsimp only
-  gcongr
-  exact Nat.le_add_left _ _
-
-lemma Nat.pow_self_mul_pow_self_le {n m : ℕ} : n ^ n * m ^ m ≤ (n + m) ^ (n + m) := by
-  rw [pow_add]
-  gcongr <;> simp
-
-@[simp]
-lemma Submodule.one_le_iff {R S} [CommSemiring R] [Semiring S] [Module R S] {M : Submodule R S} :
-    1 ≤ M ↔ 1 ∈ M := by
-  rw [Submodule.one_eq_span, Submodule.span_le, Set.singleton_subset_iff, SetLike.mem_coe]
-
-def _root_.Submodule.mvPolynomial {R S : Type*} (σ : Type*) [CommSemiring R] [CommSemiring S] [Module R S]
-    (M : Submodule R S) : Submodule R (MvPolynomial σ S) where
-  carrier := { x | ∀ i, x.coeff i ∈ M }
-  add_mem' := by simp+contextual [add_mem]
-  zero_mem' := by simp
-  smul_mem' := by simp+contextual [Submodule.smul_mem]
-
-@[simp]
-lemma _root_.Submodule.mem_mvPolynomial {R S σ : Type*} [CommSemiring R] [CommSemiring S] [Module R S]
-    {M : Submodule R S} {x : MvPolynomial σ S} :
-    x ∈ M.mvPolynomial σ ↔ ∀ i, x.coeff i ∈ M := Iff.rfl
-
-lemma Submodule.le_mvPolynomial_mul
-  {R S σ : Type*} [CommSemiring R] [CommSemiring S] [Algebra R S]
-    (M N : Submodule R S) :
-    M.mvPolynomial σ * N.mvPolynomial σ ≤ (M * N).mvPolynomial σ := by
-  classical
-  rw [Submodule.mul_le]
-  intros x hx y hy k
-  rw [MvPolynomial.coeff_mul]
-  refine sum_mem fun c hc ↦ Submodule.mul_mem_mul (hx _) (hy _)
-
-lemma Submodule.mvPolynomial_pow_le
-  {R S σ : Type*} [CommSemiring R] [CommSemiring S] [Algebra R S]
-    (M : Submodule R S) (n : ℕ) :
-    M.mvPolynomial σ ^ n ≤ (M ^ n).mvPolynomial σ := by
-  classical
-  induction' n with n IH
-  · simpa [MvPolynomial.coeff_one, apply_ite] using ⟨1, map_one _⟩
-  · exact (Submodule.mul_le_mul IH le_rfl).trans (Submodule.le_mvPolynomial_mul _ _)
-
-def _root_.MvPolynomial.degreesLE (R σ : Type*) [CommSemiring R] (n : Multiset σ) :
-    Submodule R (MvPolynomial σ R) where
-  carrier := { x | x.degrees ≤ n }
-  add_mem' {a b} ha hb := by
-    classical exact (MvPolynomial.degrees_add a b).trans (sup_le ha hb)
-  zero_mem' := by simp
-  smul_mem' c {x} hx := by
-    dsimp
-    rw [Algebra.smul_def]
-    refine (MvPolynomial.degrees_mul _ _).trans ?_
-    simpa [MvPolynomial.degrees_C] using hx
-
-open _root_.MvPolynomial in
-@[simp]
-lemma _root_.MvPolynomial.mem_degreesLE {R σ : Type*} [CommSemiring R] {n : Multiset σ} {x} :
-    x ∈ degreesLE R σ n ↔ x.degrees ≤ n := Iff.rfl
-
-open _root_.MvPolynomial in
-lemma _root_.MvPolynomial.degreesLE_mul {R σ : Type*} [CommSemiring R] {m n : Multiset σ} :
-    degreesLE R σ m * degreesLE R σ n = degreesLE R σ (m + n) := by
-  classical
-  apply le_antisymm
-  · rw [Submodule.mul_le]
-    intro x hx y hy
-    exact (degrees_mul _ _).trans (add_le_add hx hy)
-  · intro x hx
-    rw [x.as_sum]
-    refine sum_mem fun i hi ↦ ?_
-    replace hi : i.toMultiset ≤ m + n := (Finset.le_sup hi).trans hx
-    let a := (i.toMultiset - n).toFinsupp
-    let b := (i.toMultiset ⊓ n).toFinsupp
-    have : a + b = i := Multiset.toFinsupp.symm.injective (by simp [a, b, Multiset.sub_add_inter])
-    have ha : a.toMultiset ≤ m := by simpa [a, add_comm (a := n)] using hi
-    have hb : b.toMultiset ≤ n := by simp [b, Multiset.inter_le_right]
-    have : monomial i (x.coeff i) = monomial a (x.coeff i) * monomial b 1 := by
-      simp [this]
-    rw [this]
-    exact Submodule.mul_mem_mul ((degrees_monomial _ _).trans ha)
-      ((degrees_monomial _ _).trans hb)
-
-open _root_.MvPolynomial in
-@[simp]
-lemma _root_.MvPolynomial.degreesLE_zero {R σ : Type*} [CommSemiring R] :
-    degreesLE R σ 0 = 1 := by
-  apply le_antisymm
-  · intro x hx
-    simp only [mem_degreesLE, nonpos_iff_eq_zero] at hx
-    have := (totalDegree_eq_zero_iff_eq_C (p := x)).mp
-      (Nat.eq_zero_of_le_zero (x.totalDegree_le_degrees_card.trans (by simp [hx])))
-    exact ⟨x.coeff 0, by simp [Algebra.smul_def, ← this]⟩
-  · simp
-
-open _root_.MvPolynomial in
-lemma _root_.MvPolynomial.degreesLE_pow {R σ : Type*} [CommSemiring R] {n : Multiset σ} {k : ℕ} :
-    degreesLE R σ n ^ k = degreesLE R σ (k • n) := by
-  induction' k with k IH
-  · simp
-  · simp only [pow_succ, IH, degreesLE_mul, add_smul, one_smul]
-
-lemma pow_inf_le_inf_pow {M : Type*} [Monoid M] [SemilatticeInf M] [MulLeftMono M] [MulRightMono M]
-    (a b : M) (i : ℕ) : (a ⊓ b) ^ i ≤ a ^ i ⊓ b ^ i :=
-  le_inf (pow_le_pow_left' inf_le_left _) (pow_le_pow_left' inf_le_right _)
-
-lemma Submodule.restrictScalars_pow {A B C : Type*} [Semiring A] [Semiring B]
-    [Semiring C] [SMul A B] [Module A C] [Module B C]
-    [IsScalarTower A C C] [IsScalarTower B C C] [IsScalarTower A B C]
-    {I : Submodule B C} {n : ℕ} (hn : n ≠ 0) :
-    (I ^ n).restrictScalars A = I.restrictScalars A ^ n := by
-  cases' n with n
-  · contradiction
-  induction n with
-  | zero =>
-    simp [Submodule.pow_one]
-  | succ n IH =>
-    simp only [Submodule.pow_succ (n := n + 1), Submodule.restrictScalars_mul, IH (by simp)]
-
 section
 
 mutual
@@ -748,7 +577,7 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
       sorry -- Do we not have `PrimeSpectrum.comap` as an iso?
     · simp only [Sigma.map, ne_eq, RingEquiv.toRingHom_eq_coe, Finset.mem_image,
         Prod.exists, forall_exists_index, and_imp, ConstructibleSetData.map, id_eq,
-        RingHom.coe_coe, δ_zero, ν_zero, one_mul, pow_one, MvPolynomial.isEmptyRingEquiv_eq_coeff_zero,
+        RingHom.coe_coe, δ_zero, ν_zero, one_mul, pow_one, MvPolynomial.isEmptyRingEquiv_apply',
         forall_apply_eq_imp_iff₂, comp_apply]
       exact fun a haS ↦ ⟨hSn a haS, fun i ↦ (hS a haS i).1 0⟩
   let e : MvPolynomial (Fin (n + 1)) R ≃ₐ[R] (MvPolynomial (Fin n) R)[X] :=
@@ -798,19 +627,15 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
             Multiset.toFinsupp_apply, ← MvPolynomial.degreeOf_def] at hS ⊢
           intro a
           exact (MvPolynomial.degreeOf_coeff_finSuccEquiv (g j) a k).trans (hS _))
-  have (C) (hCT) (k) := SetLike.le_def.mp
-    ((pow_inf_le_inf_pow _ _ _))
-    ((hT₂ C hCT).2 k)
-  replace this (C) (hCT) (k) := SetLike.le_def.mp
-    (inf_le_inf (Submodule.mvPolynomial_pow_le _ _) le_rfl)
+  have (C hCT k) := SetLike.le_def.mp pow_inf_le ((hT₂ C hCT).2 k)
+  replace this (C hCT k) := SetLike.le_def.mp (inf_le_inf_right _ Submodule.mvPolynomial_pow_le)
     (this C hCT k)
   let N := (k * (1 + d.count 0)) ^ (k * (1 + d.count 0))
   have (C) (hCT : C ∈ T) (a) : C.snd.2 a ∈ (M ^ N).mvPolynomial (Fin n) ⊓
         (MvPolynomial.degreesLE R (Fin n) (N • B)).restrictScalars ℤ := by
     refine SetLike.le_def.mp ?_ ((hT₂ C hCT).2 a)
-    refine (pow_inf_le_inf_pow _ _ _).trans (inf_le_inf ?_ ?_)
-    · refine (pow_le_pow_right' ?_ (Nat.pow_self_mono hS')).trans
-        (Submodule.mvPolynomial_pow_le M N)
+    refine pow_inf_le.trans (inf_le_inf ?_ ?_)
+    · refine (pow_le_pow_right' ?_ (Nat.pow_self_mono hS')).trans Submodule.mvPolynomial_pow_le
       simpa [MvPolynomial.coeff_one, apply_ite] using hM
     · rw [← MvPolynomial.degreesLE_pow,
         Submodule.restrictScalars_pow (Nat.pow_self_pos _).ne']

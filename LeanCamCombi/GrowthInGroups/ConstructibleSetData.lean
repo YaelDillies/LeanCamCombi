@@ -25,17 +25,17 @@ lemma map_comp [DecidableEq S] [DecidableEq T] (f : S →+* T) (g : R →+* S)
     (s : ConstructibleSetData R) : s.map (f.comp g) = (s.map g).map f := by
   unfold map Sigma.map; simp [image_image, Function.comp_def]
 
-
 /-! ### Rings -/
 
 open scoped Classical in
-noncomputable
-def reduce (S : ConstructibleSetData R) : ConstructibleSetData R :=
-  S.image fun ⟨_, r, f⟩ ↦ ⟨#{ x | f x ≠ 0 }, r, f ∘ Subtype.val ∘ (Finset.equivFin _).symm⟩
+/-- Remove the zero polynomials from the data of a constructible set. -/
+noncomputable def reduce (S : ConstructibleSetData R) : ConstructibleSetData R :=
+  S.image fun ⟨_, r, f⟩ ↦ ⟨#{x | f x ≠ 0}, r, f ∘ Subtype.val ∘ (Finset.equivFin _).symm⟩
 
 def toSet (S : ConstructibleSetData R) : Set (PrimeSpectrum R) :=
   ⋃ x ∈ S, zeroLocus (Set.range x.2.2) \ zeroLocus {x.2.1}
 
+@[simp]
 lemma toSet_reduce (S : ConstructibleSetData R) : S.reduce.toSet = S.toSet := by
   classical
   unfold toSet reduce
