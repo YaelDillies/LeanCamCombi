@@ -69,7 +69,8 @@ open MulAction in
 open scoped RightActions in
 lemma fact_3_10 (hA : #(A * A) ≤ #A) :
     ∃ H : Subgroup G, ∀ a ∈ A, a •> (H : Set G) = A ∧ (H : Set G) <• a = A :=
-  exists_subgroup_of_no_doubling hA
+  ⟨stabilizer G A, fun _a ha ↦
+    ⟨smul_stabilizer_of_no_doubling hA ha, op_smul_stabilizer_of_no_doubling hA ha⟩⟩
 
 open scoped Classical RightActions in
 lemma lemma_3_11 (hA : #(A * A) < (3 / 2 : ℚ) * #A) :

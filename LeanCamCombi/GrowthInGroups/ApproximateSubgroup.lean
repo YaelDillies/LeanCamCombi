@@ -5,6 +5,7 @@ import Mathlib.Combinatorics.Additive.RuzsaCovering
 import Mathlib.Combinatorics.Additive.SmallTripling
 import Mathlib.Tactic.Bound
 import LeanCamCombi.Mathlib.Data.Set.Lattice
+import LeanCamCombi.GrowthInGroups.NoDoubling
 
 -- TODO: Unsimp in mathlib
 attribute [-simp] Set.image_subset_iff
@@ -54,6 +55,10 @@ lemma card_pow_le [DecidableEq G] {A : Finset G} (hA : IsApproximateSubgroup K (
       _ ≤ #(F ^ (n + 1)) * #A := mod_cast Finset.card_mul_le
       _ ≤ #F ^ (n + 1) * #A := by gcongr; exact mod_cast Finset.card_pow_le
       _ ≤ K ^ (n + 1) * #A := by gcongr
+
+@[to_additive]
+lemma card_mul_self_le [DecidableEq G] {A : Finset G} (hA : IsApproximateSubgroup K (A : Set G)) :
+    #(A * A) ≤ K * #A := by simpa [sq] using hA.card_pow_le (n := 2)
 
 @[to_additive]
 lemma image {F H : Type*} [Group H] [FunLike F G H] [MonoidHomClass F G H] (f : F)
@@ -151,11 +156,25 @@ lemma pow_inter_pow (hA : IsApproximateSubgroup K A) (hB : IsApproximateSubgroup
 
 end IsApproximateSubgroup
 
-@[to_additive (attr := simp)]
-lemma isApproximateSubgroup_one {S : Type*} [SetLike S G] [SubgroupClass S G] {A : Set G} :
-    IsApproximateSubgroup 1 (A : Set G) ↔ ∃ H : Subgroup G, A = H := by
-  refine ⟨fun hA ↦ ?_, by rintro ⟨H, rfl⟩; exact .subgroup⟩
-  sorry
+open MulAction in
+/-- A finite `1`-approximate subgroup is the same thing as a finite subgroup.
+
+Note that various sources claim this with no proof, some of them without the necessary assumptions
+to make it true (eg Wikipedia before I fixed it). -/
+@[to_additive (attr := simp)
+"A finite `1`-approximate subgroup is the same thing as a finite subgroup.
+
+Note that various sources claim this with no proof, some of them without the necessary assumptions
+to make it true (eg Wikipedia before I fixed it)."]
+lemma isApproximateSubgroup_one {S : Type*} [SetLike S G] [SubgroupClass S G] {A : Set G}
+    (hA : A.Finite) :
+    IsApproximateSubgroup 1 (A : Set G) ↔ ∃ H : Subgroup G, H = A where
+  mp hA' := by
+    classical
+    lift A to Finset G using hA
+    exact ⟨stabilizer G A, by simpa using
+      Finset.smul_stabilizer_of_no_doubling (by simpa using hA'.card_mul_self_le) hA'.one_mem⟩
+  mpr := by rintro ⟨H, rfl⟩; exact .subgroup
 
 open Finset in
 open scoped RightActions in
