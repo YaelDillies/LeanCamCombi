@@ -101,5 +101,8 @@ import LeanCamCombi.SimplicialComplex.Simplex
 import LeanCamCombi.SimplicialComplex.Skeleton
 import LeanCamCombi.SimplicialComplex.Subdivision
 import LeanCamCombi.SliceRank
+import LeanCamCombi.StableCombi.AddSet
+import LeanCamCombi.StableCombi.Formula
+import LeanCamCombi.StableCombi.Rel
 import LeanCamCombi.SylvesterChvatal
 import LeanCamCombi.VanDenBergKesten

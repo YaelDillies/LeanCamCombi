@@ -11,7 +11,8 @@ The purpose of this repository is to *digitise* some mathematical definitions, t
 
 ### The source
 
-The definitions, theorems and proofs in this repository are (mostly) taken from five Cambridge courses, as well as a course from ETH Zürich:
+The definitions, theorems and proofs in this repository are (mostly) taken from six Cambridge courses, as well as a course from ETH Zürich:
+* Part IV Connections between Model Theory and Combinatorics, Lent 2019, lectured by Julia Wolf
 * Part II Graph Theory, Michaelmas 2022, lectured by Julian Sahasrabudhe
 * Part III Combinatorics, Michaelmas 2022 & [Michaelmas 2023](https://github.com/YaelDillies/maths-notes/blob/master/combinatorics.pdf), lectured by Béla Bollobás
 * Part III Extremal and Probabilistic Combinatorics, Michaelmas 2023, lectured by Julian Sahasrabudhe
@@ -47,6 +48,7 @@ The following topics are under active development in LeanCamCombi.
 * The Minkowski-Carathéodory theorem
 * Approximate subgroups
 * Chevalley's theorem about constructible sets
+* Model theoretic stability and its relation to additive combinatorics
 
 See the [upstreaming dashboard](https://yaeldillies.github.io/LeanCamCombi/upstreaming) for more information.
 
