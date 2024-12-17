@@ -3,8 +3,8 @@ Copyright (c) 2024 Yaël Dillies, Patrick Luo. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Patrick Luo
 -/
+import Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import Mathlib.GroupTheory.GroupAction.Defs
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 
 /-!
 # Sets with no doubling

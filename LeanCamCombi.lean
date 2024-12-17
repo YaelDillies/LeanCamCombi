@@ -14,7 +14,6 @@ import LeanCamCombi.GraphTheory.ExampleSheet2
 import LeanCamCombi.GroupMarking
 import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
 import LeanCamCombi.GrowthInGroups.BooleanSubalgebra
-import LeanCamCombi.GrowthInGroups.CardPowGeneratingSet
 import LeanCamCombi.GrowthInGroups.CardQuotient
 import LeanCamCombi.GrowthInGroups.Chevalley
 import LeanCamCombi.GrowthInGroups.ChevalleyComplex
@@ -26,9 +25,9 @@ import LeanCamCombi.GrowthInGroups.Lecture1
 import LeanCamCombi.GrowthInGroups.Lecture2
 import LeanCamCombi.GrowthInGroups.Lecture3
 import LeanCamCombi.GrowthInGroups.Lecture4
+import LeanCamCombi.GrowthInGroups.LinearLowerBound
 import LeanCamCombi.GrowthInGroups.NoDoubling
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
-import LeanCamCombi.GrowthInGroups.SMulCover
 import LeanCamCombi.GrowthInGroups.SpanRangeUpdate
 import LeanCamCombi.GrowthInGroups.VerySmallDoubling
 import LeanCamCombi.GrowthInGroups.WithBotSucc
@@ -39,7 +38,6 @@ import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.LittlewoodOfford
 import LeanCamCombi.Mathlib.Algebra.Algebra.Operations
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.BigOperators
 import LeanCamCombi.Mathlib.Algebra.Module.Submodule.Defs
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
@@ -82,9 +80,9 @@ import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.OpenPos
 import LeanCamCombi.Mathlib.Order.Flag
+import LeanCamCombi.Mathlib.Order.Monotone.Basic
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.RelIso.Group
-import LeanCamCombi.Mathlib.Order.SupClosed
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Ideal.Span

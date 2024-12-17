@@ -2,7 +2,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Combinatorics.Additive.DoublingConst
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
-import LeanCamCombi.GrowthInGroups.CardPowGeneratingSet
+import LeanCamCombi.GrowthInGroups.LinearLowerBound
 import LeanCamCombi.GrowthInGroups.NoDoubling
 import LeanCamCombi.GrowthInGroups.VerySmallDoubling
 
@@ -68,7 +68,7 @@ lemma theorem_3_9 :
 open MulAction in
 open scoped RightActions in
 lemma fact_3_10 (hA : #(A * A) ≤ #A) :
-    ∃ H : Subgroup G, ∀ a ∈ A, a •> (H : Set G) = A ∧ (H : Set G) <• a = A := 
+    ∃ H : Subgroup G, ∀ a ∈ A, a •> (H : Set G) = A ∧ (H : Set G) <• a = A :=
   exists_subgroup_of_no_doubling hA
 
 open scoped Classical RightActions in

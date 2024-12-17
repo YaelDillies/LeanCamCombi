@@ -3,7 +3,6 @@ Copyright (c) 2023 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
-import Mathlib.Algebra.BigOperators.Group.Finset
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 
 /-!
@@ -212,7 +211,7 @@ noncomputable def labelledCopyCount (G : SimpleGraph α) (H : SimpleGraph β) : 
   exact { default := ⟨default, isEmptyElim⟩, uniq := fun _ ↦ Subsingleton.elim _ _ }
 
 @[simp] lemma labelledCopyCount_eq_zero : G.labelledCopyCount H = 0 ↔ ¬ G ⊑ H := by
-  simp [labelledCopyCount, IsContained, Fintype.card_eq_zero_iff]
+  simp [labelledCopyCount, IsContained, Fintype.card_eq_zero_iff, isEmpty_subtype]
 
 @[simp] lemma labelledCopyCount_pos : 0 < G.labelledCopyCount H ↔ G ⊑ H := by
   simp [labelledCopyCount, IsContained, Fintype.card_pos_iff]

@@ -4,13 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Bhavik Mehta
 -/
 import Mathlib.Algebra.BigOperators.Ring
-import Mathlib.Algebra.Group.Subgroup.Pointwise
+import Mathlib.Algebra.Group.Pointwise.Finset.Basic
+import Mathlib.Algebra.Group.Subgroup.Defs
+import Mathlib.Algebra.Group.Submonoid.Pointwise
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Data.Set.Card
+import Mathlib.SetTheory.Cardinal.Finite
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Qify
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Finset.Basic
-import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 
 open Finset MulOpposite
 open scoped Pointwise
