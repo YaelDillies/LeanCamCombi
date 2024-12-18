@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Kexing Ying
 -/
 import Mathlib.Combinatorics.SimpleGraph.Finite
-import LeanCamCombi.BernoulliSeq
+import LeanCamCombi.ExtrProbCombi.BernoulliSeq
 
 /-!
 # The Erdős–Rényi model

@@ -6,9 +6,9 @@ Authors: Yaël Dillies
 import Mathlib.Analysis.Asymptotics.Asymptotics
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.MeasureTheory.Measure.Typeclasses
-import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Containment
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
-import LeanCamCombi.ErdosRenyi.Basic
+import LeanCamCombi.ExtrProbCombi.Basic
+import LeanCamCombi.ExtrProbCombi.Containment
 
 /-!
 # Bollobás' graph containment lemma

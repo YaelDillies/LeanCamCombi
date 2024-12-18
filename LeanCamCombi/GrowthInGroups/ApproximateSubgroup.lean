@@ -3,9 +3,8 @@ import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 import Mathlib.Combinatorics.Additive.CovBySMul
 import Mathlib.Combinatorics.Additive.RuzsaCovering
 import Mathlib.Combinatorics.Additive.SmallTripling
+import Mathlib.Combinatorics.Additive.VerySmallDoubling
 import Mathlib.Tactic.Bound
-import LeanCamCombi.Mathlib.Data.Set.Lattice
-import LeanCamCombi.GrowthInGroups.NoDoubling
 
 -- TODO: Unsimp in mathlib
 attribute [-simp] Set.image_subset_iff

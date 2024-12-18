@@ -1,5 +1,5 @@
+import Mathlib.Geometry.Group.Growth.QuotientInter
 import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
-import LeanCamCombi.GrowthInGroups.CardQuotient
 
 open Finset
 open scoped Pointwise
@@ -40,7 +40,7 @@ lemma lemma_5_7 (hA : A⁻¹ = A) (hB : B⁻¹ = B) (x y : G) :
 open scoped Classical in
 lemma lemma_5_8_1 {H : Subgroup G} [H.Normal] {A : Finset G} :
     #((A ^ m).image <| QuotientGroup.mk' H) * #{x ∈ A ^ n | x ∈ H} ≤ #(A ^ (m + n)) :=
-  card_pow_quotient_mul_pow_inter_subgroup
+  card_pow_quotient_mul_pow_inter_subgroup_le
 
 open scoped Classical in
 lemma lemma_5_8_2 {H : Subgroup G} [H.Normal] {A : Finset G} (hAsymm : A⁻¹ = A) :
