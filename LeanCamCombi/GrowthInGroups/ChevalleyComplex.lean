@@ -560,6 +560,12 @@ lemma ν_le_ν (hk : k₁ ≤ k₂) : ∀ (n) (_ : ∀ i < n, D₁ i ≤ D₂ i)
 
 end
 
+lemma δ_pos (k : ℕ) (D : ℕ → ℕ) : ∀ n, 0 < δ k D n
+  | 0 => by simp
+  | (n + 1) => by
+    simp only [δ_succ, CanonicallyOrderedCommSemiring.mul_pos]
+    exact ⟨Nat.pow_self_pos _, δ_pos _ _ _⟩
+
 lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
     {M : Submodule ℤ R} (hM : 1 ∈ M) (k : ℕ) (d : Multiset (Fin n))
     (S : ConstructibleSetData (MvPolynomial (Fin n) R))
@@ -678,3 +684,151 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
   · refine (Nat.mul_le_mul le_rfl (δ_le_δ hS' _ fun _ _ ↦ ?_)).trans
       ((δ_casesOn_succ k _ _ _).symm.trans_le (δ_le_δ le_rfl _ this))
     simp+contextual [mul_add, Nat.one_le_iff_ne_zero]
+
+theorem MvPolynomial.degrees_map_le {σ S} [CommSemiring S] (p : MvPolynomial σ R) (f : R →+* S) :
+    (MvPolynomial.map f p).degrees ≤ p.degrees := by
+  classical
+  dsimp only [MvPolynomial.degrees]
+  apply Finset.sup_mono
+  apply MvPolynomial.support_map_subset
+
+theorem MvPolynomial.degrees_sub {σ R} [CommRing R] [DecidableEq σ] (p q : MvPolynomial σ R) :
+    (p - q).degrees ≤ p.degrees ⊔ q.degrees := by
+  simp_rw [MvPolynomial.degrees_def]; exact AddMonoidAlgebra.supDegree_sub_le
+
+lemma Set.diff_inter_right_comm {α} {s t u : Set α} : s \ t ∩ u = (s ∩ u) \ t := by
+  ext; simp [and_right_comm]
+
+noncomputable
+def MvPolynomial.commAlgEquiv (R S₁ S₂ : Type*) [CommSemiring R] :
+    MvPolynomial S₁ (MvPolynomial S₂ R) ≃ₐ[R] MvPolynomial S₂ (MvPolynomial S₁ R) :=
+  (MvPolynomial.sumAlgEquiv R S₁ S₂).symm.trans
+    ((MvPolynomial.renameEquiv _ (Equiv.sumComm S₁ S₂)).trans (MvPolynomial.sumAlgEquiv R S₂ S₁))
+
+lemma MvPolynomial.commAlgEquiv_C {R S₁ S₂ : Type*} [CommSemiring R] (p) :
+    MvPolynomial.commAlgEquiv R S₁ S₂ (.C p) = .map MvPolynomial.C p := by
+  suffices (MvPolynomial.commAlgEquiv R S₁ S₂).toAlgHom.comp
+      (IsScalarTower.toAlgHom R (MvPolynomial S₂ R) _) =
+        MvPolynomial.mapAlgHom (Algebra.ofId _ _) by
+    exact DFunLike.congr_fun this p
+  ext x : 1
+  simp [commAlgEquiv]
+
+lemma MvPolynomial.commAlgEquiv_C_X {R S₁ S₂ : Type*} [CommSemiring R] (i) :
+    MvPolynomial.commAlgEquiv R S₁ S₂ (.C (.X i)) = .X i := by
+  simp [commAlgEquiv_C]
+
+lemma MvPolynomial.commAlgEquiv_X {R S₁ S₂ : Type*} [CommSemiring R] (i) :
+    MvPolynomial.commAlgEquiv R S₁ S₂ (.X i) = .C (.X i) := by
+  simp [commAlgEquiv]
+
+lemma chevalley_mvPolynomial_mvPolynomial
+    {n m : ℕ} (f : MvPolynomial (Fin m) R →ₐ[R] MvPolynomial (Fin n) R)
+    (k : ℕ) (d : Multiset (Fin n))
+    (S : ConstructibleSetData (MvPolynomial (Fin n) R))
+    (hSn : ∀ x ∈ S, x.1 ≤ k)
+    (hS : ∀ x ∈ S, ∀ j, (x.2.2 j).degrees ≤ d)
+    (hf : ∀ i, (f (.X i)).degrees ≤ d) :
+    ∃ T : ConstructibleSetData (MvPolynomial (Fin m) R),
+      comap f '' S.toSet = T.toSet ∧
+      ∀ C ∈ T, C.1 ≤ ν (k + m) (fun i ↦ 1 + Multiset.count i (Multiset.map Fin.val d)) n ∧
+        ∀ i j, MvPolynomial.degreeOf j (C.2.2 i) ≤
+          δ (k + m) (fun i ↦ 1 + (d.map Fin.val).count i) n := by
+  classical
+  let g : MvPolynomial (Fin n) (MvPolynomial (Fin m) R) →+* MvPolynomial (Fin n) R :=
+    MvPolynomial.eval₂Hom f.toRingHom MvPolynomial.X
+  have hg : g.comp (algebraMap (MvPolynomial (Fin m) R) _) = f := by
+    ext x : 2 <;> simp [g]
+  let σ : MvPolynomial (Fin n) R →+* MvPolynomial (Fin n) (MvPolynomial (Fin m) R) :=
+    MvPolynomial.map (algebraMap _ _)
+  have hσ : g.comp σ = .id _ := by ext : 2 <;> simp [g, σ]
+  have hσ' (x) : g (σ x) = x := DFunLike.congr_fun hσ x
+  have hg' : Function.Surjective g := LeftInverse.surjective hσ'
+  let S' : ConstructibleSetData (MvPolynomial (Fin n) (MvPolynomial (Fin m) R)) := S.image
+    fun ⟨k, fk, gk⟩ ↦ ⟨k + m, σ fk, fun s ↦ (finSumFinEquiv.symm s).elim (σ ∘ gk)
+      fun i ↦ .C (.X i) - σ (f (.X i))⟩
+  let s₀ : Set (MvPolynomial (Fin n) (MvPolynomial (Fin m) R)) :=
+    Set.range fun i ↦ .C (.X i) - σ (f (.X i))
+  have hs : zeroLocus s₀ = Set.range (comap g) := by
+    rw [range_comap_of_surjective _ _ hg', ← zeroLocus_span]
+    congr! 2
+    have H : Ideal.span s₀ ≤ RingHom.ker g := by
+      simp only [Ideal.span_le, Set.range_subset_iff, SetLike.mem_coe, RingHom.mem_ker, map_sub,
+        hσ', s₀]
+      simp [g]
+    refine H.antisymm fun p hp ↦ ?_
+    obtain ⟨q₁, q₂, hq₁, rfl⟩ : ∃ q₁ q₂, q₁ ∈ Ideal.span s₀ ∧ p = q₁ + σ q₂ := by
+      clear hp
+      obtain ⟨p, rfl⟩ := (MvPolynomial.commAlgEquiv _ _ _).surjective p
+      simp_rw [← (MvPolynomial.commAlgEquiv R (Fin m) (Fin n)).symm.injective.eq_iff,
+        AlgEquiv.symm_apply_apply]
+      induction p using MvPolynomial.induction_on with
+      | h_C q =>
+        exact ⟨0, q, by simp, (MvPolynomial.commAlgEquiv _ _ _).injective <|
+          by simp [MvPolynomial.commAlgEquiv_C, σ]⟩
+      | h_add p q hp hq =>
+        obtain ⟨q₁, q₂, hq₁, rfl⟩ := hp
+        obtain ⟨q₃, q₄, hq₃, rfl⟩ := hq
+        refine ⟨q₁ + q₃, q₂ + q₄, add_mem hq₁ hq₃, by simp only [map_add, add_add_add_comm]⟩
+      | h_X p i hp =>
+        obtain ⟨q₁, q₂, hq₁, rfl⟩ := hp
+        simp only [← (MvPolynomial.commAlgEquiv R (Fin m) (Fin n)).injective.eq_iff,
+          map_mul, AlgEquiv.apply_symm_apply, MvPolynomial.commAlgEquiv_X]
+        refine ⟨q₁ * .C (.X i) + σ q₂ * (.C (.X i) - σ (f (.X i))), q₂ * f (.X i), ?_, ?_⟩
+        · exact add_mem (Ideal.mul_mem_right _ _ hq₁)
+            (Ideal.mul_mem_left _ _ (Ideal.subset_span (Set.mem_range_self _)))
+        · simp; ring
+    obtain rfl : q₂ = 0 := by simpa [hσ', show g q₁ = 0 from H hq₁] using hp
+    simpa using hq₁
+  have hg'' (t) : comap g '' t = comap σ ⁻¹' t ∩ zeroLocus s₀ := by
+    refine Set.injOn_preimage (f := comap g) subset_rfl ?_ ?_ ?_
+    · simp
+    · simp [hs]
+    · rw [Set.preimage_image_eq _ (comap_injective_of_surjective g hg'),
+        Set.preimage_inter, hs, Set.preimage_range, Set.inter_univ,
+        ← Set.preimage_comp, ← ContinuousMap.coe_comp, ← comap_comp, hσ]
+      simp only [comap_id, ContinuousMap.coe_id, Set.preimage_id_eq, id_eq]
+  have hS' : comap g '' S.toSet = S'.toSet := by
+    simp only [S', ConstructibleSetData.toSet, Set.image_iUnion₂, Finset.set_biUnion_finset_image,
+      ← Function.comp_def (g := finSumFinEquiv.symm), Set.range_comp,
+      Equiv.range_eq_univ, Set.image_univ, Set.Sum.elim_range,
+      Set.image_diff (hf := comap_injective_of_surjective g hg'), zeroLocus_union]
+    simp [hg'', ← Set.inter_diff_distrib_right, Set.diff_inter_right_comm]
+  obtain ⟨T, hT, hT'⟩ :=
+    exists_constructibleSetData_comap_C_toSet_eq_toSet'
+    (M := (MvPolynomial.degreesLE R (Fin m) Finset.univ.1).restrictScalars ℤ) (by simp) (k + m) d S'
+    (Finset.forall_mem_image.mpr fun x hx ↦ (by simpa using hSn _ hx))
+    (Finset.forall_mem_image.mpr fun x hx ↦ by
+      intro j
+      obtain ⟨j, rfl⟩ := finSumFinEquiv.surjective j
+      simp only [Equiv.symm_apply_apply, Submodule.mem_inf, Submodule.mem_mvPolynomial,
+        implies_true, Submodule.restrictScalars_mem, MvPolynomial.mem_degreesLE,
+        true_and]
+      constructor
+      · intro i
+        cases' j with j j
+        · simp [σ, MvPolynomial.coeff_map, MvPolynomial.degrees_C]
+        · simp only [MvPolynomial.algebraMap_eq, Sum.elim_inr, MvPolynomial.coeff_sub,
+            MvPolynomial.coeff_C, MvPolynomial.coeff_map, σ]
+          refine (MvPolynomial.degrees_sub _ _).trans ?_
+          simp only [MvPolynomial.degrees_C, apply_ite, MvPolynomial.degrees_zero]
+          simp only [zero_le, sup_of_le_left]
+          split_ifs with h
+          · refine (MvPolynomial.degrees_X' _).trans ?_
+            simp
+          · simp
+      · cases' j with j j
+        · simp only [MvPolynomial.algebraMap_eq, Sum.elim_inl, comp_apply, σ]
+          exact (MvPolynomial.degrees_map_le _ _).trans (hS _ hx j)
+        · refine (MvPolynomial.degrees_sub _ _).trans ?_
+          simp only [MvPolynomial.degrees_C, zero_le, sup_of_le_right]
+          exact (MvPolynomial.degrees_map_le _ _).trans (hf _))
+  refine ⟨T, ?_, fun C hCT ↦ ⟨(hT' C hCT).1, fun i j ↦ ?_⟩⟩
+  · rwa [← hg, comap_comp, ContinuousMap.coe_comp, Set.image_comp, hS']
+  · have := (hT' C hCT).2 i
+    rw [← Submodule.restrictScalars_pow (hn := (δ_pos _ _ _).ne'), MvPolynomial.degreesLE_pow,
+      Submodule.restrictScalars_mem, MvPolynomial.mem_degreesLE,
+        Multiset.le_iff_count] at this
+    simp only [Multiset.count_nsmul, Multiset.count_univ, mul_one] at this
+    replace this := this j
+    rwa [← MvPolynomial.degreeOf_def] at this
