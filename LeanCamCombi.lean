@@ -67,7 +67,6 @@ import LeanCamCombi.Mathlib.Data.Nat.GCD.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Data.Set.Basic
 import LeanCamCombi.Mathlib.Data.Set.Function
-import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Pairwise.Lattice
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement

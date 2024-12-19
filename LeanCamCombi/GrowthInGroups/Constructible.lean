@@ -5,7 +5,6 @@ Authors: Yaël Dillies
 -/
 import Mathlib.Order.BooleanSubalgebra
 import Mathlib.Topology.Spectral.Hom
-import LeanCamCombi.Mathlib.Data.Set.Image
 
 /-!
 # Constructible sets
@@ -71,7 +70,7 @@ lemma IsRetroCompact.preimage_of_isClosedEmbedding {s : Set β} (hf : IsClosedEm
     (hf' : IsCompact (Set.range f)ᶜ) (hs : IsRetroCompact s)  : IsRetroCompact (f ⁻¹' s) := by
   rintro U hUcomp hUopen
   have hfUopen : IsOpen (f '' U ∪ (range f)ᶜ) := by
-    simpa [image_compl_eq_range_sdiff_image hf.injective, sdiff_eq, compl_inter, union_comm]
+    simpa [← range_diff_image hf.injective, sdiff_eq, compl_inter, union_comm]
       using (hf.isClosedMap _ hUopen.isClosed_compl).isOpen_compl
   have hfUcomp : IsCompact (f '' U ∪ (range f)ᶜ) := (hUcomp.image hf.continuous).union hf'
   simpa [inter_union_distrib_left, inter_left_comm, inter_eq_right.2 (image_subset_range ..),
@@ -178,7 +177,7 @@ lemma IsConstructible.image_of_isOpenEmbedding (hfopen : IsOpenEmbedding f)
       hfopen.isOpenMap _ hUopen
   | union s hs t ht hs' ht' => rw [image_union]; exact hs'.union ht'
   | compl s hs hs' =>
-    rw [image_compl_eq_range_sdiff_image hfopen.injective]
+    rw [← range_diff_image hfopen.injective]
     exact (hfcomp.isConstructible hfopen.isOpen_range).sdiff hs'
 
 @[stacks 09YG]
@@ -187,7 +186,7 @@ lemma IsConstructible.image_of_isClosedEmbedding (hf : IsClosedEmbedding f)
   induction hs using IsConstructible.empty_union_induction with
   | open_retrocompact U hUopen hUcomp =>
     have hfU : IsOpen (f '' U ∪ (range f)ᶜ) := by
-      simpa [image_compl_eq_range_sdiff_image hf.injective, sdiff_eq, compl_inter, union_comm]
+      simpa [← range_diff_image hf.injective, sdiff_eq, compl_inter, union_comm]
         using (hf.isClosedMap _ hUopen.isClosed_compl).isOpen_compl
     suffices h : IsRetroCompact (f '' U ∪ (range f)ᶜ) by
       simpa [union_inter_distrib_right, inter_eq_left.2 (image_subset_range ..)]
@@ -198,7 +197,7 @@ lemma IsConstructible.image_of_isClosedEmbedding (hf : IsClosedEmbedding f)
       hf.continuous).union <| hfcomp hVcomp hVopen
   | union s hs t ht hs' ht' => rw [image_union]; exact hs'.union ht'
   | compl s hs hs' =>
-    rw [image_compl_eq_range_sdiff_image hf.injective]
+    rw [← range_diff_image hf.injective]
     exact (hfcomp.isConstructible hf.isClosed_range.isOpen_compl).of_compl.sdiff hs'
 
 section CompactSpace
