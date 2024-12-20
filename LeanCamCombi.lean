@@ -16,7 +16,6 @@ import LeanCamCombi.GroupMarking
 import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
 import LeanCamCombi.GrowthInGroups.Chevalley
 import LeanCamCombi.GrowthInGroups.ChevalleyComplex
-import LeanCamCombi.GrowthInGroups.CoeffMem
 import LeanCamCombi.GrowthInGroups.Constructible
 import LeanCamCombi.GrowthInGroups.ConstructiblePrimeSpectrum
 import LeanCamCombi.GrowthInGroups.ConstructibleSetData
@@ -37,6 +36,7 @@ import LeanCamCombi.Mathlib.Algebra.Algebra.Operations
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.BigOperators
 import LeanCamCombi.Mathlib.Algebra.Module.Submodule.Defs
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
+import LeanCamCombi.Mathlib.Algebra.MvPolynomial.CommRing
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Algebra.Order.Monoid.Unbundled.Pow
@@ -57,16 +57,13 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Maps
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Multipartite
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Data.Finset.Basic
-import LeanCamCombi.Mathlib.Data.Finset.Image
 import LeanCamCombi.Mathlib.Data.Finset.PosDiffs
 import LeanCamCombi.Mathlib.Data.Finset.Powerset
 import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
 import LeanCamCombi.Mathlib.Data.Nat.Defs
-import LeanCamCombi.Mathlib.Data.Nat.GCD.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Data.Set.Basic
-import LeanCamCombi.Mathlib.Data.Set.Function
 import LeanCamCombi.Mathlib.Data.Set.Pairwise.Lattice
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement

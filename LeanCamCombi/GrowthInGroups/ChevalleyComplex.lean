@@ -1,3 +1,4 @@
+import Mathlib.Algebra.Polynomial.CoeffMem
 import Mathlib.Data.DFinsupp.WellFounded
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
@@ -5,11 +6,10 @@ import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Algebra.Order.Monoid.Unbundled.Pow
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
-import LeanCamCombi.Mathlib.Data.Finset.Image
 import LeanCamCombi.Mathlib.Data.Nat.Defs
 import LeanCamCombi.Mathlib.Data.Prod.Lex
+import LeanCamCombi.Mathlib.Data.Set.Basic
 import LeanCamCombi.Mathlib.Order.Monotone.Basic
-import LeanCamCombi.GrowthInGroups.CoeffMem
 import LeanCamCombi.GrowthInGroups.ConstructibleSetData
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 import LeanCamCombi.GrowthInGroups.SpanRangeUpdate
@@ -43,9 +43,14 @@ lemma coeffSubmodule_mapRingHom_comp (e : InductionObj R n) (f : R →+* S) :
 
 variable {e T : InductionObj R n}
 
+lemma coeff_mem_coeffSubmodule {i : Fin n} {d : ℕ} : (e.val i).coeff d ∈ e.coeffSubmodule :=
+  Submodule.subset_span <| .inr <| Set.mem_iUnion.2 ⟨i, Set.mem_range_self _⟩
+
+lemma one_mem_coeffSubmodule : 1 ∈ e.coeffSubmodule := Submodule.subset_span (.inl rfl)
+
 lemma one_le_coeffSubmodule : 1 ≤ e.coeffSubmodule := by
   rw [Submodule.one_eq_span, Submodule.span_le, Set.singleton_subset_iff]
-  exact Submodule.subset_span (.inl rfl)
+  exact one_mem_coeffSubmodule
 
 variable (n) in
 abbrev DegreeType := (Fin n → WithBot ℕ) ×ₗ Prop
@@ -429,20 +434,11 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
       · intro l m
         rw [Function.update_apply]
         split_ifs with hlj
-        · refine SetLike.le_def.mp ?_ (coeff_modByMonic_mem_span_pow_mul_span _ _ _)
-          calc
-            _ ≤ c.coeffSubmodule ^ (c.val j).natDegree * c.coeffSubmodule := by
-              gcongr
-              all_goals
-              · refine sup_le c.one_le_coeffSubmodule ?_
-                unfold coeffSubmodule
-                gcongr
-                exact Set.subset_union_of_subset_right
-                  (Set.subset_iUnion (fun i ↦ coeff(c.val i)) _) _
-            _ = c.coeffSubmodule ^ (c.val j).degree.succ := by
-              rw [← pow_succ, Polynomial.degree_eq_natDegree, WithBot.succ_natCast, Nat.cast_id]
-              intro e
-              simp [show c.val i = 0 by simpa [e] using hle] at hi
+        · convert coeff_modByMonic_mem_span_pow_mul_span _ _ _ (fun _ ↦ coeff_mem_coeffSubmodule)
+            one_mem_coeffSubmodule _ (fun _ ↦ coeff_mem_coeffSubmodule) one_mem_coeffSubmodule _
+          rw [← pow_succ, Polynomial.degree_eq_natDegree, WithBot.succ_natCast, Nat.cast_id]
+          intro e
+          simp [show c.val i = 0 by simpa [e] using hle] at hi
         · have : (c.val j).degree.succ ≠ 0 := by
             rw [← Nat.pos_iff_ne_zero]
             apply WithBot.succ_lt_succ (a := ⊥)
@@ -684,43 +680,6 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
   · refine (Nat.mul_le_mul le_rfl (δ_le_δ hS' _ fun _ _ ↦ ?_)).trans
       ((δ_casesOn_succ k _ _ _).symm.trans_le (δ_le_δ le_rfl _ this))
     simp+contextual [mul_add, Nat.one_le_iff_ne_zero]
-
-theorem MvPolynomial.degrees_map_le {σ S} [CommSemiring S] (p : MvPolynomial σ R) (f : R →+* S) :
-    (MvPolynomial.map f p).degrees ≤ p.degrees := by
-  classical
-  dsimp only [MvPolynomial.degrees]
-  apply Finset.sup_mono
-  apply MvPolynomial.support_map_subset
-
-theorem MvPolynomial.degrees_sub {σ R} [CommRing R] [DecidableEq σ] (p q : MvPolynomial σ R) :
-    (p - q).degrees ≤ p.degrees ⊔ q.degrees := by
-  simp_rw [MvPolynomial.degrees_def]; exact AddMonoidAlgebra.supDegree_sub_le
-
-lemma Set.diff_inter_right_comm {α} {s t u : Set α} : s \ t ∩ u = (s ∩ u) \ t := by
-  ext; simp [and_right_comm]
-
-noncomputable
-def MvPolynomial.commAlgEquiv (R S₁ S₂ : Type*) [CommSemiring R] :
-    MvPolynomial S₁ (MvPolynomial S₂ R) ≃ₐ[R] MvPolynomial S₂ (MvPolynomial S₁ R) :=
-  (MvPolynomial.sumAlgEquiv R S₁ S₂).symm.trans
-    ((MvPolynomial.renameEquiv _ (Equiv.sumComm S₁ S₂)).trans (MvPolynomial.sumAlgEquiv R S₂ S₁))
-
-lemma MvPolynomial.commAlgEquiv_C {R S₁ S₂ : Type*} [CommSemiring R] (p) :
-    MvPolynomial.commAlgEquiv R S₁ S₂ (.C p) = .map MvPolynomial.C p := by
-  suffices (MvPolynomial.commAlgEquiv R S₁ S₂).toAlgHom.comp
-      (IsScalarTower.toAlgHom R (MvPolynomial S₂ R) _) =
-        MvPolynomial.mapAlgHom (Algebra.ofId _ _) by
-    exact DFunLike.congr_fun this p
-  ext x : 1
-  simp [commAlgEquiv]
-
-lemma MvPolynomial.commAlgEquiv_C_X {R S₁ S₂ : Type*} [CommSemiring R] (i) :
-    MvPolynomial.commAlgEquiv R S₁ S₂ (.C (.X i)) = .X i := by
-  simp [commAlgEquiv_C]
-
-lemma MvPolynomial.commAlgEquiv_X {R S₁ S₂ : Type*} [CommSemiring R] (i) :
-    MvPolynomial.commAlgEquiv R S₁ S₂ (.X i) = .C (.X i) := by
-  simp [commAlgEquiv]
 
 lemma chevalley_mvPolynomial_mvPolynomial
     {n m : ℕ} (f : MvPolynomial (Fin m) R →ₐ[R] MvPolynomial (Fin n) R)

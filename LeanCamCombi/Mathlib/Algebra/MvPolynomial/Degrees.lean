@@ -4,6 +4,13 @@ import LeanCamCombi.Mathlib.Algebra.Algebra.Operations
 namespace MvPolynomial
 variable {R σ : Type*} [CommSemiring R] {m n : Multiset σ} {p : MvPolynomial σ R}
 
+lemma degrees_map_le {σ S} [CommSemiring S] (p : MvPolynomial σ R) (f : R →+* S) :
+    (MvPolynomial.map f p).degrees ≤ p.degrees := by
+  classical
+  dsimp only [MvPolynomial.degrees]
+  apply Finset.sup_mono
+  apply MvPolynomial.support_map_subset
+
 variable (R σ n) in
 def degreesLE : Submodule R (MvPolynomial σ R) where
   carrier := {p | p.degrees ≤ n}
