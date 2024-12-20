@@ -3,7 +3,6 @@ import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
-import LeanCamCombi.Mathlib.RingTheory.Ideal.Span
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
 import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 
@@ -51,7 +50,7 @@ lemma foo_induction
   obtain ⟨n, e, rfl⟩ : ∃ (n : ℕ) (e : Fin (n + 1) → R[X]), I = Ideal.span (Set.range e) := by
     obtain ⟨s, rfl⟩ := hI
     exact ⟨s.card, Fin.cons 0 (Subtype.val ∘ s.equivFin.symm),
-      by simp [← Set.union_singleton, Ideal.span_union]⟩
+      by simp [← Set.union_singleton, Ideal.span_union, Set.singleton_zero]⟩
   clear hI
   set v : (Fin (n + 1) → WithBot ℕ) ×ₗ Prop := toLex
     (degree ∘ e, ¬ ∃ i, IsUnit (e i).leadingCoeff ∧ ∀ j, e j ≠ 0 →
@@ -59,7 +58,7 @@ lemma foo_induction
   clear_value v
   induction' v using WellFoundedLT.induction with v H_IH generalizing R
   by_cases he0 : e = 0
-  · rw [he0, Set.range_zero, Ideal.span_singleton_zero]; exact hP₁ R
+  · simpa [he0, Set.range_zero, Set.singleton_zero] using hP₁ R
   cases subsingleton_or_nontrivial R
   · rw [Subsingleton.elim (Ideal.span (Set.range e)) ⊥]; exact hP₁ R
   simp only [funext_iff, Pi.zero_apply, not_forall] at he0

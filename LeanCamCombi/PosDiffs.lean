@@ -3,8 +3,8 @@ Copyright (c) 2023 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
-import Mathlib.Combinatorics.SetFamily.Compression.Down
 import Mathlib.Algebra.Group.Pointwise.Finset.Basic
+import Mathlib.Combinatorics.SetFamily.Compression.Down
 import Mathlib.Data.Finset.Sups
 import Mathlib.Order.Interval.Set.OrdConnected
 import Mathlib.Order.UpperLower.Basic
