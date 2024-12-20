@@ -1,12 +1,11 @@
 import Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
-import Mathlib.LinearAlgebra.Dual
 import Mathlib.LinearAlgebra.Charpoly.BaseChange
+import Mathlib.LinearAlgebra.Dual
 import Mathlib.LinearAlgebra.Eigenspace.Zero
 import Mathlib.LinearAlgebra.FreeModule.PID
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.AdjoinRoot
-import Mathlib.RingTheory.SimpleRing.Basic
-import LeanCamCombi.Mathlib.RingTheory.LocalRing.ResidueField.Ideal
+import Mathlib.RingTheory.LocalRing.ResidueField.Ideal
 
 open Polynomial TensorProduct PrimeSpectrum
 
@@ -50,7 +49,7 @@ def fooBarMap (s : Set A) (I : Ideal A) (hg : s ⊆ I) [I.IsPrime] :
   · refine Ideal.Quotient.liftₐ (Ideal.span s) (Algebra.ofId A I.ResidueField) ?_
     show Ideal.span s ≤ RingHom.ker (algebraMap A I.ResidueField)
     rwa [Ideal.span_le, Ideal.ker_algebraMap_residueField]
-  · exact Ideal.residueFieldMapₐ _ _ rfl
+  · exact Ideal.ResidueField.mapₐ _ _ rfl
   · exact fun _ _ ↦ .all _ _
 
 lemma mem_image_comap_zeroLocus_sdiff (f : A) (s : Set A) (x) :
@@ -78,7 +77,7 @@ lemma mem_image_comap_zeroLocus_sdiff (f : A) (s : Set A) (x) :
     exact congr(a ∈ $(Ideal.ker_algebraMap_residueField _))
 
 lemma mem_image_comap_basicOpen (f : A) (x) :
-    x ∈ comap (algebraMap R A) '' (basicOpen f) ↔
+    x ∈ comap (algebraMap R A) '' basicOpen f ↔
       ¬ IsNilpotent (algebraMap A (A ⊗[R] x.asIdeal.ResidueField) f) := by
   have e : A ⊗[R] x.asIdeal.ResidueField ≃ₐ[A]
       (A ⧸ (Ideal.span ∅ : Ideal A)) ⊗[R] x.asIdeal.ResidueField := by

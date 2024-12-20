@@ -69,7 +69,6 @@ import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.RelIso.Group
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
-import LeanCamCombi.Mathlib.RingTheory.LocalRing.ResidueField.Ideal
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
 import LeanCamCombi.Mathlib.RingTheory.PrimeSpectrum
 import LeanCamCombi.MetricBetween
