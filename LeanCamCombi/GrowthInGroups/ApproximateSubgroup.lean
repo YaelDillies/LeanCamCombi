@@ -1,5 +1,6 @@
 import Mathlib.Algebra.Group.Subgroup.Pointwise
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import Mathlib.Combinatorics.Additive.CovBySMul
 import Mathlib.Combinatorics.Additive.RuzsaCovering
 import Mathlib.Combinatorics.Additive.SmallTripling
@@ -34,6 +35,10 @@ lemma one_le (hA : IsApproximateSubgroup K A) : 1 ≤ K := by
   obtain ⟨F, hF, hSF⟩ := hA.sq_covBySMul
   have hF₀ : F ≠ ∅ := by rintro rfl; simp [hA.nonempty.pow.ne_empty] at hSF
   exact hF.trans' <| by simpa [Finset.nonempty_iff_ne_empty]
+
+@[to_additive]
+lemma nonneg (hA : IsApproximateSubgroup K A) : 0 ≤ K :=
+  zero_le_one.trans hA.one_le
 
 @[to_additive]
 lemma mono (hKL : K ≤ L) (hA : IsApproximateSubgroup K A) : IsApproximateSubgroup L A where
@@ -88,6 +93,29 @@ lemma pi {ι : Type*} {G : ι → Type*} [Fintype ι] [∀ i, Group (G i)] {A : 
         #(Fintype.piFinset F) = ∏ i, (#(F i) : ℝ) := by simp
         _ ≤ ∏ i, K i := by gcongr; exact hF _
     · sorry
+
+@[to_additive]
+lemma prod [Group G] {H : Type*} [Group H] {B : Set H} {K : ℝ} {L : ℝ}
+    (hA : IsApproximateSubgroup K A) (hB : IsApproximateSubgroup L B) :
+    IsApproximateSubgroup (K * L) (A ×ˢ B) where
+      one_mem := by
+        constructor
+        exact hA.one_mem
+        exact hB.one_mem
+      inv_eq_self := by
+        rw [Set.inv_prod, hA.inv_eq_self, hB.inv_eq_self]
+      sq_covBySMul := by
+        unfold CovBySMul
+        obtain ⟨F₁, hF₁card, hF₁cov⟩ := hA.sq_covBySMul
+        obtain ⟨F₂, hF₂card, hF₂cov⟩ := hB.sq_covBySMul
+        refine ⟨F₁ ×ˢ F₂,?_,?_⟩
+        simp
+        gcongr
+        exact hA.nonneg
+        simp [Set.prod_pow]
+        refine Set.prod_mono ?_ ?_
+        exact hF₁cov
+        exact hF₂cov
 
 @[to_additive]
 lemma subgroup {S : Type*} [SetLike S G] [SubgroupClass S G] {H : S} :
