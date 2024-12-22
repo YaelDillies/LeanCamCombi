@@ -1,6 +1,5 @@
 import Mathlib.Algebra.Group.Subgroup.Pointwise
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import Mathlib.Combinatorics.Additive.CovBySMul
 import Mathlib.Combinatorics.Additive.RuzsaCovering
 import Mathlib.Combinatorics.Additive.SmallTripling
@@ -35,10 +34,6 @@ lemma one_le (hA : IsApproximateSubgroup K A) : 1 ≤ K := by
   obtain ⟨F, hF, hSF⟩ := hA.sq_covBySMul
   have hF₀ : F ≠ ∅ := by rintro rfl; simp [hA.nonempty.pow.ne_empty] at hSF
   exact hF.trans' <| by simpa [Finset.nonempty_iff_ne_empty]
-
-@[to_additive]
-lemma nonneg (hA : IsApproximateSubgroup K A) : 0 ≤ K :=
-  zero_le_one.trans hA.one_le
 
 @[to_additive]
 lemma mono (hKL : K ≤ L) (hA : IsApproximateSubgroup K A) : IsApproximateSubgroup L A where
@@ -93,29 +88,6 @@ lemma pi {ι : Type*} {G : ι → Type*} [Fintype ι] [∀ i, Group (G i)] {A : 
         #(Fintype.piFinset F) = ∏ i, (#(F i) : ℝ) := by simp
         _ ≤ ∏ i, K i := by gcongr; exact hF _
     · sorry
-
-@[to_additive]
-lemma prod [Group G] {H : Type*} [Group H] {B : Set H} {K : ℝ} {L : ℝ}
-    (hA : IsApproximateSubgroup K A) (hB : IsApproximateSubgroup L B) :
-    IsApproximateSubgroup (K * L) (A ×ˢ B) where
-      one_mem := by
-        constructor
-        exact hA.one_mem
-        exact hB.one_mem
-      inv_eq_self := by
-        rw [Set.inv_prod, hA.inv_eq_self, hB.inv_eq_self]
-      sq_covBySMul := by
-        unfold CovBySMul
-        obtain ⟨F₁, hF₁card, hF₁cov⟩ := hA.sq_covBySMul
-        obtain ⟨F₂, hF₂card, hF₂cov⟩ := hB.sq_covBySMul
-        refine ⟨F₁ ×ˢ F₂,?_,?_⟩
-        simp
-        gcongr
-        exact hA.nonneg
-        simp [Set.prod_pow]
-        refine Set.prod_mono ?_ ?_
-        exact hF₁cov
-        exact hF₂cov
 
 @[to_additive]
 lemma subgroup {S : Type*} [SetLike S G] [SubgroupClass S G] {H : S} :
@@ -210,24 +182,29 @@ lemma exists_isApproximateSubgroup_of_small_doubling [DecidableEq G] {A : Finset
     (hA₀ : A.Nonempty) (hA : #(A ^ 2) ≤ K * #A) :
     ∃ S ⊆ (A⁻¹ * A) ^ 2, IsApproximateSubgroup (2 ^ 12 * K ^ 36) (S : Set G) ∧
       #S ≤ 16 * K ^ 12 * #A ∧ ∃ a ∈ A, #A / (2 * K) ≤ #(A ∩ S <• a) := by
-  have hK : 1 ≤ K := by
-    have : (#A : ℝ) ≤ #(A^2) := by simp only [pow_two A, Nat.cast_le.mpr <| card_le_card_mul_self']
-    have : #A ≤ K * #A := le_trans this hA
-    have : (#A > 0) → 1 ≤ K := fun hA ↦ by
-      obtain ⟨x, hx₁, hx₂⟩ : ∃ (a : ℝ), a > 0 ∧ a * #A = 1 := by sorry
-      sorry
-    exact this <| card_pos.mpr hA₀
-  -- wlog hK : 1 ≤ K with hK'
-  -- . have : #(A^2) ≤ (1 : ℝ) * #A := by sorry
-  --   obtain ⟨S, hS₁, hS₂⟩ := hK' hA₀ this (le_of_eq rfl)
+  have hK : 1 ≤ K := one_le_of_le_mul_right₀ (by positivity) <|
+    calc (#A : ℝ) ≤ #(A ^ 2) := mod_cast card_le_card_pow two_ne_zero
+      _ ≤ K * #A := hA
   let S : Finset G := {g ∈ A⁻¹ * A | #A / (2 * K) ≤ #(A <• g ∩ A)}
-  have hS₀ : S.Nonempty := ⟨1, by simp [S, hA₀.ne_empty]; bound⟩
+  have hS₁ : 1 ∈ S := by simp [S, hA₀.ne_empty]; bound
+  have hS₀ : S.Nonempty := ⟨1, hS₁⟩
   have hSA : S ⊆ A⁻¹ * A := filter_subset ..
   have hSsymm : S⁻¹ = S := by ext; simp [S]; simp [← mem_inv']; sorry
-  have hScard :=
+  have hScard := calc
+    (#S : ℝ) ≤ #(A⁻¹ * A) := by gcongr
+    _ ≤ K ^ 2 * #A := sorry
+  obtain ⟨F, hFA, hFcard, hASF⟩ : ∃ F ⊆ A, #F ≤ 2 * K ∧ A ⊆ S * F := sorry
+  refine ⟨S ^ 2, by gcongr, ?_, ?_, ?_⟩
+  · rw [show 2 ^ 12 * K ^ 36 = (2 ^ 4 * K ^ 12) ^ 3 by ring, coe_pow]
+    refine .of_small_tripling hS₁ hSsymm ?_
     calc
-      (#S : ℝ) ≤ #(A⁻¹ * A) := by gcongr
-      _ ≤ K ^ 2 * #A := sorry
-  refine ⟨S ^ 2, by gcongr, ⟨sorry, sorry, sorry⟩, ?_, ?_⟩
+      (#(S ^ 3) : ℝ)
+      _ ≤ #(A * S ^ 3) := mod_cast card_le_card_mul_left hA₀
+      _ ≤ #(A * S ^ 3 * A⁻¹) := mod_cast card_le_card_mul_right hA₀.inv
+      _ ≤ 8 * K ^ 11 * #A := sorry
+      _ ≤ 8 * K ^ 11 * #(S * F) := by gcongr
+      _ ≤ 8 * K ^ 11 * (#S * #F) := by gcongr; exact mod_cast card_mul_le
+      _ ≤ 8 * K ^ 11 * (#S * (2 * K)) := by gcongr
+      _ = 2 ^ 4 * K ^ 12 * #S := by ring
   sorry
   sorry

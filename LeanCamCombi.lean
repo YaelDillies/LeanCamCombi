@@ -32,6 +32,7 @@ import LeanCamCombi.Kneser.Kneser
 import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.Mathlib.Algebra.Algebra.Operations
+import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.BigOperators
 import LeanCamCombi.Mathlib.Algebra.Module.Submodule.Defs
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
