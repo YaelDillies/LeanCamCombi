@@ -1,4 +1,6 @@
+import Mathlib.Algebra.Order.SuccPred.WithBot
 import Mathlib.Algebra.Polynomial.CoeffMem
+import Mathlib.AlgebraicGeometry.PrimeSpectrum.Polynomial
 import Mathlib.Data.DFinsupp.WellFounded
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
@@ -11,7 +13,6 @@ import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Data.Set.Basic
 import LeanCamCombi.Mathlib.Order.Monotone.Basic
 import LeanCamCombi.GrowthInGroups.ConstructibleSetData
-import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 import LeanCamCombi.GrowthInGroups.SpanRangeUpdate
 
 variable {R S M A : Type*} [CommRing R] [CommRing S] [AddCommGroup M] [Module R M] [CommRing A]
@@ -434,14 +435,14 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
       · intro l m
         rw [Function.update_apply]
         split_ifs with hlj
-        · convert coeff_modByMonic_mem_span_pow_mul_span _ _ _ (fun _ ↦ coeff_mem_coeffSubmodule)
+        · convert coeff_modByMonic_mem_pow_natDegree_mul _ _ _ (fun _ ↦ coeff_mem_coeffSubmodule)
             one_mem_coeffSubmodule _ (fun _ ↦ coeff_mem_coeffSubmodule) one_mem_coeffSubmodule _
           rw [← pow_succ, Polynomial.degree_eq_natDegree, WithBot.succ_natCast, Nat.cast_id]
           intro e
           simp [show c.val i = 0 by simpa [e] using hle] at hi
         · have : (c.val j).degree.succ ≠ 0 := by
             rw [← Nat.pos_iff_ne_zero]
-            apply WithBot.succ_lt_succ (a := ⊥)
+            apply WithBot.succ_lt_succ (x := ⊥)
             refine lt_of_lt_of_le ?_ hle
             rw [bot_lt_iff_ne_bot, ne_eq, degree_eq_bot]
             intro e

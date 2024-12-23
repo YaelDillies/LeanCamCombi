@@ -40,7 +40,7 @@ theorem AddMonoidHom.continuous_of_isBounded_nhds_zero (f : G →+ H) (hs : s �
   have hn' : (n : H) ≠ 0 := Nat.cast_ne_zero.2 (by rintro rfl; simp at hnpos)
   simp_rw [nsmul_eq_mul, mul_comm (n : H), ← div_eq_iff hn'] at h2
   replace hxδ : ‖n • x‖ < δ := by
-    refine (norm_nsmul_le n x).trans_lt ?_
+    refine norm_nsmul_le.trans_lt ?_
     simpa only [norm_mul, Real.norm_natCast, lt_div_iff₀ hnpos, mul_comm] using hxδ
   rw [← h2, norm_div, RCLike.norm_natCast, div_lt_iff₀' hnpos]
   rw [div_lt_iff₀ hε] at hn

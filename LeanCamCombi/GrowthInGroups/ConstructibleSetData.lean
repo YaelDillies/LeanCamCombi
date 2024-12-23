@@ -1,7 +1,5 @@
 import Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
-import LeanCamCombi.Mathlib.Algebra.Ring.Hom.Defs
-import LeanCamCombi.GrowthInGroups.WithBotSucc
-import LeanCamCombi.Mathlib.RingTheory.PrimeSpectrum
+import Mathlib.Order.SuccPred.WithBot
 
 open Finset PrimeSpectrum
 open scoped Polynomial
@@ -57,8 +55,5 @@ lemma toSet_map [DecidableEq S] (f : R →+* S) (s : ConstructibleSetData R) :
   rfl
 
 def degBound (S : ConstructibleSetData R[X]) : ℕ := S.sup fun e ↦ ∑ i, (e.2.2 i).degree.succ
-
-def mvDegBound {σ} (S : ConstructibleSetData (MvPolynomial σ R)) : ℕ :=
-  S.sup fun e ↦ ∑ i, (e.2.2 i).totalDegree.succ
 
 end ConstructibleSetData

@@ -17,15 +17,14 @@ import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
 import LeanCamCombi.GrowthInGroups.Chevalley
 import LeanCamCombi.GrowthInGroups.ChevalleyComplex
 import LeanCamCombi.GrowthInGroups.Constructible
+import LeanCamCombi.GrowthInGroups.ConstructiblePrimeSpectrum
 import LeanCamCombi.GrowthInGroups.ConstructibleSetData
 import LeanCamCombi.GrowthInGroups.Lecture1
 import LeanCamCombi.GrowthInGroups.Lecture2
 import LeanCamCombi.GrowthInGroups.Lecture3
 import LeanCamCombi.GrowthInGroups.Lecture4
 import LeanCamCombi.GrowthInGroups.LinearLowerBound
-import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 import LeanCamCombi.GrowthInGroups.SpanRangeUpdate
-import LeanCamCombi.GrowthInGroups.WithBotSucc
 import LeanCamCombi.Impact
 import LeanCamCombi.Incidence
 import LeanCamCombi.Kneser.Kneser
@@ -71,7 +70,6 @@ import LeanCamCombi.Mathlib.Order.RelIso.Group
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
-import LeanCamCombi.Mathlib.RingTheory.PrimeSpectrum
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.Multipartite

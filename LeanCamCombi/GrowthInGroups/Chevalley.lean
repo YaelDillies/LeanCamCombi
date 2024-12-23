@@ -1,10 +1,10 @@
+import Mathlib.AlgebraicGeometry.PrimeSpectrum.Polynomial
 import Mathlib.Data.DFinsupp.WellFounded
+import LeanCamCombi.GrowthInGroups.ConstructiblePrimeSpectrum
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
-import LeanCamCombi.GrowthInGroups.PrimeSpectrumPolynomial
 
 open Polynomial TensorProduct PrimeSpectrum
 
