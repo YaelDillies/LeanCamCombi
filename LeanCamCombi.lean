@@ -85,3 +85,4 @@ import LeanCamCombi.StableCombi.AddSet
 import LeanCamCombi.StableCombi.Formula
 import LeanCamCombi.StableCombi.Rel
 import LeanCamCombi.SylvesterChvatal
+import LeanCamCombi.Util

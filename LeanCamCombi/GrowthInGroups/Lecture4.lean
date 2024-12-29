@@ -2,6 +2,7 @@ import Mathlib.Analysis.Matrix
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
+import LeanCamCombi.Util
 
 open Group
 open scoped Finset MatrixGroups Pointwise
@@ -29,11 +30,11 @@ lemma corollary_6_3 (K C₀ : ℝ) :
         #F ≤ C ∧ A ⊆ F * Z := sorry
 
 /-- The **Breuillard-Green-Tao theorem**. -/
-theorem theorem_6_4 (hK : 0 ≤ K) :
-    ∃ C > 0, ∀ {G} [Group G] [DecidableEq G] (A : Set G) (hA : IsApproximateSubgroup K A),
-      ∃ (H : Subgroup G) (N : Subgroup H) (hD : N.Normal) (F : Finset G),
+theorem theorem_6_4 (_hK : 0 ≤ K) :
+    ∃ C > 0, ∀ {G} [Group G] [DecidableEq G] (A : Set G) (_hA : IsApproximateSubgroup K A),
+      ∃ (H : Subgroup G) (N : Subgroup H) (_hD : N.Normal) (F : Finset G),
         upperCentralSeries (H ⧸ N) C = ⊤ ∧ ((↑) '' (N : Set H) : Set G) ⊆ (A / A) ^ 4 ∧
-          A ⊆ F * H := sorry
+          A ⊆ F * H := showcased
 
 lemma theorem_6_5 {G : Type*} [Group G] [DecidableEq G] {S : Finset G} (hSsymm : S⁻¹ = S)
     (hSgen : (Subgroup.closure (S : Set G) : Set G) = .univ) {d : ℕ}

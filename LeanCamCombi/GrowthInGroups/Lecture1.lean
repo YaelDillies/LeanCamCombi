@@ -5,6 +5,7 @@ import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
 import LeanCamCombi.Mathlib.Combinatorics.Additive.VerySmallDoubling
 import LeanCamCombi.GrowthInGroups.LinearLowerBound
+import LeanCamCombi.Util
 
 open Finset Fintype Group MulOpposite Real
 open scoped Combinatorics.Additive MatrixGroups Pointwise
@@ -26,7 +27,7 @@ def HasPolynomialGrowth : Prop :=
   ∃ X : Finset G, X⁻¹ = X ∧ Subgroup.closure (X : Set G) = ⊤ ∧ ∃ d, ∀ n ≥ 2, #(X ^ n) ≤ n ^ d
 
 /-- Gromov. -/
-lemma theorem_3_2 : HasPolynomialGrowth G ↔ IsVirtuallyNilpotent G := sorry
+lemma theorem_3_2 : HasPolynomialGrowth G ↔ IsVirtuallyNilpotent G := showcased
 
 lemma fact_3_3 [Fintype G] (hn : X ^ n = univ) : log (card G) / log #X ≤ n := by
   obtain rfl | hX := X.eq_empty_or_nonempty
@@ -40,7 +41,7 @@ lemma fact_3_3 [Fintype G] (hn : X ^ n = univ) : log (card G) / log #X ≤ n := 
 lemma conjecture_3_4 :
     ∃ Cᵤ ≥ 0, ∃ dᵤ ≥ 0,
       ∀ {G} [Group G] [IsSimpleGroup G] [Fintype G] [DecidableEq G] (X : Finset G),
-        ∃ m : ℕ, m ≤ Cᵤ * log (card G) ^ dᵤ ∧ X ^ m = univ := sorry
+        ∃ m : ℕ, m ≤ Cᵤ * log (card G) ^ dᵤ ∧ X ^ m = univ := showcased
 
 -- Not even trying to state the collar lemma
 
@@ -48,22 +49,22 @@ open scoped Classical in
 lemma proposition_3_7 :
     ∃ ε > 0, ∀ X : Finset SL(2, ℝ), #(X ^ 2) ≤ 1000 * #X → (∀ M ∈ X, ∀ i j, |M i j| ≤ ε) →
       ∃ A : Subgroup SL(2, ℝ), A.IsCommutative ∧
-        ∃ a : Fin 10000000 → SL(2, ℝ), (X : Set SL(2, ℝ)) ⊆ ⋃ i, a i • A := sorry
+        ∃ a : Fin 10000000 → SL(2, ℝ), (X : Set SL(2, ℝ)) ⊆ ⋃ i, a i • A := showcased
 
 /-- The **Breuillard-Green-Tao theorem**. -/
-lemma theorem_3_8 (hK : 0 ≤ K) :
-    ∃ C > 0, ∀ {G} [Group G] [DecidableEq G] (A : Finset G) (hA : σₘ[A] ≤ K),
-      ∃ (N : Subgroup G) (D : Subgroup N) (hD : D.Normal),
+lemma theorem_3_8 (_hK : 0 ≤ K) :
+    ∃ C > 0, ∀ {G} [Group G] [DecidableEq G] (A : Finset G) (_hA : σₘ[A] ≤ K),
+      ∃ (N : Subgroup G) (D : Subgroup N) (_hD : D.Normal),
         upperCentralSeries (N⧸ D) C = ⊤ ∧ ((↑) '' (D : Set N) : Set G) ⊆ (A / A) ^ 4 ∧
-          ∃ a : Fin C → G, (A : Set G) ⊆ ⋃ i, a i • N := sorry
+          ∃ a : Fin C → G, (A : Set G) ⊆ ⋃ i, a i • N := showcased
 
 open scoped Classical in
 /-- Breuillard-Green-Tao, Pyber-Szabo. -/
 lemma theorem_3_9 :
     ∃ δ > 0, ∃ ε > 0,
       ∀ k [Field k] [Fintype k] [DecidableEq k] (A : Finset SL(n, k))
-        (hAgen : Subgroup.closure (A : Set SL(n, k)) = ⊤),
-          #A ^ (1 + δ) ≤ #(A ^ 3) ∨ card SL(n, k) ^ (1 - ε) ≤ #A := sorry
+        (_hAgen : Subgroup.closure (A : Set SL(n, k)) = ⊤),
+          #A ^ (1 + δ) ≤ #(A ^ 3) ∨ card SL(n, k) ^ (1 - ε) ≤ #A := proved_later
 
 open MulAction in
 open scoped RightActions in
