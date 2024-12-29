@@ -6,7 +6,6 @@ import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Algebra.Order.Monoid.Unbundled.Pow
-import LeanCamCombi.Mathlib.Algebra.Polynomial.CoeffMem
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
@@ -375,7 +374,7 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
     obtain ⟨S, hS, hS'⟩ := H f
     refine ⟨S, Eq.trans ?_ hS, ?_⟩
     · rw [← zeroLocus_span (Set.range _), ← zeroLocus_span (Set.range _),
-        idealSpan_range_update_divByMonic hne hi]
+        idealSpan_range_update_divByMonic hne _ hi]
     · intro C hC
       let c' : InductionObj _ _ := ⟨Function.update c.val j (c.val j %ₘ c.val i)⟩
       have deg_bound₁ : c'.degBound ≤ c.degBound := by
