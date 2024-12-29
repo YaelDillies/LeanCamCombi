@@ -22,21 +22,21 @@ lemma Ideal.span_range_update_divByMonic' {ι : Type*} [DecidableEq ι]
   · intro k
     by_cases hjk : j = k
     · subst hjk
-      rw [Function.update_same, modByMonic_eq_sub_mul_div (v j) H]
+      rw [Function.update_self, modByMonic_eq_sub_mul_div (v j) H]
       apply sub_mem (Ideal.subset_span ?_) (Ideal.mul_mem_right _ _
         (Ideal.mul_mem_left _ _ <| Ideal.subset_span ?_))
       · exact ⟨j, rfl⟩
       · exact ⟨i, rfl⟩
-    exact Ideal.subset_span ⟨k, (Function.update_noteq (.symm hjk) _ _).symm⟩
+    exact Ideal.subset_span ⟨k, (Function.update_of_ne (.symm hjk) _ _).symm⟩
   · intro k
     by_cases hjk : j = k
     · subst hjk
       nth_rw 2 [← modByMonic_add_div (v j) H]
       apply add_mem (Ideal.subset_span ?_) (Ideal.mul_mem_right _ _
         (Ideal.mul_mem_left _ _ <| Ideal.subset_span ?_))
-      · exact ⟨j, Function.update_same _ _ _⟩
-      · exact ⟨i, Function.update_noteq hij _ _⟩
-    exact Ideal.subset_span ⟨k, Function.update_noteq (.symm hjk) _ _⟩
+      · exact ⟨j, Function.update_self _ _ _⟩
+      · exact ⟨i, Function.update_of_ne hij _ _⟩
+    exact Ideal.subset_span ⟨k, Function.update_of_ne (.symm hjk) _ _⟩
 
 lemma foo_induction
     (P : ∀ (R : Type u) [CommRing R], Ideal R[X] → Prop)
@@ -103,7 +103,7 @@ lemma foo_induction
       · simp only [hv, ne_eq, not_exists, not_and, not_forall, not_le, funext_iff,
           Function.comp_apply, exists_prop, ofLex_toLex]
         use j
-        simp only [Function.update_same]
+        simp only [Function.update_self]
         refine ((degree_modByMonic_lt _ (monic_unit_leadingCoeff_inv_smul _ _)).trans_le
           ((degree_C_mul_eq_of_mul_ne_zero _ _ ?_).trans_le i_min)).ne
         rw [IsUnit.val_inv_mul]

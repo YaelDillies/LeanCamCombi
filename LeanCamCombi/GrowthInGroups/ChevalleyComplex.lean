@@ -6,14 +6,12 @@ import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Algebra.Order.Monoid.Unbundled.Pow
+import LeanCamCombi.Mathlib.Algebra.Polynomial.CoeffMem
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
-import LeanCamCombi.Mathlib.Data.Nat.Defs
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Data.Set.Basic
-import LeanCamCombi.Mathlib.Order.Monotone.Basic
 import LeanCamCombi.GrowthInGroups.ConstructibleSetData
-import LeanCamCombi.GrowthInGroups.SpanRangeUpdate
 
 variable {R S M A : Type*} [CommRing R] [CommRing S] [AddCommGroup M] [Module R M] [CommRing A]
   [Algebra R A]
@@ -138,7 +136,7 @@ lemma foo_induction (n : ℕ)
         · simp only [hv, ne_eq, not_exists, not_and, not_forall, not_le, funext_iff,
             Function.comp_apply, exists_prop, ofLex_toLex]
           use j
-          simp only [Function.update_same]
+          simp only [Function.update_self]
           refine ((degree_modByMonic_lt _ hi).trans_le i_min).ne
     -- Case II : The `e i ≠ 0` with minimal degree has non-invertible leading coefficient
     obtain ⟨i, hi, i_min⟩ : ∃ i, e.1 i ≠ 0 ∧ ∀ j, e.1 j ≠ 0 → (e.1 i).degree ≤ (e.1 j).degree := by
@@ -377,7 +375,7 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
     obtain ⟨S, hS, hS'⟩ := H f
     refine ⟨S, Eq.trans ?_ hS, ?_⟩
     · rw [← zeroLocus_span (Set.range _), ← zeroLocus_span (Set.range _),
-        Ideal.span_range_update_divByMonic _ hne hi]
+        idealSpan_range_update_divByMonic hne hi]
     · intro C hC
       let c' : InductionObj _ _ := ⟨Function.update c.val j (c.val j %ₘ c.val i)⟩
       have deg_bound₁ : c'.degBound ≤ c.degBound := by
@@ -561,7 +559,7 @@ lemma δ_pos (k : ℕ) (D : ℕ → ℕ) : ∀ n, 0 < δ k D n
   | 0 => by simp
   | (n + 1) => by
     simp only [δ_succ, CanonicallyOrderedCommSemiring.mul_pos]
-    exact ⟨Nat.pow_self_pos _, δ_pos _ _ _⟩
+    exact ⟨Nat.pow_self_pos, δ_pos _ _ _⟩
 
 lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
     {M : Submodule ℤ R} (hM : 1 ∈ M) (k : ℕ) (d : Multiset (Fin n))
@@ -643,13 +641,12 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
     refine pow_inf_le.trans (inf_le_inf ?_ ?_)
     · refine (pow_le_pow_right' ?_ (Nat.pow_self_mono hS')).trans Submodule.mvPolynomial_pow_le
       simpa [MvPolynomial.coeff_one, apply_ite] using hM
-    · rw [← MvPolynomial.degreesLE_pow,
-        Submodule.restrictScalars_pow (Nat.pow_self_pos _).ne']
+    · rw [← MvPolynomial.degreesLE_pow, Submodule.restrictScalars_pow Nat.pow_self_pos.ne']
       refine pow_le_pow_right' ?_ (Nat.pow_self_mono hS')
       simp
   have h1M : 1 ≤ M := Submodule.one_le_iff.mpr hM
   obtain ⟨U, hU₁, hU₂⟩ := IH (M := M ^ N)
-    (SetLike.le_def.mp (le_self_pow' h1M (Nat.pow_self_pos _).ne') hM) _ _ T
+    (SetLike.le_def.mp (le_self_pow' h1M Nat.pow_self_pos.ne') hM) _ _ T
     (fun C hCT ↦ (hT₂ C hCT).1)
     (fun C hCT k ↦ this C hCT k)
   simp only [Multiset.map_nsmul _ (_ ^ _), smul_comm _ (_ ^ _),
@@ -672,7 +669,7 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
       ConstructibleSetData.toSet_map]
     show _ = _ '' ((comapEquiv e.toRingEquiv).symm ⁻¹' _)
     rw [← Equiv.image_eq_preimage, Set.image_image]
-    simp only [comapEquiv_apply, ← comap_eq_specComap', ← comap_comp_apply]
+    simp only [comapEquiv_apply, ← comap_apply, ← comap_comp_apply]
     congr!
     exact e.symm.toAlgHom.comp_algebraMap.symm
   · refine (ν_le_ν hS' _ fun _ _ ↦ ?_).trans
@@ -753,7 +750,7 @@ lemma chevalley_mvPolynomial_mvPolynomial
       ← Function.comp_def (g := finSumFinEquiv.symm), Set.range_comp,
       Equiv.range_eq_univ, Set.image_univ, Set.Sum.elim_range,
       Set.image_diff (hf := comap_injective_of_surjective g hg'), zeroLocus_union]
-    simp [hg'', ← Set.inter_diff_distrib_right, Set.diff_inter_right_comm]
+    simp [hg'', ← Set.inter_diff_distrib_right, Set.sdiff_inter_right_comm]
   obtain ⟨T, hT, hT'⟩ :=
     exists_constructibleSetData_comap_C_toSet_eq_toSet'
     (M := (MvPolynomial.degreesLE R (Fin m) Finset.univ.1).restrictScalars ℤ) (by simp) (k + m) d S'
@@ -786,7 +783,7 @@ lemma chevalley_mvPolynomial_mvPolynomial
   refine ⟨T, ?_, fun C hCT ↦ ⟨(hT' C hCT).1, fun i j ↦ ?_⟩⟩
   · rwa [← hg, comap_comp, ContinuousMap.coe_comp, Set.image_comp, hS']
   · have := (hT' C hCT).2 i
-    rw [← Submodule.restrictScalars_pow (hn := (δ_pos _ _ _).ne'), MvPolynomial.degreesLE_pow,
+    rw [← Submodule.restrictScalars_pow (δ_pos ..).ne', MvPolynomial.degreesLE_pow,
       Submodule.restrictScalars_mem, MvPolynomial.mem_degreesLE,
         Multiset.le_iff_count] at this
     simp only [Multiset.count_nsmul, Multiset.count_univ, mul_one] at this
