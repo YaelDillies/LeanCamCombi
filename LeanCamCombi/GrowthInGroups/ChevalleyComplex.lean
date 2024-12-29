@@ -10,6 +10,7 @@ import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Data.Set.Basic
+import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.GrowthInGroups.ConstructibleSetData
 
 variable {R S M A : Type*} [CommRing R] [CommRing S] [AddCommGroup M] [Module R M] [CommRing A]
@@ -255,7 +256,9 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
             (comap (mapRingHom q₁.toRingHom) ⁻¹' (zeroLocus (.range e.val) \ zeroLocus {f}))) ∪
           comap q₂ '' (comap C ''
             (comap (mapRingHom q₂) ⁻¹' (zeroLocus (.range e.val) \ zeroLocus {f}))) :=
-        comap_C_eq_comap_localization_union_comap_quotient _ c
+        Set.image_of_range_union_range_eq_univ (by ext; simp) (by ext; simp)
+          (by rw [← range_comap_algebraMap_localization_compl_eq_range_comap_quotientMk,
+            RingHom.algebraMap_toAlgebra]; exact Set.union_compl_self _) _
       _ = (⋃ C ∈ S₁, zeroLocus (Set.range C.snd.2) \ zeroLocus {C.snd.1}) ∪
           ⋃ C ∈ S₂, zeroLocus (Set.range C.snd.2) \ zeroLocus {C.snd.1} := ?_
       _ = ⋃ C ∈ S₁ ∪ S₂, zeroLocus (Set.range C.snd.2) \ zeroLocus {C.snd.1} := by
