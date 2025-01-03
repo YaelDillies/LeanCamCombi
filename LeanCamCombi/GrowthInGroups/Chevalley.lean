@@ -6,7 +6,7 @@ import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
 
-open Polynomial TensorProduct PrimeSpectrum
+open Polynomial PrimeSpectrum TensorProduct Topology
 
 universe u v
 variable {R M A} [CommRing R] [AddCommGroup M] [Module R M] [CommRing A] [Algebra R A]
@@ -184,24 +184,24 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus {R} [CommRing R]
   apply foo_induction (hI := hI)
   · intros R _ g hg f
     simp only [zeroLocus_span]
-    exact ((isRetroCompact_iff (isOpen_image_comap_of_monic f g hg)).mpr
+    exact ((isRetrocompact_iff (isOpen_image_comap_of_monic f g hg)).mpr
       (isCompact_image_comap_of_monic f g hg)).isConstructible (isOpen_image_comap_of_monic f g hg)
   · intro R _ f
     simp only [Submodule.bot_coe, zeroLocus_singleton_zero, ← Set.compl_eq_univ_diff,
       ← basicOpen_eq_zeroLocus_compl]
-    exact ((isRetroCompact_iff (isOpenMap_comap_C _ (basicOpen f).2)).mpr
+    exact ((isRetrocompact_iff (isOpenMap_comap_C _ (basicOpen f).2)).mpr
       ((isCompact_basicOpen f).image (comap C).2)).isConstructible
       (isOpenMap_comap_C _ (basicOpen f).2)
   · intro R _ c I H₁ H₂ f
     replace H₁ := (H₁ (mapRingHom (algebraMap _ _) f)).image_of_isOpenEmbedding
       (localization_away_isOpenEmbedding (Localization.Away c) c)
       (by rw [localization_away_comap_range _ c]
-          exact (isRetroCompact_iff (basicOpen c).2).mpr (isCompact_basicOpen c))
+          exact (isRetrocompact_iff (basicOpen c).2).mpr (isCompact_basicOpen c))
     replace H₂ := (H₂ (mapRingHom (Ideal.Quotient.mk _) f)).image_of_isClosedEmbedding
       (isClosedEmbedding_comap_of_surjective _ _ Ideal.Quotient.mk_surjective)
       (by rw [range_comap_of_surjective _ _ Ideal.Quotient.mk_surjective]
           simp only [Ideal.mk_ker, zeroLocus_span, ← basicOpen_eq_zeroLocus_compl]
-          exact (isRetroCompact_iff (basicOpen c).2).mpr (isCompact_basicOpen c))
+          exact (isRetrocompact_iff (basicOpen c).2).mpr (isCompact_basicOpen c))
     rw [comap_C_eq_comap_quotient_union_comap_localization _ c]
     simp_rw [Set.preimage_diff, preimage_comap_zeroLocus, Set.image_singleton]
     convert H₂.union H₁ using 5 <;>
@@ -235,7 +235,7 @@ lemma isConstructible_image_comap {R S} [CommRing R] [CommRing S] (f : R →+* S
   · exact fun _ ↦ isConstructible_image_comap_C
   · intro R _ S _ f hf hf' s hs
     refine hs.image_of_isClosedEmbedding (isClosedEmbedding_comap_of_surjective _ _ hf) ?_
-    rw [range_comap_of_surjective _ _ hf, isRetroCompact_iff (isClosed_zeroLocus _).isOpen_compl]
+    rw [range_comap_of_surjective _ _ hf, isRetrocompact_iff (isClosed_zeroLocus _).isOpen_compl]
     obtain ⟨t, ht⟩ := hf'
     rw [← ht, ← t.toSet.iUnion_of_singleton_coe, zeroLocus_span, zeroLocus_iUnion, Set.compl_iInter]
     apply isCompact_iUnion
