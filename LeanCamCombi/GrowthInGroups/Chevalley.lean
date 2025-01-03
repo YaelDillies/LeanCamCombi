@@ -210,8 +210,8 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus {R} [CommRing R]
 lemma isConstructible_image_comap_C {R} [CommRing R] (s : Set (PrimeSpectrum R[X]))
     (hs : IsConstructible s) :
     IsConstructible (comap C '' s) := by
-  induction s, hs using
-    IsConstructible.induction_of_isTopologicalBasis _ isTopologicalBasis_basic_opens with
+  induction s, hs using IsConstructible.induction_of_isTopologicalBasis (ι := R[X]) _
+    isTopologicalBasis_basic_opens with
   | compact_inter i j =>
     rw [← TopologicalSpace.Opens.coe_inf, ← basicOpen_mul]
     exact isCompact_basicOpen _

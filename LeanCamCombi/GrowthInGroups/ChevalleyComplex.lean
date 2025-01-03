@@ -788,6 +788,5 @@ lemma chevalley_mvPolynomial_mvPolynomial
     rw [← Submodule.restrictScalars_pow (δ_pos ..).ne', MvPolynomial.degreesLE_pow,
       Submodule.restrictScalars_mem, MvPolynomial.mem_degreesLE,
         Multiset.le_iff_count] at this
-    simp only [Multiset.count_nsmul, Multiset.count_univ, mul_one] at this
-    replace this := this j
-    rwa [← MvPolynomial.degreeOf_def] at this
+    simpa only [Multiset.count_nsmul, Multiset.count_univ, mul_one, ← MvPolynomial.degreeOf_def]
+      using this j

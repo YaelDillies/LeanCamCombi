@@ -60,6 +60,7 @@ import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.OpenPos
+import LeanCamCombi.Mathlib.Order.BooleanSubalgebra
 import LeanCamCombi.Mathlib.Order.Flag
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.RelIso.Group

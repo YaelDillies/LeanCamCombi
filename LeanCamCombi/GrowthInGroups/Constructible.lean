@@ -3,8 +3,8 @@ Copyright (c) 2024 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
-import Mathlib.Order.BooleanSubalgebra
 import Mathlib.Topology.Spectral.Hom
+import LeanCamCombi.Mathlib.Order.BooleanSubalgebra
 
 /-!
 # Constructible sets
@@ -51,6 +51,9 @@ lemma IsRetrocompact.union (hs : IsRetrocompact s) (ht : IsRetrocompact t) :
     IsRetrocompact (s ∪ t : Set X) :=
   fun _U hUcomp hUopen ↦ union_inter_distrib_right .. ▸ (hs hUcomp hUopen).union (ht hUcomp hUopen)
 
+private lemma supClosed_isRetrocompact : SupClosed {s : Set X | IsRetrocompact s} :=
+  fun _s hs _t ht ↦ hs.union ht
+
 lemma IsRetrocompact.finsetSup {ι : Type*} {s : Finset ι} {t : ι → Set X}
     (ht : ∀ i ∈ s, IsRetrocompact (t i)) : IsRetrocompact (s.sup t) := by
   induction' s using Finset.cons_induction with i s ih hi
@@ -63,11 +66,27 @@ lemma IsRetrocompact.finsetSup' {ι : Type*} {s : Finset ι} {hs} {t : ι → Se
     (ht : ∀ i ∈ s, IsRetrocompact (t i)) : IsRetrocompact (s.sup' hs t) := by
   rw [Finset.sup'_eq_sup]; exact .finsetSup ht
 
-lemma IsRetrocompact.inter [T2Space X] (hs : IsRetrocompact s) (ht : IsRetrocompact t) :
+lemma IsRetrocompact.iUnion [Finite ι] {f : ι → Set X} (hf : ∀ i, IsRetrocompact (f i)) :
+    IsRetrocompact (⋃ i, f i) := supClosed_isRetrocompact.iSup_mem .empty hf
+
+lemma IsRetrocompact.sUnion {S : Set (Set X)} (hS : S.Finite) (hS' : ∀ s ∈ S, IsRetrocompact s) :
+    IsRetrocompact (⋃₀ S) := supClosed_isRetrocompact.sSup_mem hS .empty hS'
+
+lemma IsRetrocompact.biUnion {ι : Type*} {f : ι → Set X} {t : Set ι} (ht : t.Finite)
+    (hf : ∀ i ∈ t, IsRetrocompact (f i)) : IsRetrocompact (⋃ i ∈ t, f i) :=
+  supClosed_isRetrocompact.biSup_mem ht .empty hf
+
+section T2Space
+variable [T2Space X]
+
+lemma IsRetrocompact.inter (hs : IsRetrocompact s) (ht : IsRetrocompact t) :
     IsRetrocompact (s ∩ t : Set X) :=
   fun _U hUcomp hUopen ↦ inter_inter_distrib_right .. ▸ (hs hUcomp hUopen).inter (ht hUcomp hUopen)
 
-lemma IsRetrocompact.finsetInf [T2Space X] {ι : Type*} {s : Finset ι} {t : ι → Set X}
+private lemma infClosed_isRetrocompact : InfClosed {s : Set X | IsRetrocompact s} :=
+  fun _s hs _t ht ↦ hs.inter ht
+
+lemma IsRetrocompact.finsetInf {ι : Type*} {s : Finset ι} {t : ι → Set X}
     (ht : ∀ i ∈ s, IsRetrocompact (t i)) : IsRetrocompact (s.inf t) := by
   induction' s using Finset.cons_induction with i s ih hi
   · simp
@@ -75,9 +94,21 @@ lemma IsRetrocompact.finsetInf [T2Space X] {ι : Type*} {s : Finset ι} {t : ι 
     exact (ht _ <| by simp).inter <| hi <| Finset.forall_of_forall_cons ht
 
 set_option linter.docPrime false in
-lemma IsRetrocompact.finsetInf' [T2Space X] {ι : Type*} {s : Finset ι} {hs} {t : ι → Set X}
+lemma IsRetrocompact.finsetInf' {ι : Type*} {s : Finset ι} {hs} {t : ι → Set X}
     (ht : ∀ i ∈ s, IsRetrocompact (t i)) : IsRetrocompact (s.inf' hs t) := by
   rw [Finset.inf'_eq_inf]; exact .finsetInf ht
+
+lemma IsRetrocompact.iInter [Finite ι] {f : ι → Set X} (hf : ∀ i, IsRetrocompact (f i)) :
+    IsRetrocompact (⋂ i, f i) := infClosed_isRetrocompact.iInf_mem .univ hf
+
+lemma IsRetrocompact.sInter {S : Set (Set X)} (hS : S.Finite) (hS' : ∀ s ∈ S, IsRetrocompact s) :
+    IsRetrocompact (⋂₀ S) := infClosed_isRetrocompact.sInf_mem hS .univ hS'
+
+lemma IsRetrocompact.biInter {ι : Type*} {f : ι → Set X} {t : Set ι} (ht : t.Finite)
+    (hf : ∀ i ∈ t, IsRetrocompact (f i)) : IsRetrocompact (⋂ i ∈ t, f i) :=
+  infClosed_isRetrocompact.biInf_mem ht .univ hf
+
+end T2Space
 
 lemma IsRetrocompact.inter_isOpen (hs : IsRetrocompact s) (ht : IsRetrocompact t)
     (htopen : IsOpen t) : IsRetrocompact (s ∩ t : Set X) :=
@@ -304,14 +335,36 @@ lemma _root_.TopologicalSpace.IsTopologicalBasis.isConstructible'
   (basis.isRetrocompact' compact_inter _).isConstructible <| basis.isOpen <| mem_range_self _
 
 @[elab_as_elim]
-lemma IsConstructible.induction_of_isTopologicalBasis {ι : Type*} (b : ι → Set X)
+lemma IsConstructible.induction_of_isTopologicalBasis {ι : Type*} [Nonempty ι] (b : ι → Set X)
     (basis : IsTopologicalBasis (range b)) (compact_inter : ∀ i j, IsCompact (b i ∩ b j))
     (sdiff : ∀ i s (hs : Set.Finite s), P (b i \ ⋃ j ∈ s, b j)
-      ((basis.isConstructible' compact_inter _).sdiff <| .biUnion hs fun i _ ↦
+      ((basis.isConstructible' compact_inter _).sdiff <| .biUnion hs fun _ _ ↦
         basis.isConstructible' compact_inter _))
     (union : ∀ s hs t ht, P s hs → P t ht → P (s ∪ t) (hs.union ht))
     (s : Set X) (hs : IsConstructible s) : P s hs := by
-  sorry
+  induction s, hs using BooleanSubalgebra.closure_sdiff_sup_induction' with
+  | isSublattice =>
+    exact ⟨fun s hs t ht ↦ ⟨hs.1.union ht.1, hs.2.union ht.2⟩,
+      fun s hs t ht ↦ ⟨hs.1.inter ht.1, hs.2.inter_isOpen ht.2 ht.1⟩⟩
+  | bot_mem => exact ⟨isOpen_empty, .empty⟩
+  | top_mem => exact ⟨isOpen_univ, .univ⟩
+  | sdiff U hU V hV =>
+    have := isCompact_open_iff_eq_finite_iUnion_of_isTopologicalBasis _ basis
+        fun i ↦ by simpa using compact_inter i i
+    obtain ⟨s, hs, rfl⟩ := (this _).1 ⟨hU.2.isCompact, hU.1⟩
+    obtain ⟨t, ht, rfl⟩ := (this _).1 ⟨hV.2.isCompact, hV.1⟩
+    simp_rw [iUnion_diff]
+    induction s, hs using Set.Finite.dinduction_on with
+    | H0 => simpa using sdiff (Classical.arbitrary _) {Classical.arbitrary _}
+    | @H1 i s hi hs ih =>
+      simp_rw [biUnion_insert]
+      exact union _ _ _
+        (.biUnion hs fun i _ ↦ (basis.isConstructible' compact_inter _).sdiff <|
+          .biUnion ht fun j _ ↦ basis.isConstructible' compact_inter _)
+        (sdiff _ _ ht)
+        (ih ⟨isOpen_biUnion fun  _ _ ↦ basis.isOpen ⟨_, rfl⟩, .biUnion hs
+          fun i _ ↦ basis.isRetrocompact' compact_inter _⟩)
+  | sup s _ t _ hs' ht' => exact union _ _ _ _ hs' ht'
 
 end CompactSpace
 
