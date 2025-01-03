@@ -2,6 +2,7 @@ import Mathlib.AlgebraicGeometry.PrimeSpectrum.Polynomial
 import Mathlib.Data.DFinsupp.WellFounded
 import LeanCamCombi.GrowthInGroups.ConstructiblePrimeSpectrum
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Operations
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
@@ -15,8 +16,7 @@ lemma Ideal.span_range_update_divByMonic' {ι : Type*} [DecidableEq ι]
     (v : ι → R[X]) (i j : ι) (hij : i ≠ j) (h : IsUnit (v i).leadingCoeff) :
     Ideal.span (Set.range (Function.update v j (v j %ₘ (C ((h.unit⁻¹ : Rˣ) : R) * v i)))) =
       Ideal.span (Set.range v) := by
-  have H : (C ((h.unit⁻¹ : Rˣ) : R) * v i).Monic :=
-    Polynomial.monic_unit_leadingCoeff_inv_smul (v i) h
+  have H : (C ((h.unit⁻¹ : Rˣ) : R) * v i).Monic := by simp [Monic, leadingCoeff_C_mul]
   refine le_antisymm ?_ ?_ <;>
     simp only [Ideal.span_le, Set.range_subset_iff, SetLike.mem_coe]
   · intro k
@@ -65,21 +65,21 @@ lemma foo_induction
   -- Case I : The `e i ≠ 0` with minimal degree has invertible leading coefficient
   by_cases H : ∃ i, IsUnit (e i).leadingCoeff ∧ ∀ j, e j ≠ 0 → (e i).degree ≤ (e j).degree
   · obtain ⟨i, hi, i_min⟩ := H
+    have hi_monic : (C (↑(hi.unit⁻¹) : R) * e i).Monic := by simp [Monic, leadingCoeff_C_mul]
     -- Case I.ii : `e j = 0` for all `j ≠ i`.
     by_cases H' : ∀ j ≠ i, e j = 0
     -- then `I = Ideal.span {e i}`
-    · convert hP₀ R (C ((hi.unit⁻¹ : Rˣ) : R) * e i) ?_ using 1
-      · refine le_antisymm ?_ ?_ <;>
-          simp only [Ideal.span_le, Set.range_subset_iff, Set.singleton_subset_iff]
-        · intro j
-          by_cases hij : i = j
-          · simp only [SetLike.mem_coe, Ideal.mem_span_singleton]
-            use C (e i).leadingCoeff
-            rw [mul_comm, ← mul_assoc, ← map_mul, IsUnit.mul_val_inv, map_one, one_mul, hij]
-          · rw [H' j (.symm hij)]
-            exact Ideal.zero_mem _
-        · exact Ideal.mul_mem_left _ _ (Ideal.subset_span (Set.mem_range_self i))
-      exact Polynomial.monic_unit_leadingCoeff_inv_smul _ _
+    · convert hP₀ R (C ((hi.unit⁻¹ : Rˣ) : R) * e i) hi_monic using 1
+      refine le_antisymm ?_ ?_ <;>
+        simp only [Ideal.span_le, Set.range_subset_iff, Set.singleton_subset_iff]
+      · intro j
+        by_cases hij : i = j
+        · simp only [SetLike.mem_coe, Ideal.mem_span_singleton]
+          use C (e i).leadingCoeff
+          rw [mul_comm, ← mul_assoc, ← map_mul, IsUnit.mul_val_inv, map_one, one_mul, hij]
+        · rw [H' j (.symm hij)]
+          exact Ideal.zero_mem _
+      · exact Ideal.mul_mem_left _ _ (Ideal.subset_span (Set.mem_range_self i))
     -- Case I.i : There is another `e j ≠ 0`
     · simp only [ne_eq, not_forall, Classical.not_imp] at H'
       obtain ⟨j, hj, hj'⟩ := H'
@@ -94,9 +94,8 @@ lemma foo_induction
           not_forall, Classical.not_imp, not_le, ofLex_toLex]
         split_ifs with hjk
         · rw [hjk]
-          refine (degree_modByMonic_le _
-            (monic_unit_leadingCoeff_inv_smul _ _)).trans
-              ((degree_C_mul_eq_of_mul_ne_zero _ _ ?_).trans_le i_min)
+          refine (degree_modByMonic_le _ hi_monic).trans
+            ((degree_C_mul_of_mul_ne_zero ?_).trans_le i_min)
           rw [IsUnit.val_inv_mul]
           exact one_ne_zero
         · exact le_rfl
@@ -104,8 +103,8 @@ lemma foo_induction
           Function.comp_apply, exists_prop, ofLex_toLex]
         use j
         simp only [Function.update_self]
-        refine ((degree_modByMonic_lt _ (monic_unit_leadingCoeff_inv_smul _ _)).trans_le
-          ((degree_C_mul_eq_of_mul_ne_zero _ _ ?_).trans_le i_min)).ne
+        refine ((degree_modByMonic_lt _ hi_monic).trans_le <|
+          (degree_C_mul_of_mul_ne_zero ?_).trans_le i_min).ne
         rw [IsUnit.val_inv_mul]
         exact one_ne_zero
   -- Case II : The `e i ≠ 0` with minimal degree has non-invertible leading coefficient

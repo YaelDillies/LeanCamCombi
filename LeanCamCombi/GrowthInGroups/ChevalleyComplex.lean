@@ -6,7 +6,6 @@ import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Algebra.Order.Monoid.Unbundled.Pow
-import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Data.Set.Basic
@@ -200,7 +199,9 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
     ⟨C (IsLocalization.Away.invSelf (S := Away c) c) • mapRingHom q₁ ∘ e.val⟩
   set e₂ : InductionObj (R ⧸ Ideal.span {c}) n := ⟨mapRingHom q₂ ∘ e.val⟩
   have degBound_e₁_le : e₁.degBound ≤ e.degBound := by
-    unfold degBound; gcongr with j; exact (degree_C_mul_le _ _).trans degree_map_le
+    unfold degBound
+    gcongr with j
+    exact (degree_mul_le _ _).trans <| (add_le_of_nonpos_left degree_C_le).trans degree_map_le
   have degBound_e₂_lt : e₂.degBound < e.degBound := by
     unfold degBound
     refine Fintype.sum_strictMono <| Pi.lt_def.2 ⟨fun j ↦ ?_, i, ?_⟩

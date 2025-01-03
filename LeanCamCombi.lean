@@ -37,6 +37,7 @@ import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Algebra.Order.Monoid.Unbundled.Pow
 import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Operations
 import LeanCamCombi.Mathlib.Algebra.Ring.Hom.Defs
 import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
