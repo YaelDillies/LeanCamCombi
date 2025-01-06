@@ -45,6 +45,7 @@ import LeanCamCombi.Mathlib.Analysis.Convex.Independence
 import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
 import LeanCamCombi.Mathlib.Combinatorics.Additive.VerySmallDoubling
 import LeanCamCombi.Mathlib.Combinatorics.Schnirelmann
+import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shatter
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Finite
@@ -54,7 +55,9 @@ import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Data.Set.Basic
+import LeanCamCombi.Mathlib.Data.Set.Finite.Basic
 import LeanCamCombi.Mathlib.Data.Set.Image
+import LeanCamCombi.Mathlib.Data.Set.Lattice
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
@@ -67,10 +70,13 @@ import LeanCamCombi.Mathlib.Order.RelIso.Group
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
+import LeanCamCombi.Mathlib.Topology.MetricSpace.MetricSeparated
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.Multipartite
-import LeanCamCombi.PhD.VCDim.Basic
+import LeanCamCombi.PhD.VCDim.AddVCDim
+import LeanCamCombi.PhD.VCDim.HausslerPacking
+import LeanCamCombi.PhD.VCDim.HypercubeEdges
 import LeanCamCombi.PlainCombi.LittlewoodOfford
 import LeanCamCombi.PlainCombi.OrderShatter
 import LeanCamCombi.PlainCombi.VanDenBergKesten
