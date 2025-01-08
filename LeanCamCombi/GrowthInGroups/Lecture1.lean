@@ -77,6 +77,6 @@ open scoped Classical RightActions in
 lemma lemma_3_11 (hA : #(A * A) < (3 / 2 : ℚ) * #A) :
     ∃ (H : Subgroup G) (_ : Fintype H),
       (card H : ℚ≥0) < 3 / 2 * #A ∧ ∀ a ∈ A, (A : Set G) ⊆ a • H ∧ a • (H : Set G) = H <• a :=
-  very_small_doubling hA
+  doubling_lt_three_halves hA
 
 end GrowthInGroups.Lecture1
