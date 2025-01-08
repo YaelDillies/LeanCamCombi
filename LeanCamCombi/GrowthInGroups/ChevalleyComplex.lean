@@ -647,7 +647,7 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
     · rw [← MvPolynomial.degreesLE_pow, Submodule.restrictScalars_pow Nat.pow_self_pos.ne']
       refine pow_le_pow_right' ?_ (Nat.pow_self_mono hS')
       simp
-  have h1M : 1 ≤ M := Submodule.one_le_iff.mpr hM
+  have h1M : 1 ≤ M := Submodule.one_le.mpr hM
   obtain ⟨U, hU₁, hU₂⟩ := IH (M := M ^ N)
     (SetLike.le_def.mp (le_self_pow' h1M Nat.pow_self_pos.ne') hM) _ _ T
     (fun C hCT ↦ (hT₂ C hCT).1)

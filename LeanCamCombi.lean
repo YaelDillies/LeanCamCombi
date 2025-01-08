@@ -30,7 +30,6 @@ import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.MulStab
 import LeanCamCombi.Mathlib.Algebra.Algebra.Operations
 import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.Basic
-import LeanCamCombi.Mathlib.Algebra.Group.Pointwise.Set.BigOperators
 import LeanCamCombi.Mathlib.Algebra.Module.Submodule.Defs
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
@@ -62,7 +61,6 @@ import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
-import LeanCamCombi.Mathlib.MeasureTheory.Measure.OpenPos
 import LeanCamCombi.Mathlib.Order.BooleanSubalgebra
 import LeanCamCombi.Mathlib.Order.Flag
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
