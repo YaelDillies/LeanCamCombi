@@ -7,7 +7,7 @@ import Mathlib.Analysis.Asymptotics.Asymptotics
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.MeasureTheory.Measure.Typeclasses
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
-import LeanCamCombi.ExtrProbCombi.Basic
+import LeanCamCombi.ExtrProbCombi.BinomialRandomGraph
 import LeanCamCombi.ExtrProbCombi.Containment
 
 /-!
@@ -21,7 +21,7 @@ open scoped MeasureTheory  ENNReal NNReal SimpleGraph Topology
 
 variable {α β Ω : Type*} [Fintype β] {G : ℕ → Ω → SimpleGraph α} (H : SimpleGraph β)
   [Fintype H.edgeSet] [∀ n ω, DecidableRel (G n ω).Adj] [MeasurableSpace Ω] (μ : Measure Ω)
-  [IsProbabilityMeasure μ] {p : ℕ → ℝ≥0} (hG : ∀ n, ErdosRenyi (G n) (p n) μ)
+  [IsProbabilityMeasure μ] {p : ℕ → ℝ≥0} (hG : ∀ n, IsBinomialRandomGraph (G n) (p n) μ)
 
 namespace SimpleGraph
 

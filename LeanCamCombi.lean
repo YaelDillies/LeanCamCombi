@@ -4,8 +4,8 @@ import LeanCamCombi.ConvexityRefactor.Defs
 import LeanCamCombi.ConvexityRefactor.StdSimplex
 import LeanCamCombi.Corners.CombiDegen
 import LeanCamCombi.DiscreteDeriv
-import LeanCamCombi.ExtrProbCombi.Basic
 import LeanCamCombi.ExtrProbCombi.BernoulliSeq
+import LeanCamCombi.ExtrProbCombi.BinomialRandomGraph
 import LeanCamCombi.ExtrProbCombi.BollobasContainment
 import LeanCamCombi.ExtrProbCombi.Connectivity
 import LeanCamCombi.ExtrProbCombi.Containment

@@ -98,7 +98,7 @@ In either case, run `lake exe cache get` and then `lake build` to build the proj
 
 With the project opened in VScode, you are all set to start exploring the code. There are two pieces of functionality that help a lot when browsing through Lean code:
 
-* "Go to definition": If you right-click on a name of a definition or lemma (such as `ErdosRenyi`, or `Finset.sups`), then you can choose "Go to definition" from the menu, and you will be taken to the relevant location in the source files. This also works by `Ctrl`-clicking on the name.
+* "Go to definition": If you right-click on a name of a definition or lemma (such as `IsBinomialRandomGraph`, or `Finset.sups`), then you can choose "Go to definition" from the menu, and you will be taken to the relevant location in the source files. This also works by `Ctrl`-clicking on the name.
 * "Goal view": in the event that you would like to read a *proof*, you can step through the proof line-by-line, and see the internals of Lean's "brain" in the Goal window. If the Goal window is not open, you can open it by clicking on the forall icon in the top right hand corner.
 
 ### Contributing

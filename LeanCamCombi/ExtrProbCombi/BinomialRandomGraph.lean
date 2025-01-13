@@ -7,9 +7,19 @@ import Mathlib.Combinatorics.SimpleGraph.Finite
 import LeanCamCombi.ExtrProbCombi.BernoulliSeq
 
 /-!
-# The Erdős–Rényi model
+# Binomial random graphs
 
-In this file, we define the Erdős–Rényi model through its marginals.
+In this file, we define a predicate for binomial random graphs (aka the Erdős–Rényi model) through
+its marginals.
+
+Note that we do not prove here that such binomial random graphs always exist.
+
+## Historical note
+
+This is usually called the Erdős–Rényi model, but this name is historically inaccurate as Erdős and
+Rényi introduced a closely related but different model. We therefore choose the name
+"binomial random graph" to avoid confusion with this other model and because it is a more
+descriptive name.
 -/
 
 open MeasureTheory ProbabilityTheory
@@ -17,14 +27,15 @@ open scoped Finset ENNReal NNReal
 
 variable {α Ω : Type*} [MeasurableSpace Ω]
 
-/-- A sequence iid. real valued Bernoulli random variables with parameter `p ≤ 1`. -/
-abbrev ErdosRenyi (G : Ω → SimpleGraph α) (p : ℝ≥0) (μ : Measure Ω := by volume_tac) : Prop :=
+/-- A graph-valued random variable is a `p`-binomial random graph (aka follows the Erdős–Rényi
+model) if its edges are iid `p`-Bernoulli random variables. -/
+abbrev IsBinomialRandomGraph (G : Ω → SimpleGraph α) (p : ℝ≥0) (μ : Measure Ω := by volume_tac) : Prop :=
   IsBernoulliSeq (fun ω ↦ (G ω).edgeSet) p μ
 
 variable {G : Ω → SimpleGraph α} {H : SimpleGraph α} {p : ℝ≥0} (μ : Measure Ω)
-  (hG : ErdosRenyi G p μ)
+  (hG : IsBinomialRandomGraph G p μ)
 
-namespace ErdosRenyi
+namespace IsBinomialRandomGraph
 include hG
 
 protected nonrec lemma le_one : p ≤ 1 := hG.le_one
@@ -54,4 +65,4 @@ protected nonrec lemma meas [IsProbabilityMeasure μ] [Fintype α] [DecidableEq 
       p ^ #H.edgeFinset * (1 - p) ^ (Fintype.card (Sym2 α) - #H.edgeFinset) := by
   simpa using hG.meas H.edgeFinset
 
-end ErdosRenyi
+end IsBinomialRandomGraph
