@@ -177,7 +177,7 @@ lemma disjoint_mul_sub_card_le (b : G) (has : a ∈ s) (hCfin : C.Finite) (hsfin
   · simp at hsC
     subst t
     have hs : s.Nonempty := ⟨a, has⟩
-    simp [hs]
+    simp [hs, coset]
   have hstabCfin : (Stab C : Set G).Finite := stabilizer_finite hC hCfin
   calc
     (#(Stab C) : ℤ) - #(coset C s a * Stab (coset C s a * coset C t b))
@@ -212,7 +212,7 @@ lemma disjoint_mul_sub_card_le (b : G) (has : a ∈ s) (hCfin : C.Finite) (hsfin
 @[to_additive]
 lemma inter_mul_sub_card_le {a : G} {s t C : Set G} (has : a ∈ s) (hC : C.Nonempty)
     (hst : Stab (coset C s a * coset C t a) ⊆ Stab C) :
-    (#(Stab C) : ℤ) - #(↑coset C s a * Stab (coset C s a * coset C t a)) -
+    (#(Stab C) : ℤ) - #(coset C s a * Stab (coset C s a * coset C t a)) -
         #(↑t ∩ a • Stab C * Stab (coset C s a * coset C t a)) ≤
       #((s ∪ t) * Stab C) - #((s ∪ t) * Stab (coset C s a * coset C t a)) := by
   calc
