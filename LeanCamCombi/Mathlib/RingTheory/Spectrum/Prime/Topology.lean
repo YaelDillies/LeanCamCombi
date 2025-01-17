@@ -1,5 +1,5 @@
-import Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
-import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
+import Mathlib.RingTheory.Localization.Algebra
+import Mathlib.RingTheory.Spectrum.Prime.Topology
 
 variable {R S : Type*} [CommSemiring R] [CommSemiring S]
 

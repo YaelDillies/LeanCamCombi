@@ -1,4 +1,4 @@
-import Mathlib.Algebra.Group.Nat.Basic
+import Mathlib.Algebra.Group.Nat.Defs
 
 /-!
 # Stable binary relations

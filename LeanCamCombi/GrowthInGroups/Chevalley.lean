@@ -1,9 +1,8 @@
-import Mathlib.AlgebraicGeometry.PrimeSpectrum.Polynomial
 import Mathlib.Data.DFinsupp.WellFounded
-import LeanCamCombi.Mathlib.Algebra.Polynomial.Degree.Operations
+import Mathlib.RingTheory.Localization.Algebra
+import Mathlib.RingTheory.Spectrum.Prime.Polynomial
 import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
-import LeanCamCombi.Mathlib.RingTheory.Localization.Integral
 import LeanCamCombi.GrowthInGroups.ConstructiblePrimeSpectrum
 
 open Polynomial PrimeSpectrum TensorProduct Topology
@@ -15,7 +14,7 @@ lemma Ideal.span_range_update_divByMonic' {ι : Type*} [DecidableEq ι]
     (v : ι → R[X]) (i j : ι) (hij : i ≠ j) (h : IsUnit (v i).leadingCoeff) :
     Ideal.span (Set.range (Function.update v j (v j %ₘ (C ((h.unit⁻¹ : Rˣ) : R) * v i)))) =
       Ideal.span (Set.range v) := by
-  have H : (C ((h.unit⁻¹ : Rˣ) : R) * v i).Monic := by simp [Monic, leadingCoeff_C_mul]
+  have H : (C (↑(h.unit⁻¹) : R) * v i).Monic := by simp [Monic, leadingCoeff_C_mul_of_isUnit]
   refine le_antisymm ?_ ?_ <;>
     simp only [Ideal.span_le, Set.range_subset_iff, SetLike.mem_coe]
   · intro k
@@ -64,7 +63,7 @@ lemma foo_induction
   -- Case I : The `e i ≠ 0` with minimal degree has invertible leading coefficient
   by_cases H : ∃ i, IsUnit (e i).leadingCoeff ∧ ∀ j, e j ≠ 0 → (e i).degree ≤ (e j).degree
   · obtain ⟨i, hi, i_min⟩ := H
-    have hi_monic : (C (↑(hi.unit⁻¹) : R) * e i).Monic := by simp [Monic, leadingCoeff_C_mul]
+    have hi_monic : (C (↑(hi.unit⁻¹) : R) * e i).Monic := by simp [Monic, leadingCoeff_C_mul_of_isUnit]
     -- Case I.ii : `e j = 0` for all `j ≠ i`.
     by_cases H' : ∀ j ≠ i, e j = 0
     -- then `I = Ideal.span {e i}`

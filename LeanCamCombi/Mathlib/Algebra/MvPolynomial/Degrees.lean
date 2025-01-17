@@ -1,5 +1,4 @@
 import Mathlib.Algebra.MvPolynomial.Degrees
-import LeanCamCombi.Mathlib.Algebra.Algebra.Operations
 
 namespace MvPolynomial
 variable {R σ : Type*} [CommSemiring R] {m n : Multiset σ} {p : MvPolynomial σ R}

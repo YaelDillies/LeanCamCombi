@@ -9,8 +9,6 @@ import Mathlib.Data.Set.Card
 import Mathlib.Data.Set.Finite.Lattice
 import Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shatter
-import LeanCamCombi.Mathlib.Data.Set.Finite.Basic
-import LeanCamCombi.Mathlib.Data.Set.Lattice
 
 /-!
 # A small VC dimension family has few edges in the L¹ metric

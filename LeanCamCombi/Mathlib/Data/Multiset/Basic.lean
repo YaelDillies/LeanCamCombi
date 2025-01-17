@@ -25,6 +25,6 @@ lemma exists_le_card_eq (hn : n ≤ card s) : ∃ t, t ≤ s ∧ card t = n := b
 variable [DecidableEq α]
 
 lemma le_card_sub : card s - card t ≤ card (s - t) :=
-  Nat.sub_le_iff_le_add'.2 $ (card_mono le_add_tsub).trans_eq $ card_add _ _
+  Nat.sub_le_iff_le_add'.2 $ (card_mono Multiset.le_add_sub).trans_eq $ card_add _ _
 
 end Multiset

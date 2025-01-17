@@ -1,15 +1,13 @@
 import Mathlib.Algebra.Order.SuccPred.WithBot
 import Mathlib.Algebra.Polynomial.CoeffMem
-import Mathlib.AlgebraicGeometry.PrimeSpectrum.Polynomial
 import Mathlib.Data.DFinsupp.WellFounded
+import Mathlib.RingTheory.Spectrum.Prime.Polynomial
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
-import LeanCamCombi.Mathlib.Algebra.Order.Monoid.Unbundled.Pow
-import LeanCamCombi.Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
 import LeanCamCombi.Mathlib.Data.Prod.Lex
-import LeanCamCombi.Mathlib.Data.Set.Basic
 import LeanCamCombi.Mathlib.Data.Set.Image
+import LeanCamCombi.Mathlib.RingTheory.Spectrum.Prime.Topology
 import LeanCamCombi.GrowthInGroups.ConstructibleSetData
 
 variable {R S M A : Type*} [CommRing R] [CommRing S] [AddCommGroup M] [Module R M] [CommRing A]
@@ -226,7 +224,7 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
         (span ℤ ({c} ∪ ⋃ i, coeff(e.val i)) ^ e₁.powBound).map q₁.toLinearMap := by
     unfold coeffSubmodule
     rw [Submodule.map_pow, map_span, invOf_pow, ← smul_pow, ← span_smul]
-    simp [Set.image_insert_eq, Set.smul_set_insert, Set.image_iUnion, Set.smul_set_iUnion, q₁]
+    simp [Set.image_insert_eq, Set.smul_set_insert, Set.image_iUnion, Set.smul_set_iUnion, q₁, e₁]
     congr! with i
     change _ = IsLocalization.Away.invSelf c • _
     simp [← Set.range_comp, Set.smul_set_range, funext fun _ ↦ coeff_C_mul _]
@@ -266,7 +264,8 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
         simpa using (Set.biUnion_union S₁.toSet S₂ _).symm
     congr 1
     · convert congr(comap q₁.toRingHom '' $hT₁)
-      · rw [Set.preimage_diff, preimage_comap_zeroLocus, preimage_comap_zeroLocus,
+      · dsimp only [e₁]
+        rw [Set.preimage_diff, preimage_comap_zeroLocus, preimage_comap_zeroLocus,
           Set.image_singleton, Pi.smul_def, ← Set.smul_set_range, Set.range_comp]
         congr 1
         refine (PrimeSpectrum.zeroLocus_smul_of_isUnit (.map _ ?_) _).symm
@@ -323,7 +322,7 @@ lemma induction_aux (R) [CommRing R] (c : R) (i : Fin n) (e : InductionObj R n)
           · exact one_le_coeffSubmodule
           · exact Set.subset_union_right
           · omega
-    · exact le_self_pow' one_le_coeffSubmodule powBound_ne_zero <| subset_span <| .inr <| by
+    · exact le_self_pow one_le_coeffSubmodule powBound_ne_zero <| subset_span <| .inr <| by
         simpa using ⟨_, _, hi.symm⟩
     · unfold powBound
       gcongr
@@ -382,7 +381,7 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
     · intro C hC
       let c' : InductionObj _ _ := ⟨Function.update c.val j (c.val j %ₘ c.val i)⟩
       have deg_bound₁ : c'.degBound ≤ c.degBound := by
-        dsimp [InductionObj.degBound]
+        dsimp [InductionObj.degBound, c']
         gcongr with k
         · rw [Function.update_apply]
           split_ifs with hkj
@@ -398,7 +397,7 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
           · refine Submodule.span_le.mpr (Set.union_subset ?_ ?_)
             · exact Set.subset_union_left.trans Submodule.subset_span
             · refine Set.iUnion_subset fun k ↦ ?_
-              simp only [Function.update_apply, hi', modByMonic_one]
+              simp only [Function.update_apply, hi', modByMonic_one, c']
               split_ifs
               · rintro _ ⟨_, rfl⟩
                 exact zero_mem _
@@ -410,7 +409,7 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
         rw [← pow_mul]
         apply pow_le_pow_right' c.one_le_coeffSubmodule
         have deg_bound₂ : c'.degBound < c.degBound := by
-          dsimp [InductionObj.degBound]
+          dsimp [InductionObj.degBound, c']
           apply Finset.sum_lt_sum ?_ ⟨j, Finset.mem_univ _, ?_⟩
           · intro k _
             rw [Function.update_apply]
@@ -428,7 +427,7 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
           _ ≤ c.degBound ^ c.degBound := by gcongr <;> omega
       rw [coeffSubmodule]
       simp only [Submodule.span_le, Set.union_subset_iff, Set.singleton_subset_iff, SetLike.mem_coe,
-        Set.iUnion_subset_iff, Set.range_subset_iff]
+        Set.iUnion_subset_iff, Set.range_subset_iff, c']
       constructor
       · apply one_le_pow_of_one_le' c.one_le_coeffSubmodule
         rw [Submodule.one_eq_span]
@@ -448,7 +447,7 @@ lemma isConstructible_comap_C_zeroLocus_sdiff_zeroLocus :
             rw [bot_lt_iff_ne_bot, ne_eq, degree_eq_bot]
             intro e
             simp [e] at hi
-          refine le_self_pow' c.one_le_coeffSubmodule this ?_
+          refine le_self_pow c.one_le_coeffSubmodule this ?_
           exact Submodule.subset_span (.inr (Set.mem_iUnion_of_mem l ⟨m, rfl⟩))
   · convert induction_aux (n := n) -- Andrew: this is absolutely fine if you ignore it
     ext
@@ -560,9 +559,7 @@ end
 
 lemma δ_pos (k : ℕ) (D : ℕ → ℕ) : ∀ n, 0 < δ k D n
   | 0 => by simp
-  | (n + 1) => by
-    simp only [δ_succ, CanonicallyOrderedCommSemiring.mul_pos]
-    exact ⟨Nat.pow_self_pos, δ_pos _ _ _⟩
+  | n + 1 => by simp [δ_succ, Nat.pow_self_pos, δ_pos]
 
 lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
     {M : Submodule ℤ R} (hM : 1 ∈ M) (k : ℕ) (d : Multiset (Fin n))
@@ -649,11 +646,10 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
       simp
   have h1M : 1 ≤ M := Submodule.one_le.mpr hM
   obtain ⟨U, hU₁, hU₂⟩ := IH (M := M ^ N)
-    (SetLike.le_def.mp (le_self_pow' h1M Nat.pow_self_pos.ne') hM) _ _ T
+    (SetLike.le_def.mp (le_self_pow h1M Nat.pow_self_pos.ne') hM) _ _ T
     (fun C hCT ↦ (hT₂ C hCT).1)
     (fun C hCT k ↦ this C hCT k)
-  simp only [Multiset.map_nsmul _ (_ ^ _), smul_comm _ (_ ^ _),
-    Multiset.count_nsmul, ← pow_mul] at hU₂
+  simp only [Multiset.map_nsmul, smul_comm _ (_ ^ _), Multiset.count_nsmul, ← pow_mul, N] at hU₂
   have : ∀ i < n + 1, i.casesOn (1 + d.count 0) (1 + (B.map Fin.val).count ·) ≤
       1 + (d.map Fin.val).count i := by
     intro t ht
@@ -666,7 +662,7 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
       rw [Multiset.count_map_eq_count' _ _ Fin.val_injective]
       simp [B]
   refine ⟨U, ?_, fun C hCU ↦ ⟨(hU₂ C hCU).1.trans ?_,
-    fun i ↦ pow_le_pow_right' h1M ?_ ((hU₂ C hCU).2 i)⟩⟩
+    fun i ↦ pow_le_pow_right' h1M ?_ <| (hU₂ C hCU).2 i⟩⟩
   · unfold S' at hT₁
     rw [← hU₁, ← hT₁, ← Set.image_comp, ← ContinuousMap.coe_comp, ← comap_comp,
       ConstructibleSetData.toSet_map]
@@ -677,10 +673,10 @@ lemma exists_constructibleSetData_comap_C_toSet_eq_toSet'
     exact e.symm.toAlgHom.comp_algebraMap.symm
   · refine (ν_le_ν hS' _ fun _ _ ↦ ?_).trans
       ((ν_casesOn_succ k _ _ _).symm.trans_le (ν_le_ν le_rfl _ this))
-    simp+contextual [mul_add, Nat.one_le_iff_ne_zero]
+    simp +contextual [mul_add, Nat.one_le_iff_ne_zero]
   · refine (Nat.mul_le_mul le_rfl (δ_le_δ hS' _ fun _ _ ↦ ?_)).trans
       ((δ_casesOn_succ k _ _ _).symm.trans_le (δ_le_δ le_rfl _ this))
-    simp+contextual [mul_add, Nat.one_le_iff_ne_zero]
+    simp +contextual [mul_add, Nat.one_le_iff_ne_zero]
 
 lemma chevalley_mvPolynomial_mvPolynomial
     {n m : ℕ} (f : MvPolynomial (Fin m) R →ₐ[R] MvPolynomial (Fin n) R)
@@ -753,7 +749,7 @@ lemma chevalley_mvPolynomial_mvPolynomial
       ← Function.comp_def (g := finSumFinEquiv.symm), Set.range_comp,
       Equiv.range_eq_univ, Set.image_univ, Set.Sum.elim_range,
       Set.image_diff (hf := comap_injective_of_surjective g hg'), zeroLocus_union]
-    simp [hg'', ← Set.inter_diff_distrib_right, Set.sdiff_inter_right_comm]
+    simp [hg'', ← Set.inter_diff_distrib_right, Set.sdiff_inter_right_comm, s₀]
   obtain ⟨T, hT, hT'⟩ :=
     exists_constructibleSetData_comap_C_toSet_eq_toSet'
     (M := (MvPolynomial.degreesLE R (Fin m) Finset.univ.1).restrictScalars ℤ) (by simp) (k + m) d S'

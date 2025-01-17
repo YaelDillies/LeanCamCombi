@@ -1,4 +1,4 @@
-import Mathlib.AlgebraicGeometry.PrimeSpectrum.Basic
+import Mathlib.RingTheory.Spectrum.Prime.Topology
 import LeanCamCombi.GrowthInGroups.Constructible
 
 namespace PrimeSpectrum

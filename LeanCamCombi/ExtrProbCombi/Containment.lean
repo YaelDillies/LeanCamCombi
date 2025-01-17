@@ -324,6 +324,6 @@ lemma le_card_edgeFinset_kill [Fintype β] :
   simp only [Finset.sdiff_eq_inter_compl, Set.diff_eq, ← Set.iUnion_singleton_eq_range, coe_sdiff,
     Set.coe_toFinset, coe_filter, Set.sep_mem_eq, Set.iUnion_subtype, ← Fintype.card_coe,
     ← Finset.coe_sort_coe, coe_inter, coe_compl, Set.coe_toFinset, Set.compl_iUnion,
-    Fintype.card_ofFinset]
+    Fintype.card_ofFinset, f]
 
 end SimpleGraph

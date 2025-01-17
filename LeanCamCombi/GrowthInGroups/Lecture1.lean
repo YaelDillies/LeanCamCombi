@@ -3,7 +3,6 @@ import Mathlib.Combinatorics.Additive.DoublingConst
 import Mathlib.Combinatorics.Additive.VerySmallDoubling
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
-import LeanCamCombi.Mathlib.Combinatorics.Additive.VerySmallDoubling
 import LeanCamCombi.GrowthInGroups.LinearLowerBound
 import LeanCamCombi.Util
 

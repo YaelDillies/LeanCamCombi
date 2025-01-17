@@ -1,5 +1,4 @@
 import Mathlib.Algebra.MvPolynomial.Basic
-import LeanCamCombi.Mathlib.Algebra.Algebra.Operations
 
 namespace Submodule
 variable {R S σ : Type*} [CommSemiring R] [CommSemiring S]

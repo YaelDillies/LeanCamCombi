@@ -354,9 +354,9 @@ lemma IsConstructible.induction_of_isTopologicalBasis {ι : Type*} [Nonempty ι]
     obtain ⟨s, hs, rfl⟩ := (this _).1 ⟨hU.2.isCompact, hU.1⟩
     obtain ⟨t, ht, rfl⟩ := (this _).1 ⟨hV.2.isCompact, hV.1⟩
     simp_rw [iUnion_diff]
-    induction s, hs using Set.Finite.dinduction_on with
-    | H0 => simpa using sdiff (Classical.arbitrary _) {Classical.arbitrary _}
-    | @H1 i s hi hs ih =>
+    induction s, hs using Set.Finite.induction_on with
+    | empty => simpa using sdiff (Classical.arbitrary _) {Classical.arbitrary _}
+    | @insert i s hi hs ih =>
       simp_rw [biUnion_insert]
       exact union _ _ _
         (.biUnion hs fun i _ ↦ (basis.isConstructible' compact_inter _).sdiff <|

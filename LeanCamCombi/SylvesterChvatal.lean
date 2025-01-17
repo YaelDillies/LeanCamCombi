@@ -403,7 +403,7 @@ lemma case1 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : IsSimpleTriangle a
   classical
   let P' : List V := a₁ :: b₁₂ :: b₂₃ :: a₃ :: l
   have hP' : Delta b₁₂ a₂ b₂₃ = (a₁ :: a₂ :: a₃ :: l).pathLength - P'.pathLength := by
-    simp only [List.pathLength, Delta]; linarith [hb₁₂.dist, hb₂₃.dist]
+    simp only [List.pathLength, Delta, P']; linarith [hb₁₂.dist, hb₂₃.dist]
   have hd : 0 < Delta b₁₂ a₂ b₂₃ := Delta_pos_of hb
   have hP'lt : P'.pathLength < (a₁ :: a₂ :: a₃ :: l).pathLength := by linarith
   replace hP'ns : ¬ P'.Special a b d := fun hP' ↦ by linarith [hPmin _ hP']
@@ -426,7 +426,7 @@ lemma case1 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : IsSimpleTriangle a
     simp only [P', List.chain'_cons, and_true, ← ha₁, hb₁₂.ne12, true_and, not_false_eq_true, ne_eq,
       ha₃b₁₂.symm, ha₃b₂₃.symm, hPc.2.2, hP'₁.2]
   simp only [List.Special, hP'₁, List.getLast_cons_cons, List.getLast_cons_cons, hPd,
-    hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not] at hP'ns
+    hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not, P'] at hP'ns
   have : IsSimpleTriangle b₁₂ a₂ b₂₃ := ⟨hba, hab, hP'ns.2.symm, hb⟩
   replace := habc_min _ _ _ this
   have h9 := eqn_9 habc hacd hbd' hbd hPmin
@@ -464,7 +464,7 @@ lemma case2 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : IsSimpleTriangle a
   classical
   let P' : List V := a₁ :: b₂₃ :: a₃ :: l
   have hP' : Delta a₁ a₂ b₂₃ = (a₁ :: a₂ :: a₃ :: l).pathLength - P'.pathLength := by
-    simp only [List.pathLength, Delta]; linarith [hb₂₃.dist]
+    simp only [List.pathLength, Delta, P']; linarith [hb₂₃.dist]
   have hd : 0 < Delta a₁ a₂ b₂₃ := Delta_pos_of hb
   have hP'lt : P'.pathLength < (a₁ :: a₂ :: a₃ :: l).pathLength := by linarith
   replace hP'ns : ¬ P'.Special a b d := fun hP' ↦ by linarith [hPmin _ hP']
@@ -477,7 +477,7 @@ lemma case2 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : IsSimpleTriangle a
     simp only [P', List.chain'_cons, and_true, ← ha₁, true_and, not_false_eq_true, ne_eq,
       ha₃b₂₃.symm, hPc.2.2, hP'₁.2, hP'₁.1]
   simp only [List.Special, hP'₁, List.getLast_cons_cons, List.getLast_cons_cons, hPd,
-    hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not] at hP'ns
+    hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not, P'] at hP'ns
   have : IsSimpleTriangle a₁ a₂ b₂₃ := ⟨c₁1, hab, hP'ns.1.symm, hb⟩
   replace := habc_min _ _ _ this
   have h9 := eqn_9 habc hacd hbd' hbd hPmin
@@ -510,7 +510,7 @@ lemma case3 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : IsSimpleTriangle a
   classical
   let P' : List V := a₁ :: b₁₂ :: a₃ :: l
   have hP' : Delta b₁₂ a₂ a₃ = (a₁ :: a₂ :: a₃ :: l).pathLength - P'.pathLength := by
-    simp only [List.pathLength, Delta]; linarith [hb₁₂.dist]
+    simp only [List.pathLength, Delta, P']; linarith [hb₁₂.dist]
   have hd : 0 < Delta b₁₂ a₂ a₃ := Delta_pos_of hb
   have hP'lt : P'.pathLength < (a₁ :: a₂ :: a₃ :: l).pathLength := by linarith
   replace hP'ns : ¬ P'.Special a b d := fun hP' ↦ by linarith [hPmin _ hP']
@@ -531,7 +531,7 @@ lemma case3 {a b c d a₁ a₂ a₃ : V} {l : List V} (habc : IsSimpleTriangle a
     simp only [P', List.chain'_cons, and_true, ← ha₁, hb₁₂.ne12, true_and, not_false_eq_true, ne_eq,
       ha₃b₁₂.symm, hPc.2.2, hP'₁.2]
   simp only [List.Special, hP'₁, List.getLast_cons_cons, List.getLast_cons_cons, hPd,
-    hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not] at hP'ns
+    hP'₂, hP'₃, ← ha₁, and_true, true_and, not_or, not_not, P'] at hP'ns
   have : IsSimpleTriangle b₁₂ a₂ a₃ := ⟨hba, c₁2, hP'ns.2.symm, hb⟩
   replace := habc_min _ _ _ this
   have h9 := eqn_9 habc hacd hbd' hbd hPmin

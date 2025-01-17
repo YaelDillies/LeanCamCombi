@@ -3,7 +3,8 @@ Copyright (c) 2022 Mantas Bakšys. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mantas Bakšys
 -/
-import LeanCamCombi.Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
+import Mathlib.Topology.Instances.RealVectorSpace
+import LeanCamCombi.Mathlib.Analysis.RCLike.Basic
 
 /-!
 # Cauchy's Functional Equation
@@ -14,47 +15,13 @@ equation are linear up to the case when `f` is a Lebesgue measurable functions, 
 intermediate well-known variants.
 -/
 
-open AddMonoidHom Bornology MeasureTheory MeasureTheory.Measure Metric NNReal Set
+open AddMonoidHom Bornology Metric NNReal Set
 
 open scoped Pointwise Topology
-
-section SeminormedGroup
-
-open TopologicalSpace
-
-variable {G H : Type*} [SeminormedAddCommGroup G] [TopologicalAddGroup G] [RCLike H] {s : Set G}
-
-theorem AddMonoidHom.continuous_of_isBounded_nhds_zero (f : G →+ H) (hs : s ∈ 𝓝 (0 : G))
-    (hbounded : IsBounded (f '' s)) : Continuous f := by
-  obtain ⟨δ, hδ, hUε⟩ := Metric.mem_nhds_iff.mp hs
-  obtain ⟨C, hC⟩ := (isBounded_iff_subset_ball 0).1 (hbounded.subset <| image_subset f hUε)
-  refine continuous_of_continuousAt_zero _ (continuousAt_iff.2 fun ε (hε : _ < _) => ?_)
-  simp only [dist_zero_right, _root_.map_zero, exists_prop]
-  simp only [subset_def, mem_image, mem_ball, dist_zero_right, forall_exists_index, and_imp,
-    forall_apply_eq_imp_iff₂] at hC
-  have hC₀ : 0 < C := (norm_nonneg _).trans_lt <| hC 0 (by simpa)
-  obtain ⟨n, hn⟩ := exists_nat_gt (C / ε)
-  have hnpos : 0 < (n : ℝ) := (div_pos hC₀ hε).trans hn
-  refine ⟨δ / n, div_pos hδ hnpos, fun {x} hxδ => ?_⟩
-  have h2 : f (n • x) = n • f x := map_nsmul f _ _
-  have hn' : (n : H) ≠ 0 := Nat.cast_ne_zero.2 (by rintro rfl; simp at hnpos)
-  simp_rw [nsmul_eq_mul, mul_comm (n : H), ← div_eq_iff hn'] at h2
-  replace hxδ : ‖n • x‖ < δ := by
-    refine norm_nsmul_le.trans_lt ?_
-    simpa only [norm_mul, Real.norm_natCast, lt_div_iff₀ hnpos, mul_comm] using hxδ
-  rw [← h2, norm_div, RCLike.norm_natCast, div_lt_iff₀' hnpos]
-  rw [div_lt_iff₀ hε] at hn
-  exact (hC _ hxδ).trans hn
-
-end SeminormedGroup
 
 variable {ι : Type*} [Fintype ι] {s : Set ℝ} {a : ℝ}
 
 local notation "ℝⁿ" => ι → ℝ
-
-theorem AddMonoidHom.measurable_of_continuous (f : ℝ →+ ℝ) (h : Measurable f) : Continuous f :=
-  let ⟨s, hs, hbdd⟩ := h.exists_nhds_zero_isBounded f
-  f.continuous_of_isBounded_nhds_zero hs hbdd
 
 -- do we want this one and where would it go?
 theorem isLinearMap_iff_apply_eq_apply_one_mul {M : Type} [CommSemiring M] (f : M →+ M) :
@@ -96,7 +63,7 @@ theorem AddMonoidHom.continuousAt_iff_continuousAt_zero (f : ℝ →+ ℝ) :
   mpr h := (continuous_of_continuousAt_zero f h).continuousAt
 
 theorem Continuous.isLinearMap_real (f : ℝ →+ ℝ) (h : Continuous f) : IsLinearMap ℝ f :=
-  (f.toRealLinearMap h).toLinearMap.isLinear
+  (f.toRealLinearMap h).isLinear
 
 theorem isLinearMap_real_of_isBounded_nhds (f : ℝ →+ ℝ) (hs : s ∈ 𝓝 a) (hf : IsBounded (f '' s)) :
     IsLinearMap ℝ f :=

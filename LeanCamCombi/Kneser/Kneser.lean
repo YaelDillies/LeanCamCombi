@@ -416,9 +416,12 @@ theorem mul_kneser :
       disjoint_mul_sub_card_le b (hs₁s has₁) (disjoint_iff_inter_eq_empty.2 ht₂) hH₁H.subset
     linarith [aux1₁, aux₁_contr, Int.natCast_nonneg #(t₁ * (s₁ * t₁).mulStab)]
   obtain hs₂ | hs₂ne := s₂.eq_empty_or_nonempty
-  · have aux1₁_contr :=
-      disjoint_mul_sub_card_le a (ht₁t hbt₁) (disjoint_iff_inter_eq_empty.2 hs₂)
-        (by rw [mul_comm]; exact hH₁H.subset)
+  · have aux1₁_contr :
+      (#C.mulStab : ℤ) - #(t₁ * (s₁ * t₁).mulStab) ≤
+        #((s ∪ t) * C.mulStab) - #((s ∪ t) * (s₁ * t₁).mulStab) := by
+      simpa [union_comm, mul_comm s₁ t₁] using
+        disjoint_mul_sub_card_le a (ht₁t hbt₁) (disjoint_iff_inter_eq_empty.2 hs₂)
+          (by rw [mul_comm]; exact hH₁H.subset)
     simp only [union_comm t s, mul_comm t₁ s₁] at aux1₁_contr
     linarith [aux1₁, aux1₁_contr, Int.natCast_nonneg #(s₁ * (s₁ * t₁).mulStab)]
   have hC₂stab : C₂.mulStab = H₂ := mulStab_union hs₂ne ht₂ne (by rwa [mul_comm]) hCst₂
@@ -430,7 +433,7 @@ theorem mul_kneser :
   · simp only [← habH] at aux1₁
     rw [hH₁, hs₁, ht₁, ← habH, hH] at hH₁H
     refine aux1₁.not_le ?_
-    simp only [hs₁, ht₁, ← habH, inter_mul_sub_card_le (hs₁s has₁) hH₁H.subset]
+    simp only [hs₁, ht₁, ← habH, inter_mul_sub_card_le (hs₁s has₁) hH₁H.subset, H]
   -- temporarily skipping deduction of inequality (2)
   set S := a • H \ (s₁ ∪ t₂) with hS
   set T := b • H \ (s₂ ∪ t₁) with hT
@@ -494,10 +497,10 @@ theorem mul_kneser :
       _ ≤ #((s ∪ t) * H) + #(s ∩ t) - #C := by
         suffices (#C : ℤ) + #(s₁ * t₁) ≤ #(s * t) by linarith [this, hSTcard]
         · norm_cast
-          simp only [← card_union_of_disjoint hCst₁, card_le_card hC₁st]
+          simpa only [← card_union_of_disjoint hCst₁] using card_le_card hC₁st
       _ ≤ #H := by
-        simp only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ #C,
-          add_comm _ #(s ∩ t), hCcard]
+        simpa only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ #C,
+          add_comm _ #(s ∩ t)] using hCcard
 
   have aux3₂ : (#S : ℤ) + #T + #s₂ + #t₂ - #H₂ < #H :=
     calc
@@ -511,10 +514,10 @@ theorem mul_kneser :
       _ ≤ #((s ∪ t) * H) + #(s ∩ t) - #C := by
         suffices (#C : ℤ) + #(s₂ * t₂) ≤ #(s * t) by linarith [this, hSTcard]
         · norm_cast
-          simp only [← card_union_of_disjoint hCst₂, card_le_card hC₂st]
+          simpa only [← card_union_of_disjoint hCst₂] using card_le_card hC₂st
       _ ≤ #H := by
-        simp only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ #C,
-          add_comm _ #(s ∩ t), hCcard]
+        simpa only [sub_le_iff_le_add, ← Int.ofNat_add, Int.ofNat_le, add_comm _ #C,
+          add_comm _ #(s ∩ t)] using hCcard
   have aux4₁ : #H ≤ #S + (#s₁ + #t₂) := by
     rw [← card_smul_finset a H]
     exact card_le_card_sdiff_add_card.trans (add_le_add_left (card_union_le _ _) _)
