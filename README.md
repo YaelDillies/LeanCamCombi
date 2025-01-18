@@ -22,7 +22,7 @@ The definitions, theorems and proofs in this repository are (mostly) taken from 
 
 ### The target
 
-The formal system which we are using as a target is [Lean 4](https://lean-lang.org). Lean is a dependently typed theorem prover and programming language based on the Calculus of Inductive Constructions. It is being developed at AWS and Microsoft Research by Leonardo de Moura and his team.
+The formal system which we are using as a target is [Lean 4](https://lean-lang.org). Lean is a dependently typed theorem prover and programming language based on the Calculus of Inductive Constructions. It is being developed at the [Lean Focused Research Organization](https://lean-fro.org) by Leonardo de Moura and his team.
 
 Our project is backed by [mathlib](https://leanprover-community.github.io), the major classical maths library written in Lean 4.
 
