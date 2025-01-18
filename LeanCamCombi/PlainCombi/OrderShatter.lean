@@ -44,9 +44,10 @@ def OrderShatters : Finset (Finset α) → List α → Prop
       ∧ ∀ ⦃s : Finset α⦄, s ∈ 𝒜.nonMemberSubfamily a → ∀ ⦃t⦄, t ∈ 𝒜.memberSubfamily a →
         {x ∈ s | a < x} = {x ∈ t | a < x}
 
-instance : DecidablePred 𝒜.OrderShatters
-  | [] => decidableNonempty
-  | a :: l => by unfold OrderShatters; sorry
+instance instDecidableRel : DecidableRel (OrderShatters (α := α)) := fun 𝒜 l ↦ by
+  induction l generalizing 𝒜
+  · exact decidableNonempty
+  · exact instDecidableAnd
 
 def orderShatterser (𝒜 : Finset (Finset α)) : Finset (Finset α) :=
   {s ∈ 𝒜.biUnion powerset | 𝒜.OrderShatters $ s.sort (· ≤ ·)}
