@@ -51,12 +51,19 @@ import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
+import LeanCamCombi.Mathlib.MeasureTheory.Function.ConditionalExpectation.AEMeasurable
+import LeanCamCombi.Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic
+import LeanCamCombi.Mathlib.MeasureTheory.Function.ConditionalExpectation.Real
+import LeanCamCombi.Mathlib.MeasureTheory.Function.L1Space
+import LeanCamCombi.Mathlib.MeasureTheory.Function.LpSeminorm.Basic
 import LeanCamCombi.Mathlib.MeasureTheory.Measure.Haar.NormedSpace
+import LeanCamCombi.Mathlib.MeasureTheory.Measure.Typeclasses
 import LeanCamCombi.Mathlib.Order.BooleanSubalgebra
 import LeanCamCombi.Mathlib.Order.Flag
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.RelIso.Group
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
+import LeanCamCombi.Mathlib.Probability.Variance
 import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.Mathlib.RingTheory.Spectrum.Prime.Topology
 import LeanCamCombi.Mathlib.Topology.MetricSpace.MetricSeparated
@@ -64,6 +71,7 @@ import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory
 import LeanCamCombi.Multipartite
 import LeanCamCombi.PhD.VCDim.AddVCDim
+import LeanCamCombi.PhD.VCDim.CondVar
 import LeanCamCombi.PhD.VCDim.HausslerPacking
 import LeanCamCombi.PhD.VCDim.HypercubeEdges
 import LeanCamCombi.PlainCombi.LittlewoodOfford
