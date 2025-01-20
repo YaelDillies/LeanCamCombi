@@ -3,7 +3,6 @@ import LeanCamCombi.CauchyFunctionalEquation
 import LeanCamCombi.ConvexityRefactor.Defs
 import LeanCamCombi.ConvexityRefactor.StdSimplex
 import LeanCamCombi.Corners.CombiDegen
-import LeanCamCombi.DiscreteDeriv
 import LeanCamCombi.ExtrProbCombi.BernoulliSeq
 import LeanCamCombi.ExtrProbCombi.BinomialRandomGraph
 import LeanCamCombi.ExtrProbCombi.BollobasContainment
