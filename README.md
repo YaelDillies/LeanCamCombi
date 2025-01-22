@@ -81,6 +81,7 @@ The following topics have been upstreamed to mathlib and no longer live in LeanC
 * The Marica-Schönheim proof of the squarefree special case of Graham's conjecture
 * Visibility of a point through a set
 * The upper bound on the Ruzsa-Szemerédi problem
+* Cauchy's functional equation
 
 ## Interacting with the project
 

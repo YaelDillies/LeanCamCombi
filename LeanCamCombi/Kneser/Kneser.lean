@@ -374,7 +374,7 @@ theorem mul_kneser :
   exfalso
   have : ¬s * t * H ⊆ s * t := by
     rw [mul_subset_left_iff (hs.mul ht), hstab, ← coe_subset, coe_one]
-    exact hCstab.not_subset_singleton
+    exact hCstab.coe.not_subset_singleton
   simp_rw [mul_subset_iff_left, Classical.not_forall, mem_mul] at this
   obtain ⟨_, ⟨a, ha, b, hb, rfl⟩, hab⟩ := this
   set s₁ := s ∩ a • H with hs₁

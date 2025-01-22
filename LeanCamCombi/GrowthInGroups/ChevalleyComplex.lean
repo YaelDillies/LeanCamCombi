@@ -5,7 +5,6 @@ import Mathlib.RingTheory.Spectrum.Prime.Polynomial
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
-import LeanCamCombi.Mathlib.Data.Prod.Lex
 import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.RingTheory.Spectrum.Prime.Topology
 import LeanCamCombi.GrowthInGroups.ConstructibleSetData
@@ -149,7 +148,7 @@ lemma foo_induction (n : ℕ)
     -- We replace `R` by `R ⧸ Ideal.span {(e i).leadingCoeff}` where `(e i).degree` is lowered
     -- and `Away (e i).leadingCoeff` where `(e i).leadingCoeff` becomes invertible.
     apply hP _ _ i e rfl (by simpa using hi) (H_IH _ ?_ _ rfl) (H_IH _ ?_ _ rfl)
-    · rw [hv, Prod.Lex.lt_iff'']
+    · rw [hv, Prod.Lex.lt_iff']
       constructor
       · intro j
         simp only [coe_mapRingHom, InductionObj.ofLex_degree_fst, Pi.smul_apply,

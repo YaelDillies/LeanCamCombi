@@ -1,9 +1,9 @@
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Combinatorics.Additive.DoublingConst
 import Mathlib.Combinatorics.Additive.VerySmallDoubling
+import Mathlib.Geometry.Group.Growth.LinearLowerBound
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
-import LeanCamCombi.GrowthInGroups.LinearLowerBound
 import LeanCamCombi.Util
 
 open Finset Fintype Group MulOpposite Real

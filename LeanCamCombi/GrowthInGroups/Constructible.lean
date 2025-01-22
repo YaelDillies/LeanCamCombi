@@ -3,8 +3,8 @@ Copyright (c) 2024 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
+import Mathlib.Order.BooleanSubalgebra
 import Mathlib.Topology.Spectral.Hom
-import LeanCamCombi.Mathlib.Order.BooleanSubalgebra
 
 /-!
 # Constructible sets
@@ -342,7 +342,7 @@ lemma IsConstructible.induction_of_isTopologicalBasis {ι : Type*} [Nonempty ι]
         basis.isConstructible' compact_inter _))
     (union : ∀ s hs t ht, P s hs → P t ht → P (s ∪ t) (hs.union ht))
     (s : Set X) (hs : IsConstructible s) : P s hs := by
-  induction s, hs using BooleanSubalgebra.closure_sdiff_sup_induction' with
+  induction s, hs using BooleanSubalgebra.closure_sdiff_sup_induction with
   | isSublattice =>
     exact ⟨fun s hs t ht ↦ ⟨hs.1.union ht.1, hs.2.union ht.2⟩,
       fun s hs t ht ↦ ⟨hs.1.inter ht.1, hs.2.inter_isOpen ht.2 ht.1⟩⟩

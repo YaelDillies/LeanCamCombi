@@ -1,8 +1,6 @@
 import Mathlib.Data.DFinsupp.WellFounded
 import Mathlib.RingTheory.Localization.Algebra
 import Mathlib.RingTheory.Spectrum.Prime.Polynomial
-import LeanCamCombi.Mathlib.Data.Prod.Lex
-import LeanCamCombi.Mathlib.RingTheory.FinitePresentation
 import LeanCamCombi.GrowthInGroups.ConstructiblePrimeSpectrum
 
 open Polynomial PrimeSpectrum TensorProduct Topology
