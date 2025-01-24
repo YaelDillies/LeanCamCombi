@@ -10,13 +10,7 @@ import LeanCamCombi.ExtrProbCombi.Containment
 import LeanCamCombi.ExtrProbCombi.GiantComponent
 import LeanCamCombi.GraphTheory.ExampleSheet1
 import LeanCamCombi.GraphTheory.ExampleSheet2
-import LeanCamCombi.GroupMarking
-import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
-import LeanCamCombi.GrowthInGroups.Chevalley
 import LeanCamCombi.GrowthInGroups.ChevalleyComplex
-import LeanCamCombi.GrowthInGroups.Constructible
-import LeanCamCombi.GrowthInGroups.ConstructiblePrimeSpectrum
-import LeanCamCombi.GrowthInGroups.ConstructibleSetData
 import LeanCamCombi.GrowthInGroups.Lecture1
 import LeanCamCombi.GrowthInGroups.Lecture2
 import LeanCamCombi.GrowthInGroups.Lecture3
@@ -25,13 +19,12 @@ import LeanCamCombi.Impact
 import LeanCamCombi.Kneser.Kneser
 import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.MulStab
-import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Basic
 import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
-import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Equiv
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
 import LeanCamCombi.Mathlib.Analysis.Convex.SimplicialComplex.Basic
+import LeanCamCombi.Mathlib.Combinatorics.Additive.ApproximateSubgroup
 import LeanCamCombi.Mathlib.Combinatorics.Schnirelmann
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.Shatter
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Basic
@@ -41,7 +34,6 @@ import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Maps
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Data.List.DropRight
 import LeanCamCombi.Mathlib.Data.Multiset.Basic
-import LeanCamCombi.Mathlib.Data.Set.Image
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
@@ -51,7 +43,6 @@ import LeanCamCombi.Mathlib.Order.Flag
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
 import LeanCamCombi.Mathlib.Order.RelIso.Group
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
-import LeanCamCombi.Mathlib.RingTheory.Spectrum.Prime.Topology
 import LeanCamCombi.Mathlib.Topology.MetricSpace.MetricSeparated
 import LeanCamCombi.MetricBetween
 import LeanCamCombi.MinkowskiCaratheodory

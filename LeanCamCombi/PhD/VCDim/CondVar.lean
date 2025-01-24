@@ -126,10 +126,10 @@ lemma condVar_ae_eq_condExp_sq_sub_condExp_sq (hm : m ≤ m₀) [IsFiniteMeasure
         rw [(_ : 2 * X * μ[X|m] = fun ω ↦ 2 * (X ω * (μ[X|m]) ω))]
         swap; ext ω; simp [mul_assoc]
         have aux₁' : Memℒp (X * μ[X | m]) 1 μ := by
-          refine @Memℒp.mul Ω m₀ _ _ _ 1 2 2 _ _ hX.condExp hX ?_
+          refine @Memℒp.mul _ m₀ _ _ _ _ _ 2 _ _ (hX.condExp (𝕜 := ℝ)) hX ?_
           simp [ENNReal.inv_two_add_inv_two]
         exact Integrable.const_mul (memℒp_one_iff_integrable.1 aux₁') (2 : ℝ)
-      have aux₂ : Integrable (μ[X|m] ^ 2) μ := hX.condExp.integrable_sq
+      have aux₂ : Integrable (μ[X|m] ^ 2) μ := (hX.condExp (𝕜 := ℝ)).integrable_sq
       filter_upwards [condExp_add (m := m) (aux₀.sub aux₁) aux₂, condExp_sub (m := m) aux₀ aux₁,
         condExp_mul_of_stronglyMeasurable_right stronglyMeasurable_condExp aux₁
           ((hX.integrable one_le_two).const_mul _), condExp_ofNat (m := m) 2 X]
@@ -153,10 +153,10 @@ lemma integral_condVar_add_variance_condExp (hm : m ≤ m₀) [IsProbabilityMeas
     _ = μ[(μ[X ^ 2 | m] - μ[X | m] ^ 2 : Ω → ℝ)] + (μ[μ[X | m] ^ 2] - μ[μ[X | m]] ^ 2) := by
       congr 1
       · exact integral_congr_ae <| condVar_ae_eq_condExp_sq_sub_condExp_sq hm hX
-      · exact variance_def' hX.condExp
+      · exact variance_def' (hX.condExp (𝕜 := ℝ))
     _ = μ[X ^ 2] - μ[μ[X | m] ^ 2] + (μ[μ[X | m] ^ 2] - μ[X] ^ 2) := by
       rw [integral_sub' integrable_condExp, integral_condExp hm, integral_condExp hm]
-      exact hX.condExp.integrable_sq
+      exact (hX.condExp (𝕜 := ℝ)).integrable_sq
     _ = Var[X ; μ] := by rw [variance_def' hX]; ring
 
 lemma condVar_bot' [NeZero μ] (X : Ω → ℝ) :

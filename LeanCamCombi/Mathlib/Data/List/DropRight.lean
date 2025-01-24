@@ -1,7 +1,4 @@
-import Batteries.Data.List.Perm
 import Mathlib.Data.List.DropRight
-import Mathlib.Data.List.Infix
-import Mathlib.Data.Nat.Defs
 
 namespace List
 variable {α : Type*} {l l' l₀ l₁ l₂ : List α} {a b : α} {m n : ℕ}

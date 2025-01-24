@@ -17,16 +17,3 @@ lemma mul_singleton' (s : Set α) (a : α) : s * {a} = op a • s := mul_singlet
 
 end Mul
 end Set
-
-namespace Set
-variable {α β : Type*}
-
-section Group
-variable [Group α] [MulAction α β] {s : Set β} {t : Set β} {a : α}
-
--- TODO: Replace
-@[to_additive (attr := simp)]
-lemma smul_set_subset_smul_set_iff : a • s ⊆ a • t ↔ s ⊆ t := set_smul_subset_set_smul_iff
-
-end Group
-end Set

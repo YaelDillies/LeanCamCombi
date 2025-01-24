@@ -1,5 +1,5 @@
 import Mathlib.Geometry.Group.Growth.QuotientInter
-import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
+import LeanCamCombi.Mathlib.Combinatorics.Additive.ApproximateSubgroup
 
 open Finset
 open scoped Pointwise

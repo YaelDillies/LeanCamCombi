@@ -1,7 +1,7 @@
 import Mathlib.Analysis.Matrix
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
-import LeanCamCombi.GrowthInGroups.ApproximateSubgroup
+import LeanCamCombi.Mathlib.Combinatorics.Additive.ApproximateSubgroup
 import LeanCamCombi.Util
 
 open Group

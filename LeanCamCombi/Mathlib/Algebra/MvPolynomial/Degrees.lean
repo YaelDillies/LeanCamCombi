@@ -3,23 +3,16 @@ import Mathlib.Algebra.MvPolynomial.Degrees
 namespace MvPolynomial
 variable {R σ : Type*} [CommSemiring R] {m n : Multiset σ} {p : MvPolynomial σ R}
 
-lemma degrees_map_le {σ S} [CommSemiring S] (p : MvPolynomial σ R) (f : R →+* S) :
-    (MvPolynomial.map f p).degrees ≤ p.degrees := by
-  classical
-  dsimp only [MvPolynomial.degrees]
-  apply Finset.sup_mono
-  apply MvPolynomial.support_map_subset
-
 variable (R σ n) in
 def degreesLE : Submodule R (MvPolynomial σ R) where
   carrier := {p | p.degrees ≤ n}
-  add_mem' {a b} ha hb := by classical exact (MvPolynomial.degrees_add a b).trans (sup_le ha hb)
+  add_mem' {a b} ha hb := by classical exact degrees_add_le.trans (sup_le ha hb)
   zero_mem' := by simp
   smul_mem' c {x} hx := by
     dsimp
     rw [Algebra.smul_def]
-    refine (MvPolynomial.degrees_mul _ _).trans ?_
-    simpa [MvPolynomial.degrees_C] using hx
+    refine degrees_mul_le.trans ?_
+    simpa [degrees_C] using hx
 
 @[simp] lemma mem_degreesLE : p ∈ degreesLE R σ n ↔ p.degrees ≤ n := Iff.rfl
 
@@ -27,8 +20,7 @@ lemma degreesLE_mul : degreesLE R σ m * degreesLE R σ n = degreesLE R σ (m + 
   classical
   apply le_antisymm
   · rw [Submodule.mul_le]
-    intro x hx y hy
-    exact (degrees_mul _ _).trans (add_le_add hx hy)
+    exact fun x hx y hy ↦ degrees_mul_le.trans (add_le_add hx hy)
   · intro x hx
     rw [x.as_sum]
     refine sum_mem fun i hi ↦ ?_
