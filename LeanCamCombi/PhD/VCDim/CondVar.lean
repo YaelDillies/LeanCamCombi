@@ -6,7 +6,6 @@ Authors: Yaël Dillies
 import Mathlib.MeasureTheory.Function.ConditionalExpectation.Real
 import Mathlib.MeasureTheory.Integral.Average
 import Mathlib.Probability.Variance
-import LeanCamCombi.Mathlib.MeasureTheory.Function.ConditionalExpectation.AEMeasurable
 import LeanCamCombi.Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic
 
 /-!
@@ -48,7 +47,7 @@ lemma condVar_of_sigmaFinite [SigmaFinite (μ.trim hm)] :
       if Integrable (fun ω ↦ (X ω - (μ[X | m]) ω) ^ 2) μ then
         if StronglyMeasurable[m] (fun ω ↦ (X ω - (μ[X | m]) ω) ^ 2) then
           fun ω ↦ (X ω - (μ[X | m]) ω) ^ 2
-        else aestronglyMeasurable'_condExpL1.mk (condExpL1 hm μ fun ω ↦ (X ω - (μ[X | m]) ω) ^ 2)
+        else aestronglyMeasurable_condExpL1.mk (condExpL1 hm μ fun ω ↦ (X ω - (μ[X | m]) ω) ^ 2)
       else 0 := condExp_of_sigmaFinite _
 
 lemma condVar_of_stronglyMeasurable [SigmaFinite (μ.trim hm)]
@@ -94,10 +93,10 @@ lemma condVar_congr_ae (h : X =ᵐ[μ] Y) : Var[X ; μ | m] =ᵐ[μ] Var[Y ; μ 
   condExp_congr_ae <| by filter_upwards [h, condExp_congr_ae h] with ω hω hω'; dsimp; rw [hω, hω']
 
 lemma condVar_of_aestronglyMeasurable' [hμm : SigmaFinite (μ.trim hm)]
-    (hX : AEStronglyMeasurable' m X μ) (hXint : Integrable (fun ω ↦ (X ω - (μ[X|m]) ω) ^ 2) μ) :
+    (hX : AEStronglyMeasurable[m] X μ) (hXint : Integrable (fun ω ↦ (X ω - (μ[X|m]) ω) ^ 2) μ) :
     Var[X ; μ | m] =ᵐ[μ] fun ω ↦ (X ω - (μ[X|m]) ω) ^ 2 :=
-  condExp_of_aestronglyMeasurable' _ ((continuous_pow _).comp_aestronglyMeasurable'
-    (hX.sub stronglyMeasurable_condExp.aeStronglyMeasurable')) hXint
+  condExp_of_aestronglyMeasurable' _ ((continuous_pow _).comp_aestronglyMeasurable
+    (hX.sub stronglyMeasurable_condExp.aestronglyMeasurable)) hXint
 
 lemma integrable_condVar : Integrable Var[X ; μ | m] μ := by
   by_cases hm : m ≤ m₀

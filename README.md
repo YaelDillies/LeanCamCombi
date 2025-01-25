@@ -58,7 +58,6 @@ The following topics are covered in LeanCamCombi and could be upstreamed to Math
 * Kneser's addition theorem
 * The Sylvester-Chvatal theorem
 * Containment of graphs
-* Chevalley's theorem about constructible sets with complexity bound
 
 See the [upstreaming dashboard](https://yaeldillies.github.io/LeanCamCombi/upstreaming) for more information.
 
@@ -82,7 +81,7 @@ The following topics have been upstreamed to mathlib and no longer live in LeanC
 * Visibility of a point through a set
 * The upper bound on the Ruzsa-Szemerédi problem
 * Cauchy's functional equation
-* Chevalley's theorem about constructible sets without complexity bound
+* Chevalley's theorem about constructible sets with and without a complexity bound
 * Marked groups
 
 ## Interacting with the project

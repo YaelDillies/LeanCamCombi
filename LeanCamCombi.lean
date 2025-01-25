@@ -10,7 +10,6 @@ import LeanCamCombi.ExtrProbCombi.Containment
 import LeanCamCombi.ExtrProbCombi.GiantComponent
 import LeanCamCombi.GraphTheory.ExampleSheet1
 import LeanCamCombi.GraphTheory.ExampleSheet2
-import LeanCamCombi.GrowthInGroups.ChevalleyComplex
 import LeanCamCombi.GrowthInGroups.Lecture1
 import LeanCamCombi.GrowthInGroups.Lecture2
 import LeanCamCombi.GrowthInGroups.Lecture3
@@ -19,7 +18,6 @@ import LeanCamCombi.Impact
 import LeanCamCombi.Kneser.Kneser
 import LeanCamCombi.Kneser.KneserRuzsa
 import LeanCamCombi.Kneser.MulStab
-import LeanCamCombi.Mathlib.Algebra.MvPolynomial.Degrees
 import LeanCamCombi.Mathlib.Analysis.Convex.Exposed
 import LeanCamCombi.Mathlib.Analysis.Convex.Extreme
 import LeanCamCombi.Mathlib.Analysis.Convex.Independence
@@ -37,7 +35,6 @@ import LeanCamCombi.Mathlib.Data.Multiset.Basic
 import LeanCamCombi.Mathlib.Data.Set.Pointwise.SMul
 import LeanCamCombi.Mathlib.GroupTheory.OrderOfElement
 import LeanCamCombi.Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
-import LeanCamCombi.Mathlib.MeasureTheory.Function.ConditionalExpectation.AEMeasurable
 import LeanCamCombi.Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic
 import LeanCamCombi.Mathlib.Order.Flag
 import LeanCamCombi.Mathlib.Order.Partition.Finpartition
