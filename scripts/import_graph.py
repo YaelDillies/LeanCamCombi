@@ -1,5 +1,6 @@
 import os
 import re
+import time
 
 def main():
   folder_path = "./website/_includes"
@@ -11,8 +12,12 @@ def main():
 
   print("Running ", f"lake exe graph {dot_path} --exclude-meta")
   os.system(f"lake exe graph {dot_path} --exclude-meta")
-  print("Running .dot edditing")
 
+  print("Stabilizing wait")
+
+  time.sleep(10)
+
+  print("Running .dot edditing")
   dot = ""
   with open(dot_path, "r") as r:
     dot = r.read()
