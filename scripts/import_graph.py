@@ -9,7 +9,9 @@ def main():
   dot_path = f"{folder_path}/import-graph-viz.dot"
   md_path = f"{folder_path}/import-graph-viz.md"
 
+  print("Running ", f"lake exe graph {dot_path} --exclude-meta")
   os.system(f"lake exe graph {dot_path} --exclude-meta")
+  print("Running .dot edditing")
 
   dot = ""
   with open(dot_path, "r") as r:
