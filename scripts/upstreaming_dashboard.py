@@ -44,7 +44,11 @@ def main():
         }
     print(project_files)
 
-    with open("./website/_includes/ready_to_upstream.md", 'w+') as writer:
+    folder_path = "./website/_includes"
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    with open(f"{folder_path}/ready_to_upstream.md", 'w+') as writer:
         text = ""
         for file_path in project_files:
             if project_files[file_path]["num_sorries"] > 0: continue
@@ -64,7 +68,7 @@ def main():
                 text +="\n"
         writer.write(text)
 
-    with open("./website/_includes/easy_to_unlock.md", 'w+') as writer:
+    with open(f"{folder_path}/easy_to_unlock.md", 'w+') as writer:
         text = ""
         for file_path in project_files:
             if project_files[file_path]["num_sorries"] == 0: continue

@@ -12,7 +12,9 @@ tasks:
       lake exe cache get
       sudo apt-get update
       sudo apt install ruby ruby-dev -y
-      cd website
       sudo gem install bundler
+      cp README.md website/index.md
+      python3 scripts/upstreaming_dashboard.py
+      cd website
       bundle install
       cd ..
