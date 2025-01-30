@@ -14,7 +14,9 @@ tasks:
       sudo apt install ruby ruby-dev -y
       sudo gem install bundler
       cp README.md website/index.md
+      mkdir -p website/_includes
       python3 scripts/upstreaming_dashboard.py
+      python3 scripts/import_graph.py
       cd website
       bundle install
       cd ..
