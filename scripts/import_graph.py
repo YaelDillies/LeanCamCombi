@@ -11,7 +11,7 @@ def main():
   md_path = f"{folder_path}/import-graph-viz.md"
 
   print("Running ", f"lake exe graph {dot_path} --exclude-meta")
-  os.system(f"lake exe graph {dot_path} --exclude-meta")
+  os.system(f"~/.elan/bin/lake exe graph {dot_path} --exclude-meta")
 
   print("Stabilizing wait")
 
