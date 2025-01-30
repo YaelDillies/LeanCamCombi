@@ -15,7 +15,7 @@ def main():
 
   print("Stabilizing wait")
 
-  time.sleep(10)
+  time.sleep(1)
 
   print("Running .dot edditing")
   dot = ""
