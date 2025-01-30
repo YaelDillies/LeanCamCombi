@@ -36,13 +36,6 @@ jobs:
       - name: Copy README.md to website/index.md
         run: cp README.md website/index.md
 
-      - name: Print files to upstream
-        run: |
-          mkdir -p website/_includes
-          python3 scripts/upstreaming_dashboard.py
-          python3 scripts/import_graph.py
-
-
       - name: Install elan
         run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.0.0
 
@@ -51,6 +44,12 @@ jobs:
 
       - name: Build project
         run: ~/.elan/bin/lake build LeanCamCombi
+
+      - name: Print files to upstream
+        run: |
+          mkdir -p website/_includes
+          python3 scripts/upstreaming_dashboard.py
+          python3 scripts/import_graph.py
 
       - name: Cache dependencies docs
         uses: actions/cache@v3
