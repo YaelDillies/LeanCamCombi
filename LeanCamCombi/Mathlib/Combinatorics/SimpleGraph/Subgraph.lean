@@ -1,8 +1,6 @@
 import Mathlib.Combinatorics.SimpleGraph.Subgraph
 import Mathlib.Data.Fintype.Powerset
 
--- attribute [protected] SimpleGraph.Subgraph.mem_edgeSet
-
 open Function
 
 variable {α β γ V : Type*} {G H : SimpleGraph V}
