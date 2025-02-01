@@ -41,11 +41,6 @@ The following topics are under active development in LeanCamCombi.
 * The Erdős-Rényi model for random graphs, aka binomial random graph
 * The Littlewood-Offord problem
 * The van den Berg-Kesten-Reimer inequality
-* The impact function of a set
-* Simplicial complexes and Sperner's lemma
-* Discrete calculus
-* The Birkhoff representation theorem, categorical version
-* The Minkowski-Carathéodory theorem
 * Approximate subgroups
 * Model theoretic stability and its relation to additive combinatorics
 
@@ -70,19 +65,10 @@ The following topics have been upstreamed to mathlib and no longer live in LeanC
 
 * The Ahlswede-Zhang inequality
 * The four functions theorem and related discrete correlation inequalities: FKG inequality, Holley inequality, Daykin inequality, Marica-Schönheim inequality
-* The Birkhoff representation theorem, non-categorical version
+* The Marica-Schönheim proof of the squarefree special case of Graham's conjecture
 * The Cauchy-Davenport theorem for general groups, and also for linearly ordered cancellative semigroup
 * The Erdős-Ginzburg-Ziv theorem
-* Shatterings of sets, the Sauer-Shelah lemma and the Vapnik-Chervonenkis dimension
-* Sublattices
-* Incidence algebras
-* Strongly convex functions
-* The Marica-Schönheim proof of the squarefree special case of Graham's conjecture
-* Visibility of a point through a set
-* The upper bound on the Ruzsa-Szemerédi problem
-* Cauchy's functional equation
 * Chevalley's theorem about constructible sets with and without a complexity bound
-* Marked groups
 
 ## Interacting with the project
 
@@ -100,7 +86,7 @@ In either case, run `lake exe cache get` and then `lake build` to build the proj
 
 With the project opened in VScode, you are all set to start exploring the code. There are two pieces of functionality that help a lot when browsing through Lean code:
 
-* "Go to definition": If you right-click on a name of a definition or lemma (such as `IsBinomialRandomGraph`, or `Finset.sups`), then you can choose "Go to definition" from the menu, and you will be taken to the relevant location in the source files. This also works by `Ctrl`-clicking on the name.
+* "Go to definition": If you right-click on a name of a definition or lemma (such as `IsBinomialRandomGraph`), then you can choose "Go to definition" from the menu, and you will be taken to the relevant location in the source files. This also works by `Ctrl`-clicking on the name.
 * "Goal view": in the event that you would like to read a *proof*, you can step through the proof line-by-line, and see the internals of Lean's "brain" in the Goal window. If the Goal window is not open, you can open it by clicking on the forall icon in the top right hand corner.
 
 ### Contributing
