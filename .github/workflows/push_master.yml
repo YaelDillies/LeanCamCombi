@@ -71,7 +71,6 @@ jobs:
       #     scheme: full
       #     run: |
       #       apk update
-      #       apk add --update make py3-pip git
       #       apk add --update make py3-pip git pkgconfig graphviz graphviz-dev gcc musl-dev
       #       git config --global --add safe.directory $GITHUB_WORKSPACE
       #       git config --global --add safe.directory `pwd`
