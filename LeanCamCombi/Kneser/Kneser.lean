@@ -357,11 +357,11 @@ theorem mul_kneser :
       subset_mul_left _ $ one_mem_mulStab.2 $ hst.mul $ hs.mono subset_union_left) _).trans $
         ih (s ∩ t) (s ∪ t) ?_⟩
     exact add_lt_add_of_le_of_lt (card_le_card inter_mul_union_subset) (card_lt_card hsts)
-  let C := argminOn (fun C : Finset α => #C.mulStab) IsWellFounded.wf _ convergent_nonempty
+  let C := argminOn (fun C : Finset α => #C.mulStab) _ convergent_nonempty
   set H := C.mulStab with hH
-  obtain ⟨hCst, hCcard⟩ : C ∈ convergent := argminOn_mem _ _ _ _
-  have hCmin : ∀ D : Finset α, D.mulStab ⊂ H → ¬D ∈ convergent := fun D hDH hD =>
-    (card_lt_card hDH).not_le $ argminOn_le (fun D : Finset α => #D.mulStab) _ _ hD
+  obtain ⟨hCst, hCcard⟩ : C ∈ convergent := argminOn_mem _ _ _
+  have hCmin (D : Finset α) (hDH : D.mulStab ⊂ H) : D ∉ convergent := fun hD ↦
+    (card_lt_card hDH).not_le $ argminOn_le (fun D : Finset α => #D.mulStab) _ hD
   clear_value C
   clear convergent_nonempty
   obtain rfl | hC := C.eq_empty_or_nonempty

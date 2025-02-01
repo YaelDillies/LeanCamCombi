@@ -182,7 +182,7 @@ theorem le_schnirelmannDensity_add (A B : Set ℕ) (hA : 0 ∈ A) (hB : 0 ∈ B)
         {c ∈ A + B | 0 < c - x ∧ (c : ℕ) ≤ next_elm A x n} = ∅ := by sorry
         -- by_contra! hin
         -- rw? at hin
-      -- have hcount : ∑ a in A, (1 + countelements B (next_elm A a n - a - 1)) ≤ countelements (⋃ a : A, {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)}) n := by sorry
+      -- have hcount : ∑ a ∈ A, (1 + countelements B (next_elm A a n - a - 1)) ≤ countelements (⋃ a : A, {c ∈ A + B | 0 < c - a ∧ (c : ℕ) ≤ (next_elm A a n)}) n := by sorry
       sorry
     have ht : countelements A n + β * (n - countelements A n) ≤ countelements (A + B) n := by
       apply le_trans claim _

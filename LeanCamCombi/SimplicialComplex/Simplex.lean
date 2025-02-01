@@ -87,7 +87,7 @@ variable [LinearOrderedField 𝕜] [AddCommGroup E] [Module 𝕜 E] {s t : Finse
 
 lemma combiFrontier_eq :
     combiFrontier 𝕜 s = {x : E | ∃ (w : E → 𝕜)
-      (_hw₀ : ∀ y ∈ s, 0 ≤ w y) (_hw₁ : ∑ y in s, w y = 1) (_hw₂ : ∃ y ∈ s, w y = 0),
+      (_hw₀ : ∀ y ∈ s, 0 ≤ w y) (_hw₁ : ∑ y ∈ s, w y = 1) (_hw₂ : ∃ y ∈ s, w y = 0),
         s.centerMass w id = x} := by
   ext x
   simp_rw [combiFrontier, Set.mem_iUnion, Set.mem_setOf_eq]
@@ -135,7 +135,7 @@ lemma combiFrontier_eq :
 lemma combiInterior_subset_positive_weighings :
     combiInterior 𝕜 s ⊆
       {x : E | ∃ (w : E → 𝕜)
-        (_hw₀ : ∀ y ∈ s, 0 < w y) (_hw₁ : ∑ y in s, w y = 1), s.centerMass w id = x} := by
+        (_hw₀ : ∀ y ∈ s, 0 < w y) (_hw₁ : ∑ y ∈ s, w y = 1), s.centerMass w id = x} := by
   rw [combiInterior, Finset.convexHull_eq, combiFrontier_eq]
   rintro x
   simp only [not_exists, and_imp, not_and, mem_setOf_eq, mem_diff, exists_imp]
@@ -145,7 +145,7 @@ lemma combiInterior_subset_positive_weighings :
 
 lemma combiInterior_eq (hs : AffineIndependent 𝕜 ((↑) : s → E)) :
     combiInterior 𝕜 s = {x : E | ∃ (w : E → 𝕜)
-      (_hw₀ : ∀ y ∈ s, 0 < w y) (_hw₁ : ∑ y in s, w y = 1), s.centerMass w id = x} := by
+      (_hw₀ : ∀ y ∈ s, 0 < w y) (_hw₁ : ∑ y ∈ s, w y = 1), s.centerMass w id = x} := by
   refine combiInterior_subset_positive_weighings.antisymm fun x => ?_
   rw [combiInterior, Finset.convexHull_eq, combiFrontier_eq]
   simp only [not_exists, and_imp, not_and, mem_setOf_eq, mem_diff, exists_imp]
