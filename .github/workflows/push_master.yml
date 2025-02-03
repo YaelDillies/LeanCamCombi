@@ -26,6 +26,7 @@ jobs:
         run: |
           ! (find LeanCamCombi -name "*.lean" -type f -print0 | xargs -0 grep -E -n '^import Mathlib$')
 
+
   build_project:
     runs-on: ubuntu-latest
     name: Build project
@@ -35,6 +36,10 @@ jobs:
 
       - name: Copy README.md to website/index.md
         run: cp README.md website/index.md
+
+      - name: Check LeanCamCombi.Mathlib only imports from Mathlib or LeanCamCombi.Mathlib
+        run: |
+          python3 scripts/check_mathlib_imports.py
 
       - name: Upstreaming dashboard
         run: |
