@@ -22,4 +22,8 @@ for file in files:
         imp_file = imp.lstrip()[len("import"):].strip()
         if (not imp_file.startswith("Mathlib.")) and \
             (not imp_file.startswith("LeanCamCombi.Mathlib")):
-            raise IOError("A file in LeanCamCombi.Mathlib imports a file not in Mathlib or LeanCamCombi.Mathlib")
+            raise OSError(f"""
+MathlibImportError: A file in LeanCamCombi.Mathlib imports a file not in Mathlib or LeanCamCombi.Mathlib
+\tImporting file: {file}
+\tImported file: {imp_file}
+""")
