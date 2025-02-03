@@ -1,7 +1,6 @@
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 import Mathlib.Combinatorics.Additive.ApproximateSubgroup
 import Mathlib.Tactic.Bound
-import LeanCamCombi.ExtrProbCombi.BernoulliSeq
 
 open scoped Finset Pointwise
 
