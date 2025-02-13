@@ -1,0 +1,15 @@
+name = "LeanCamCombi"
+defaultTargets = ["LeanCamCombi"]
+
+[leanOptions]
+autoImplicit = false        # Prevent typos to be interpreted as new free variables
+relaxedAutoImplicit = false
+pp.unicode.fun = true       # Pretty-print lambdas as `fun a ↦ b`
+pp.proofs.withType = false  # Elide the types of proofs in terms
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4.git"
+
+[[lean_lib]]
+name = "LeanCamCombi"
