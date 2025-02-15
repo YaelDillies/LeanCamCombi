@@ -43,7 +43,8 @@ in mathlib because we need the special property `set_prefix_subset` below. -/
 def Numbering (α : Type*) [Fintype α] := α ≃ Fin (card α)
 
 @[reducible]
-def NumberingOn {α : Type*} (s : Finset α) := {x // x ∈ s} ≃ Fin s.card
+def NumberingOn {α : Type*} (s : Finset α) := Numbering s
+--def NumberingOn {α : Type*} (s : Finset α) := {x // x ∈ s} ≃ Fin s.card
 
 variable {α : Type*} [Fintype α] [DecidableEq α]
 
@@ -52,7 +53,7 @@ theorem card_Numbering : card (Numbering α) = (card α).factorial := by
 
 omit [Fintype α] in
 theorem card_NumberingOn (s : Finset α) : card (NumberingOn s) = s.card.factorial := by
-  simp only [NumberingOn]
+  simp only [NumberingOn, Numbering]
   have h1 : card {x // x ∈ s} = card (Fin s.card) := by simp
   have h2 : {x // x ∈ s} ≃ Fin s.card := by exact Fintype.equivOfCardEq h1
   simp [Fintype.card_equiv h2]
@@ -68,21 +69,23 @@ theorem subset_IsPrefix_IsPrefix {s1 s2 : Finset α} {f : Numbering α}
   intro a h_as1
   exact (h_s2 a).mpr (lt_of_lt_of_le ((h_s1 a).mp h_as1) h_card)
 
-def equiv_IsPrefix_NumberingOn2 (s : Finset α) : {f // IsPrefix s f} ≃ NumberingOn s × NumberingOn sᶜ where
+def equiv_IsPrefix_NumberingOn2 (s : Finset α) :
+    {f // IsPrefix s f} ≃ NumberingOn s × NumberingOn sᶜ where
   toFun := fun ⟨f, hf⟩ ↦
     ({
-      toFun := fun ⟨x, hx⟩ ↦ ⟨f x, by rwa [← hf x]⟩
-      invFun := fun ⟨n, hn⟩ ↦ ⟨f.symm ⟨n, by have := s.card_le_univ; omega⟩, by rw [hf]; simpa⟩
+      toFun := fun ⟨x, hx⟩ ↦ ⟨f x, by rwa [card_coe, ← hf x]⟩
+      invFun := fun ⟨n, hn⟩ ↦ ⟨f.symm ⟨n, by rw [card_coe] at hn ; have := s.card_le_univ; omega⟩,
+                               by rw [hf]; rw [card_coe] at hn; simpa⟩
       left_inv := by rintro ⟨x, hx⟩; simp
       right_inv := by rintro ⟨n, hn⟩; simp
     },
     {
       toFun := fun ⟨x, hx⟩ ↦ ⟨f x - s.card, by
         rw [s.mem_compl, hf] at hx
-        rw [s.card_compl]
+        rw [card_coe, s.card_compl]
         exact Nat.sub_lt_sub_right (by omega) (by omega)
       ⟩
-      invFun := fun ⟨n, hn⟩ ↦ ⟨f.symm ⟨n + s.card, by rw [s.card_compl] at hn; omega⟩,
+      invFun := fun ⟨n, hn⟩ ↦ ⟨f.symm ⟨n + s.card, by rw [card_coe, s.card_compl] at hn; omega⟩,
                                by rw [s.mem_compl, hf]; simp⟩
       left_inv := by
         rintro ⟨x, hx⟩
@@ -96,12 +99,14 @@ def equiv_IsPrefix_NumberingOn2 (s : Finset α) : {f // IsPrefix s f} ≃ Number
         if hx : x ∈ s then
           g ⟨x, hx⟩ |>.castLE s.card_le_univ
         else
-          g' ⟨x, by simpa⟩ |>.addNat s.card |>.cast (by simp)
+          g' ⟨x, by simpa⟩ |>.addNat s.card |>.cast (
+            by simp [card_coe] ; have := s.card_le_univ ; omega
+          )
       invFun := fun ⟨n, hn⟩ ↦
         if hn' : n < s.card then
           g.symm ⟨n, hn'⟩
         else
-          g'.symm ⟨n - s.card, by rw [s.card_compl]; omega⟩
+          g'.symm ⟨n - s.card, by rw [card_coe, s.card_compl]; omega⟩
       left_inv := by intro x; by_cases hx : x ∈ s <;> simp [hx]
       right_inv := by
         rintro ⟨n, hn⟩
