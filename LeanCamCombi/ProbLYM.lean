@@ -42,17 +42,15 @@ in mathlib because we need the special property `set_prefix_subset` below. -/
 @[reducible]
 def Numbering (α : Type*) [Fintype α] := α ≃ Fin (card α)
 
-@[reducible]
-def NumberingOn {α : Type*} (s : Finset α) := Numbering s
-
 variable {α : Type*} [Fintype α] [DecidableEq α]
 
 theorem card_Numbering : card (Numbering α) = (card α).factorial := by
   exact Fintype.card_equiv (Fintype.equivFinOfCardEq rfl)
 
 omit [Fintype α] in
-theorem card_NumberingOn (s : Finset α) : card (NumberingOn s) = s.card.factorial := by
-  simp only [NumberingOn, card_Numbering, card_coe]
+theorem card_Numbering' (s : Finset α) : card (Numbering s) = s.card.factorial := by
+  simp only [Numbering, card_Numbering]
+  rw [card_coe]
 
 /-- `IsPrefix s f` means that the elements of `s` precede the elements of `sᶜ`
 in the numbering `f`. -/
@@ -65,7 +63,7 @@ theorem subset_IsPrefix_IsPrefix {s1 s2 : Finset α} {f : Numbering α}
   intro a h_as1
   exact (h_s2 a).mpr (lt_of_lt_of_le ((h_s1 a).mp h_as1) h_card)
 
-def equiv_IsPrefix_NumberingOn2' (s : Finset α) :
+def equiv_IsPrefix_Numbering2' (s : Finset α) :
     {f // IsPrefix s f} ≃ ({x // x ∈ s} ≃ Fin s.card) × ({x // x ∈ sᶜ} ≃ Fin sᶜ.card) where
   toFun := fun ⟨f, hf⟩ ↦
     ({
@@ -139,10 +137,10 @@ def equiv_IsPrefix_NumberingOn2' (s : Finset α) :
       rw [Finset.mem_compl] at hx
       simp [hx]
 
-def equiv_IsPrefix_NumberingOn2 (s : Finset α) :
-    {f // IsPrefix s f} ≃ NumberingOn s × NumberingOn sᶜ := by
-  simp only [NumberingOn, Numbering, card_coe]
-  exact equiv_IsPrefix_NumberingOn2' s
+def equiv_IsPrefix_Numbering2 (s : Finset α) :
+    {f // IsPrefix s f} ≃ Numbering s × Numbering (sᶜ : Finset α) := by
+  simp only [Numbering, card_coe]
+  exact equiv_IsPrefix_Numbering2' s
 
 instance (s : Finset α) :
     DecidablePred fun f ↦ (IsPrefix s f) := by
@@ -153,10 +151,10 @@ def PrefixedNumbering (s : Finset α) : Finset (Numbering α) :=
 
 theorem card_PrefixedNumbering (s : Finset α) :
     (PrefixedNumbering s).card = s.card.factorial * (card α - s.card).factorial := by
-  have h_eq:= Fintype.card_congr (equiv_IsPrefix_NumberingOn2 s)
+  have h_eq:= Fintype.card_congr (equiv_IsPrefix_Numbering2 s)
   rw [Fintype.card_subtype] at h_eq
   rw [PrefixedNumbering, h_eq, Fintype.card_prod,
-      card_NumberingOn s, card_NumberingOn sᶜ, card_compl]
+      card_Numbering' s, card_Numbering' sᶜ, card_compl]
 
 private lemma auxLemma {k m n : ℕ} (hn : 0 < n) (heq : k * m = n) :
     (↑ m : ENNReal) / (↑ n : ENNReal) = 1 / (↑ k : ENNReal) := by
