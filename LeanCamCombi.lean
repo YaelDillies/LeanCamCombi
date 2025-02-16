@@ -13,9 +13,11 @@ import LeanCamCombi.GrowthInGroups.Lecture4
 import LeanCamCombi.Mathlib.Combinatorics.Additive.ApproximateSubgroup
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
+import LeanCamCombi.Mathlib.Data.Fintype.Card
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.PlainCombi.LittlewoodOfford
 import LeanCamCombi.PlainCombi.OrderShatter
+import LeanCamCombi.PlainCombi.ProbLYM
 import LeanCamCombi.PlainCombi.VanDenBergKesten
 import LeanCamCombi.StableCombi.AddSet
 import LeanCamCombi.StableCombi.Formula
