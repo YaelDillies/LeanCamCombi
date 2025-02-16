@@ -10,10 +10,13 @@ import LeanCamCombi.GrowthInGroups.Lecture1
 import LeanCamCombi.GrowthInGroups.Lecture2
 import LeanCamCombi.GrowthInGroups.Lecture3
 import LeanCamCombi.GrowthInGroups.Lecture4
+import LeanCamCombi.Mathlib.Algebra.BigOperators.Field
 import LeanCamCombi.Mathlib.Combinatorics.Additive.ApproximateSubgroup
+import LeanCamCombi.Mathlib.Combinatorics.SetFamily.LYM
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Data.Fintype.Card
+import LeanCamCombi.Mathlib.Data.Nat.Choose.Cast
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.PlainCombi.KatonaCircle
 import LeanCamCombi.PlainCombi.LittlewoodOfford
