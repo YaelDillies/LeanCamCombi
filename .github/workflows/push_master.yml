@@ -26,20 +26,18 @@ jobs:
         run: |
           ! (find LeanCamCombi -name "*.lean" -type f -print0 | xargs -0 grep -E -n '^import Mathlib$')
 
-
   build_project:
     runs-on: ubuntu-latest
     name: Build project
     steps:
       - name: Checkout project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Copy README.md to website/index.md
         run: cp README.md website/index.md
 
       - name: Check LeanCamCombi.Mathlib only imports from Mathlib or LeanCamCombi.Mathlib
-        run: |
-          python3 scripts/check_mathlib_imports.py
+        run: python3 scripts/check_mathlib_imports.py
 
       - name: Upstreaming dashboard
         run: |
@@ -47,7 +45,7 @@ jobs:
           python3 scripts/upstreaming_dashboard.py
 
       - name: Install elan
-        run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.0.0
+        run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.15.0
 
       - name: Get cache
         run: ~/.elan/bin/lake exe cache get || true
@@ -87,7 +85,9 @@ jobs:
       #       inv all
 
       - name: Copy documentation to `website/docs`
-        run: mv docs/build website/docs
+        run: |
+          mkdir -p website/docs
+          mv docs/build website/docs
 
       - name: Bundle dependencies
         uses: ruby/setup-ruby@v1
