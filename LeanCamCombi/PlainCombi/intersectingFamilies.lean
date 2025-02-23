@@ -1,35 +1,55 @@
-import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.SetTheory.Cardinal.Finite
-import Mathlib.Data.Finset.Slice
-import Mathlib.Data.Finset.NAry
+/-
+Copyright (c) 2025 Yahel Manor. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yahel Manor
+-/
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Data.Finset.Lattice.Basic
+import Mathlib.Algebra.Order.Sub.Basic
+import Mathlib.Data.Finset.NAry
+import Mathlib.Data.Finset.Slice
 
+/-!
+
+# Upper bound on `l`-intersecting families
+
+This file define `l`-intersecting families and prove a bound on their size.
+
+A family is said to be `l`-intersecting if every two sets in the family have intersection of size at
+least `l`.
+
+## Main declaration
+
+* `intersectingFamliy`: `intersectingFamliy l A` means that every two elements have intersection of
+size at least l.
+
+## Main statements
+
+*  `IsIntersectingFamily.card_le_of_sized`: A intersecting family whose underlaying set is of size `n` and if all the sets in the family are of size
+`l` then the size of the family is at most `(n-l).choose (r-l)` if `n` is suffintly large.
+
+-/
 
 namespace Finset
 
 variable {α : Type*} [DecidableEq α]
 
-def intersectingFamliy (l:ℕ) (𝒜 : Finset (Finset α)) : Prop :=
+def IsIntersectingFamily (l:ℕ) (𝒜 : Finset (Finset α)) : Prop :=
   ∀ a ∈ 𝒜, ∀ b ∈ 𝒜, l ≤ (a ∩ b).card
 
-theorem intersectingFamliy.inter_le_size {l r:ℕ} {𝒜 : Finset (Finset α)} (sized : @Set.Sized α r 𝒜)
-  {inter : intersectingFamliy l 𝒜} (nonempty: Nonempty 𝒜) : l≤r := by
+theorem IsIntersectingFamily.le_of_sized {l r:ℕ} {𝒜 : Finset (Finset α)} (sized : @Set.Sized α r 𝒜)
+  {inter : IsIntersectingFamily l 𝒜} (nonempty: Nonempty 𝒜) : l≤r := by
     obtain ⟨x,x_in_𝒜⟩ := nonempty
     rw [←sized x_in_𝒜,←(inter_self x)]
     exact inter x x_in_𝒜 x x_in_𝒜
 
 variable [Fintype α]
 
-theorem  intersectingFamliy_card_le {l r:ℕ} {𝒜 : Finset (Finset α)} (sized𝒜 : @Set.Sized α r 𝒜)
- (inter : intersectingFamliy l 𝒜) (n_much_bigger_r :2 ^ (3 * r) * r * r+ 5 * r ≤ Fintype.card α):
- 𝒜.card ≤ ((Fintype.card α)-l).choose (r-l) := by
-    by_cases non_empty_𝒜: #𝒜 = 0
-    . simp [non_empty_𝒜]
-    rw [card_eq_zero,eq_empty_iff_forall_not_mem] at non_empty_𝒜
-    simp only [not_forall, Decidable.not_not] at non_empty_𝒜
-    have ⟨el,el_in_𝒜⟩ :=  non_empty_𝒜
-    have l_le_r := inter.inter_le_size sized𝒜 (Nonempty.to_subtype non_empty_𝒜)
+theorem  IsIntersectingFamily.card_le_of_sized {l r:ℕ} {𝒜 : Finset (Finset α)} (sized𝒜 : @Set.Sized α r 𝒜)
+ (inter : IsIntersectingFamily l 𝒜) (n_much_bigger_r :2 ^ (3 * r) * r * r+ 5 * r ≤ Fintype.card α):
+ #𝒜 ≤ ((Fintype.card α)-l).choose (r-l) := by
+    obtain rfl | ⟨el,el_in_𝒜⟩ := 𝒜.eq_empty_or_nonempty
+    . simp only [card_empty, zero_le]
+    have l_le_r := inter.le_of_sized sized𝒜 (Nonempty.intro ⟨el, el_in_𝒜⟩)
     simp [Set.Sized] at sized𝒜
     have r_le_card_α := card_le_card (subset_univ el)
     rw [sized𝒜 el_in_𝒜,card_univ] at r_le_card_α
@@ -43,7 +63,7 @@ theorem  intersectingFamliy_card_le {l r:ℕ} {𝒜 : Finset (Finset α)} (sized
       simp [(eq_of_subset_of_card_le inter_subset_left),(sized𝒜 a_in_𝒜),(sized𝒜 b_in_𝒜),
         (inter a a_in_𝒜 b b_in_𝒜)]
     | of_succ k k_leq_r ind =>
-      by_cases inter_succ_k : intersectingFamliy (k + 1) 𝒜
+      by_cases inter_succ_k : IsIntersectingFamily (k + 1) 𝒜
       . calc
         _ ≤ (Fintype.card α - (k + 1)).choose (r - (k + 1)) := ind inter_succ_k
         _ = (Fintype.card α - (k + 1)).choose (Fintype.card α - (k + 1) - (r - (k + 1))) := by
@@ -54,33 +74,32 @@ theorem  intersectingFamliy_card_le {l r:ℕ} {𝒜 : Finset (Finset α)} (sized
         _ ≤ (Fintype.card α - k).choose ((Fintype.card α - k) - (Fintype.card α - r)) := by
           rw [Nat.choose_symm];omega
         _ = (Fintype.card α - k).choose (r - k) := by congr 1; omega
-      simp [intersectingFamliy] at inter_succ_k
+      simp [IsIntersectingFamily] at inter_succ_k
       obtain ⟨A₁,A₁_in_𝒜,A₂,A₂_in_𝒜,card_x₁_x₂⟩ := inter_succ_k
       have k_le_inter := inter A₁ A₁_in_𝒜 A₂ A₂_in_𝒜
       have inter_eq_k : #(A₁ ∩ A₂) = k :=
         Eq.symm (Nat.le_antisymm (inter A₁ A₁_in_𝒜 A₂ A₂_in_𝒜) (Nat.lt_succ.mp card_x₁_x₂))
-      by_cases s_eq_inter_all : ∃ s , (k ≤ s.card) ∧ (∀a∈𝒜, s ⊆ a)
+      by_cases s_eq_inter_all : ∃ s , (k ≤ #s) ∧ (∀a∈𝒜, s ⊆ a)
       . obtain ⟨s,_,s_inter_a⟩ := s_eq_inter_all
-        let mp : (Finset α)  → Finset α := fun a' ↦ (a'\s)
-        have card𝒜_eq_cardℬ : (image mp 𝒜).card = 𝒜.card := by
+        have card𝒜_eq_cardℬ : #(image (·\s) 𝒜) = #𝒜 := by
           refine card_image_iff.mpr ?_
-          simp [Set.InjOn,mp]
+          simp [Set.InjOn]
           intro x₁ x₁_in_𝒜 x₂ x₂_in_𝒜 x₁_sub_eq_x₂_sub
           ext a
           by_cases a_in_s:a∈s
           . exact (iff_true_right (s_inter_a x₂ x₂_in_𝒜 a_in_s)).mpr (s_inter_a x₁ x₁_in_𝒜 a_in_s)
-          . have a_x_iff_a_in_mp : ∀ x∈𝒜, a∈x ↔ a ∈ (mp x) := by
-              simp [mp]
+          . have a_x_iff_a_in_mp : ∀ x∈𝒜, a∈x ↔ a ∈ ((·\s) x) := by
+              simp only [mem_sdiff, iff_self_and]
               exact fun x a_1 a ↦ a_in_s
             rw [(a_x_iff_a_in_mp x₁ x₁_in_𝒜),(a_x_iff_a_in_mp x₂ x₂_in_𝒜)]
             exact Eq.to_iff (congrFun (congrArg Membership.mem x₁_sub_eq_x₂_sub) a)
-        have sized_ℬ : (image mp 𝒜) ⊆ powersetCard (r-#s) (univ\s) := by
+        have sized_ℬ : (image (·\s) 𝒜) ⊆ powersetCard (r-#s) (univ\s) := by
           simp [powersetCard,subset_iff]
           intro x x_in_𝒜
-          exists (mp x).1
-          simp only [card_val, exists_prop, and_true, mp]
+          exists ((·\s) x).1
+          simp only [card_val, exists_prop, and_true]
           constructor
-          simp only [sdiff_val, mp]
+          simp only [sdiff_val]
           refine Multiset.sub_le_sub_right ?_
           simp
           rw [card_sdiff]
@@ -138,24 +157,21 @@ theorem  intersectingFamliy_card_le {l r:ℕ} {𝒜 : Finset (Finset α)} (sized
           at card_inter_eq_k
         have _ := calc
           k ≤ k + k - k := by simp
-          _ ≤ k + k - (a ∩ (A₁ ∪ A₂)).card := by
+          _ ≤ k + k - #(a ∩ (A₁ ∪ A₂)) := by
             apply Nat.sub_le_sub_left
             simp [←card_inter_eq_k,card_le_card, inter_union_distrib_left]
-          _ ≤ k + k - (a ∩ A₁ ∪ (a ∩ A₂)).card := by simp [inter_union_distrib_left]
-          _ ≤ (a ∩ A₁).card + (a ∩ A₂).card - (a ∩ A₁ ∪ (a ∩ A₂)).card := by
-            apply Nat.sub_le_sub_right
-            apply Nat.add_le_add <;> apply inter
-            all_goals trivial
-          _ = ((a ∩ A₁) ∩ (a ∩ A₂)).card := Eq.symm (card_inter (a ∩ A₁) (a ∩ A₂))
-          _ = (a ∩ (A₁ ∩ A₂)).card := by congr 1;exact Eq.symm (inter_inter_distrib_left a A₁ A₂)
+          _ ≤ k + k - #(a ∩ A₁ ∪ (a ∩ A₂)) := by simp [inter_union_distrib_left]
+          _ ≤ #(a ∩ A₁) + #(a ∩ A₂) - #(a ∩ A₁ ∪ (a ∩ A₂)) := by
+            gcongr <;> apply inter  <;> trivial
+          _ = #((a ∩ A₁) ∩ (a ∩ A₂)) := Eq.symm (card_inter (a ∩ A₁) (a ∩ A₂))
+          _ = #(a ∩ (A₁ ∩ A₂)) := by congr 1;exact Eq.symm (inter_inter_distrib_left a A₁ A₂)
         have k_lt_k:= calc
           k = k + k - k := by simp
           _  < k + k - #((A₁ ∩ A₂) ∩ A₃) := by
             refine (tsub_lt_tsub_iff_left_of_le ?_).mpr inter_lt_k
             omega
           _ ≤ k + k - #(a ∩ (A₃ ∩ (A₁ ∩ A₂))) := by
-            apply Nat.sub_le_sub_left
-            apply card_le_card
+            gcongr k + k - #?_
             nth_rw 2 [inter_comm]
             exact inter_subset_right
           _ ≤ #(a ∩ A₃) + #(a ∩ (A₁ ∩ A₂)) - #(a ∩ (A₃ ∩ (A₁ ∩ A₂))) := by
@@ -229,16 +245,10 @@ theorem  intersectingFamliy_card_le {l r:ℕ} {𝒜 : Finset (Finset α)} (sized
         #𝒜 ≤ #(U.powerset) * #(filter (fun p ↦ ∃ a ∈ 𝒜, a \ U = p) univ) := card_𝒜_leq_prod
         _ ≤ 2 ^ #U * #(filter (fun p ↦ ∃ a ∈ 𝒜, a \ U = p) univ) := by
           simp only [card_powerset, le_refl, U]
-        _ ≤ 2 ^ #U * ((Fintype.card α - #U).choose (r-(k+1)) * r) := by
-          apply Nat.mul_le_mul_left
-          exact card_filt_le_chooce
+        _ ≤ 2 ^ #U * ((Fintype.card α - #U).choose (r-(k+1)) * r) := by gcongr
         _ ≤ 2 ^ #U * ((Fintype.card α - k).choose (r-(k+1)) * r) := by
           apply_rules [Nat.mul_le_mul_left,Nat.mul_le_mul_right,Nat.choose_mono,Nat.sub_le_sub_left]
-        _ ≤ 2 ^ (3*r) * ((Fintype.card α - k).choose (r-(k+1)) * r) := by
-          apply Nat.mul_le_mul_right
-          apply Nat.pow_le_pow_right
-          simp
-          trivial
+        _ ≤ 2 ^ (3*r) * ((Fintype.card α - k).choose (r-(k+1)) * r) := by gcongr;simp
         _ ≤ (2 ^ (3*r) * (r * (Fintype.card α - k).choose (r-(k+1)+1) * (r-(k+1)+1)) / (Fintype.card α - k - (r - (k + 1)))) := by
           rw[Nat.le_div_iff_mul_le,mul_assoc,mul_comm ((Fintype.card α - k).choose (r - (k + 1))) r,
             mul_assoc,←Nat.choose_succ_right_eq,mul_assoc]
@@ -253,9 +263,7 @@ theorem  intersectingFamliy_card_le {l r:ℕ} {𝒜 : Finset (Finset α)} (sized
       rw [Nat.le_sub_iff_add_le,Nat.le_sub_iff_add_le,add_assoc]
       . calc
         (r - k) * (2 ^ (3 * r) * r) + (r - (k + 1) + k) ≤ (r) * (2 ^ (3 * r) * r) + r := by
-          apply Nat.add_le_add
-          apply Nat.mul_le_mul_right
-          all_goals omega
+          gcongr <;> omega
         _ = 2 ^ (3 * r) * r * r + r := by simp [mul_comm,mul_assoc]
         _ ≤ Fintype.card α := by omega
       all_goals omega
