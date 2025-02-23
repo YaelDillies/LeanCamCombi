@@ -242,7 +242,7 @@ theorem  IsIntersectingFamily.card_le_of_sized {l r:ℕ} {𝒜 : Finset (Finset 
             have _ := @Nat.choose_le_succ_of_lt_half_left lvl' (Fintype.card α - #U) ?_
             all_goals omega
       calc
-        #𝒜 ≤ #(U.powerset) * #(filter (fun p ↦ ∃ a ∈ 𝒜, a \ U = p) univ) := card_𝒜_leq_prod
+        #𝒜 ≤ #U.powerset * #(filter (fun p ↦ ∃ a ∈ 𝒜, a \ U = p) univ) := card_𝒜_leq_prod
         _ ≤ 2 ^ #U * #(filter (fun p ↦ ∃ a ∈ 𝒜, a \ U = p) univ) := by
           simp only [card_powerset, le_refl, U]
         _ ≤ 2 ^ #U * ((Fintype.card α - #U).choose (r-(k+1)) * r) := by gcongr
