@@ -220,7 +220,7 @@ theorem  IsIntersectingFamily.card_le_of_sized {l r:ℕ} {𝒜 : Finset (Finset 
       have card_filt_le_chooce : #(filter (fun p ↦ ∃ a ∈ 𝒜, a \ U = p) univ)
         ≤ (Fintype.card α - #(U)).choose (r - (k + 1)) * r := by
         calc
-          #(filter (fun p ↦ ∃ a ∈ 𝒜, a \ U = p) univ)
+          #{p | ∃ a ∈ 𝒜, a \ U = p}
             ≤ #((range (r - k)).biUnion fun n' ↦ powersetCard n' (univ \ U)) := card_le_card ?_
           _ ≤ (Fintype.card α - #U).choose (r - (k + 1)) * (r - k) := ?_
           _ ≤ (Fintype.card α - #U).choose (r - (k + 1)) * r := by apply Nat.mul_le_mul_left;omega
