@@ -33,7 +33,7 @@ namespace Finset
 
 variable {α : Type*} [DecidableEq α]
 
-def IsIntersectingFamily (l:ℕ) (𝒜 : Finset (Finset α)) : Prop :=
+def IsIntersectingFamily (l : ℕ) (𝒜 : Finset (Finset α)) : Prop :=
   ∀ a ∈ 𝒜, ∀ b ∈ 𝒜, l ≤ (a ∩ b).card
 
 theorem IsIntersectingFamily.le_of_sized {l r:ℕ} {𝒜 : Finset (Finset α)} (sized : @Set.Sized α r 𝒜)
@@ -188,7 +188,7 @@ theorem  IsIntersectingFamily.card_le_of_sized {l r:ℕ} {𝒜 : Finset (Finset 
             apply_rules [inter_subset_inter_left, union_subset_union_left, inter_subset_union]
           _ ≤ k := Nat.le_of_lt_succ a_inter_le_k
         simp [GT.gt] at k_lt_k
-      have card_𝒜_leq_prod : #𝒜 ≤ #(U.powerset) * #{p : Finset α| ∃ a ∈𝒜 , a\U = p} := by
+      have card_𝒜_leq_prod : #𝒜 ≤ #U.powerset * #{p : Finset α| ∃ a ∈𝒜 , a\U = p} := by
         let fn : (Finset α) → (Finset α) → (Finset α) := fun a b ↦ a ∪ b
         rw [←((@card_image₂_iff _ _ _ _ fn U.powerset {p : Finset α| ∃ a ∈𝒜 , a\U = p}).mpr ?_)]
         apply card_le_card
@@ -250,7 +250,7 @@ theorem  IsIntersectingFamily.card_le_of_sized {l r:ℕ} {𝒜 : Finset (Finset 
           apply_rules [Nat.mul_le_mul_left,Nat.mul_le_mul_right,Nat.choose_mono,Nat.sub_le_sub_left]
         _ ≤ 2 ^ (3*r) * ((Fintype.card α - k).choose (r-(k+1)) * r) := by gcongr;simp
         _ ≤ (2 ^ (3*r) * (r * (Fintype.card α - k).choose (r-(k+1)+1) * (r-(k+1)+1)) / (Fintype.card α - k - (r - (k + 1)))) := by
-          rw[Nat.le_div_iff_mul_le,mul_assoc,mul_comm ((Fintype.card α - k).choose (r - (k + 1))) r,
+          rw [Nat.le_div_iff_mul_le,mul_assoc,mul_comm ((Fintype.card α - k).choose (r - (k + 1))) r,
             mul_assoc,←Nat.choose_succ_right_eq,mul_assoc]
           omega
         _ = (2 ^ (3*r) * (r * (Fintype.card α - k).choose (r-k) * (r-k)) / (Fintype.card α - k - (r - (k + 1)))) := by congr<;>omega
