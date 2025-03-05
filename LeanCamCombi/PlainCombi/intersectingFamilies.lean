@@ -36,11 +36,12 @@ variable {α : Type*} [DecidableEq α]
 def IsIntersectingFamily (l : ℕ) (𝒜 : Finset (Finset α)) : Prop :=
   ∀ a ∈ 𝒜, ∀ b ∈ 𝒜, l ≤ (a ∩ b).card
 
-theorem IsIntersectingFamily.le_of_sized {l r:ℕ} {𝒜 : Finset (Finset α)} (sized : @Set.Sized α r 𝒜)
-  {inter : IsIntersectingFamily l 𝒜} (nonempty: Nonempty 𝒜) : l≤r := by
-    obtain ⟨x,x_in_𝒜⟩ := nonempty
-    rw [←sized x_in_𝒜,←(inter_self x)]
-    exact inter x x_in_𝒜 x x_in_𝒜
+theorem IsIntersectingFamily.le_of_sized {l r : ℕ} {𝒜 : Finset (Finset α)}
+    (sized : 𝒜.toSet.Sized r) (inter : IsIntersectingFamily l 𝒜)
+    (nonempty : Nonempty 𝒜) : l ≤ r := by
+  obtain ⟨x, x_in_𝒜⟩ := nonempty
+  rw [← sized x_in_𝒜, ← inter_self x]
+  exact inter x x_in_𝒜 x x_in_𝒜
 
 variable [Fintype α]
 
@@ -49,7 +50,7 @@ theorem  IsIntersectingFamily.card_le_of_sized {l r:ℕ} {𝒜 : Finset (Finset 
  #𝒜 ≤ ((Fintype.card α)-l).choose (r-l) := by
     obtain rfl | ⟨el,el_in_𝒜⟩ := 𝒜.eq_empty_or_nonempty
     . simp only [card_empty, zero_le]
-    have l_le_r := inter.le_of_sized sized𝒜 (Nonempty.intro ⟨el, el_in_𝒜⟩)
+    have l_le_r := inter.le_of_sized sized𝒜 ⟨el, el_in_𝒜⟩
     simp [Set.Sized] at sized𝒜
     have r_le_card_α := card_le_card (subset_univ el)
     rw [sized𝒜 el_in_𝒜,card_univ] at r_le_card_α
@@ -67,7 +68,7 @@ theorem  IsIntersectingFamily.card_le_of_sized {l r:ℕ} {𝒜 : Finset (Finset 
       . calc
         _ ≤ (Fintype.card α - (k + 1)).choose (r - (k + 1)) := ind inter_succ_k
         _ = (Fintype.card α - (k + 1)).choose (Fintype.card α - (k + 1) - (r - (k + 1))) := by
-          rw [Nat.choose_symm];omega
+          rw [Nat.choose_symm]; omega
         _ = (Fintype.card α - (k + 1)).choose (Fintype.card α - r) := by congr 1;omega
         _ = (Fintype.card α - k - 1).choose (Fintype.card α - r) := by congr 1
         _ ≤ (Fintype.card α - k).choose (Fintype.card α - r) := by apply Nat.choose_mono;omega
@@ -129,22 +130,16 @@ theorem  IsIntersectingFamily.card_le_of_sized {l r:ℕ} {𝒜 : Finset (Finset 
         simp [U]
         calc
         #(A₁ ∪ (A₂ ∪ A₃)) ≤ #(A₁) + #(A₂ ∪ A₃) := card_union_le A₁ (A₂ ∪ A₃)
-        _ ≤#(A₁) + (#(A₂) + #(A₃))  :=  Nat.add_le_add_left (card_union_le A₂ A₃) _
-        _ ≤ r + (#(A₂) + #(A₃)) :=
-          Nat.le_of_eq (congrFun (congrArg HAdd.hAdd (sized𝒜 A₁_in_𝒜)) (#A₂ + #A₃))
-        _ ≤ r + (r + #(A₃)) :=
-          Nat.le_of_eq (congrArg (HAdd.hAdd r) (congrFun (congrArg HAdd.hAdd (sized𝒜 A₂_in_𝒜)) #A₃))
-        _ ≤ r + (r + r) :=
-          Nat.le_of_eq (congrArg (HAdd.hAdd r) (congrArg (HAdd.hAdd r) (sized𝒜 A₃_in_𝒜)))
-        _ ≤ 3 * r := by omega
+        _ ≤ #A₁ + (#A₂ + #A₃) :=  by gcongr; exact card_union_le ..
+        _ ≤ r + (r + r) := by gcongr <;> exact sized𝒜 ‹_›
+        _ = 3 * r := by omega
       have _ : k ≤ #U := by
         calc
           k ≤ r := by omega
           _ = #A₁ := by rw [sized𝒜 A₁_in_𝒜]
           _ ≤ #U := by apply card_le_card;simp [U]
       have succ_k_le_inter_a_U : ∀ a ∈ 𝒜 , k + 1 ≤ #(a∩U) := by
-        by_contra ex
-        simp at ex
+        by_contra! ex
         obtain ⟨a,a_in_𝒜,a_inter_le_k⟩ := ex
         have k_le_inter_U : k ≤ #(a ∩ U) := by calc
           k ≤ #(a ∩ A₁) := inter a a_in_𝒜 A₁ A₁_in_𝒜
