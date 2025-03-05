@@ -15,7 +15,10 @@ lemma dens_biUnion [DecidableEq β] (h : ∀ x ∈ s, ∀ y ∈ s, x ≠ y → D
   simp [dens, card_biUnion h, sum_div]
 
 lemma dens_biUnion_le [DecidableEq β] : (s.biUnion t).dens ≤ ∑ a ∈ s, (t a).dens := by
-  simp [dens, ← sum_div]; gcongr; positivity; norm_cast; exact card_biUnion_le
+  simp only [dens, ← sum_div]
+  gcongr
+  · positivity
+  · exact mod_cast card_biUnion_le
 
 lemma dens_eq_sum_dens_fiberwise [DecidableEq α] {f : β → α} {t : Finset β} (h : ∀ x ∈ t, f x ∈ s) :
     t.dens = ∑ a ∈ s, {b ∈ t | f b = a}.dens := by

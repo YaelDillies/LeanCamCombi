@@ -83,8 +83,8 @@ lemma theorem_1_8 (_hK : 0 ≤ K) :
 open scoped Classical in
 /-- The **product theorem**, due Breuillard-Green-Tao and Pyber-Szabo.
 
-A set in `SLₙ(k)` either has big tripling or is very big. In other words, there is no small tripling,
-except in trivial situations. -/
+A set in `SLₙ(k)` either has big tripling or is very big. In other words, there is no small
+tripling, except in trivial situations. -/
 lemma theorem_1_9 :
     ∃ δ > 0, ∃ ε > 0,
       ∀ k [Field k] [Fintype k] [DecidableEq k] (A : Finset SL(n, k))

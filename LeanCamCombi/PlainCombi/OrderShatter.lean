@@ -50,7 +50,7 @@ instance instDecidableRel : DecidableRel (OrderShatters (α := α)) := fun 𝒜 
   · exact instDecidableAnd
 
 def orderShatterser (𝒜 : Finset (Finset α)) : Finset (Finset α) :=
-  {s ∈ 𝒜.biUnion powerset | 𝒜.OrderShatters $ s.sort (· ≤ ·)}
+  {s ∈ 𝒜.biUnion powerset | 𝒜.OrderShatters <| s.sort (· ≤ ·)}
 
 end order
 

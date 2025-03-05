@@ -29,8 +29,8 @@ variable {α Ω : Type*} [MeasurableSpace Ω]
 
 /-- A graph-valued random variable is a `p`-binomial random graph (aka follows the Erdős–Rényi
 model) if its edges are iid `p`-Bernoulli random variables. -/
-abbrev IsBinomialRandomGraph (G : Ω → SimpleGraph α) (p : ℝ≥0) (μ : Measure Ω := by volume_tac) : Prop :=
-  IsBernoulliSeq (fun ω ↦ {e | ¬ e.IsDiag} ↓∩ (G ω).edgeSet) p μ
+abbrev IsBinomialRandomGraph (G : Ω → SimpleGraph α) (p : ℝ≥0) (μ : Measure Ω := by volume_tac) :
+    Prop := IsBernoulliSeq (fun ω ↦ {e | ¬ e.IsDiag} ↓∩ (G ω).edgeSet) p μ
 
 variable {G : Ω → SimpleGraph α} {H : SimpleGraph α} {p : ℝ≥0} (μ : Measure Ω)
   (hG : IsBinomialRandomGraph G p μ) {e e₁ e₂ : Sym2 α}

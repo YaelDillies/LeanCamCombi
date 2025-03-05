@@ -74,7 +74,7 @@ lemma IsContained.mono_left (h₁₂ : G₁ ≤ G₂) (h₂₃ : G₂ ⊑ G₃) 
   (isContained_of_le h₁₂).trans h₂₃
 
 lemma IsContained.mono_right (h₁₂ : G₁ ⊑ G₂) (h₂₃ : G₂ ≤ G₃) : G₁ ⊑ G₃ :=
-  h₁₂.trans $ isContained_of_le h₂₃
+  h₁₂.trans <| isContained_of_le h₂₃
 
 alias IsContained.trans_le := IsContained.mono_right
 
@@ -86,7 +86,7 @@ lemma bot_isContained (f : α ↪ β) : (⊥ : SimpleGraph α) ⊑ H :=
   ⟨{  toFun := f
       map_rel' := False.elim }, f.injective⟩
 
-lemma isContained_iff_exists_subgraph : G ⊑ H ↔ ∃ H' : H.Subgraph, Nonempty $ G ≃g H'.coe := by
+lemma isContained_iff_exists_subgraph : G ⊑ H ↔ ∃ H' : H.Subgraph, Nonempty <| G ≃g H'.coe := by
   constructor
   · rintro ⟨f, hf⟩
     exact ⟨Subgraph.map f ⊤, ⟨(Subgraph.isoMap _ hf _).comp Subgraph.topIso.symm⟩⟩
@@ -170,7 +170,7 @@ noncomputable def copyCount (G : SimpleGraph α) (H : SimpleGraph β) : ℕ :=
     ⟨⟨⟨(Equiv.Set.univ _).symm, by
       simp only [Prop.bot_eq_false, Subgraph.coe_adj, Pi.bot_apply, bot_adj, iff_self,
         forall₂_true_iff]⟩⟩, fun H' e ↦
-      Subgraph.ext ((set_fintype_card_eq_univ_iff _).1 $ Fintype.card_congr e.toEquiv.symm) ?_⟩
+      Subgraph.ext ((set_fintype_card_eq_univ_iff _).1 <| Fintype.card_congr e.toEquiv.symm) ?_⟩
   ext a b
   simp only [Prop.bot_eq_false, Pi.bot_apply, iff_false]
   exact fun hab ↦ e.symm.map_rel_iff.2 hab.coe
@@ -183,7 +183,7 @@ noncomputable def copyCount (G : SimpleGraph α) (H : SimpleGraph β) : ℕ :=
     Nonempty.forall, Subsingleton.elim G ⊥]
   haveI : IsEmpty (⊥ : H.Subgraph).verts := by simp
   refine ⟨⟨⟨⟨isEmptyElim, isEmptyElim, isEmptyElim, isEmptyElim⟩, fun {a} ↦ isEmptyElim a⟩⟩,
-    fun H' e ↦ Subgraph.ext ?_ $ funext₂ fun a b ↦ ?_⟩
+    fun H' e ↦ Subgraph.ext ?_ <| funext₂ fun a b ↦ ?_⟩
   · simpa [Set.eq_empty_iff_forall_not_mem, filter_eq_empty_iff, ‹IsEmpty α›] using
       e.toEquiv.symm.isEmpty_congr
   · simp only [Subgraph.not_bot_adj, eq_iff_iff, iff_false]
@@ -248,7 +248,7 @@ As such, it is a big subgraph of `H` that does not contain any subgraph isomorph
 `G` had no edges to start with. -/
 noncomputable irreducible_def kill (G : SimpleGraph α) (H : SimpleGraph β) : SimpleGraph β :=
   if hG : G = ⊥ then H
-  else H.deleteEdges $ ⋃ (H' : H.Subgraph) (hH' : Nonempty (G ≃g H'.coe)), {(aux hG hH').some}
+  else H.deleteEdges <| ⋃ (H' : H.Subgraph) (hH' : Nonempty (G ≃g H'.coe)), {(aux hG hH').some}
 
 /-- Removing an edge from `H` for each subgraph isomorphic to `G` results in a subgraph of `H`. -/
 lemma kill_le : G.kill H ≤ H := by rw [kill]; split_ifs; exacts [le_rfl, deleteEdges_le _]
@@ -266,7 +266,7 @@ lemma kill_eq_right (hG : G ≠ ⊥) : G.kill H = H ↔ ¬ G ⊑ H := by
     @forall_swap _ H.Subgraph, Set.iUnion_singleton_eq_range, deleteEdges_eq_self, Set.mem_iUnion,
     Set.mem_range, not_exists, not_nonempty_iff, Nonempty.forall]
   exact forall_congr' fun H' ↦ ⟨fun h ↦ ⟨fun f ↦ h _
-    (Subgraph.edgeSet_subset _ $ (aux hG ⟨f⟩).choose_spec) f rfl⟩, fun h _ _ ↦ h.elim⟩
+    (Subgraph.edgeSet_subset _ <| (aux hG ⟨f⟩).choose_spec) f rfl⟩, fun h _ _ ↦ h.elim⟩
 
 lemma kill_of_not_isContained (hGH : ¬ G ⊑ H) : G.kill H = H := by
   obtain rfl | hG := eq_or_ne G ⊥
@@ -278,7 +278,7 @@ contain `G`. -/
 lemma not_isContained_kill (hG : G ≠ ⊥) : ¬ G ⊑ G.kill H := by
   rw [kill_of_ne_bot hG, deleteEdges, isContained_iff_exists_subgraph]
   rintro ⟨H', hGH'⟩
-  have hH' : (H'.map $ Hom.ofLE (sdiff_le : H \ _ ≤ H)).edgeSet.Nonempty := by
+  have hH' : (H'.map <| Hom.ofLE (sdiff_le : H \ _ ≤ H)).edgeSet.Nonempty := by
     rw [Subgraph.edgeSet_map]
     exact (aux hG hGH').image _
   set e := hH'.some with he
@@ -293,7 +293,7 @@ lemma not_isContained_kill (hG : G ≠ ⊥) : ¬ G ⊑ G.kill H := by
   have := Subgraph.edgeSet_subset _ he'
   simp only [edgeSet_sdiff,  edgeSet_fromEdgeSet,  edgeSet_sdiff_sdiff_isDiag, Set.mem_diff,
     Set.mem_iUnion, not_exists] at this
-  refine this.2 (H'.map $ Hom.ofLE sdiff_le)
+  refine this.2 (H'.map <| Hom.ofLE sdiff_le)
     ⟨(Subgraph.isoMap (Hom.ofLE _) injective_id _).comp hGH'.some⟩ ?_
   rw [Sym2.map_map, Set.mem_singleton_iff, ← he₁]
   congr 1 with x
@@ -302,7 +302,7 @@ lemma not_isContained_kill (hG : G ≠ ⊥) : ¬ G ⊑ G.kill H := by
 variable [Fintype H.edgeSet]
 
 noncomputable instance kill.EdgeSet.fintype : Fintype (G.kill H).edgeSet :=
-  Fintype.ofInjective (Set.inclusion $ edgeSet_mono kill_le) $ Set.inclusion_injective _
+  Fintype.ofInjective (Set.inclusion <| edgeSet_mono kill_le) <| Set.inclusion_injective _
 
 /-- Removing an edge from `H` for each subgraph isomorphic to `G` means that the number of edges
 we've removed is at most the number of copies of `G` in `H`. -/

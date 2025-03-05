@@ -153,13 +153,9 @@ Show that the possible clique numbers for a regular graph on $$n$$ vertices are
 $$1, 2, \dots, n/2$$ and $$n$$.
 -/
 
-/-- The clique number of a graph is the size of its largest clique. -/
-def cliqueNumber [Fintype α] [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.Adj] : ℕ :=
-  (Nat.findGreatest fun n ↦ ∃ s, G.IsNClique n s) $ card α
-
 lemma q10 [Fintype α] [DecidableEq α] (n : ℕ) :
     (∃ (G : SimpleGraph α) (_ : DecidableRel G.Adj) (k : _),
-        G.IsRegularOfDegree k ∧ cliqueNumber G = n) ↔
+        G.IsRegularOfDegree k ∧ cliqueNum G = n) ↔
       n ≤ card α / 2 ∨ n = card α :=
   sorry
 

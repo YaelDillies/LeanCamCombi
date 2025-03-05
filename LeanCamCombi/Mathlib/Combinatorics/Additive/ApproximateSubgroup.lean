@@ -56,5 +56,5 @@ lemma exists_isApproximateSubgroup_of_small_doubling [DecidableEq G] {A : Finset
       _ ≤ 8 * K ^ 11 * (#S * #F) := by gcongr; exact mod_cast card_mul_le
       _ ≤ 8 * K ^ 11 * (#S * (2 * K)) := by gcongr
       _ = 2 ^ 4 * K ^ 12 * #S := by ring
-  sorry
-  sorry
+  · sorry
+  · sorry
