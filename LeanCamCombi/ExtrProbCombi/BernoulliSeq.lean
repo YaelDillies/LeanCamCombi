@@ -33,7 +33,7 @@ variable {α Ω : Type*} [MeasurableSpace Ω]
 structure IsBernoulliSeq (X : Ω → Set α) (p : outParam ℝ≥0) (μ : Measure Ω := by volume_tac) : Prop
     where
   protected le_one : p ≤ 1
-  protected iIndepFun : iIndepFun inferInstance (fun a ω ↦ a ∈ X ω) μ
+  protected iIndepFun : iIndepFun (fun a ω ↦ a ∈ X ω) μ
   protected map : ∀ a, Measure.map (fun ω ↦ a ∈ X ω) μ = (PMF.bernoulli' p le_one).toMeasure
 
 variable {X Y : Ω → Set α} {μ : Measure Ω} {p q : ℝ≥0} (hX : IsBernoulliSeq X p μ)

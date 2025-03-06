@@ -41,11 +41,9 @@ include hG
 protected nonrec lemma le_one : p ≤ 1 := hG.le_one
 
 lemma iIndepFun_mem_edgeSet_not_isDiag :
-    iIndepFun inferInstance (fun (e : {e : Sym2 α // ¬ e.IsDiag}) ω ↦ ↑e ∈ (G ω).edgeSet) μ :=
-  hG.iIndepFun
+    iIndepFun (fun (e : {e : Sym2 α // ¬ e.IsDiag}) ω ↦ ↑e ∈ (G ω).edgeSet) μ := hG.iIndepFun
 
-lemma iIndepFun_mem_edgeSet : iIndepFun inferInstance (fun e ω ↦ e ∈ (G ω).edgeSet) μ :=
-  sorry
+lemma iIndepFun_mem_edgeSet : iIndepFun (fun e ω ↦ e ∈ (G ω).edgeSet) μ := sorry
 
 lemma map_mem_edgeSet (he : ¬ e.IsDiag) :
     Measure.map (fun ω ↦ e ∈ (G ω).edgeSet) μ = (PMF.bernoulli' p hG.le_one).toMeasure :=

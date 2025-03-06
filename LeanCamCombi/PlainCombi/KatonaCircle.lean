@@ -3,11 +3,10 @@ Copyright (c) 2024 Ching-Tsun Chou, Chris Wong. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Ching-Tsun Chou, Chris Wong
 -/
-import LeanCamCombi.Mathlib.Data.Fintype.Card
-import LeanCamCombi.Mathlib.Data.Nat.Choose.Cast
 import Mathlib.Data.Finset.Density
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Fintype.Perm
+import Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # The Katona circle method
@@ -71,7 +70,7 @@ def prefixedEquiv (s : Finset α) : prefixed s ≃ Numbering s × Numbering ↑(
   invFun := fun (g, g') ↦
     { val.toFun x :=
         if hx : x ∈ s then
-          g ⟨x, hx⟩ |>.castLE Fintype.card_subtype_le'
+          g ⟨x, hx⟩ |>.castLE (Fintype.card_subtype_le _)
         else
           g' ⟨x, by simpa⟩ |>.addNat #s |>.cast (by simp [card_le_univ])
       val.invFun n :=
@@ -88,7 +87,7 @@ def prefixedEquiv (s : Finset α) : prefixed s ≃ Numbering s × Numbering ↑(
         obtain hns | hsn := lt_or_le n.1 #s
         · simp [hns]
         · simp [hsn.not_lt, hsn, dif_neg (mem_compl.1 <| Subtype.prop _), Fin.ext_iff,
-            Fintype.card_subtype_le']
+            Fintype.card_subtype_le]
       property := mem_prefixed.2 fun x ↦ by
         constructor
         · intro hx
@@ -107,7 +106,7 @@ lemma card_prefixed (s : Finset α) : #(prefixed s) = (#s)! * (card α - #s)! :=
 
 @[simp]
 lemma dens_prefixed (s : Finset α) : (prefixed s).dens = ((card α).choose #s : ℚ≥0)⁻¹ := by
-  simp [dens, card_prefixed, Nat.cast_choose' _ s.card_le_univ]
+  simp [dens, card_prefixed, Nat.cast_choose _ s.card_le_univ]
 
 -- TODO: This can be strengthened to an iff
 lemma disjoint_prefixed_prefixed (hst : ¬ s ⊆ t) (hts : ¬ t ⊆ s) :
