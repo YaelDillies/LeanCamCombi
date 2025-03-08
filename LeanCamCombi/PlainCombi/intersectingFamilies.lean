@@ -10,25 +10,23 @@ import Mathlib.Data.Finset.Slice
 import Mathlib.SetTheory.Cardinal.Finite
 
 /-!
-
 # Upper bound on `l`-intersecting families
 
-This file define `l`-intersecting families and prove a bound on their size.
+This file defines `l`-intersecting families and proves an upper bound on their size.
 
 A family is said to be `l`-intersecting if every two sets in the family have intersection of size at
 least `l`.
 
 ## Main declaration
 
-* `intersectingFamliy`: `intersectingFamliy l A` means that every two elements have intersection of
-size at least l.
+* `IsIntersectingFamily`: `IsIntersectingFamily l A` means that every two elements have
+  intersection of size at least `l`.
 
 ## Main statements
 
 *  `IsIntersectingFamily.card_le_of_sized`: A intersecting family whose underlaying set is of size
 `n` and if all the sets in the family are of size `l` then the size of the family is at most
 `(n-l).choose (r-l)` if `n` is suffintly large.
-
 -/
 
 
@@ -84,7 +82,7 @@ theorem  IsIntersectingFamily.card_le_of_sized {l r:ℕ} {𝒜 : Set (Finset α)
         _ = (Fintype.card α - (k + 1)).choose (Fintype.card α - r) := by congr 1;omega
         _ = (Fintype.card α - k - 1).choose (Fintype.card α - r) := by congr 1
         _ ≤ (Fintype.card α - k).choose (Fintype.card α - r) := by apply Nat.choose_mono;omega
-        _ ≤ (Fintype.card α - k).choose ((Fintype.card α - k) - (Fintype.card α - r)) := by
+        _ ≤ (Fintype.card α - k).choose (Fintype.card α - k - (Fintype.card α - r)) := by
           rw [Nat.choose_symm];omega
         _ = (Fintype.card α - k).choose (r - k) := by congr 1; omega
       simp [IsIntersectingFamily] at inter_succ_k
@@ -141,8 +139,8 @@ theorem  IsIntersectingFamily.card_le_of_sized {l r:ℕ} {𝒜 : Set (Finset α)
       have card_U : #U ≤ 3 * r := by
         simp [U]
         calc
-        #(A₁ ∪ (A₂ ∪ A₃)) ≤ #(A₁) + #(A₂ ∪ A₃) := card_union_le A₁ (A₂ ∪ A₃)
-        _ ≤ #A₁ + (#A₂ + #A₃) :=  by gcongr; exact card_union_le ..
+        #(A₁ ∪ (A₂ ∪ A₃)) ≤ #A₁ + #(A₂ ∪ A₃) := card_union_le A₁ (A₂ ∪ A₃)
+        _ ≤ #A₁ + (#A₂ + #A₃) := by gcongr; exact card_union_le ..
         _ ≤ r + (r + r) := by gcongr <;> exact Nat.le_of_eq (sizedℬ ‹_›)
         _ = 3 * r := by omega
       have _ : k ≤ #U := by
@@ -155,9 +153,7 @@ theorem  IsIntersectingFamily.card_le_of_sized {l r:ℕ} {𝒜 : Set (Finset α)
         obtain ⟨a,a_in_ℬ,a_inter_le_k⟩ := ex
         have k_le_inter_U : k ≤ #(a ∩ U) := by calc
           k ≤ #(a ∩ A₁) := interℬ a a_in_ℬ A₁ A₁_in_ℬ
-          _ ≤ #(a ∩ U) := by
-            apply card_le_card
-            simp [U,inter_subset_inter]
+          _ ≤ #(a ∩ U) := by gcongr
         have card_inter_eq_k : #(a ∩ U) = k := by omega
         simp [U] at card_inter_eq_k
         rw [←union_assoc,union_comm,inter_union_distrib_left,inter_union_distrib_left]
@@ -188,9 +184,9 @@ theorem  IsIntersectingFamily.card_le_of_sized {l r:ℕ} {𝒜 : Set (Finset α)
             rw [inter_inter_distrib_left]
           _ = #(a ∩ A₃ ∪ (a ∩ (A₁ ∩ A₂)))  := by rw [card_union]
           _ = #(a ∩ (A₃ ∪ (A₁ ∩ A₂))) := by rw [inter_union_distrib_left]
-          _ ≤ #(a∩U) := by
-            apply card_le_card
-            simp[inter_subset_inter_left,U]
+          _ ≤ #(a ∩ U) := by
+            gcongr
+            simp [U]
             rw [union_comm,←union_assoc]
             apply_rules [inter_subset_inter_left, union_subset_union_left, inter_subset_union]
           _ ≤ k := Nat.le_of_lt_succ a_inter_le_k
