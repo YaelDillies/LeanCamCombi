@@ -3,7 +3,7 @@ Copyright (c) 2024 Ching-Tsun Chou, Chris Wong. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Ching-Tsun Chou, Chris Wong
 -/
-import LeanCamCombi.Mathlib.Algebra.BigOperators.Field
+import Mathlib.Algebra.BigOperators.Field
 import LeanCamCombi.PlainCombi.KatonaCircle
 
 /-!

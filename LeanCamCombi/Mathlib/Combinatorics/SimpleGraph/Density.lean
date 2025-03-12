@@ -1,5 +1,5 @@
 import Mathlib.Algebra.Order.Ring.Unbundled.Rat
-import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
+import Mathlib.Combinatorics.SimpleGraph.Subgraph
 
 open Finset
 open scoped Classical
