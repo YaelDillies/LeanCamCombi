@@ -20,14 +20,18 @@ namespace Finset
 variable {α E : Type*} {𝒜 : Finset (Finset α)}
   {s : Finset α} {f : α → E} {r : ℝ}
 
+def profile (𝒜 : Finset (Finset α)) : Multiset ℕ := sorry
+
 -- def subpartition (f : ):
 
 variable [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 lemma exists_littlewood_offord_partition [DecidableEq α] (hr : 0 < r) (hf : ∀ i ∈ s, r ≤ ‖f i‖) :
-    ∃ P : Finpartition s.powerset, #P.parts = (#s).choose (#s / 2) ∧
-      (∀ 𝒜 ∈ P.parts, ∀ t ∈ 𝒜, t ⊆ s) ∧
-        ∀ 𝒜 ∈ P.parts, 𝒜.toSet.Pairwise fun u v ↦ r ≤ dist (∑ i ∈ u, f i) (∑ i ∈ v, f i) := by
+    ∃ P : Finpartition s.powerset,
+      #P.parts = (#s).choose (s.card / 2) ∧
+        (∀ 𝒜 ∈ P.parts, ∀ t ∈ 𝒜, t ⊆ s) ∧
+          ∀ 𝒜 ∈ P.parts,
+            (𝒜 : Set (Finset α)).Pairwise fun u v ↦ r ≤ dist (∑ i ∈ u, f i) (∑ i ∈ v, f i) := by
   classical
   induction' s using Finset.induction with i s hi ih
   · exact ⟨Finpartition.indiscrete <| singleton_ne_empty _, by simp⟩
