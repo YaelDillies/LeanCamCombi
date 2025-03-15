@@ -44,6 +44,10 @@ equivalent to saying that there is a graph embedding `G ↪ H`.
 The following notation is declared in locale `SimpleGraph`:
 * `G ⊑ H` for `SimpleGraph.is_contained G H`.
 * `G ⊴ H` for `SimpleGraph.isIndContained G H`.
+
+## TODO
+
+Fix `coe_toHom_apply`
 -/
 
 open Finset Function
@@ -52,6 +56,34 @@ open scoped BigOperators Classical
 
 namespace SimpleGraph
 variable {α β γ : Type*} {G G₁ G₂ G₃ : SimpleGraph α} {H : SimpleGraph β} {I : SimpleGraph γ}
+
+namespace Copy
+
+/-- The subgraph of `H` corresponding to a copy of `G` inside `H`. -/
+abbrev toSubgraph (f : Copy G H) : H.Subgraph := .map f.toHom ⊤
+
+@[simp] lemma toHom_mk (f : G →g H) (hf) : toHom ⟨f, hf⟩ = f := rfl
+
+@[simp] lemma range_toSubgraph :
+    .range (toSubgraph (G := G)) = {H' : H.Subgraph | Nonempty (G ≃g H'.coe)} := by
+  ext H'
+  simp [-Subtype.exists]
+  constructor
+  · rintro ⟨f, hf, rfl⟩
+    simpa [toSubgraph] using ⟨(Subgraph.Copy.map f ⊤).comp Subgraph.topIso.symm⟩
+  · rintro ⟨e⟩
+    refine ⟨⟨H'.hom.comp e.toHom, Subgraph.hom_injective.comp e.injective⟩, ?_⟩
+    simp [toSubgraph, Subgraph.map_comp]
+
+lemma toSubgraph_surjOn :
+    Set.SurjOn (toSubgraph (G := G)) .univ {H' : H.Subgraph | Nonempty (G ≃g H'.coe)} :=
+  fun H' hH' ↦ by simpa
+
+alias toHom_apply := coe_toHom_apply
+
+@[simp] lemma coe_mk (f : G →g H) (hf) : ⇑(.mk f hf : Copy G H) = f := rfl
+
+end Copy
 
 /-!
 ### Induced containment
@@ -164,7 +196,7 @@ variable [Fintype α] [Fintype β]
 /-- `G.labelledCopyCount H` is the number of labelled copies of `G` in `H`. See
 `SimpleGraph.copyCount` for the number of unlabelled copies. -/
 noncomputable def labelledCopyCount (G : SimpleGraph α) (H : SimpleGraph β) : ℕ := by
-  classical exact Fintype.card {f : G →g H // Injective f}
+  classical exact Fintype.card (Copy G H)
 
 @[simp] lemma labelledCopyCount_of_isEmpty [IsEmpty α] (G : SimpleGraph α) (H : SimpleGraph β) :
     G.labelledCopyCount H = 1 := by
@@ -180,10 +212,9 @@ noncomputable def labelledCopyCount (G : SimpleGraph α) (H : SimpleGraph β) : 
 /-- There's more labelled copies of `H` of-`G` than unlabelled ones. -/
 lemma copyCount_le_labelledCopyCount : G.copyCount H ≤ G.labelledCopyCount H := by
   rw [copyCount, ← Fintype.card_coe]
-  refine Fintype.card_le_of_injective (fun H' ↦
-    ⟨H'.val.hom.comp (mem_filter.1 H'.2).2.some.toHom,
-      Subtype.coe_injective.comp (mem_filter.1 H'.2).2.some.injective⟩) ?_
-  sorry
+  refine Fintype.card_le_of_surjective (fun f ↦ ⟨f.toSubgraph, ?_⟩) ?_
+  · simpa using ⟨(Subgraph.Copy.map f ⊤).comp Subgraph.topIso.symm⟩
+  · simpa [Surjective, -Copy.range_toSubgraph] using fun H' e ↦ Copy.toSubgraph_surjOn ⟨e⟩
 
 end LabelledCopyCount
 
@@ -268,7 +299,7 @@ noncomputable instance kill.EdgeSet.fintype : Fintype (G.kill H).edgeSet :=
 /-- Removing an edge from `H` for each subgraph isomorphic to `G` means that the number of edges
 we've removed is at most the number of copies of `G` in `H`. -/
 lemma le_card_edgeFinset_kill [Fintype β] :
-    #H.edgeFinset - G.copyCount H ≤ (G.kill H).edgeFinset.card := by
+    #H.edgeFinset - G.copyCount H ≤ #(G.kill H).edgeFinset := by
   obtain rfl | hG := eq_or_ne G ⊥
   · simp
   let f (H' : {H' : H.Subgraph // Nonempty (G ≃g H'.coe)}) := (aux hG H'.2).some
