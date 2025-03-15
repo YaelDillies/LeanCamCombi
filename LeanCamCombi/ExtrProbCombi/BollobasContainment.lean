@@ -7,7 +7,7 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.MeasureTheory.Measure.Typeclasses
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
 import LeanCamCombi.ExtrProbCombi.BinomialRandomGraph
-import LeanCamCombi.ExtrProbCombi.Containment
+import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Copy
 
 /-!
 # Bollobás' graph containment lemma

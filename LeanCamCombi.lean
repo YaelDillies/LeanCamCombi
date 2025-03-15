@@ -2,7 +2,6 @@ import LeanCamCombi.ExtrProbCombi.BernoulliSeq
 import LeanCamCombi.ExtrProbCombi.BinomialRandomGraph
 import LeanCamCombi.ExtrProbCombi.BollobasContainment
 import LeanCamCombi.ExtrProbCombi.Connectivity
-import LeanCamCombi.ExtrProbCombi.Containment
 import LeanCamCombi.ExtrProbCombi.GiantComponent
 import LeanCamCombi.GraphTheory.ExampleSheet1
 import LeanCamCombi.GraphTheory.ExampleSheet2
@@ -12,6 +11,7 @@ import LeanCamCombi.GrowthInGroups.Lecture3
 import LeanCamCombi.GrowthInGroups.Lecture4
 import LeanCamCombi.Mathlib.Combinatorics.Additive.ApproximateSubgroup
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.LYM
+import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Copy
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
