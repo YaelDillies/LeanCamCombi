@@ -104,7 +104,7 @@ protected lemma IsIndContained.isContained : G₁ ⊴ G₂ → G₁ ⊑ G₂ := 
 protected lemma Iso.isIndContained (e : G ≃g H) : G ⊴ H := ⟨e⟩
 protected lemma Iso.isIndContained' (e : G ≃g H) : H ⊴ G := e.symm.isIndContained
 
-protected lemma Subgraph.IsInduced'.isIndContained {G' : G.Subgraph} (hG' : G'.IsInduced') :
+protected lemma Subgraph.IsInduced.isIndContained {G' : G.Subgraph} (hG' : G'.IsInduced) :
     G'.coe ⊴ G :=
   ⟨{  toFun := (↑)
       inj' := Subtype.coe_injective
@@ -120,12 +120,12 @@ lemma isIndContained_of_isEmpty [IsEmpty α] : G ⊴ H :=
       map_rel_iff' := fun {a} ↦ isEmptyElim a }⟩
 
 lemma isIndContained_iff_exists_iso_subgraph :
-    G ⊴ H ↔ ∃ (H' : H.Subgraph) (_e : G ≃g H'.coe), H'.IsInduced' := by
+    G ⊴ H ↔ ∃ (H' : H.Subgraph) (_e : G ≃g H'.coe), H'.IsInduced := by
   constructor
   · rintro ⟨f⟩
     refine ⟨Subgraph.map f.toHom ⊤,
       (Subgraph.Copy.map ⟨f.toHom, f.injective⟩ _).comp Subgraph.topIso.symm, ?_⟩
-    rintro _ _ ⟨a, -, rfl⟩ ⟨b, -, rfl⟩
+    rintro _ ⟨a, -, rfl⟩ _ ⟨b, -, rfl⟩
     simp [Relation.map_apply_apply, f.injective]
   · rintro ⟨H', e, hH'⟩
     exact e.isIndContained.trans hH'.isIndContained
