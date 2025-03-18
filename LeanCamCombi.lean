@@ -13,7 +13,6 @@ import LeanCamCombi.Mathlib.Combinatorics.Additive.ApproximateSubgroup
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.LYM
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Copy
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
-import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Subgraph
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
 import LeanCamCombi.PlainCombi.KatonaCircle
 import LeanCamCombi.PlainCombi.LittlewoodOfford
