@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Combinatorics.SimpleGraph.Copy
 import Mathlib.MeasureTheory.Measure.Typeclasses
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
 import LeanCamCombi.ExtrProbCombi.BinomialRandomGraph
-import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Copy
 
 /-!
 # Bollobás' graph containment lemma

@@ -69,12 +69,14 @@ protected nonrec lemma meas [IsProbabilityMeasure μ] [Fintype α] [DecidableEq 
     [DecidableRel H.Adj] :
     μ {ω | G ω = H} =
       p ^ #H.edgeFinset * (1 - p) ^ (Fintype.card {e : Sym2 α // ¬ e.IsDiag} - #H.edgeFinset) := by
-  have := hG.meas
-    (H.edgeFinset.attach.map <| ⟨Set.inclusion fun e he ↦
-      not_isDiag_of_mem_edgeSet _ <| mem_edgeFinset.1 he, Set.inclusion_injective _⟩)
-  simp at this
-  rw [Finset.card_attach, ← Fintype.card_subtype_compl] at this
-  convert this
-  sorry
+  have hHaux : H.edgeFinset = ({e | e ∈ H.edgeSet} : Finset _) := by ext; simp
+  have hGHaux ω : G ω = H ↔ {e : {e : Sym2 α // ¬ e.IsDiag} | e.1 ∈ (G ω).edgeSet} =
+    Set.range fun a : H.edgeFinset ↦
+      Set.inclusion (fun e he ↦ not_isDiag_of_mem_edgeSet H (mem_edgeFinset.mp he)) a := by
+    simp only [Set.ext_iff, ← edgeSet_inj]
+    simpa [Sym2.forall] using forall₂_congr fun u v ↦ by simp +contextual [or_iff_not_imp_left]
+  simpa [hGHaux, hHaux, ← Fintype.card_subtype_compl] using
+    hG.meas <| H.edgeFinset.attach.map <| ⟨Set.inclusion fun e he ↦
+      not_isDiag_of_mem_edgeSet _ <| mem_edgeFinset.1 he, Set.inclusion_injective _⟩
 
 end IsBinomialRandomGraph
