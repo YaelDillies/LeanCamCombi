@@ -1,4 +1,5 @@
 name = "LeanCamCombi"
+keywords = ["math", "combinatorics", "additive-combinatorics", "probabilitistic-combinatorics", "extremal-combinatorics", "set-family", "graph-theory", "model-theory"]
 defaultTargets = ["LeanCamCombi"]
 
 [leanOptions]
