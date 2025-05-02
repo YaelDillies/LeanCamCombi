@@ -16,48 +16,40 @@ jobs:
     name: Lint style
     runs-on: ubuntu-latest
     steps:
-      - name: Check for long lines
-        if: always()
-        run: |
-          ! (find LeanCamCombi -name "*.lean" -type f -exec grep -E -H -n '^.{101,}$' {} \; | grep -v -E 'https?://')
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Don't 'import Mathlib', use precise imports
         if: always()
         run: |
           ! (find LeanCamCombi -name "*.lean" -type f -print0 | xargs -0 grep -E -n '^import Mathlib$')
 
+      - name: Files in LeanCamCombi.Mathlib can't import LeanCamCombi files outside LeanCamCombi.Mathlib
+        run: |
+          ! (find LeanCamCombi/Mathlib -name "*.lean" -type f -print0 | xargs -0 grep -E -n '^import LeanCamCombi.(?!Mathlib)')
+
   build_project:
     runs-on: ubuntu-latest
     name: Build project
     steps:
+
+      # The following actions make sure the project builds properly.
+
       - name: Checkout project
         uses: actions/checkout@v4
-
-      - name: Copy README.md to website/index.md
-        run: cp README.md website/index.md
-
-      - name: Check LeanCamCombi.Mathlib only imports from Mathlib or LeanCamCombi.Mathlib
-        run: python3 scripts/check_mathlib_imports.py
-
-      - name: Upstreaming dashboard
-        run: |
-          mkdir -p website/_includes
-          python3 scripts/upstreaming_dashboard.py
+        with:
+          fetch-depth: 0
 
       - name: Install elan
-        run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.15.0
+        run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.18.0
 
       - name: Get cache
         run: ~/.elan/bin/lake exe cache get || true
 
       - name: Build project
         run: ~/.elan/bin/lake build LeanCamCombi
-
-      - name: File dependencies
-        run: |
-          sudo apt-get update
-          sudo apt install graphviz -y
-          ~/.elan/bin/lake exe graph website/file_deps.pdf
 
       - name: Cache documentation
         uses: actions/cache@v4
@@ -69,25 +61,47 @@ jobs:
       - name: Build documentation
         run: scripts/build_docs.sh
 
-      # - name: Build blueprint and copy to `website/blueprint`
+      # - name: Build blueprint
       #   uses: xu-cheng/texlive-action@v2
       #   with:
-      #     scheme: full
+      #     docker_image: ghcr.io/xu-cheng/texlive-full:20231201
       #     run: |
+      #       # Install necessary dependencies and build the blueprint
       #       apk update
       #       apk add --update make py3-pip git pkgconfig graphviz graphviz-dev gcc musl-dev
       #       git config --global --add safe.directory $GITHUB_WORKSPACE
       #       git config --global --add safe.directory `pwd`
-      #       python3 -m pip install --upgrade pip requests wheel
-      #       python3 -m pip install pygraphviz --global-option=build_ext --global-option="-L/usr/lib/graphviz/" --global-option="-R/usr/lib/graphviz/"
-      #       pip install -r blueprint/requirements.txt
-      #       python3 -m pip install invoke
-      #       inv all
+      #       python3 -m venv env
+      #       source env/bin/activate
+      #       pip install --upgrade pip requests wheel
+      #       pip install pygraphviz --global-option=build_ext --global-option="-L/usr/lib/graphviz/" --global-option="-R/usr/lib/graphviz/"
+      #       pip install leanblueprint
+      #       leanblueprint pdf
+      #       leanblueprint web
 
-      - name: Copy documentation to `website/docs`
+      # The following actions create and deploy the website.
+
+      - name: Copy documentation to website/docs
+        run: mv docs/build/* website/docs
+
+      - name: Copy blueprint to website/blueprint
         run: |
-          mkdir -p website/docs
-          mv docs/build website/docs
+          cp blueprint/print/print.pdf website/blueprint.pdf
+          cp -r blueprint/web website/blueprint
+
+      - name: Copy README.md to website/index.md
+        run: cp README.md website/index.md
+
+      - name: Upstreaming dashboard
+        run: |
+          mkdir -p website/_includes
+          python3 scripts/upstreaming_dashboard.py
+
+      - name: File dependencies
+        run: |
+          sudo apt-get update
+          sudo apt install graphviz -y
+          ~/.elan/bin/lake exe graph website/file_deps.pdf
 
       - name: Bundle dependencies
         uses: ruby/setup-ruby@v1
@@ -108,8 +122,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-      - name: Make sure the cache works
-        run: |
-          mkdir -p docbuild/.lake/build/doc
-          mv website/docs docbuild/.lake/build/doc
