@@ -70,7 +70,7 @@ open scoped Classical in
 /-- An auxiliary lemma used in the proof of the collar theorem. -/
 lemma proposition_1_7 :
     ∃ ε > 0, ∀ X : Finset SL(2, ℝ), #(X ^ 2) ≤ 1000 * #X → (∀ M ∈ X, ∀ i j, |M i j| ≤ ε) →
-      ∃ A : Subgroup SL(2, ℝ), A.IsCommutative ∧
+      ∃ A : Subgroup SL(2, ℝ), IsMulCommutative A ∧
         ∃ a : Fin 10000000 → SL(2, ℝ), (X : Set SL(2, ℝ)) ⊆ ⋃ i, a i • A := showcased
 
 /-- The **Breuillard-Green-Tao theorem**. -/
