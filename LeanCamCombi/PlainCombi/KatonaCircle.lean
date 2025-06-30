@@ -84,9 +84,9 @@ def prefixedEquiv (s : Finset α) : prefixed s ≃ Numbering s × Numbering ↑(
           simp [hx, this]
         · simp [hx, Equiv.symm_apply_eq]
       val.right_inv n := by
-        obtain hns | hsn := lt_or_le n.1 #s
+        obtain hns | hsn := lt_or_ge n.1 #s
         · simp [hns]
-        · simp [hsn.not_lt, hsn, dif_neg (mem_compl.1 <| Subtype.prop _), Fin.ext_iff,
+        · simp [hsn.not_gt, hsn, dif_neg (mem_compl.1 <| Subtype.prop _), Fin.ext_iff,
             Fintype.card_subtype_le]
       property := mem_prefixed.2 fun x ↦ by
         constructor
