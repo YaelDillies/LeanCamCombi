@@ -20,7 +20,7 @@ If you solve a question in Lean, feel free to open a Pull Request on Github!
 
 open Fintype (card)
 open Function SimpleGraph
-open scoped BigOperators Cardinal
+open scoped Cardinal SetRel
 
 namespace GraphTheory
 namespace ES1
@@ -208,19 +208,19 @@ all degrees of $$X$$ are finite (while degrees in $$Y$$ have no restriction)?
 
 -- This translation looks slightly painful because of the `cardinal`.
 lemma q14_part1 :
-    ∃ r : ℕ → ℕ → Prop,
-      (∀ A : Finset ℕ, (A.card : Cardinal) ≤ #(Rel.image r A)) ∧
-        ∀ f : ℕ → ℕ, Injective f → ∃ n, ¬ r n (f n) :=
+    ∃ r : SetRel ℕ ℕ,
+      (∀ A : Finset ℕ, (A.card : Cardinal) ≤ #(r.image A)) ∧
+        ∀ f : ℕ → ℕ, Injective f → ∃ n, ¬ n ~[r] f n :=
   sorry
 
-lemma q14_part2 [DecidableEq β] [Countable α] [Countable β] (r : α → β → Prop)
-    [∀ a, Fintype (Rel.image r {a})] (hr : ∀ A : Finset α, A.card ≤ card (Rel.image r A)) :
-    ∃ f : α → β, Injective f ∧ ∀ a, r a (f a) :=
+lemma q14_part2 [DecidableEq β] [Countable α] [Countable β] (r : SetRel α β)
+    [∀ a, Fintype (r.image {a})] (hr : ∀ A : Finset α, A.card ≤ card (r.image A)) :
+    ∃ f : α → β, Injective f ∧ ∀ a, a ~[r] f a :=
   sorry
 
-lemma q14_part3 [DecidableEq β] (r : α → β → Prop) [∀ a, Fintype (Rel.image r {a})]
-    (hr : ∀ A : Finset α, A.card ≤ card (Rel.image r A)) :
-    ∃ f : α → β, Injective f ∧ ∀ a, r a (f a) :=
+lemma q14_part3 [DecidableEq β] (r : SetRel α β) [∀ a, Fintype (r.image {a})]
+    (hr : ∀ A : Finset α, A.card ≤ card (r.image A)) :
+    ∃ f : α → β, Injective f ∧ ∀ a, a ~[r] f a :=
   sorry
 
 /-!
