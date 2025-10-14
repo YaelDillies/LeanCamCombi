@@ -82,12 +82,11 @@ def prefixedEquiv (s : Finset α) : prefixed s ≃ Numbering s × Numbering ↑(
         by_cases hx : x ∈ s
         · have : g ⟨x, hx⟩ < #s := by simpa using (g ⟨x, hx⟩).2
           simp [hx, this]
-        · simp [hx, Equiv.symm_apply_eq]
+        · simp [hx]
       val.right_inv n := by
         obtain hns | hsn := lt_or_ge n.1 #s
         · simp [hns]
-        · simp [hsn.not_gt, hsn, dif_neg (mem_compl.1 <| Subtype.prop _), Fin.ext_iff,
-            Fintype.card_subtype_le]
+        · simp [hsn.not_gt, hsn, dif_neg (mem_compl.1 <| Subtype.prop _)]
       property := mem_prefixed.2 fun x ↦ by
         constructor
         · intro hx

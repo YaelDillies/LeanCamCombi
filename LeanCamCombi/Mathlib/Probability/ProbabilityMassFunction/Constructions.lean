@@ -38,9 +38,7 @@ lemma mem_support_bernoulli'_iff : b ∈ (bernoulli' p hp).support ↔ if b then
     ext q
     by_cases p <;> by_cases q <;> simp [*]
   refine (map_ofFintype _ _ _).trans ?_
-  simp only [this, bernoulli', Finset.mem_filter, Finset.mem_univ, true_and,
-    Finset.mem_disjiUnion, tsub_le_self, eq_iff_iff, Finset.sum_singleton, WithTop.coe_sub,
-    ENNReal.coe_one]
+  simp only [eq_iff_iff, this, Finset.sum_singleton, bernoulli']
   congr 1 with q
   split_ifs <;> simp [ENNReal.sub_sub_cancel WithTop.one_ne_top (ENNReal.coe_le_coe.2 hp)]
 

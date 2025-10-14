@@ -22,8 +22,9 @@ lemma exists_littlewood_offord_partition [DecidableEq ι] (hr : 0 < r) (hf : ∀
       #P.parts = (#s).choose (#s / 2) ∧ (∀ 𝒜 ∈ P.parts, ∀ t ∈ 𝒜, t ⊆ s) ∧ ∀ 𝒜 ∈ P.parts,
         (𝒜 : Set (Finset ι)).Pairwise fun u v ↦ r ≤ dist (∑ i ∈ u, f i) (∑ i ∈ v, f i) := by
   classical
-  induction' s using Finset.induction with i s hi ih
-  · exact ⟨Finpartition.indiscrete <| singleton_ne_empty _, by simp⟩
+  induction s using Finset.induction with
+  | empty => exact ⟨Finpartition.indiscrete <| singleton_ne_empty _, by simp⟩
+  | insert i s hi ih =>
   obtain ⟨P, hP, hs, hPr⟩ := ih fun j hj ↦ hf _ <| mem_insert_of_mem hj
   clear ih
   obtain ⟨g, hg, hgf⟩ :=
