@@ -39,7 +39,7 @@ lemma exists_isApproximateSubgroup_of_small_doubling [DecidableEq G] {A : Finset
   have hS₁ : 1 ∈ S := by simp [S, hA₀.ne_empty]; bound
   have hS₀ : S.Nonempty := ⟨1, hS₁⟩
   have hSA : S ⊆ A⁻¹ * A := filter_subset ..
-  have hSsymm : S⁻¹ = S := by ext; simp [S]; simp [← mem_inv']; sorry
+  have hSsymm : S⁻¹ = S := by ext; simp [S]; sorry
   have hScard := calc
     (#S : ℝ) ≤ #(A⁻¹ * A) := by gcongr
     _ ≤ K ^ 2 * #A := sorry

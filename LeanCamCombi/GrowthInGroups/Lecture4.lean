@@ -1,4 +1,4 @@
-import Mathlib.Analysis.Matrix
+import Mathlib.Analysis.Matrix.Normed
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 import LeanCamCombi.Mathlib.Combinatorics.Additive.ApproximateSubgroup
@@ -21,7 +21,7 @@ lemma fact_4_1 (S T : GL n ℂ) :
 open scoped Classical in
 lemma lemma_4_2 (hC₀ : Fintype.card n < C₀) (K : ℝ) :
     ∃ δ : ℝ,
-      ∀ (A : Finset (GL n ℂ)) (hA : IsApproximateSubgroup K A.toSet) (hC₀ : ∀ a ∈ A, ‖a.val‖ ≤ C₀),
+      ∀ A : Finset (GL n ℂ), IsApproximateSubgroup K (A : Set (GL n ℂ)) → (∀ a ∈ A, ‖a.val‖ ≤ C₀) →
         ∃ γ ∈ A ^ 2, δ * #A ≤ #{x ∈ A ^ 4 | Commute γ x} := sorry
 
 lemma corollary_4_3 (K C₀ : ℝ) :

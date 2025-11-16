@@ -11,8 +11,6 @@ import LeanCamCombi.PlainCombi.KatonaCircle
 
 This file proves the LYM inequality using (very elementary) probability theory.
 
-
-
 ## References
 
 This proof formalizes Section 1.2 of Prof. Yufei Zhao's lecture notes for MIT 18.226:
@@ -35,7 +33,7 @@ open Finset Fintype Numbering
 variable {α : Type*} [Fintype α] {𝒜 : Finset (Finset α)}
 
 /-- The **Lubell-Yamamoto-Meshalkin inequality**, proved using the Katona circle method. -/
-theorem LYM_inequality (h𝒜 : IsAntichain (· ⊆ ·) 𝒜.toSet) :
+theorem LYM_inequality (h𝒜 : IsAntichain (· ⊆ ·) (𝒜 : Set (Finset α))) :
     ∑ s ∈ 𝒜, ((card α).choose #s : ℚ≥0)⁻¹ ≤ 1 := by
   classical
   calc
