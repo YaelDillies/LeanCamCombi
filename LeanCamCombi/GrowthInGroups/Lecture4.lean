@@ -30,7 +30,7 @@ lemma corollary_4_3 (K C₀ : ℝ) :
         #F ≤ C ∧ A ⊆ F * Z := sorry
 
 /-- The **Breuillard-Green-Tao theorem**. -/
-theorem theorem_4_4 (_hK : 0 ≤ K) :
+theorem theorem_4_4 :
     ∃ C > 0, ∀ {G} [Group G] [DecidableEq G] (A : Set G) (_hA : IsApproximateSubgroup K A),
       ∃ (H : Subgroup G) (N : Subgroup H) (_hD : N.Normal) (F : Finset G),
         upperCentralSeries (H ⧸ N) C = ⊤ ∧ ((↑) '' (N : Set H) : Set G) ⊆ (A / A) ^ 4 ∧
