@@ -44,6 +44,7 @@ def HasPolynomialGrowth : Prop :=
 /-- **Gromov's theorem**.
 
 A group has polynomial growth iff it's virtually nilpotent. -/
+@[nolint unusedArguments]
 lemma theorem_1_2 [Group.FG G] : HasPolynomialGrowth G ↔ IsVirtuallyNilpotent G := showcased
 
 lemma fact_1_3 [Fintype G] (hn : X ^ n = univ) : log (card G) / log #X ≤ n := by
@@ -74,7 +75,7 @@ lemma proposition_1_7 :
         ∃ a : Fin 10000000 → SL(2, ℝ), (X : Set SL(2, ℝ)) ⊆ ⋃ i, a i • A := showcased
 
 /-- The **Breuillard-Green-Tao theorem**. -/
-lemma theorem_1_8 (_hK : 0 ≤ K) :
+lemma theorem_1_8 :
     ∃ C > 0, ∀ {G} [Group G] [DecidableEq G] (A : Finset G) (_hA : σₘ[A] ≤ K),
       ∃ (N : Subgroup G) (D : Subgroup N) (_hD : D.Normal),
         upperCentralSeries (N⧸ D) C = ⊤ ∧ ((↑) '' (D : Set N) : Set G) ⊆ (A / A) ^ 4 ∧
