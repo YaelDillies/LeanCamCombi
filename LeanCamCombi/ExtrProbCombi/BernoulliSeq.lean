@@ -56,7 +56,7 @@ protected lemma aemeasurable (a : α) : AEMeasurable (fun ω ↦ a ∈ X ω) μ 
   haveI : Nonempty α := ⟨a⟩
   exact hX.ne_zero
 
-@[simp] protected lemma nullMeasurableSet (a : α) : NullMeasurableSet {ω | a ∈ X ω} μ := by
+protected lemma nullMeasurableSet (a : α) : NullMeasurableSet {ω | a ∈ X ω} μ := by
   rw [(by ext; simp : {ω | a ∈ X ω} = (fun ω ↦ a ∈ X ω) ⁻¹' {True})]
   exact (hX.aemeasurable a).nullMeasurableSet_preimage MeasurableSpace.measurableSet_top
 
@@ -65,7 +65,7 @@ protected lemma identDistrib (a j : α) : IdentDistrib (fun ω ↦ a ∈ X ω) (
     aemeasurable_snd := hX.aemeasurable _
     map_eq := (hX.map _).trans (hX.map _).symm }
 
-@[simp] lemma meas_apply (a : α) : μ {ω | a ∈ X ω} = p := by
+lemma meas_apply (a : α) : μ {ω | a ∈ X ω} = p := by
   rw [(_ : {ω | a ∈ X ω} = (fun ω ↦ a ∈ X ω) ⁻¹' {True}),
     ← Measure.map_apply_of_aemeasurable (hX.aemeasurable a) MeasurableSpace.measurableSet_top]
   · simp [hX.map]
