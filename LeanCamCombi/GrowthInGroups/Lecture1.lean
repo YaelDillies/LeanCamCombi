@@ -44,7 +44,8 @@ def HasPolynomialGrowth : Prop :=
 /-- **Gromov's theorem**.
 
 A group has polynomial growth iff it's virtually nilpotent. -/
-lemma theorem_1_2 : HasPolynomialGrowth G ↔ IsVirtuallyNilpotent G := showcased
+@[nolint unusedArguments]
+lemma theorem_1_2 [Group.FG G] : HasPolynomialGrowth G ↔ IsVirtuallyNilpotent G := showcased
 
 lemma fact_1_3 [Fintype G] (hn : X ^ n = univ) : log (card G) / log #X ≤ n := by
   obtain rfl | hX := X.eq_empty_or_nonempty
