@@ -1,6 +1,6 @@
 # Cambridge combinatorics in Lean
 
-[![.github/workflows/push_master.yml](https://github.com/YaelDillies/LeanCamCombi/actions/workflows/push_master.yml/badge.svg)](https://github.com/YaelDillies/LeanCamCombi/actions/workflows/push_master.yml)
+[![.github/workflows/push.yml](https://github.com/YaelDillies/LeanCamCombi/actions/workflows/push.yml/badge.svg)](https://github.com/YaelDillies/LeanCamCombi/actions/workflows/push.yml)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/YaelDillies/LeanCamCombi)
 
 This repository aims at formalising the mathematics courses relevant to combinatorics that are lectured in Cambridge, UK.
