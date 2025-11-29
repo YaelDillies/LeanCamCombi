@@ -1,0 +1,71 @@
+name: Build Lean project
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  style_lint:
+    name: Lint style
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Don't 'import Mathlib', use precise imports
+        if: always()
+        run: |
+          ! (find LeanCamCombi -name "*.lean" -type f -print0 | xargs -0 grep -E -n '^import Mathlib$')
+
+      - name: Files in LeanCamCombi.Mathlib can't import LeanCamCombi files outside LeanCamCombi.Mathlib
+        run: |
+          ! (find LeanCamCombi/Mathlib -name "*.lean" -type f -print0 | xargs -0 grep -E -n '^import LeanCamCombi.(?!Mathlib)')
+
+  build:
+    name: Build project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # Fetch all history for all branches and tags
+
+      - name: Build and lint the project
+        id: build-lean
+        uses: leanprover/lean-action@f807b338d95de7813c5c50d018f1c23c9b93b4ec # v1.2.0
+
+      - name: Copy README.md to website/index.md
+        if: github.ref == 'refs/heads/master'
+        run: cp README.md website/index.md
+
+      - name: Upstreaming dashboard
+        if: github.ref == 'refs/heads/master'
+        run: |
+          mkdir -p website/_includes
+          python3 scripts/upstreaming_dashboard.py
+
+      - name: File dependencies
+        if: github.ref == 'refs/heads/master'
+        run: |
+          sudo apt-get update
+          sudo apt install graphviz -y
+          ~/.elan/bin/lake exe graph website/file_deps.pdf
+
+      - name: Build project documentation
+        if: github.ref == 'refs/heads/master'
+        id: build-docgen
+        uses: leanprover-community/docgen-action@main
+        with:
+          blueprint: true
+          homepage: "website"
