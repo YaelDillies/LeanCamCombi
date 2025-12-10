@@ -14,7 +14,6 @@ import LeanCamCombi.Mathlib.Probability.Combinatorics.BinomialRandomGraph.Defs
 import LeanCamCombi.Mathlib.Probability.Distributions.Bernoulli
 import LeanCamCombi.Mathlib.Probability.HasLaw
 import LeanCamCombi.Mathlib.Probability.ProbabilityMassFunction.Constructions
-import LeanCamCombi.PlainCombi.KatonaCircle
 import LeanCamCombi.PlainCombi.LittlewoodOfford
 import LeanCamCombi.PlainCombi.OrderShatter
 import LeanCamCombi.PlainCombi.ProbLYM

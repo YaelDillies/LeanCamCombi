@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Ching-Tsun Chou, Chris Wong
 -/
 import Mathlib.Algebra.BigOperators.Field
-import LeanCamCombi.PlainCombi.KatonaCircle
+import Mathlib.Combinatorics.KatonaCircle
 
 /-!
 # The LYM inequality using probability theory

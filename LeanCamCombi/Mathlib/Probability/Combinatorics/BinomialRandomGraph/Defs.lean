@@ -13,7 +13,7 @@ import Mathlib.Data.Sym.Card
 This file defines the distribution of binomial random graphs.
 -/
 
-open MeasureTheory Measure ProbabilityTheory unitInterval
+open MeasureTheory Measure ProbabilityTheory unitInterval Sym2
 open scoped Finset
 
 namespace SimpleGraph
@@ -73,7 +73,7 @@ vertices `V`. This is the law `G(V, p)` of binomial random graphs with probabili
 variable (V p) in
 /-- The binomial distribution with parameter `p` on simple graphs with vertices `V`. -/
 @[expose]
-noncomputable def binomialRandom : Measure (SimpleGraph V) := Ber({e | ¬ e.IsDiag}, p).comap edgeSet
+noncomputable def binomialRandom : Measure (SimpleGraph V) := Ber(diagSetᶜ, p).comap edgeSet
 
 @[inherit_doc] scoped notation "G(" V ", " p ")" => binomialRandom V p
 
@@ -81,21 +81,24 @@ section Countable
 variable [Countable V]
 
 variable (V p) in
-lemma binomialRandom_eq_map : G(V, p) = map fromEdgeSet Ber({e | ¬ e.IsDiag}, p) := by
+lemma binomialRandom_eq_map : G(V, p) = map fromEdgeSet Ber(diagSetᶜ, p) := by
   refine (map_eq_comap measurable_fromEdgeSet measurableEmbedding_edgeSet ?_
     fromEdgeSet_edgeSet).symm
   filter_upwards [bernoulliOn_ae_subset] with S hS
-  exact ⟨fromEdgeSet S, by simpa [← Set.compl_setOf, Set.subset_compl_iff_disjoint_right] using hS⟩
+  refine ⟨fromEdgeSet S, ?_⟩
+  simpa [Sym2.diagSet_eq_setOf_isDiag, ← Set.compl_setOf, Set.subset_compl_iff_disjoint_right]
+    using hS
 
-lemma isBernoulliOn_edgeSet_binomialRandom : IsBernoulliOn edgeSet {e | ¬ e.IsDiag} p G(V, p) where
+lemma isBernoulliOn_edgeSet_binomialRandom : IsBernoulliOn edgeSet diagSetᶜ p G(V, p) where
   map_eq := by
-    rw [binomialRandom_eq_map, map_map (by fun_prop) (by fun_prop), map_congr, map_id]
+    rw [binomialRandom_eq_map, map_map (by fun_prop) (by fun_prop), Measure.map_congr,
+      Measure.map_id]
     filter_upwards [bernoulliOn_ae_subset] with S hS
-    simpa [← Set.subset_compl_iff_disjoint_right]
+    simpa [Set.subset_compl_iff_disjoint_right] using hS
 
 variable (p) in
 lemma binomialRandom_apply' (S : Set (SimpleGraph V)) :
-    G(V, p) S = Ber({e : Sym2 V | ¬ e.IsDiag}, p) (edgeSet '' S) := by
+    G(V, p) S = Ber(diagSetᶜ, p) (edgeSet '' S) := by
   rw [binomialRandom, measurableEmbedding_edgeSet.comap_apply]
 
 variable (p) in
@@ -109,7 +112,8 @@ instance : IsProbabilityMeasure G(V, p) := by
   refine measurableEmbedding_edgeSet.isProbabilityMeasure_comap ?_
   filter_upwards [bernoulliOn_ae_subset] with s hs
   refine ⟨.fromEdgeSet s, ?_⟩
-  simpa [← Set.disjoint_compl_right_iff_subset, ← Set.compl_setOf] using hs
+  simpa [Sym2.diagSet_eq_setOf_isDiag, ← Set.disjoint_compl_right_iff_subset, ← Set.compl_setOf]
+    using hs
 
 variable (V) in
 @[simp] lemma binomialRandom_zero : G(V, 0) = dirac ⊥ := by simp [binomialRandom_eq_map]
@@ -127,11 +131,11 @@ variable (p) in
   cases nonempty_fintype V
   simp only [binomialRandom, measurableEmbedding_edgeSet.comap_apply, Set.image_singleton,
     edgeSet_subset_setOf_not_isDiag, bernoulliOn_singleton]
-  rw [Set.ncard_diff (by exact fun _ ↦ not_isDiag_of_mem_edgeSet _)]
+  rw [Set.ncard_diff (edgeSet_subset_setOf_not_isDiag _)]
   congr!
   rw [Nat.card_eq_fintype_card, ← Sym2.card_subtype_not_diag, Fintype.card_eq_nat_card,
     ← Nat.card_coe_set_eq]
-  rfl
+  simp [diagSet_compl_eq_setOf_not_isDiag]
 
 /-! ### Binomial random graphs -/
 
@@ -162,7 +166,7 @@ lemma IsBinomialRandom.inf (hG : IsBinomialRandom G p P) (hY : IsBinomialRandom 
 variable [Countable V]
 
 lemma IsBinomialRandom.isBernoulliOn_edgeSet (hG : IsBinomialRandom G p P) :
-    IsBernoulliOn (fun ω ↦ (G ω).edgeSet) {e | ¬ e.IsDiag} p P :=
+    IsBernoulliOn (fun ω ↦ (G ω).edgeSet) diagSetᶜ p P :=
       isBernoulliOn_edgeSet_binomialRandom.comp hG
 
 lemma IsBinomialRandom.sup (hG : IsBinomialRandom G p P) (hY : IsBinomialRandom H q P) :
