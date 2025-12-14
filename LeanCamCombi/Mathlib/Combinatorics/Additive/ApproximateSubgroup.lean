@@ -25,6 +25,7 @@ lemma pi {ι : Type*} {G : ι → Type*} [Fintype ι] [∀ i, Group (G i)] {A : 
 
 end IsApproximateSubgroup
 
+set_option linter.flexible false in
 open Finset in
 open scoped RightActions in
 @[to_additive]

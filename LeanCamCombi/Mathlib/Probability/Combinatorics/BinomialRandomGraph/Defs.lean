@@ -50,6 +50,7 @@ lemma measurable_adj : Measurable (Adj : SimpleGraph V → V → V → Prop) := 
 lemma measurable_edgeSet : Measurable (edgeSet : SimpleGraph V → Set (Sym2 V)) :=
   measurable_set_iff.2 <| by rintro ⟨u, v⟩; simp only [mem_edgeSet]; fun_prop
 
+set_option linter.flexible false in
 @[simp, fun_prop]
 lemma measurable_fromEdgeSet : Measurable (fromEdgeSet : Set (Sym2 V) → SimpleGraph V) := by
   simp [measurable_iff_adj]; fun_prop

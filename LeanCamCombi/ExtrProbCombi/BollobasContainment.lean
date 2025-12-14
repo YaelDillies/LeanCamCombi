@@ -20,8 +20,8 @@ open scoped MeasureTheory  ENNReal NNReal SimpleGraph Topology unitInterval
 
 namespace SimpleGraph
 variable {V W Ω : Type*} [Fintype W] {G : ℕ → Ω → SimpleGraph V} (H : SimpleGraph W)
-  [Fintype H.edgeSet] [∀ n ω, DecidableRel (G n ω).Adj] [MeasurableSpace Ω] (μ : Measure Ω)
-  [IsProbabilityMeasure μ] {p : ℕ → I} (hG : ∀ n, IsBinomialRandom (G n) (p n) μ)
+  [Fintype H.edgeSet] [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ] {p : ℕ → I}
+  (hG : ∀ n, IsBinomialRandom (G n) (p n) μ)
 
 /-- **Bollobás' Graph Containment Lemma**, zero statement -/
 lemma zero_statement

@@ -76,7 +76,7 @@ Show that if $$G$$ is acyclic and $$|G| ≥ 1$$, then $$e(G) ≤ n − 1$$.
 -/
 
 -- Note: The statement is true without `nonempty α` due to nat subtraction.
-lemma q5 [Fintype α] [DecidableEq α] (G : SimpleGraph α) [DecidableRel G.Adj] (hG : G.IsAcyclic) :
+lemma q5 [Fintype α] (G : SimpleGraph α) [DecidableRel G.Adj] (hG : G.IsAcyclic) :
     G.edgeFinset.card ≤ card α - 1 := by
   cases isEmpty_or_nonempty α
   · simp
@@ -153,7 +153,7 @@ Show that the possible clique numbers for a regular graph on $$n$$ vertices are
 $$1, 2, \dots, n/2$$ and $$n$$.
 -/
 
-lemma q10 [Fintype α] [DecidableEq α] (n : ℕ) :
+lemma q10 [Fintype α] (n : ℕ) :
     (∃ (G : SimpleGraph α) (_ : DecidableRel G.Adj) (k : _),
         G.IsRegularOfDegree k ∧ cliqueNum G = n) ↔
       n ≤ card α / 2 ∨ n = card α :=

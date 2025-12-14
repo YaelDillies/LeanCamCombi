@@ -8,7 +8,6 @@ Rename `edgeDensity` to `edgeDensityBtw`
 -/
 
 open Finset
-open scoped Classical
 
 namespace SimpleGraph
 variable {α : Type*} [Fintype α] (G : SimpleGraph α) [Fintype G.edgeSet]
@@ -18,8 +17,9 @@ variable {α : Type*} [Fintype α] (G : SimpleGraph α) [Fintype G.edgeSet]
 In other words, it is half of its average degree. -/
 def edgeDensity' : ℚ≥0 := #G.edgeFinset / Fintype.card α
 
+open scoped Classical in
 /-- The maximum edge density of a subgraph of a graph. -/
 noncomputable def maxEdgeSubdensity : ℚ≥0 :=
-  Finset.univ.sup' Finset.univ_nonempty fun G' : G.Subgraph ↦ G'.coe.edgeDensity'
+  univ.sup' univ_nonempty fun G' : G.Subgraph ↦ G'.coe.edgeDensity'
 
 end SimpleGraph
