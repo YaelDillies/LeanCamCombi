@@ -10,9 +10,8 @@ import LeanCamCombi.GrowthInGroups.Lecture4
 import LeanCamCombi.Mathlib.Combinatorics.Additive.ApproximateSubgroup
 import LeanCamCombi.Mathlib.Combinatorics.SetFamily.LYM
 import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
+import LeanCamCombi.Mathlib.MeasureTheory.Constructions.SimpleGraph
 import LeanCamCombi.Mathlib.Probability.Combinatorics.BinomialRandomGraph.Defs
-import LeanCamCombi.Mathlib.Probability.Distributions.Bernoulli
-import LeanCamCombi.Mathlib.Probability.HasLaw
 import LeanCamCombi.PlainCombi.LittlewoodOfford
 import LeanCamCombi.PlainCombi.OrderShatter
 import LeanCamCombi.PlainCombi.ProbLYM

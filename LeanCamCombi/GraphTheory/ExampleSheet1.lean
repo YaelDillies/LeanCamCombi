@@ -79,7 +79,7 @@ Show that if $$G$$ is acyclic and $$|G| ≥ 1$$, then $$e(G) ≤ n − 1$$.
 lemma q5 [Fintype α] (G : SimpleGraph α) [DecidableRel G.Adj] (hG : G.IsAcyclic) :
     G.edgeFinset.card ≤ card α - 1 := by
   cases isEmpty_or_nonempty α
-  · simp
+  · simp [Subsingleton.elim G ⊥]
   sorry
 
 /-!
