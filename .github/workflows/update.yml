@@ -1,0 +1,42 @@
+name: Update Dependencies
+
+on:
+  schedule:
+    - cron: "37 */6 * * *"   # Check for updates 37 minutes past every six hours
+  workflow_dispatch:
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Bump to latest mathlib
+        id: bump
+        uses: leanprover-community/downstream-reports/.github/actions/bump-to-latest@main
+
+      - name: Open or update PR
+        if: steps.bump.outputs.updated == 'true'
+        uses: leanprover-community/downstream-reports/.github/actions/open-bump-pr@main
+        with:
+          title:          ${{ steps.bump.outputs.pr-title }}
+          message:        ${{ steps.bump.outputs.bump-description }}
+          commit-message: ${{ steps.bump.outputs.commit-message }}
+
+  open-issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Open or update incompatibility issue and PR
+        uses: leanprover-community/downstream-reports/.github/actions/track-incompatibility@main
+        with:
+          open-issue: false
+          open-pr: true
