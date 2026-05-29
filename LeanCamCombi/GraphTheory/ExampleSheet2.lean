@@ -5,10 +5,10 @@ Authors: Yaël Dillies, Kexing Ying
 -/
 module
 
+public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.Combinatorics.Hall.Basic
 public import Mathlib.Combinatorics.SimpleGraph.Acyclic
 public import Mathlib.Combinatorics.SimpleGraph.Clique
-public import Mathlib.Data.Real.Sqrt
 public import Mathlib.SetTheory.Cardinal.Basic
 
 /-!

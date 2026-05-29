@@ -37,7 +37,7 @@ lemma corollary_4_3 (K C₀ : ℝ) :
 theorem theorem_4_4 :
     ∃ C > 0, ∀ {G} [Group G] [DecidableEq G] (A : Set G) (_hA : IsApproximateSubgroup K A),
       ∃ (H : Subgroup G) (N : Subgroup H) (_hD : N.Normal) (F : Finset G),
-        upperCentralSeries (H ⧸ N) C = ⊤ ∧ ((↑) '' (N : Set H) : Set G) ⊆ (A / A) ^ 4 ∧
+        Subgroup.upperCentralSeries (H ⧸ N) C = ⊤ ∧ ((↑) '' (N : Set H) : Set G) ⊆ (A / A) ^ 4 ∧
           A ⊆ F * H := showcased
 
 lemma theorem_4_5 {G : Type*} [Group G] [DecidableEq G] {S : Finset G} (hSsymm : S⁻¹ = S)

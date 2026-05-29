@@ -82,7 +82,7 @@ lemma proposition_1_7 :
 lemma theorem_1_8 :
     ∃ C > 0, ∀ {G} [Group G] [DecidableEq G] (A : Finset G) (_hA : σₘ[A] ≤ K),
       ∃ (N : Subgroup G) (D : Subgroup N) (_hD : D.Normal),
-        upperCentralSeries (N⧸ D) C = ⊤ ∧ ((↑) '' (D : Set N) : Set G) ⊆ (A / A) ^ 4 ∧
+        Subgroup.upperCentralSeries (N⧸ D) C = ⊤ ∧ ((↑) '' (D : Set N) : Set G) ⊆ (A / A) ^ 4 ∧
           ∃ a : Fin C → G, (A : Set G) ⊆ ⋃ i, a i • N := showcased
 
 open scoped Classical in
