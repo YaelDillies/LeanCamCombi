@@ -12,3 +12,4 @@ decls.yaml
 src/all.lean
 src/list_decls.lean
 src/.noisy_files
+AGENTS.md

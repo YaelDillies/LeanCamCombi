@@ -13,6 +13,7 @@ public import LeanCamCombi.Mathlib.Combinatorics.Additive.ApproximateSubgroup
 public import LeanCamCombi.Mathlib.Combinatorics.SetFamily.LYM
 public import LeanCamCombi.Mathlib.Combinatorics.SimpleGraph.Density
 public import LeanCamCombi.PlainCombi.LittlewoodOfford
+public import LeanCamCombi.PlainCombi.IntersectingFamilies
 public import LeanCamCombi.PlainCombi.OrderShatter
 public import LeanCamCombi.PlainCombi.ProbLYM
 public import LeanCamCombi.PlainCombi.VanDenBergKesten
